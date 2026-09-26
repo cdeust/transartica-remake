@@ -6,6 +6,8 @@
 - [ ] Atelier des villes 10–16 (achat de wagons) : relier types 1–25 et véhicules dessinés.
 - [ ] Textes d'histoire (TOWN), gare-atelier, effets de l'équipage et des animaux.
 Preuves : tasks/evidence/city-scripts.md §5–6 et « Portage ».
+Note de propriété : `main.gd` (Codex) touché pour raccorder l'écran : champs de sauvegarde v7
+(`wagons`, `trade`), validation avant restauration de session, masse depuis les wagons, touches de ville.
 
 ## Correction active : wagons sur les rails (captures propriétaire, 26 septembre)
 

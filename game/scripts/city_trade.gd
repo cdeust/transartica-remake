@@ -18,7 +18,7 @@ const TRADING_CITIES := 22
 const GOODS_KINDS := 16
 const LIST_SLOTS := 16 # Lw[0x44], 5x4 grid
 const SPY_SLOTS := 20 # main[0x5d84][k][0]
-const MONEY_CAP := 31000 # glieu 0x565
+const MONEY_CAP := 31000 # glieu 0x565, after a sale
 const TENDER_TYPE := 21
 const SCRAP_STATE := 3
 const COAL_PER_TENDER := 5000 # glieu 0x697..0x6d2
@@ -196,16 +196,17 @@ func increment_refusal(o: Dictionary, quantity: int, wagons, engine) -> int:
 	return 0
 
 
-# glieu 0x549..0x57c then 0x9ec (buy) or 0xbd0 (sell).
+# glieu 0x549..0x583 then 0x9ec (buy) or 0xbd0 (sell).
 func commit(o: Dictionary, quantity: int, wagons, engine) -> void:
 	if quantity <= 0:
 		return
 	if o.mode == BUY:
 		engine.lignite -= total(o, quantity)
 	else:
+		# glieu 0x55f..0x57c: only the credit path is clamped (the debit jumps to 0x583).
 		engine.lignite += total(o, quantity)
-	if engine.lignite < 0 or engine.lignite > MONEY_CAP:
-		engine.lignite = MONEY_CAP
+		if engine.lignite < 0 or engine.lignite > MONEY_CAP:
+			engine.lignite = MONEY_CAP
 	if o.mode == BUY:
 		_load(o, quantity, wagons)
 	else:

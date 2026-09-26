@@ -273,7 +273,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if get_viewport().gui_get_focus_owner() is LineEdit:
 		return
 	if _city_panel.visible:
-		if _city_panel.handle_key(event.physical_keycode):
+		# Layout keycode: the - and + keys differ between QWERTY and AZERTY.
+		if _city_panel.handle_key(event.keycode):
 			get_viewport().set_input_as_handled()
 		return
 	match event.physical_keycode:

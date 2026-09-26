@@ -3,6 +3,7 @@ extends SceneTree
 const CityTrade = preload("res://scripts/city_trade.gd")
 const TrainWagons = preload("res://scripts/train_wagons.gd")
 const EngineState = preload("res://scripts/engine_state.gd")
+const WorldData = preload("res://scripts/world_data.gd")
 
 const KUWAIT := 24
 const RAILS := 1
@@ -23,6 +24,7 @@ func _run() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7
 	trade.reset(rng)
+	_test_city_alignment(trade, failures)
 	_test_mass(failures)
 	_test_stock_init(trade, failures)
 	_test_goods_purchase(trade, failures)
@@ -111,6 +113,10 @@ func _test_goods_sale(trade, failures: Array[String]) -> void:
 	engine.lignite = 30999
 	trade.commit(rails, 5, wagons, engine)
 	_check(engine.lignite == 31000, "money is capped at 31000 (glieu 0x565)", failures)
+	var buy_rails: Dictionary = trade.offer(KUWAIT, CityTrade.COMMERCIAL, CityTrade.BUY, RAILS)
+	engine.lignite = 31500
+	trade.commit(buy_rails, 1, wagons, engine)
+	_check(engine.lignite == 31496, "a purchase is not clamped (glieu 0x555 jumps to 0x583)", failures)
 
 
 func _test_other_markets(trade, failures: Array[String]) -> void:
@@ -140,3 +146,19 @@ func _test_persistence(trade, failures: Array[String]) -> void:
 	var encoded: Variant = JSON.parse_string(JSON.stringify(wagons.snapshot()))
 	_check(copy.restore(encoded) and copy.snapshot() == wagons.snapshot(), "wagon table round-trips through JSON", failures)
 	_check(not copy.restore([[26, 0, 0, 0]]), "unknown wagon type is refused", failures)
+
+
+# VILLE.FIC record i must be glieu's L0x0c = i, and its kind must select a populated price table.
+func _test_city_alignment(trade, failures: Array[String]) -> void:
+	var world = WorldData.new()
+	if not world.load_from_project(ProjectSettings.globalize_path("res://").trim_suffix("/")):
+		failures.append("private city table unavailable")
+		return
+	var tables := {CityTrade.COMMERCIAL: "goods", CityTrade.MAMMOTH_FAIR: "mammoths", CityTrade.SLAVE_MARKET: "slaves", CityTrade.GARRISON: "soldiers"}
+	var aligned := true
+	for index in world.cities.size():
+		var city: Dictionary = world.cities[index]
+		aligned = aligned and String(city.name) == String(trade.data.city_names[index])
+		if tables.has(int(city.kind)):
+			aligned = aligned and trade.data[tables[int(city.kind)]].has(str(index))
+	_check(world.cities.size() == 46 and aligned, "46 cities share glieu indices and each trading kind has its prices", failures)

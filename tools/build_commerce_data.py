@@ -20,7 +20,8 @@ def _offer(record):
 
 
 def build():
-    prices = json.loads((SOURCE / 'glieu-commerce.json').read_text())['data']
+    source = json.loads((SOURCE / 'glieu-commerce.json').read_text())
+    prices = source['data']
     stock = json.loads((SOURCE / 'stock-init.json').read_text())['stock']
     goods_names = list(prices['goods'])
     assert len(goods_names) == 16 and len(stock) == 22
@@ -35,6 +36,7 @@ def build():
         goods[str(city)] = row
     return {
         'source': 'glieu.alis 0xcd1/0xd23/0xd5f/0xdd2 and TABLE 0x75d..0xf0a; see tasks/evidence/city-scripts.md',
+        'city_names': [source['city_names'][str(i)] for i in range(46)],
         'goods_names': goods_names,
         'goods': goods,
         'mammoths': {k: _offer(v) for k, v in prices['mammoths'].items()},
