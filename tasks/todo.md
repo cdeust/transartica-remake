@@ -332,3 +332,10 @@ aucune suppression dans les sessions Claude actives. Aucun processus Godot resta
 - [x] Remove recorder, intermediate captures and empty worktree parents; verify native test processes exited.
 
 Evidence: tasks/validation/codex-hook-native-20260926.json. PR remains draft, not for merge. Existing Claude worktree and concurrent game edits were preserved. No CI checks configured on test PR.
+
+## Scripts de ville décodés, 26 septembre 2026 (Claude)
+
+- [x] glieu.co contient tous les menus de ville ; ville/usine/mamesc sont des décors ; COMMERCE.FIC n'est lu par aucun script. Preuves : tasks/evidence/city-scripts.md.
+- [ ] Porter achat/vente et leurs refus (place, stock, argent, stockage tender, plafond 31000).
+- [ ] Porter soldats/espions, mammouths, esclaves, atelier des villes industrielles.
+- [ ] Inconnus : écrivain de main+0x1c, message textek 95, déclencheur du message 65.
