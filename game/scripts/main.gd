@@ -68,6 +68,9 @@ func _ready() -> void:
 	_build_interface()
 	session.cycle_completed.connect(_advance_journey)
 	world_view.journey = journey
+	# Rendered composition is derived from the wagon-rules table, never an
+	# independent list (tasks/todo.md, "Decision : train en vue de dessus").
+	world_view.consist.derive_from_wagons(wagons)
 	_restore_after_layout()
 
 
@@ -221,9 +224,13 @@ func _open_city(index: int) -> void:
 	room_controls.announce("Arrived at %s" % String(city.name))
 
 
-# TIME 0x2a77/0x2b4a weigh the cargo: trading changes the train mass.
+# TIME 0x2a77/0x2b4a weigh the cargo: trading changes the train mass. Buying
+# or losing a wagon also changes the drawn composition; both are derived from
+# the same wagons table, never set independently.
 func _on_cargo_changed() -> void:
 	engine.train_mass = wagons.mass()
+	world_view.consist.derive_from_wagons(wagons)
+	world_view.update_train()
 	_update_status()
 
 
@@ -301,6 +308,7 @@ func _restart_engine() -> void:
 	wagons.reset()
 	trade.reset(_trade_rng)
 	engine.train_mass = wagons.mass()
+	world_view.consist.derive_from_wagons(wagons)
 	_city_panel.hide()
 	world_view.selected_city = -1
 	_map_opened = false
@@ -332,7 +340,10 @@ func save_view() -> bool:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		return false
-	var state := {"version": 7, "wagons": wagons.snapshot(), "trade": trade.snapshot(), "consist": world_view.consist.snapshot(), "travel_camera": {"x": world_view.camera_world.x, "y": world_view.camera_world.y, "follow": world_view.following_train}, "journey": journey.snapshot(), "network": network.snapshot(), "session": session.snapshot(), "discovery": world_view.discovery.snapshot(), "zoom": world_view.zoom, "offset_x": world_view.offset.x, "offset_y": world_view.offset.y, "selected_city": world_view.selected_city, "elapsed_seconds": clock.elapsed_seconds}
+	# No "consist" key: the drawn composition is derived from "wagons" at
+	# restore time (train_consist.gd::derive_from_wagons), never saved as an
+	# independent list that could drift from the wagons table.
+	var state := {"version": 7, "wagons": wagons.snapshot(), "trade": trade.snapshot(), "travel_camera": {"x": world_view.camera_world.x, "y": world_view.camera_world.y, "follow": world_view.following_train}, "journey": journey.snapshot(), "network": network.snapshot(), "session": session.snapshot(), "discovery": world_view.discovery.snapshot(), "zoom": world_view.zoom, "offset_x": world_view.offset.x, "offset_y": world_view.offset.y, "selected_city": world_view.selected_city, "elapsed_seconds": clock.elapsed_seconds}
 	file.store_string(JSON.stringify(state))
 	return true
 
@@ -363,17 +374,36 @@ func _restore_view() -> void:
 	if parsed.has("journey") and not restored_journey.restore(parsed.journey):
 		room_controls.announce("Journey save is invalid; current session kept")
 		return
-	var restored_consist = preload("res://scripts/train_consist.gd").new()
-	if parsed.has("consist") and not restored_consist.restore(parsed.consist):
-		room_controls.announce("Train composition is invalid; current session kept")
+	# "consist" (v7 saves before this composition-derivation change) is
+	# accepted and ignored: composition is derived from "wagons" below, never
+	# read back as its own list, so an old save cannot diverge from its wagons.
+	var restored_wagons = TrainWagonsScript.new()
+	if parsed.has("wagons") and not restored_wagons.restore(parsed.wagons):
+		room_controls.announce("Cargo save is invalid; current session kept")
 		return
-	if not restored_journey.sample_behind(restored_consist.length_world()).ok and not restored_journey.history_starts_in_station():
+	var restored_consist = preload("res://scripts/train_consist.gd").new()
+	restored_consist.derive_from_wagons(restored_wagons)
+	# Root-cause note (found while recalibrating LENGTHS for the overhead art,
+	# tasks/todo.md "Decision : train en vue de dessus"): this used to check
+	# against the WHOLE consist's length_world(). The overhead LENGTHS are
+	# less differentiated than the old oblique ones (all near 1.0 cell
+	# instead of 0.75-1.0), so their sum grew past the ~5.0-cell decoded
+	# track history that genuinely exists behind START_POSITION before the
+	# train has ever moved (train_path.gd::seed stops where the decoded rails
+	# stop or turn ambiguous -- not a guessed bound). Rejecting the whole
+	# restore on that account was stricter than what the renderer actually
+	# needs: poses() already renders a partial consist gracefully when later
+	# wagons lack history ("insufficient history omits poses without
+	# off-track extrapolation", game/tests/test_travel_world.gd), and a
+	# newly-departed train is explicitly allowed to be missing wagon history
+	# (history_starts_in_station(), train_journey.gd). The minimum a restored
+	# journey must place is the locomotive itself.
+	if not restored_journey.sample_behind(restored_consist.LENGTHS.locomotive).ok and not restored_journey.history_starts_in_station():
 		room_controls.announce("This save cannot recover wagon positions. Current journey kept; saved file unchanged.")
 		return
-	var restored_wagons = TrainWagonsScript.new()
 	var restored_trade = CityTradeScript.new()
-	if (parsed.has("wagons") and not restored_wagons.restore(parsed.wagons)) or (parsed.has("trade") and not restored_trade.restore(parsed.trade)):
-		room_controls.announce("Cargo or city stock save is invalid; current session kept")
+	if parsed.has("trade") and not restored_trade.restore(parsed.trade):
+		room_controls.announce("City stock save is invalid; current session kept")
 		return
 	if parsed.has("session") and not session.restore(parsed.session):
 		room_controls.announce("Save state is invalid; current session kept")
@@ -390,7 +420,7 @@ func _restore_view() -> void:
 	else:
 		trade.reset(_trade_rng)
 	engine.train_mass = wagons.mass()
-	world_view.consist = restored_consist
+	world_view.consist.derive_from_wagons(wagons)
 	world_view._visual_initialized = false
 	_restore_chart(parsed)
 	world_view.visit_cell(journey.position)

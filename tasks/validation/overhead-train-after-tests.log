@@ -1,0 +1,55 @@
+=== run_tests.gd ===
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: original locomotive rule vectors, world data, city selection, pan/zoom, and render-independent clock
+exit=0
+=== test_camera_scale.gd ===
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: fixed zoom, oversized consist, stable camera, manual zoom
+exit=0
+=== test_city_trade.gd ===
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: glieu trade rules, wagon loading order, sale coal cap, money clamp, TIME wagon mass, persistence, workshop
+exit=0
+=== test_engine_instruments.gd ===
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: live instrument readouts, regulator, full-screen routing, and running session
+exit=0
+=== test_map_discovery.gd ===
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: persistent map discovery, bounded visits, camera invariance, and hidden-city filtering
+exit=0
+=== test_pixel_field.gd ===
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: pixel field determinism, gas rise, snow fall, conservation, fading and native render
+exit=0
+=== test_playable_trip.gd ===
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: playable map travel, coal use, fog, brake, pause and saved journey
+exit=0
+=== test_train_journey.gd ===
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: decoded rail network, curves, switches, double-speed tiles, boundaries, stations, persistence
+exit=0
+=== test_travel_world.gd ===
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: fixed camera, rigid overhead rotation at any heading, constant-chord bent convoy, wagon-table composition, switch clicks, fog and arc interpolation
+exit=0
+=== test_world_interaction.gd ===
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: map interaction, zoom bounds, evidenced rail glyph ports, and source-data preservation
+exit=0
+=== tests_engine_session.gd ===
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: engine session frame independence, pause, residual time, restore, reset, and event stop
+exit=0

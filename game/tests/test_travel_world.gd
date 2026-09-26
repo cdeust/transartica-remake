@@ -7,9 +7,9 @@ const EngineStateScript = preload("res://scripts/engine_state.gd")
 const EngineSessionScript = preload("res://scripts/engine_session.gd")
 const RailNetworkScript = preload("res://scripts/rail_network.gd")
 const ConsistScript = preload("res://scripts/train_consist.gd")
-# Independent fixture: east atlas anchor spans (texels) of the six vehicles.
-const EAST_SPANS := [486.2, 364.4, 374.2, 379.2, 426.2, 387.6]
-const CONSIST_HALF := 4.98 * 0.5 # 1 + 0.75 + 0.77 + 0.78 + 0.88 + 0.8
+const TrainWagonsScript = preload("res://scripts/train_wagons.gd")
+# 1.0 + 0.99 + 1.0 + 0.95 + 0.96 + 0.96, current Consist.LENGTHS (overhead art).
+const CONSIST_HALF := 5.86 * 0.5
 
 
 func _initialize() -> void:
@@ -24,7 +24,7 @@ func _run() -> void:
 	if failures.is_empty():
 		await _test_view(data, failures)
 	if failures.is_empty():
-		print("PASS: fixed camera, eight directional vehicle frames, rail-contact registration, bent convoy, evolving consist, switch clicks, fog and arc interpolation")
+		print("PASS: fixed camera, rigid overhead rotation at any heading, constant-chord bent convoy, wagon-table composition, switch clicks, fog and arc interpolation")
 		quit(0)
 	else:
 		for failure in failures:
@@ -143,73 +143,79 @@ func _check(condition: bool, label: String, failures: Array[String]) -> void:
 
 func _test_vehicle_frames(view, failures: Array[String]) -> void:
 	var renderer = view.train_renderer
-	for heading in [1, 2, 3, 4, 6, 7, 8, 9]:
-		for kind in ["locomotive", "tender", "sleeper", "boxcar", "observation", "armored"]:
-			var frame: Dictionary = renderer.frame_for(kind, heading)
-			_check(not frame.is_empty(), "%s has directional frame %d" % [kind,heading], failures)
-			if frame.is_empty():
-				continue
-			_check(frame.texture != null and frame.texture.get_width() > 0 and frame.texture.get_height() > 0, "directional atlas region is loaded", failures)
-			_check(frame.rotation == 0.0 and not frame.reversed, "each direction uses its own perspective without rotation or tail-leading", failures)
-			var target_rear := Vector2(340, 210)
-			var delta: Vector2 = RailNetworkScript.DELTAS[heading]
-			# Independent fixture of the authored world-to-screen ground basis.
-			var target_front := target_rear + Vector2(180 * (delta.x - delta.y),100 * (delta.x + delta.y))
-			var registration: Transform2D = renderer.registration(frame,target_front,target_rear,0.5)
-			var anchor_mid: Vector2 = (frame.front + frame.rear) * 0.5
-			_check((registration * anchor_mid).distance_to((target_front + target_rear) * 0.5) < 0.001, "anchor midpoint registers on track chord midpoint", failures)
-			_check(is_equal_approx(absf(registration.x.x), 0.5) and is_equal_approx(registration.y.y, 0.5) and registration.x.y == 0.0 and registration.y.x == 0.0, "every vehicle and heading keeps the one unsheared scale", failures)
-			_check(registration.x.x < 0.0 if frame.mirrored else registration.x.x > 0.0, "mirrored headings flip horizontally only", failures)
-	# East cell (180,100) is 205.9 px; loco span 486.2 texels = 1 cell.
-	_check(absf(renderer.texels_per_cell - 486.2) < 0.1, "texel scale derives from east locomotive anchors", failures)
-	var cell_pixels := Vector2(180, 100).length()
-	var position := Vector2(340, 210)
-	var index := 0
-	for kind in ["locomotive", "tender", "sleeper", "boxcar", "observation", "armored"]:
-		var east: Dictionary = renderer.frame_for(kind, 6)
-		var span: float = EAST_SPANS[index] / renderer.texels_per_cell * cell_pixels
-		var front := position + Vector2(180, 100).normalized() * span
-		var fitted: Transform2D = renderer.registration(east, front, position, cell_pixels / renderer.texels_per_cell)
-		_check((fitted * east.front).distance_to(front) < 1.5 and (fitted * east.rear).distance_to(position) < 1.5, "%s east contacts meet its track span at one scale" % kind, failures)
-		index += 1
-	_check(renderer.frame_for("unknown",6).is_empty() and renderer.frame_for("locomotive",5).is_empty(), "unsupported vehicle and heading have no fabricated frame", failures)
+	var kinds := ["locomotive", "tender", "sleeper", "boxcar", "observation", "armored"]
+	# Overhead view (owner decision, 26 September): one rigid drawing per
+	# vehicle, rotated continuously -- not one atlas frame per discrete
+	# heading. Any rotation angle must keep the same unsheared scale, which is
+	# what makes the screen gabarit heading-independent by construction.
+	var angles := [0.0, PI / 6.0, PI / 3.0, PI / 2.0, 2.0 * PI / 3.0, PI, -PI / 4.0, 1.7]
+	for kind in kinds:
+		var frame: Dictionary = renderer.frame_for(kind)
+		_check(not frame.is_empty(), "%s has a single overhead frame" % kind, failures)
+		if frame.is_empty():
+			continue
+		_check(frame.texture != null and frame.texture.get_width() > 0 and frame.texture.get_height() > 0, "overhead atlas region is loaded", failures)
+		var own_length: float = frame.front.distance_to(frame.rear)
+		for angle in angles:
+			var registration: Transform2D = renderer.registration(frame, Vector2(340, 210), angle, 0.5)
+			_check(is_equal_approx(registration.x.length(), 0.5) and is_equal_approx(registration.y.length(), 0.5), "%s keeps one unsheared scale at any rotation" % kind, failures)
+			_check(is_zero_approx(registration.x.dot(registration.y)), "%s rotation never shears the drawing" % kind, failures)
+			var drawn_front: Vector2 = registration * frame.front
+			var drawn_rear: Vector2 = registration * frame.rear
+			_check(is_equal_approx(drawn_front.distance_to(drawn_rear), own_length * 0.5), "%s screen length is the same at every angle" % kind, failures)
+	# Locomotive front/rear anchors span 505 texels = 1 authored cell.
+	_check(absf(renderer.texels_per_cell - 505.0) < 0.1, "texel scale derives from the locomotive's own front/rear anchors", failures)
+	_check(renderer.frame_for("unknown").is_empty(), "unsupported vehicle has no fabricated frame", failures)
 
 
 func _test_vehicle_routes(view, failures: Array[String]) -> void:
 	var renderer = view.train_renderer
-	_check(renderer.poses(view.journey,view.consist,0.0).size() == 6, "original map supplies all six initial vehicle poses", failures)
-	var journey = _bend_journey()
+	_check(renderer.poses(view,view.journey,view.consist,0.0).size() == 6, "original map supplies all six initial vehicle poses", failures)
+	var journey = _wide_bend_journey()
 	var consist = ConsistScript.new()
-	var poses: Array[Dictionary] = renderer.poses(journey,consist,0.0)
+	var poses: Array[Dictionary] = renderer.poses(view,journey,consist,0.0)
 	_check(poses.size() == 6, "synthetic bend supplies whole initial train", failures)
-	# Fixture lengths are the accepted consist's authored visual calibration.
-	var lengths := [1.0,0.75,0.77,0.78,0.88,0.8]
-	var offset := 0.0
+	# Owner constraint (tasks/lessons.md, "meme longueur a l'ecran"): every
+	# vehicle's PROJECTED screen chord is the same at any heading, including
+	# across this bend from a diagonal onto a cardinal segment -- the exact
+	# case the anisotropic travel projection could otherwise distort.
 	for index in poses.size():
 		var pose: Dictionary = poses[index]
-		_check(pose.front.distance_to(_bend_point(offset)) < 0.00001, "front wheel contact matches independent bend geometry", failures)
-		offset += lengths[index]
-		_check(pose.rear.distance_to(_bend_point(offset)) < 0.00001, "rear wheel contact matches independent bend geometry", failures)
+		var kind: String = pose.kind
+		var chord: float = view._project(pose.front).distance_to(view._project(pose.rear))
+		var target: float = ConsistScript.LENGTHS[kind] * view.WORLD_EAST.length()
+		_check(absf(chord - target) < 0.05, "%s keeps its screen gabarit through the bend" % kind, failures)
 		if index > 0:
-			_check(pose.front.distance_to(poses[index-1].rear) < 0.00001, "neighboring vehicle contacts join on route", failures)
+			_check(pose.front.distance_to(poses[index - 1].rear) < 0.00001, "neighboring vehicle contacts join on route", failures)
 	if poses.size() == 6:
 		_check(poses[0].heading == 3 and poses[5].heading == 6, "locomotive is diagonal while tail remains east on bend", failures)
-	var lagged: Array[Dictionary] = renderer.poses(journey,consist,0.25)
-	_check(lagged.size() == 6 and lagged[0].front.distance_to(_bend_point(0.25)) < 0.00001, "presentation lag follows route arc", failures)
+	var lagged: Array[Dictionary] = renderer.poses(view,journey,consist,0.25)
+	_check(lagged.size() == 6 and lagged[0].front.distance_to(_wide_bend_point(0.25)) < 0.00001, "presentation lag follows route arc", failures)
 	consist.vehicles.append("boxcar")
-	var extended: Array[Dictionary] = renderer.poses(journey,consist,0.0)
+	var extended: Array[Dictionary] = renderer.poses(view,journey,consist,0.0)
 	_check(extended.size() == 7 and extended[-1].kind == "boxcar", "buying a wagon adds its own rendered vehicle", failures)
 	consist.vehicles[1] = "armored"
 	consist.vehicles[5] = "tender"
-	var reordered: Array[Dictionary] = renderer.poses(journey,consist,0.0)
+	var reordered: Array[Dictionary] = renderer.poses(view,journey,consist,0.0)
 	_check(reordered.size() == 7 and reordered[1].kind == "armored" and reordered[5].kind == "tender", "reordering changes rendered vehicle order", failures)
-	var restored = ConsistScript.new()
-	_check(restored.restore(JSON.parse_string(JSON.stringify(consist.snapshot()))) and restored.snapshot() == consist.snapshot(), "modified consist round trips through JSON save", failures)
-	_check(renderer.poses(journey,restored,0.0) == reordered, "restored consist produces the same route placements", failures)
-	var saved: Array = restored.snapshot()
-	for invalid in [[], ["boxcar"], ["locomotive","unknown"], ["locomotive",1], {}]:
-		_check(not restored.restore(invalid) and restored.snapshot() == saved, "malformed consist rejected atomically", failures)
-	_check(renderer.poses(journey,consist,100.0).is_empty(), "insufficient history omits poses without off-track extrapolation", failures)
+	_check(renderer.poses(view,journey,consist,300.0).is_empty(), "insufficient history omits poses without off-track extrapolation", failures)
+	_test_wagon_table_composition(consist, failures)
+
+
+# Owner requirement (tasks/todo.md, "Decision : train en vue de dessus"):
+# rendered composition is a pure function of the wagon-rules table, not an
+# independent list. The six initial types map 1:1 to the six drawings; any
+# other purchased type is intentionally left undrawn (tasks/todo.md,
+# "Dessiner les 19 autres types") rather than substituted with an invented
+# sprite.
+func _test_wagon_table_composition(consist, failures: Array[String]) -> void:
+	var wagons = TrainWagonsScript.new()
+	consist.derive_from_wagons(wagons)
+	_check(consist.vehicles == ["locomotive", "tender", "sleeper", "boxcar", "observation", "armored"], "initial wagon table draws the six accepted vehicles in order", failures)
+	wagons.wagons.append([21, 0, 0, 0]) # TENDER: mapped type, must appear.
+	wagons.wagons.append([9, 0, 0, 0]) # HARPOON: unmapped, must not appear.
+	consist.derive_from_wagons(wagons)
+	_check(consist.vehicles == ["locomotive", "tender", "sleeper", "boxcar", "observation", "armored", "tender"], "buying a mapped wagon type adds its drawn vehicle; an undrawn type adds nothing", failures)
 
 
 func _bend_journey():
@@ -229,14 +235,41 @@ func _bend_journey():
 	return journey
 
 
-func _bend_point(distance: float) -> Vector2:
-	# Analytic two-segment fixture: (west,62) -> (12,62) -> head. Phase 2, tick 0
-	# puts the head 46/69 - 0.5 = 1/6 cell past the (13,63) center.
-	var head := Vector2(13,63) + Vector2.ONE / 6.0
+# Same two-segment shape as _bend_journey (diagonal then straight, corner at
+# the origin used below), with the straight run extended to the map's west
+# edge. The overhead LENGTHS sum to more world distance than the oblique
+# LENGTHS did (near-uniform vehicle spans, see train_consist.gd), and the
+# chord-matching bisection in train_renderer.gd can consume up to ~2.2x a
+# vehicle's nominal length on an unfavourable heading (its documented
+# CHORD_BRACKET_HIGH): the original 10-cell run left too little route history
+# for the full six-vehicle consist. This fixture exists only for the
+# vehicle-route/chord tests; _test_bend_interpolation keeps the original
+# corner position, which it relies on directly.
+func _wide_bend_journey():
+	var bytes := PackedByteArray()
+	bytes.resize(RailNetworkScript.WIDTH * RailNetworkScript.HEIGHT)
+	for x in range(0,24):
+		bytes[x * RailNetworkScript.HEIGHT + 62] = 2
+	bytes[24 * RailNetworkScript.HEIGHT + 62] = 6
+	bytes[25 * RailNetworkScript.HEIGHT + 63] = 5
+	var network = RailNetworkScript.new()
+	network.load_bytes(bytes)
+	var journey = JourneyScript.new()
+	journey.network = network
+	journey.position = Vector2i(25,63)
+	journey.heading = 3
+	journey.phase = 2
+	return journey
+
+
+func _wide_bend_point(distance: float) -> Vector2:
+	# Same shape as _bend_point, corner moved to (24,62)/(25,63); see
+	# _wide_bend_journey for why the straight run needed widening.
+	var head := Vector2(25,63) + Vector2.ONE / 6.0
 	var diagonal_length := sqrt(2.0) * (1.0 + 1.0 / 6.0)
 	if distance <= diagonal_length:
 		return head - Vector2.ONE * distance / sqrt(2.0)
-	return Vector2(12.0 - (distance - diagonal_length),62.0)
+	return Vector2(24.0 - (distance - diagonal_length),62.0)
 
 
 func _test_bend_interpolation(view, failures: Array[String]) -> void:
@@ -276,7 +309,7 @@ func _test_occupied_track(view, failures: Array[String]) -> void:
 	_check(view.camera_world.distance_to(_initial_route_point(CONSIST_HALF) + Vector2(0.5,0.5)) < 0.00001, "initial camera centers full consist rather than locomotive nose", failures)
 	view.consist.vehicles.append("boxcar")
 	view.center_on_train()
-	_check(view.camera_world.distance_to(_initial_route_point(CONSIST_HALF + 0.39) + Vector2(0.5,0.5)) < 0.00001, "camera center adapts to added wagon length", failures)
+	_check(view.camera_world.distance_to(_initial_route_point(CONSIST_HALF + ConsistScript.LENGTHS.boxcar * 0.5) + Vector2(0.5,0.5)) < 0.00001, "camera center adapts to added wagon length", failures)
 	view.consist.vehicles.pop_back()
 	view.center_on_train()
 

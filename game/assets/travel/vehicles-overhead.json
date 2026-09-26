@@ -1,0 +1,110 @@
+{
+ "version": 1,
+ "source": "output/imagegen/vehicles-overhead-prototype-v2.png,vehicles-overhead-prototype-v2.json (owner-accepted overhead prototype, 2026-09-26)",
+ "note": "Single rigid top-down drawing per vehicle; rotated continuously to the projected travel direction, never swapped or mirrored per heading. front=bottom-centre, rear=top-centre of each region (see module docstring).",
+ "file": "vehicles-overhead.png",
+ "vehicles": {
+  "locomotive": {
+   "region": [
+    273,
+    6,
+    151,
+    506
+   ],
+   "front": [
+    75.0,
+    505.0
+   ],
+   "rear": [
+    75.0,
+    0.0
+   ],
+   "alpha_span": 506
+  },
+  "tender": {
+   "region": [
+    688,
+    10,
+    161,
+    502
+   ],
+   "front": [
+    80.0,
+    501.0
+   ],
+   "rear": [
+    80.0,
+    0.0
+   ],
+   "alpha_span": 502
+  },
+  "sleeper": {
+   "region": [
+    1103,
+    6,
+    160,
+    506
+   ],
+   "front": [
+    79.5,
+    505.0
+   ],
+   "rear": [
+    79.5,
+    0.0
+   ],
+   "alpha_span": 506
+  },
+  "boxcar": {
+   "region": [
+    270,
+    512,
+    157,
+    482
+   ],
+   "front": [
+    78.0,
+    481.0
+   ],
+   "rear": [
+    78.0,
+    0.0
+   ],
+   "alpha_span": 482
+  },
+  "observation": {
+   "region": [
+    684,
+    512,
+    169,
+    485
+   ],
+   "front": [
+    84.0,
+    484.0
+   ],
+   "rear": [
+    84.0,
+    0.0
+   ],
+   "alpha_span": 485
+  },
+  "armored": {
+   "region": [
+    1101,
+    512,
+    165,
+    485
+   ],
+   "front": [
+    82.0,
+    484.0
+   ],
+   "rear": [
+    82.0,
+    0.0
+   ],
+   "alpha_span": 485
+  }
+ }
+}

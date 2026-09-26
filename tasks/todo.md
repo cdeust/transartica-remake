@@ -4,9 +4,46 @@ Réponse « oui » du propriétaire à : vue de dessus, wagons à l'échelle, re
 la perspective oblique pour les véhicules. Base : prototype Codex `output/imagegen/vehicles-overhead-prototype-v2.*`,
 bancs `tasks/validation/review_overhead_{prototype,convoy}.gd`.
 
-- [ ] Intégrer la planche de dessus au voyage (rotation rigide, gabarit identique dans les 8 caps).
-- [ ] Composition dessinée dérivée de la table des wagons (`train_wagons.gd`), un dessin par type ; 6 types initiaux d'abord.
-- [ ] Dessiner les 19 autres types (achat à l'atelier).
+- [x] Intégrer la planche de dessus au voyage (rotation rigide, gabarit identique dans les 8 caps). Une
+  seule image par véhicule (`game/assets/travel/vehicles-overhead.{png,json}`, produite par
+  `tools/build_overhead_manifest.py` depuis le prototype accepté), tournée en continu vers la direction
+  projetée du trajet réellement parcouru (`game/scripts/train_renderer.gd`) : la rotation rigide d'un
+  raster ne peut ni l'étirer ni le cisailler, à n'importe quel angle, pas seulement aux 8 caps. La
+  projection du voyage n'est pas isotrope (~206px/case est-ouest, ~141px/case SE/NO, ~255px/case NE/SO,
+  vérifié depuis WORLD_EAST/WORLD_SOUTH) : `_bisected_rear` choisit par bissection (24 pas, borne fixe,
+  pas une boucle de tolérance) la distance-monde de chaque véhicule pour que sa corde PROJETÉE reste
+  constante, tout en gardant ses points de contact avant/arrière comme échantillons exacts du trajet
+  (`journey.sample_behind`). Testé dans `game/tests/test_travel_world.gd` (rotation rigide à angle
+  arbitraire, corde constante à travers un virage réel synthétique) ; un test de mutation (retour à un
+  décalage fixe non projeté) fait échouer ces deux vérifications, confirmant qu'elles ne sont pas vaines.
+  Limite connue : les longueurs mesurées dans l'planche acceptée sont presque uniformes (0.95-1.0) alors
+  que le prompt demandait des longueurs différenciées (460/345/354/359/405/368px) — l'image livrée ne
+  respecte pas cette partie de sa propre consigne ; voir le docstring de
+  `tools/build_overhead_manifest.py`. Sens physique du canon/de la verrière d'observation (les deux
+  pointent vers l'avant du convoi dans ce dessin) non vérifié contre une source — inchangé depuis
+  `tasks/lessons.md`. Captures natives : `tasks/validation/overhead-train-{straight,curve,after-purchase}.png`.
+- [x] Composition dessinée dérivée de la table des wagons (`train_wagons.gd`), un dessin par type ; 6 types initiaux d'abord.
+  `train_consist.gd::derive_from_wagons` + `TYPE_TO_KIND` (positionnel, choix artistique du remake, documenté
+  en commentaire — l'original a un sprite par type). Appelé depuis `main.gd` à l'initialisation, après
+  `wagons.reset()` et dans `_on_cargo_changed()` (achat à l'atelier via `city_screen.gd::cargo_changed`) :
+  plus de liste `consist` sauvegardée indépendamment (sauvegardes v7 : clé `"consist"` acceptée et ignorée,
+  la composition est toujours redérivée de `wagons` à la restauration ; voir `main.gd::_restore_view`
+  et le commentaire au-dessus de l'écriture de `state` dans `save_view`).
+- [ ] Dessiner les 19 autres types (achat à l'atelier). `derive_from_wagons` les laisse volontairement
+  non dessinés (pas de repli générique inventé) : un achat d'un type non mappé change `wagons.wagons`
+  (masse, commerce) sans ajouter de véhicule visible. Capture `overhead-train-after-purchase.png`
+  montre en revanche un type mappé (TENDER) ajouté visiblement après achat simulé + avance réelle du
+  trajet (le nouveau wagon n'a d'historique de trajet qu'une fois le train avancé de sa propre longueur).
+
+Note de propriété (Codex) : `main.gd` touché a minima aux points ci-dessus, plus une correction de la
+garde de restauration de sauvegarde qui vérifiait la longueur de TOUT le convoi contre l'historique de
+trajet décodé (~5.0 cases derrière START_POSITION, `train_path.gd::seed`) ; les nouvelles longueurs
+LENGTHS (quasi uniformes) dépassaient cette marge dès le départ d'une partie neuve alors que le
+renderer tolère déjà un historique partiel (`poses()` s'arrête proprement sans extrapolation). La garde
+vérifie maintenant seulement la locomotive, seuil minimal cohérent avec ce que `poses()` accepte déjà.
+`travel_world.gd` touché pour passer `self` à `train_renderer.poses()`/`screen_bounds()` (nécessaire pour
+la bissection projetée) et retirer `train_pose(heading)`, mort avant même ce changement (aucun appelant
+dans `game/`), dont la signature aurait sinon cassé sur l'API à un seul cadre par véhicule.
 
 ## Commerce en ville (26 septembre, Claude)
 
