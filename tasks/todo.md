@@ -3,6 +3,8 @@
 Catalogue graphique Codex livré : 25 dessins détaillés, dont les 19 types manquants; [plan, sources et préparation du combat](wagon-art-catalogue.md).
 Livrables dans `output/imagegen/wagon-catalogue-20260926/`; intégration du voyage conservée par Opus.
 
+Redesign demandé après comparaison des largeurs : les 19 remplacements et le catalogue complet sont dans `output/imagegen/wagon-redesign-20260926/`. [Mesures et remise à Opus](wagon-redesign.md). Les six véhicules initiaux sont conservés.
+
 Réponse « oui » du propriétaire à : vue de dessus, wagons à l'échelle, redessinés ; abandon de la 3D et de
 la perspective oblique pour les véhicules. Base : prototype Codex `output/imagegen/vehicles-overhead-prototype-v2.*`,
 bancs `tasks/validation/review_overhead_{prototype,convoy}.gd`.
