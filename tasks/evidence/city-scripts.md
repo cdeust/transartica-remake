@@ -158,3 +158,38 @@ conservé tel quel.
 - texte2k : un index négatif remet `main+0x62c0` à 0 (`0x250c–0x2518`), un positif le met à 1 (`0x7d`) ;
   glieu utilise −50/−52/−54 pour les refus : sens exact de cette différence non prouvé.
 - Rien de cette chaîne n'est observé en exécution (la trace ne contient pas glieu).
+
+## 5. Masse des wagons (TIME `0x2a77`/`0x2b4a`, lu le 26 septembre)
+
+`0x2a77` : `cswitch2 type−1` → poids de base des types 1–25 :
+1:1000 2:50 3:40 4:110 5:65 6:85 7:60 8:105 9:20 10:100 11:100 12:40 13:120 14:40 15:45 16:55 17:45
+18:55 19:40 20:90 21:50 22:50 23:80 24:100 25:200.
+`0x2b4a` : `cswitch2 type−5` → charge `[3]` : types 5, 6, 23, 24 `+[3]/10` (`0x2b84`) ; 7 `+[3]×10`
+(`0x2b98`) ; 14, 15, 17, 18, 19 `+[3]` (`0x2bac`) ; 21 `+[3]×10` (`0x2bbd`) ; autres `+0`.
+Train TABLE : 1266 (inchangé). Le commerce modifie donc la masse et la consommation.
+
+## 6. Ordre de chargement (`0x9ec`/`0xbd0`)
+
+Achat : wagons parcourus dans l'ordre ; un wagon compatible est rempli jusqu'à sa capacité avant de
+passer au suivant (`0xa91` boucle tant que `[3] < capacité`) ; type a testé avant type b. Vente : même
+parcours, chaque wagon vidé avant le suivant. Stocks `main+0x6160` : octets signés (lecture `> −1`).
+`rnd(n)` = mot haut de `n × graine` (`opernames.c` `ornd`), donc 0…n−1 (hypothèse : `varD7` lu sur 16 bits).
+Formules de stock exportées : `reference-private/city-scripts/stock-init.json` (base, n).
+
+## Portage (26 septembre 2026, Claude)
+
+- `game/scripts/train_wagons.gd` : table `main[0x2e1a]` (TABLE), masse §5 ; `engine.train_mass` en dérive.
+- `game/scripts/city_trade.gd` : offres §2.1, liste §2.2, capacité/refus/validation §2.3, ordre §6,
+  plafond 31000, fiches d'espion, stock des nomades à chaque visite. Données privées chargées à
+  l'exécution : `reference-private/commerce.json` (produit par `tools/build_commerce_data.py`,
+  copié par `build_preview.py`).
+- `game/scripts/city_screen.gd` : menu par type de ville, transaction (−, +, valider, sortir), départ
+  automatique des villes 5–7, départ forcé si enrôlement direct sans place.
+- Adaptations : libellés et refus rédigés par le remake (pas les textes texte2k) ; en ville 8–9 sans
+  fiche d'espion libre, l'enrôlement direct n'est lancé qu'à l'arrivée (l'original y revient après
+  chaque transaction) ; une marchandise doit être choisie avant « + ».
+- Non portés : atelier des villes 10–16 (achat de wagons : correspondance type → véhicule dessiné
+  inconnue), textes d'histoire des villes TOWN, gare-atelier, marque de visite (champ 2 négatif),
+  effets des mammouths/esclaves/soldats au-delà de leur masse.
+- Tests : `game/tests/test_city_trade.gd`, `test_playable_trip.gd::_test_city_trade_screen` ;
+  captures natives `tasks/validation/station-arrival-bhopal.png`, `city-trade-kuwait.png`.

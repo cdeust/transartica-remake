@@ -30,6 +30,7 @@ run_suite test_map_discovery.gd
 run_suite test_engine_instruments.gd
 
 run_suite test_train_journey.gd
+run_suite test_city_trade.gd
 run_suite test_playable_trip.gd
 
 run_suite test_travel_world.gd

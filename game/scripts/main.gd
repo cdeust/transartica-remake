@@ -9,11 +9,17 @@ const RoomArtScript = preload("res://scripts/engine_room_art.gd")
 const RoomControlsScript = preload("res://scripts/engine_room_controls.gd")
 const AtlasThemeScript = preload("res://scripts/atlas_theme.gd")
 const RailNetworkScript = preload("res://scripts/rail_network.gd")
+const CityScreenScript = preload("res://scripts/city_screen.gd")
+const CityTradeScript = preload("res://scripts/city_trade.gd")
+const TrainWagonsScript = preload("res://scripts/train_wagons.gd")
 # source: tasks/evidence/engine-room-integration.md; provisional real-time calibration.
 const SECONDS_PER_CYCLE := 1.0
 
 var journey = preload("res://scripts/train_journey.gd").new()
 var network = RailNetworkScript.new()
+var wagons = TrainWagonsScript.new()
+var trade = CityTradeScript.new()
+var _trade_rng := RandomNumberGenerator.new()
 var travel_controls
 var clock
 var engine
@@ -33,9 +39,7 @@ var _map_panel: VBoxContainer
 var _journal: RichTextLabel
 var _modal_title: Label
 var _map_opened := false
-var _city_panel: PanelContainer
-var _city_title: Label
-var _city_body: Label
+var _city_panel
 
 
 func _ready() -> void:
@@ -53,6 +57,13 @@ func _ready() -> void:
 		set_process(false)
 		return
 	network.set_city_anchors(world_data.city_anchors())
+	if not trade.load_from_project(root_path):
+		push_error("Local commerce table is unavailable (python3 tools/build_commerce_data.py).")
+		set_process(false)
+		return
+	_trade_rng.randomize()
+	trade.reset(_trade_rng)
+	engine.train_mass = wagons.mass()
 	journey.network = network
 	_build_interface()
 	session.cycle_completed.connect(_advance_journey)
@@ -184,49 +195,36 @@ func _build_journal(body: VBoxContainer) -> void:
 	_journal.hide()
 
 
-# Arrival scene for TIME message 76 (tasks/evidence/station-arrival.md). The
-# original loads glieu plus ville/usine/mamesc; their menus are not decoded yet.
+# Arrival scene for TIME message 76 (tasks/evidence/station-arrival.md): the
+# glieu menu and its transactions (tasks/evidence/city-scripts.md), in city_screen.gd.
 func _build_city_screen() -> void:
-	_city_panel = PanelContainer.new()
+	_city_panel = CityScreenScript.new()
+	_city_panel.trade = trade
+	_city_panel.wagons = wagons
+	_city_panel.engine = engine
 	_city_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	_city_panel.custom_minimum_size = Vector2(560, 300)
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#0d1b23")
-	style.border_color = Color("#c79a4a")
-	style.set_border_width_all(2)
-	style.set_content_margin_all(28)
-	_city_panel.add_theme_stylebox_override("panel", style)
+	_city_panel.depart_requested.connect(depart_from_city)
+	_city_panel.cargo_changed.connect(_on_cargo_changed)
 	add_child(_city_panel)
-	var body := VBoxContainer.new()
-	body.add_theme_constant_override("separation", 18)
-	_city_panel.add_child(body)
-	_city_title = Label.new()
-	_city_title.add_theme_font_size_override("font_size", 30)
-	_city_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	body.add_child(_city_title)
-	_city_body = Label.new()
-	_city_body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_city_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_city_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_child(_city_body)
-	var depart := Button.new()
-	depart.text = "Leave the city · Enter"
-	depart.pressed.connect(depart_from_city)
-	body.add_child(depart)
 	_city_panel.hide()
 
 
 func _open_city(index: int) -> void:
 	var city: Dictionary = world_data.cities[index]
-	_city_title.text = String(city.name)
-	_city_body.text = "%s\n\nThe train has stopped at the station.\nTrade, recruitment and workshops of this city are not decoded yet.\n\nLeaving turns the train around: it departs the way it came." % String(city.type)
+	trade.visit(index, _trade_rng)
 	# Adaptation: the travel clock pauses while the city is open; whether time
 	# runs during the original city scene is not established.
 	session.paused = true
+	_city_panel.open(index, String(city.name), int(city.kind), String(city.type))
 	_city_panel.position = (size - _city_panel.size) * 0.5
-	_city_panel.show()
 	world_view.selected_city = index
 	room_controls.announce("Arrived at %s" % String(city.name))
+
+
+# TIME 0x2a77/0x2b4a weigh the cargo: trading changes the train mass.
+func _on_cargo_changed() -> void:
+	engine.train_mass = wagons.mass()
+	_update_status()
 
 
 func depart_from_city() -> void:
@@ -275,8 +273,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if get_viewport().gui_get_focus_owner() is LineEdit:
 		return
 	if _city_panel.visible:
-		if event.physical_keycode in [KEY_ENTER, KEY_KP_ENTER]:
-			depart_from_city()
+		if _city_panel.handle_key(event.physical_keycode):
 			get_viewport().set_input_as_handled()
 		return
 	match event.physical_keycode:
@@ -300,6 +297,9 @@ func _restart_engine() -> void:
 	session.reset()
 	journey.reset()
 	network.reset()
+	wagons.reset()
+	trade.reset(_trade_rng)
+	engine.train_mass = wagons.mass()
 	_city_panel.hide()
 	world_view.selected_city = -1
 	_map_opened = false
@@ -331,7 +331,7 @@ func save_view() -> bool:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		return false
-	var state := {"version": 6, "consist": world_view.consist.snapshot(), "travel_camera": {"x": world_view.camera_world.x, "y": world_view.camera_world.y, "follow": world_view.following_train}, "journey": journey.snapshot(), "network": network.snapshot(), "session": session.snapshot(), "discovery": world_view.discovery.snapshot(), "zoom": world_view.zoom, "offset_x": world_view.offset.x, "offset_y": world_view.offset.y, "selected_city": world_view.selected_city, "elapsed_seconds": clock.elapsed_seconds}
+	var state := {"version": 7, "wagons": wagons.snapshot(), "trade": trade.snapshot(), "consist": world_view.consist.snapshot(), "travel_camera": {"x": world_view.camera_world.x, "y": world_view.camera_world.y, "follow": world_view.following_train}, "journey": journey.snapshot(), "network": network.snapshot(), "session": session.snapshot(), "discovery": world_view.discovery.snapshot(), "zoom": world_view.zoom, "offset_x": world_view.offset.x, "offset_y": world_view.offset.y, "selected_city": world_view.selected_city, "elapsed_seconds": clock.elapsed_seconds}
 	file.store_string(JSON.stringify(state))
 	return true
 
@@ -369,6 +369,11 @@ func _restore_view() -> void:
 	if not restored_journey.sample_behind(restored_consist.length_world()).ok and not restored_journey.history_starts_in_station():
 		room_controls.announce("This save cannot recover wagon positions. Current journey kept; saved file unchanged.")
 		return
+	var restored_wagons = TrainWagonsScript.new()
+	var restored_trade = CityTradeScript.new()
+	if (parsed.has("wagons") and not restored_wagons.restore(parsed.wagons)) or (parsed.has("trade") and not restored_trade.restore(parsed.trade)):
+		room_controls.announce("Cargo or city stock save is invalid; current session kept")
+		return
 	if parsed.has("session") and not session.restore(parsed.session):
 		room_controls.announce("Save state is invalid; current session kept")
 		return
@@ -377,6 +382,13 @@ func _restore_view() -> void:
 	else:
 		network.reset()
 	journey.restore(restored_journey.snapshot())
+	# Saves before version 7 carry no cargo: they resume with the TABLE train and fresh stocks.
+	wagons.restore(restored_wagons.snapshot())
+	if parsed.has("trade"):
+		trade.restore(restored_trade.snapshot())
+	else:
+		trade.reset(_trade_rng)
+	engine.train_mass = wagons.mass()
 	world_view.consist = restored_consist
 	world_view._visual_initialized = false
 	_restore_chart(parsed)

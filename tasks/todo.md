@@ -1,3 +1,12 @@
+## Commerce en ville (26 septembre, Claude)
+
+- [x] Masse des wagons décodée (TIME 0x2a77/0x2b4a) ; table des wagons et masse dynamique.
+- [x] Règles glieu : marchandises, mammouths, esclaves, soldats, espions ; stocks sauvegardés.
+- [x] Écran de ville : menu, transaction, refus, départ ; captures natives BHOPAL et KUWAIT.
+- [ ] Atelier des villes 10–16 (achat de wagons) : relier types 1–25 et véhicules dessinés.
+- [ ] Textes d'histoire (TOWN), gare-atelier, effets de l'équipage et des animaux.
+Preuves : tasks/evidence/city-scripts.md §5–6 et « Portage ».
+
 ## Correction active : wagons sur les rails (captures propriétaire, 26 septembre)
 
 Symptôme : rotation du convoi entier, arrière hors des voies aux virages ; perspective du sprite déformée.

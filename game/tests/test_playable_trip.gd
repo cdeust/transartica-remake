@@ -52,6 +52,7 @@ func _run() -> void:
 	app._process(1.0)
 	_check(app.journey.snapshot() == stopped, "braked map does not move once stopped")
 	_test_station_departure_restore(app)
+	_test_city_trade_screen(app)
 	_test_legacy_route_restore(app)
 	_test_invalid_discovery(app)
 	app.world_view.selected_city = 0
@@ -150,3 +151,35 @@ func _test_station_departure_restore(app) -> void:
 	app._restore_view()
 	_check(app.journey.snapshot() == departed, "restore keeps a journey whose wagons are still in the station")
 	_check(not app._city_panel.visible, "restored departure does not reopen the city")
+
+
+# BHOPAL is a mammoth fair (glieu 0xcd1: 250 to buy, wagons of type 7 hold 3).
+func _test_city_trade_screen(app) -> void:
+	var trade_rules = preload("res://scripts/city_trade.gd")
+	app._restart_engine()
+	var cycles := 0
+	while not app._city_panel.visible and cycles < 20000:
+		app.engine.speed = 450
+		app._advance_journey()
+		cycles += 1
+	_check(app._city_panel.visible and app._city_panel.kind == trade_rules.MAMMOTH_FAIR, "BHOPAL opens as a mammoth fair")
+	app.engine.speed = 0 # the loop forces 450, beyond the 0..300 range a save accepts
+	app._city_panel.start(trade_rules.SELL)
+	_check(not app._city_panel.in_transaction() and app._city_panel._notice.text != "", "nothing to sell is refused on entry")
+	app.wagons.wagons.append([7, 0, 0, 0])
+	app._city_panel.start(trade_rules.BUY)
+	_check(app._city_panel.in_transaction(), "a mammoth wagon opens the purchase")
+	app._city_panel.handle_key(KEY_EQUAL)
+	app._city_panel.handle_key(KEY_EQUAL)
+	app._city_panel.handle_key(KEY_ENTER)
+	_check(app.engine.lignite == 1500 and app.wagons.wagons[-1] == [7, 0, 0, 2], "two mammoths cost 500 lignite and board")
+	_check(app.engine.train_mass == 1346, "mammoths weigh ten each (TIME 0x2b98)")
+	_check(not app._city_panel.in_transaction() and app._city_panel.visible, "validation returns to the city menu")
+	_check(app.save_view(), "save in the city")
+	app._restart_engine()
+	_check(app.engine.train_mass == 1266, "restart restores the TABLE train")
+	app._restore_view()
+	_check(app.wagons.wagons[-1] == [7, 0, 0, 2] and app.engine.train_mass == 1346, "cargo and mass survive save and restore")
+	_check(app._city_panel.visible, "restore in a station reopens the city")
+	app._city_panel.handle_key(KEY_ENTER)
+	_check(not app._city_panel.visible, "Enter in the menu leaves the city")

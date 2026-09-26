@@ -28,7 +28,7 @@ func _run() -> void:
 		main._advance_journey()
 		cycles += 1
 	_check(main._city_panel.visible, "city screen opens on arrival")
-	_check(main._city_title.text == "BHOPAL", "first route arrives at BHOPAL")
+	_check(main._city_panel.city_name == "BHOPAL", "first route arrives at BHOPAL")
 	_check(main.session.paused and not main.engine.brake, "arrival pauses travel without the invented brake")
 	main.world_view.update_train()
 	await _capture("station-arrival-bhopal.png")
@@ -43,8 +43,17 @@ func _run() -> void:
 	main.world_view._snap_visual_position(main.world_view._current_journey_position())
 	main.world_view.update_train()
 	await _capture("station-departure-leaving.png")
+	# Trade screen of a commercial city, opened directly for review (no route to KUWAIT here).
+	main._open_city(24)
+	main._city_panel.start(50)
+	main._city_panel._list.select(0)
+	main._city_panel._select_goods(0)
+	for press in 3:
+		main._city_panel.increment()
+	_check(main._city_panel._quantity == 3, "three units of the first KUWAIT goods can be bought")
+	await _capture("city-trade-kuwait.png")
 	if failures.is_empty():
-		print("PASS: native station arrival, city screen, departure turn and emerging convoy")
+		print("PASS: native station arrival, city screen, departure turn, emerging convoy and trade screen")
 		quit(0)
 	else:
 		for failure in failures:

@@ -61,11 +61,12 @@ func _parse_cities(csv_text: String) -> Array[Dictionary]:
 	var y_column := columns.find("anchor_y")
 	# TEXTEK 0x3b09 category labels selected by abs(VILLE.FIC field2); FORMAT-VILLES.md.
 	var type_column := columns.find("type_label_by_abs_value")
-	if mini(mini(mini(name_column, x_column), y_column), type_column) < 0:
+	var kind_column := columns.find("field2_abs") # glieu 0x1ef switches on this number
+	if mini(mini(mini(name_column, x_column), y_column), mini(type_column, kind_column)) < 0:
 		return result
 	for line in lines.slice(1):
 		var fields := line.split(",")
-		if fields.size() <= maxi(maxi(name_column, type_column), maxi(x_column, y_column)):
+		if fields.size() <= maxi(maxi(maxi(name_column, type_column), maxi(x_column, y_column)), kind_column):
 			continue
-		result.append({"name": fields[name_column], "x": int(fields[x_column]), "y": int(fields[y_column]), "type": fields[type_column]})
+		result.append({"name": fields[name_column], "x": int(fields[x_column]), "y": int(fields[y_column]), "type": fields[type_column], "kind": int(fields[kind_column])})
 	return result
