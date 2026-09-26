@@ -57,3 +57,29 @@ Le message 5 (`yoda 0x190` → `0x18b9`) fait le même demi-tour et remet aussi 
   le désassemblage atteignable de `ville.alis` s'arrête à 22 instructions.
 - Message 34 (gare sans ville) → `yoda 0x225` puis `0x2318` : non lu.
 - Aucune observation en jeu de cette chaîne : la trace de ville du 25 septembre a disparu avec `/private/tmp`.
+
+## Portage dans le jeu (26 septembre 2026, Claude)
+
+- `rail_network.gd::station_lookup` reprend `TIME 0x26fb` à l'identique : cinq cases fixes, puis
+  voisinage dx extérieur / dy intérieur de −1 à 1, borne `y + dy < 72` (pas 73), décalages 71–76
+  ajoutés **aux compteurs de boucle** (une recherche infructueuse continue depuis les compteurs
+  décalés), comparaison à l'ancre `signed(field0) + 40, field1`. Sur la carte : 75 cases de gare,
+  46 mènent à une ville, 45 villes distinctes ; l'enregistrement 45 (Tribe of Nomads) n'est
+  atteint par aucune gare, l'enregistrement 40 seulement par la case forcée (51,47).
+- Les écritures de carte des résultats −2, −3, −4 ne sont pas appliquées : leurs messages 22–24 ne
+  sont pas portés, et la sauvegarde n'accepte que des aiguillages comme changement de carte.
+  Ces gares, et −1 (message 34), restent des arrêts « non portés » nommés par leur message.
+- `train_journey.gd::depart_from_station` reprend `yoda 0x18e3` : cap `10 − cap`, vitesse effective
+  à 0 (`main.gd`). Phase −1 / reliquat 23 d'origine ≡ phase 0 / reliquat 0 ici, puisque la
+  progression par pas vaut `mini(vitesse, 450) / 20 ≤ 22`.
+- Adaptations, non prouvées par l'original : le temps de voyage est suspendu pendant l'écran de
+  ville ; le convoi ressort de la gare derrière la locomotive (choix du propriétaire, 26 septembre)
+  avec une case droite masquée dans la gare, dont la géométrie de voie n'est pas décodée.
+- Non portés : `main+0x614c = 0`, négation de `main+0x2fbc`, `soleil.AO`/`viking.AO` à la première
+  visite, contenu des scènes `glieu`/`ville`/`usine`/`mamesc`/`scene3`.
+- Sauvegarde : une partie enregistrée juste après le départ, wagons encore dans la gare, se
+  recharge (`history_starts_in_station`) ; un historique réellement perdu reste refusé.
+- Vérification : `test_train_journey.gd`, `test_playable_trip.gd` (recherche réelle et synthétique, départ, sauvegarde dans
+  la ville et après départ) ; fenêtre native `game/tests/review_station_arrival.gd`, captures
+  `tasks/validation/station-arrival-bhopal.png`, `station-departure-emerging.png`,
+  `station-departure-leaving.png`. Les 10 suites Godot passent. Exports non reconstruits.

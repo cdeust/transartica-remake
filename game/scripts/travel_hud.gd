@@ -102,8 +102,10 @@ func _draw_readouts() -> void:
 	var message := "PAUSED · SPACE" if session.paused else "L %s · A %s" % [_rate_name(engine.lignite_rate), _rate_name(engine.anthracite_rate)]
 	if session.engine.event_pending:
 		message = session.engine.event_message
+	elif journey != null and journey.at_station() and journey.station_result() >= 0:
+		message = "IN STATION"
 	elif journey != null and journey.blocked:
-		message = "END OF TEST ROUTE"
+		message = "STOPPED · NOT PORTED"
 	_text(Vector2(820, 67), message, 19, INK)
 
 

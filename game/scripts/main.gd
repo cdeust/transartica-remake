@@ -33,6 +33,9 @@ var _map_panel: VBoxContainer
 var _journal: RichTextLabel
 var _modal_title: Label
 var _map_opened := false
+var _city_panel: PanelContainer
+var _city_title: Label
+var _city_body: Label
 
 
 func _ready() -> void:
@@ -49,6 +52,7 @@ func _ready() -> void:
 		push_error("Local reference map has an unexpected size.")
 		set_process(false)
 		return
+	network.set_city_anchors(world_data.city_anchors())
 	journey.network = network
 	_build_interface()
 	session.cycle_completed.connect(_advance_journey)
@@ -59,7 +63,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if session == null or room_controls == null:
 		return
-	var blocked: bool = (_modal.visible and _journal.visible) or room_controls.show_help
+	var blocked: bool = (_modal.visible and _journal.visible) or room_controls.show_help or _city_panel.visible
 	if not blocked:
 		session.advance(delta)
 	clock.paused = session.paused or blocked or engine.event_pending
@@ -97,6 +101,7 @@ func _build_interface() -> void:
 	add_child(instruments)
 	instruments.hide()
 	_build_modal()
+	_build_city_screen()
 
 
 func _build_modal() -> void:
@@ -179,6 +184,63 @@ func _build_journal(body: VBoxContainer) -> void:
 	_journal.hide()
 
 
+# Arrival scene for TIME message 76 (tasks/evidence/station-arrival.md). The
+# original loads glieu plus ville/usine/mamesc; their menus are not decoded yet.
+func _build_city_screen() -> void:
+	_city_panel = PanelContainer.new()
+	_city_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	_city_panel.custom_minimum_size = Vector2(560, 300)
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("#0d1b23")
+	style.border_color = Color("#c79a4a")
+	style.set_border_width_all(2)
+	style.set_content_margin_all(28)
+	_city_panel.add_theme_stylebox_override("panel", style)
+	add_child(_city_panel)
+	var body := VBoxContainer.new()
+	body.add_theme_constant_override("separation", 18)
+	_city_panel.add_child(body)
+	_city_title = Label.new()
+	_city_title.add_theme_font_size_override("font_size", 30)
+	_city_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	body.add_child(_city_title)
+	_city_body = Label.new()
+	_city_body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_city_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_city_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(_city_body)
+	var depart := Button.new()
+	depart.text = "Leave the city · Enter"
+	depart.pressed.connect(depart_from_city)
+	body.add_child(depart)
+	_city_panel.hide()
+
+
+func _open_city(index: int) -> void:
+	var city: Dictionary = world_data.cities[index]
+	_city_title.text = String(city.name)
+	_city_body.text = "%s\n\nThe train has stopped at the station.\nTrade, recruitment and workshops of this city are not decoded yet.\n\nLeaving turns the train around: it departs the way it came." % String(city.type)
+	# Adaptation: the travel clock pauses while the city is open; whether time
+	# runs during the original city scene is not established.
+	session.paused = true
+	_city_panel.position = (size - _city_panel.size) * 0.5
+	_city_panel.show()
+	world_view.selected_city = index
+	room_controls.announce("Arrived at %s" % String(city.name))
+
+
+func depart_from_city() -> void:
+	if not journey.depart_from_station():
+		return
+	engine.speed = 0 # yoda 0x18e3 writes 0 to main+0x2fb4, the effective speed.
+	_city_panel.hide()
+	session.paused = false
+	world_view.update_train()
+	_update_status()
+	_modal_title.text = "   TRANSARCTICA · (%d, %d) %s · %d km/h" % [journey.position.x, journey.position.y, journey.heading_name(), engine.speed]
+	room_controls.announce("Departing · heading %s" % journey.heading_name())
+
+
 func _open_panel(panel: String) -> void:
 	if panel in ["instruments", "room"]:
 		instruments.visible = panel == "instruments"
@@ -212,6 +274,11 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		return
 	if get_viewport().gui_get_focus_owner() is LineEdit:
 		return
+	if _city_panel.visible:
+		if event.physical_keycode in [KEY_ENTER, KEY_KP_ENTER]:
+			depart_from_city()
+			get_viewport().set_input_as_handled()
+		return
 	match event.physical_keycode:
 		KEY_L: room_controls.activate("lignite")
 		KEY_A: room_controls.activate("anthracite")
@@ -233,6 +300,7 @@ func _restart_engine() -> void:
 	session.reset()
 	journey.reset()
 	network.reset()
+	_city_panel.hide()
 	world_view.selected_city = -1
 	_map_opened = false
 	world_view.following_train = false
@@ -298,7 +366,7 @@ func _restore_view() -> void:
 	if parsed.has("consist") and not restored_consist.restore(parsed.consist):
 		room_controls.announce("Train composition is invalid; current session kept")
 		return
-	if not restored_journey.sample_behind(restored_consist.length_world()).ok:
+	if not restored_journey.sample_behind(restored_consist.length_world()).ok and not restored_journey.history_starts_in_station():
 		room_controls.announce("This save cannot recover wagon positions. Current journey kept; saved file unchanged.")
 		return
 	if parsed.has("session") and not session.restore(parsed.session):
@@ -314,6 +382,9 @@ func _restore_view() -> void:
 	_restore_chart(parsed)
 	world_view.visit_cell(journey.position)
 	room_controls.announce("Journey and engine restored" if parsed.has("journey") else "Previous engine restored · first journey starts at departure")
+	_city_panel.hide()
+	if journey.station_result() >= 0:
+		_open_city(journey.station_result())
 
 
 func _restore_chart(parsed: Dictionary) -> void:
@@ -411,9 +482,17 @@ func _advance_journey() -> void:
 	if _map_panel.visible:
 		_modal_title.text = "   TRANSARCTICA · (%d, %d) %s · %d km/h" % [journey.position.x, journey.position.y, journey.heading_name(), engine.speed]
 	if journey.blocked:
+		var station := journey.station_result()
+		if station >= 0:
+			_open_city(station)
+			return
 		engine.brake = true
 		engine.speed = 0
 		session.paused = true
 		var ahead: Vector2i = journey.next_cell()
-		room_controls.announce("Stopped before %s at (%d, %d) · not yet ported" % [journey.stop_reason, ahead.x, ahead.y])
-		status_label.text = "Stopped before %s at (%d, %d).\nR starts a new run." % [journey.stop_reason, ahead.x, ahead.y]
+		var reason: String = journey.stop_reason
+		if journey.at_station():
+			# TIME 0x2483..0x24c3: -1 sends message 34, -2..-5 send messages 22..25.
+			reason = "station without city (message 34)" if station == -1 else "story station (message %d)" % (absi(station) + 20)
+		room_controls.announce("Stopped before %s at (%d, %d) · not yet ported" % [reason, ahead.x, ahead.y])
+		status_label.text = "Stopped before %s at (%d, %d).\nR starts a new run." % [reason, ahead.x, ahead.y]

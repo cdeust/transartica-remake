@@ -300,8 +300,9 @@ Suite : `tasks/checkpoint-codex-camera-2026-09-26.md`.
 Preuves : tasks/evidence/station-arrival.md.
 - [x] Chaîne décodée : TIME 0x26fb (index de ville) → message 76 → yoda 0xdae (scène ville, glieu + ville/usine/mamesc) → glieu message 9 → yoda 0x18e3 (demi-tour, vitesse 0).
 - [x] ALIS copié dans .toolchain/alis/ (les builds de /private/tmp ont disparu le 26 septembre, avec la trace de ville).
-- [ ] Porter l'arrivée : écran de ville (nom, type), départ par demi-tour prouvé.
-- [ ] Décider la présentation du convoi après demi-tour (propriétaire).
+- [x] Porter l'arrivée : écran de ville (nom, type), départ par demi-tour prouvé. 10 suites PASS, captures natives station-*.png.
+- [x] Présentation après demi-tour (propriétaire) : le convoi ressort de la gare derrière la locomotive.
+- [ ] Gares sans ville (message 34) et gares de récit (messages 22–25) : non portées, arrêt nommé.
 - [ ] Décoder glieu.co / ville.co : menus de la ville, commerce, recrutement.
 - [ ] Observer la chaîne dans ALIS instrumenté (poke de position, dump d'écran) au lieu de piloter le bureau.
 

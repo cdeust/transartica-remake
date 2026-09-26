@@ -43,6 +43,13 @@ func map_code(x: int, y: int) -> int:
 	return map_bytes[x * MAP_HEIGHT + y]
 
 
+func city_anchors() -> Array[Vector2i]:
+	var anchors: Array[Vector2i] = []
+	for city in cities:
+		anchors.append(Vector2i(int(city.x), int(city.y)))
+	return anchors
+
+
 func _parse_cities(csv_text: String) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	var lines := csv_text.strip_edges().split("\n")
@@ -52,11 +59,13 @@ func _parse_cities(csv_text: String) -> Array[Dictionary]:
 	var name_column := columns.find("game_name")
 	var x_column := columns.find("anchor_x")
 	var y_column := columns.find("anchor_y")
-	if mini(mini(name_column, x_column), y_column) < 0:
+	# TEXTEK 0x3b09 category labels selected by abs(VILLE.FIC field2); FORMAT-VILLES.md.
+	var type_column := columns.find("type_label_by_abs_value")
+	if mini(mini(mini(name_column, x_column), y_column), type_column) < 0:
 		return result
 	for line in lines.slice(1):
 		var fields := line.split(",")
-		if fields.size() <= maxi(name_column, maxi(x_column, y_column)):
+		if fields.size() <= maxi(maxi(name_column, type_column), maxi(x_column, y_column)):
 			continue
-		result.append({"name": fields[name_column], "x": int(fields[x_column]), "y": int(fields[y_column])})
+		result.append({"name": fields[name_column], "x": int(fields[x_column]), "y": int(fields[y_column]), "type": fields[type_column]})
 	return result

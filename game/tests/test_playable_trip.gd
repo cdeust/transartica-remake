@@ -51,6 +51,7 @@ func _run() -> void:
 	var stopped: Dictionary = app.journey.snapshot()
 	app._process(1.0)
 	_check(app.journey.snapshot() == stopped, "braked map does not move once stopped")
+	_test_station_departure_restore(app)
 	_test_legacy_route_restore(app)
 	_test_invalid_discovery(app)
 	app.world_view.selected_city = 0
@@ -129,3 +130,23 @@ func _write_fixture(path: String, data: Dictionary) -> void:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	file.store_string(JSON.stringify(data))
 	file.close()
+
+
+# A save taken just after leaving a city: the wagons are still inside the
+# station (no rail history yet) and the restore must keep the journey.
+func _test_station_departure_restore(app) -> void:
+	app._restart_engine()
+	var cycles := 0
+	while not app._city_panel.visible and cycles < 20000:
+		app.engine.speed = 450
+		app._advance_journey()
+		cycles += 1
+	_check(app._city_panel.visible, "trip reaches the first city")
+	app.depart_from_city()
+	_check(not app.journey.sample_behind(app.world_view.consist.length_world()).ok, "wagons are still hidden in the station")
+	var departed: Dictionary = app.journey.snapshot()
+	_check(app.save_view(), "save just after departure")
+	app._restart_engine()
+	app._restore_view()
+	_check(app.journey.snapshot() == departed, "restore keeps a journey whose wagons are still in the station")
+	_check(not app._city_panel.visible, "restored departure does not reopen the city")

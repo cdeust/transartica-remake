@@ -33,8 +33,10 @@ func _run() -> void:
 	_test_destroyed_track_blocks(failures)
 	_test_snapshot_and_validation(failures)
 	_test_network_snapshot(failures)
+	_test_station_lookup(world, failures)
+	_test_station_departure(world, failures)
 	if failures.is_empty():
-		print("PASS: decoded rail network, curves, switches, double-speed tiles, boundaries, persistence")
+		print("PASS: decoded rail network, curves, switches, double-speed tiles, boundaries, stations, persistence")
 		quit(0)
 	else:
 		for failure in failures:
@@ -302,3 +304,61 @@ func _test_legacy_route(failures: Array[String]) -> void:
 	for cycle in 3:
 		journey.advance(450)
 	_check(journey.distance_travelled() >= old, "legacy route resumes and records new actual path", failures)
+
+
+# TIME 0x26fb on the real map and on synthetic maps for the loop quirks.
+func _test_station_lookup(world, failures: Array[String]) -> void:
+	var network := _network()
+	network.set_city_anchors(world.city_anchors())
+	_check(network.station_lookup(Vector2i(131, 68)) == 1, "(131, 68) finds BHOPAL through the 71 tile at (132, 67)", failures)
+	_check(network.station_lookup(Vector2i(51, 47)) == 40, "(51, 47) is forced to city record 40", failures)
+	_check(network.station_lookup(Vector2i(23, 67)) == -2 and network.station_lookup(Vector2i(148, 60)) == -5, "fixed story stations return -2..-5", failures)
+	_check(network.tile(Vector2i(22, 67)) != -122, "story-station map write is not applied", failures)
+	_check(network.station_lookup(Vector2i(138, 71)) == -1, "(138, 71) is a station without city", failures)
+	var reached := {}
+	var with_city := 0
+	var stations := 0
+	for x in RailNetwork.WIDTH:
+		for y in RailNetwork.HEIGHT:
+			var code := network.tile(Vector2i(x, y))
+			if code < 34 or code > 37:
+				continue
+			stations += 1
+			var result := network.station_lookup(Vector2i(x, y))
+			if result >= 0:
+				with_city += 1
+				reached[result] = true
+	_check(stations == 75 and with_city == 46 and reached.size() == 45, "75 station tiles, 46 lead to 45 distinct cities", failures)
+	_check(not reached.has(45), "no station reaches record 45 (Tribe of Nomads)", failures)
+	# Bound y + dy < 72: a city tile on row 72 is never seen.
+	var edge := _synthetic({Vector2i(10, 72): 76, Vector2i(10, 71): 34})
+	edge.set_city_anchors([Vector2i(10, 72)])
+	_check(edge.station_lookup(Vector2i(10, 71)) == -1, "row 72 is outside the TIME search", failures)
+	# Offsets shift the loop counters: after 71 at (-1,-1) -> dx=1, dy=0; a failed
+	# record search continues at dy=1 and then leaves the outer loop.
+	var quirk := _synthetic({Vector2i(19, 19): 71, Vector2i(20, 20): 34, Vector2i(19, 21): 76, Vector2i(21, 21): 76})
+	quirk.set_city_anchors([Vector2i(19, 21), Vector2i(21, 21)])
+	_check(quirk.station_lookup(Vector2i(20, 20)) == 1, "shifted counters skip (19, 21) and reach (21, 21)", failures)
+
+
+func _test_station_departure(world, failures: Array[String]) -> void:
+	var network := _network()
+	network.set_city_anchors(world.city_anchors())
+	var journey := _journey(network)
+	_drive(journey, 20000)
+	_check(journey.at_station() and journey.station_result() == 1, "first route arrives at BHOPAL", failures)
+	var stopped_head := journey.fractional_position()
+	var saved := journey.snapshot()
+	var restored := _journey(network)
+	_check(restored.restore(saved) and restored.station_result() == 1, "a save taken in the city restores the arrival", failures)
+	_check(journey.depart_from_station(), "departure is accepted at a station", failures)
+	_check(journey.heading == 4 and not journey.blocked and journey.stop_reason.is_empty(), "heading 6 reverses to 4 and the stop clears", failures)
+	_check(journey.fractional_position().is_equal_approx(stopped_head), "the locomotive stays at the station port", failures)
+	_check(journey.sample_behind(1.0).ok and not journey.sample_behind(1.1).ok, "one hidden cell of history behind the locomotive", failures)
+	_check(not journey.depart_from_station(), "departure is refused away from a station", failures)
+	var after := journey.snapshot()
+	var restored_after := _journey(network)
+	_check(restored_after.restore(after) and restored_after.snapshot() == after, "post-departure state round-trips", failures)
+	var visited := _drive(journey, 400)
+	# (130, 68) is switch 21 (diverging): heading 4 turns to 7 (TIME 0x168c rule for base 20).
+	_check(visited.size() > 3 and visited[1] == Vector2i(129, 67) and journey.sample_behind(3.0).ok, "the train leaves by the switch branch and wagons gain history", failures)
