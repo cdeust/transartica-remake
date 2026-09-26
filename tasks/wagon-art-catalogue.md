@@ -25,11 +25,11 @@ Stratégie refine : contexte établi par les sources locales et exemples visuels
 ## Plan et réception
 
 - [x] Retrouver la planche et les 25 noms avec leurs fonctions originales.
-- [ ] Produire un fichier distinct par type manquant, avec prompt conservé.
-- [ ] Préparer une locomotive détaillée comme référence du zoom de combat.
-- [ ] Vérifier les 19 identifiants manquants, dimensions, alpha et empreintes des fichiers.
+- [x] Produire un fichier distinct par type manquant, avec prompt conservé.
+- [x] Préparer les six véhicules de départ en version détaillée, locomotive comprise.
+- [x] Vérifier les 19 identifiants manquants, dimensions, alpha et empreintes des fichiers.
 - [x] Documenter les besoins artistiques des impacts et explosions.
-- [ ] Conserver les livrables et un compte rendu pour l'intégration locale.
+- [x] Conserver les livrables et un compte rendu pour l'intégration locale.
 
 ## Combat : exigences à préserver
 
@@ -45,4 +45,6 @@ Acceptation future : perforation persistante après un tir localisé, éléments
 
 ## Revue
 
-En cours. Aucun dessin de cette livraison n'est annoncé intégré au jeu.
+25 PNG individuels, 1024 × 1536, soit 43 153 389 octets au total. Contrôles de lecture, identifiants, dimensions et transparence des coins : 25/25. Inventaire avec SHA-256 : `output/imagegen/wagon-catalogue-20260926/catalogue.json`. Galerie locale : `output/imagegen/wagon-catalogue-20260926/index.html`. Les 25 prompts exacts sont conservés dans le même dossier.
+
+Les dessins sont des sources artistiques non intégrées. Les contours semi-transparents, les quelques détails de volume et le recalage du gabarit restent à vérifier sur le décor lors de la préparation de l'atlas. Matériaux, pièces mobiles, intérieurs destructibles et ancrages de combat ne sont pas encore produits. Aucun test de jeu n'est revendiqué pour cette livraison d'images.
