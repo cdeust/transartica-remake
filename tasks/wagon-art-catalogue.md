@@ -48,3 +48,14 @@ Acceptation future : perforation persistante après un tir localisé, éléments
 25 PNG individuels, 1024 × 1536, soit 43 153 389 octets au total. Contrôles de lecture, identifiants, dimensions et transparence des coins : 25/25. Inventaire avec SHA-256 : `output/imagegen/wagon-catalogue-20260926/catalogue.json`. Galerie locale : `output/imagegen/wagon-catalogue-20260926/index.html`. Les 25 prompts exacts sont conservés dans le même dossier.
 
 Les dessins sont des sources artistiques non intégrées. Les contours semi-transparents, les quelques détails de volume et le recalage du gabarit restent à vérifier sur le décor lors de la préparation de l'atlas. Matériaux, pièces mobiles, intérieurs destructibles et ancrages de combat ne sont pas encore produits. Aucun test de jeu n'est revendiqué pour cette livraison d'images.
+
+## Commits disponibles pour Opus
+
+Livraison locale déjà présente sur `feat/station-arrival`, dans cet ordre :
+
+- `314e869` : premier lot de dessins, prompts et contrat artistique.
+- `6d36928` : suite des types manquants et locomotive détaillée.
+- `ce06da1` : variantes détaillées des véhicules initiaux.
+- `3905d66` : galerie, inventaire vérifié et documentation d'intégration.
+
+Contrôle de remise : les 25 empreintes SHA-256 du catalogue correspondent aux fichiers locaux et aux blobs de `HEAD`; les 25 PNG mesurent 1024 × 1536 et couvrent les identifiants 1 à 25. Opus peut utiliser ces commits pour préparer l'atlas. Ils sont déjà dans l'historique de cette branche : ne pas les cherry-pick une seconde fois sur celle-ci.

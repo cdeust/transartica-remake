@@ -1,6 +1,6 @@
 ## Décision : train en vue de dessus (propriétaire, 26 septembre)
 
-Catalogue graphique Codex en cours : [plan, sources et préparation du combat](wagon-art-catalogue.md).
+Catalogue graphique Codex livré : 25 dessins détaillés, dont les 19 types manquants; [plan, sources et préparation du combat](wagon-art-catalogue.md).
 Livrables dans `output/imagegen/wagon-catalogue-20260926/`; intégration du voyage conservée par Opus.
 
 Réponse « oui » du propriétaire à : vue de dessus, wagons à l'échelle, redessinés ; abandon de la 3D et de
@@ -32,7 +32,8 @@ bancs `tasks/validation/review_overhead_{prototype,convoy}.gd`.
   plus de liste `consist` sauvegardée indépendamment (sauvegardes v7 : clé `"consist"` acceptée et ignorée,
   la composition est toujours redérivée de `wagons` à la restauration ; voir `main.gd::_restore_view`
   et le commentaire au-dessus de l'écriture de `state` dans `save_view`).
-- [ ] Dessiner les 19 autres types (achat à l'atelier). `derive_from_wagons` les laisse volontairement
+- [x] Dessiner les 19 autres types : PNG individuels et galerie dans `output/imagegen/wagon-catalogue-20260926/`.
+- [ ] Préparer l'atlas et raccorder les 19 nouveaux dessins aux achats. `derive_from_wagons` les laisse volontairement
   non dessinés (pas de repli générique inventé) : un achat d'un type non mappé change `wagons.wagons`
   (masse, commerce) sans ajouter de véhicule visible. Capture `overhead-train-after-purchase.png`
   montre en revanche un type mappé (TENDER) ajouté visiblement après achat simulé + avance réelle du
