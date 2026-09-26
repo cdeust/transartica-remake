@@ -8,8 +8,9 @@ const EngineSessionScript = preload("res://scripts/engine_session.gd")
 const RailNetworkScript = preload("res://scripts/rail_network.gd")
 const ConsistScript = preload("res://scripts/train_consist.gd")
 const TrainWagonsScript = preload("res://scripts/train_wagons.gd")
-# 1.0 + 0.99 + 1.0 + 0.95 + 0.96 + 0.96, current Consist.LENGTHS (overhead art).
-const CONSIST_HALF := 5.86 * 0.5
+# 1.0 + 1.01 + 1.01 + 0.99 + 0.99 + 0.99: Consist.LENGTHS of the initial
+# composition (locomotive, tender, general-quarters, boudoir, merchandise, barracks).
+const CONSIST_HALF := 5.99 * 0.5
 
 
 func _initialize() -> void:
@@ -143,7 +144,10 @@ func _check(condition: bool, label: String, failures: Array[String]) -> void:
 
 func _test_vehicle_frames(view, failures: Array[String]) -> void:
 	var renderer = view.train_renderer
-	var kinds := ["locomotive", "tender", "sleeper", "boxcar", "observation", "armored"]
+	# Every original wagon type 1-25 has its own drawing (catalogue, owner
+	# choice 2026-09-26): all of them must load and rotate rigidly.
+	var kinds: Array = ConsistScript.TYPE_TO_KIND.values()
+	_check(kinds.size() == 25 and ConsistScript.TYPE_TO_KIND.keys() == range(1, 26), "types 1-25 each map to one drawing", failures)
 	# Overhead view (owner decision, 26 September): one rigid drawing per
 	# vehicle, rotated continuously -- not one atlas frame per discrete
 	# heading. Any rotation angle must keep the same unsheared scale, which is
@@ -163,8 +167,16 @@ func _test_vehicle_frames(view, failures: Array[String]) -> void:
 			var drawn_front: Vector2 = registration * frame.front
 			var drawn_rear: Vector2 = registration * frame.rear
 			_check(is_equal_approx(drawn_front.distance_to(drawn_rear), own_length * 0.5), "%s screen length is the same at every angle" % kind, failures)
-	# Locomotive front/rear anchors span 505 texels = 1 authored cell.
-	_check(absf(renderer.texels_per_cell - 505.0) < 0.1, "texel scale derives from the locomotive's own front/rear anchors", failures)
+	# Locomotive front/rear anchors span 495 texels = 1 authored cell.
+	_check(absf(renderer.texels_per_cell - 495.0) < 0.1, "texel scale derives from the locomotive's own front/rear anchors", failures)
+	# LENGTHS is pasted from tools/build_overhead_atlas.py: it must still match
+	# the manifest the atlas was built with, or the drawn length and the rail
+	# length would disagree.
+	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(renderer.MANIFEST))
+	for kind in kinds:
+		var entry: Dictionary = manifest.vehicles.get(kind, {})
+		_check(not entry.is_empty() and is_equal_approx(float(entry.length), ConsistScript.LENGTHS[kind]), "%s length matches the atlas manifest" % kind, failures)
+		_check(not entry.is_empty() and ConsistScript.TYPE_TO_KIND[int(entry.type_id)] == kind, "%s is keyed by its own catalogue type" % kind, failures)
 	_check(renderer.frame_for("unknown").is_empty(), "unsupported vehicle has no fabricated frame", failures)
 
 
@@ -191,31 +203,31 @@ func _test_vehicle_routes(view, failures: Array[String]) -> void:
 		_check(poses[0].heading == 3 and poses[5].heading == 6, "locomotive is diagonal while tail remains east on bend", failures)
 	var lagged: Array[Dictionary] = renderer.poses(view,journey,consist,0.25)
 	_check(lagged.size() == 6 and lagged[0].front.distance_to(_wide_bend_point(0.25)) < 0.00001, "presentation lag follows route arc", failures)
-	consist.vehicles.append("boxcar")
+	consist.vehicles.append("cannon")
 	var extended: Array[Dictionary] = renderer.poses(view,journey,consist,0.0)
-	_check(extended.size() == 7 and extended[-1].kind == "boxcar", "buying a wagon adds its own rendered vehicle", failures)
-	consist.vehicles[1] = "armored"
+	_check(extended.size() == 7 and extended[-1].kind == "cannon", "buying a wagon adds its own rendered vehicle", failures)
+	consist.vehicles[1] = "barracks"
 	consist.vehicles[5] = "tender"
 	var reordered: Array[Dictionary] = renderer.poses(view,journey,consist,0.0)
-	_check(reordered.size() == 7 and reordered[1].kind == "armored" and reordered[5].kind == "tender", "reordering changes rendered vehicle order", failures)
+	_check(reordered.size() == 7 and reordered[1].kind == "barracks" and reordered[5].kind == "tender", "reordering changes rendered vehicle order", failures)
 	_check(renderer.poses(view,journey,consist,300.0).is_empty(), "insufficient history omits poses without off-track extrapolation", failures)
 	_test_wagon_table_composition(consist, failures)
 
 
 # Owner requirement (tasks/todo.md, "Decision : train en vue de dessus"):
 # rendered composition is a pure function of the wagon-rules table, not an
-# independent list. The six initial types map 1:1 to the six drawings; any
-# other purchased type is intentionally left undrawn (tasks/todo.md,
-# "Dessiner les 19 autres types") rather than substituted with an invented
-# sprite.
+# independent list. Every original type 1-25 has its drawing; a type outside
+# that range is left undrawn rather than substituted with an invented sprite.
 func _test_wagon_table_composition(consist, failures: Array[String]) -> void:
 	var wagons = TrainWagonsScript.new()
 	consist.derive_from_wagons(wagons)
-	_check(consist.vehicles == ["locomotive", "tender", "sleeper", "boxcar", "observation", "armored"], "initial wagon table draws the six accepted vehicles in order", failures)
-	wagons.wagons.append([21, 0, 0, 0]) # TENDER: mapped type, must appear.
-	wagons.wagons.append([9, 0, 0, 0]) # HARPOON: unmapped, must not appear.
+	var initial := ["locomotive", "tender", "general-quarters", "boudoir", "merchandise", "barracks"]
+	_check(consist.vehicles == initial, "initial wagon table draws the six initial vehicles in order", failures)
+	wagons.wagons.append([21, 0, 0, 0]) # TENDER: initial type, bought again.
+	wagons.wagons.append([9, 0, 0, 0]) # HARPOON: one of the 19 types drawn by the catalogue.
+	wagons.wagons.append([26, 0, 0, 0]) # outside wagon_names 1-25: no drawing, no invented sprite.
 	consist.derive_from_wagons(wagons)
-	_check(consist.vehicles == ["locomotive", "tender", "sleeper", "boxcar", "observation", "armored", "tender"], "buying a mapped wagon type adds its drawn vehicle; an undrawn type adds nothing", failures)
+	_check(consist.vehicles == initial + ["tender", "harpoon"], "buying any original wagon type adds its own drawn vehicle; an unknown type adds nothing", failures)
 
 
 func _bend_journey():
@@ -307,9 +319,9 @@ func _test_occupied_track(view, failures: Array[String]) -> void:
 	_check(not view.discovery.is_discovered(0,0) and mask.get_pixel(0,0).r < 0.1, "remote map remains fogged", failures)
 	view.center_on_train()
 	_check(view.camera_world.distance_to(_initial_route_point(CONSIST_HALF) + Vector2(0.5,0.5)) < 0.00001, "initial camera centers full consist rather than locomotive nose", failures)
-	view.consist.vehicles.append("boxcar")
+	view.consist.vehicles.append("boudoir")
 	view.center_on_train()
-	_check(view.camera_world.distance_to(_initial_route_point(CONSIST_HALF + ConsistScript.LENGTHS.boxcar * 0.5) + Vector2(0.5,0.5)) < 0.00001, "camera center adapts to added wagon length", failures)
+	_check(view.camera_world.distance_to(_initial_route_point(CONSIST_HALF + ConsistScript.LENGTHS.boudoir * 0.5) + Vector2(0.5,0.5)) < 0.00001, "camera center adapts to added wagon length", failures)
 	view.consist.vehicles.pop_back()
 	view.center_on_train()
 

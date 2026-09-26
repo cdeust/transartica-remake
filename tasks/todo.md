@@ -33,11 +33,24 @@ bancs `tasks/validation/review_overhead_{prototype,convoy}.gd`.
   la composition est toujours redérivée de `wagons` à la restauration ; voir `main.gd::_restore_view`
   et le commentaire au-dessus de l'écriture de `state` dans `save_view`).
 - [x] Dessiner les 19 autres types : PNG individuels et galerie dans `output/imagegen/wagon-catalogue-20260926/`.
-- [ ] Préparer l'atlas et raccorder les 19 nouveaux dessins aux achats. `derive_from_wagons` les laisse volontairement
-  non dessinés (pas de repli générique inventé) : un achat d'un type non mappé change `wagons.wagons`
-  (masse, commerce) sans ajouter de véhicule visible. Capture `overhead-train-after-purchase.png`
-  montre en revanche un type mappé (TENDER) ajouté visiblement après achat simulé + avance réelle du
-  trajet (le nouveau wagon n'a d'historique de trajet qu'une fois le train avancé de sa propre longueur).
+- [x] Préparer l'atlas et raccorder les 19 nouveaux dessins aux achats. Choix du propriétaire (26 septembre) :
+  l'atlas entier vient du catalogue Codex, y compris les versions détaillées des 6 véhicules de départ
+  (même dessin que le prototype, plus élancé : ~4,1:1 contre ~3,4:1), pour une seule famille de proportions.
+  `tools/build_overhead_atlas.py` (remplace `build_overhead_manifest.py`, supprimé) lit `catalogue.json`
+  par `type_id`, jamais par ordre de fichier, supprime le bruit alpha isolé (900-6100 pixels faibles par
+  image, jusqu'aux bords du canevas ; seul le corps connexe alpha>=128 + 3px de bord est gardé), réduit
+  toutes les images d'un même facteur 1/3 en alpha prémultiplié (pas de frange sombre, vérifié sur capture)
+  et écrit `game/assets/travel/vehicles-overhead.{png,json}` (25 véhicules, 1889×1028). `train_consist.gd` :
+  `TYPE_TO_KIND` couvre 1-25 et `LENGTHS` (0.98-1.02) sont générés par l'outil ; un test vérifie qu'ils
+  correspondent au manifeste. Tests : 11/11 PASS (`tasks/validation/overhead-atlas-after-tests.log` ;
+  référence avant : `overhead-train-after-tests.log`, code de jeu inchangé depuis). Captures natives :
+  `tasks/validation/overhead-atlas-{straight,curve,after-purchase}.png` (achat réel de CANNON, CRANE, TANK,
+  THE DRILL : 10 véhicules dessinés).
+  Limites connues : largeurs dessinées inégales (95 à 139 texels ; les 19 nouveaux sont plus étroits que les
+  6 de départ), propriété des dessins, pas corrigée ; XL MERCHANDISE et XL BARRACKS dessinés de la même
+  longueur que les autres, donc non plus longs à l'écran ; attelage arrière de la locomotive touchant le bord
+  haut du canevas source (3 px) ; alpha max 254 comme dans le prototype. Sens physique des extrémités
+  toujours non vérifié contre une source.
 
 Note de propriété (Codex) : `main.gd` touché a minima aux points ci-dessus, plus une correction de la
 garde de restauration de sauvegarde qui vérifiait la longueur de TOUT le convoi contre l'historique de

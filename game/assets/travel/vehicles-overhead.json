@@ -1,110 +1,559 @@
 {
- "version": 1,
- "source": "output/imagegen/vehicles-overhead-prototype-v2.png,vehicles-overhead-prototype-v2.json (owner-accepted overhead prototype, 2026-09-26)",
- "note": "Single rigid top-down drawing per vehicle; rotated continuously to the projected travel direction, never swapped or mirrored per heading. front=bottom-centre, rear=top-centre of each region (see module docstring).",
+ "version": 2,
+ "source": "output/imagegen/wagon-catalogue-20260926 (Codex art masters, types 1-25; owner choice 2026-09-26)",
+ "note": "Single rigid top-down drawing per original wagon type, rotated continuously to the projected travel direction. front=bottom-centre, rear=top-centre (tools/build_overhead_atlas.py). length = alpha_span / locomotive alpha_span, a drawn proportion, not a historical rule.",
  "file": "vehicles-overhead.png",
+ "scale": "1/3",
  "vehicles": {
   "locomotive": {
+   "type_id": 1,
+   "name": "LOCOMOTIVE",
+   "source": "01-locomotive-combat.png",
    "region": [
-    273,
-    6,
-    151,
-    506
+    4,
+    4,
+    140,
+    497
    ],
    "front": [
-    75.0,
-    505.0
+    69.5,
+    495.0
    ],
    "rear": [
-    75.0,
+    69.5,
     0.0
    ],
-   "alpha_span": 506
+   "alpha_span": 496,
+   "solid_width": 138,
+   "length": 1.0
   },
-  "tender": {
+  "general-quarters": {
+   "type_id": 2,
+   "name": "GENERAL QUARTERS",
+   "source": "02-general-quarters-combat.png",
    "region": [
-    688,
-    10,
-    161,
-    502
+    149,
+    4,
+    138,
+    504
    ],
    "front": [
-    80.0,
+    68.5,
+    502.0
+   ],
+   "rear": [
+    68.5,
+    1.0
+   ],
+   "alpha_span": 502,
+   "solid_width": 136,
+   "length": 1.01
+  },
+  "boudoir": {
+   "type_id": 3,
+   "name": "BOUDOIR",
+   "source": "03-boudoir-combat.png",
+   "region": [
+    294,
+    4,
+    136,
+    496
+   ],
+   "front": [
+    67.5,
+    493.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 493,
+   "solid_width": 134,
+   "length": 0.99
+  },
+  "observatory": {
+   "type_id": 4,
+   "name": "OBSERVATORY",
+   "source": "04-observatory.png",
+   "region": [
+    439,
+    4,
+    108,
+    499
+   ],
+   "front": [
+    53.5,
+    497.0
+   ],
+   "rear": [
+    53.5,
+    1.0
+   ],
+   "alpha_span": 497,
+   "solid_width": 106,
+   "length": 1.0
+  },
+  "prison": {
+   "type_id": 5,
+   "name": "PRISON",
+   "source": "05-prison.png",
+   "region": [
+    584,
+    4,
+    126,
+    494
+   ],
+   "front": [
+    62.0,
+    491.0
+   ],
+   "rear": [
+    62.0,
+    1.0
+   ],
+   "alpha_span": 491,
+   "solid_width": 123,
+   "length": 0.99
+  },
+  "alcatraz": {
+   "type_id": 6,
+   "name": "ALCATRAZ",
+   "source": "06-alcatraz.png",
+   "region": [
+    729,
+    4,
+    120,
+    505
+   ],
+   "front": [
+    59.0,
+    502.0
+   ],
+   "rear": [
+    59.0,
+    1.0
+   ],
+   "alpha_span": 502,
+   "solid_width": 117,
+   "length": 1.01
+  },
+  "livestock": {
+   "type_id": 7,
+   "name": "LIVESTOCK",
+   "source": "07-livestock.png",
+   "region": [
+    874,
+    4,
+    112,
+    498
+   ],
+   "front": [
+    55.5,
+    495.0
+   ],
+   "rear": [
+    55.5,
+    1.0
+   ],
+   "alpha_span": 495,
+   "solid_width": 110,
+   "length": 1.0
+  },
+  "drill": {
+   "type_id": 8,
+   "name": "THE DRILL",
+   "source": "08-drill.png",
+   "region": [
+    1019,
+    4,
+    97,
+    503
+   ],
+   "front": [
+    48.0,
+    500.0
+   ],
+   "rear": [
+    48.0,
+    1.0
+   ],
+   "alpha_span": 500,
+   "solid_width": 95,
+   "length": 1.01
+  },
+  "harpoon": {
+   "type_id": 9,
+   "name": "HARPOON",
+   "source": "09-harpoon.png",
+   "region": [
+    1164,
+    4,
+    120,
+    489
+   ],
+   "front": [
+    59.5,
+    487.0
+   ],
+   "rear": [
+    59.5,
+    1.0
+   ],
+   "alpha_span": 487,
+   "solid_width": 118,
+   "length": 0.98
+  },
+  "observation-box": {
+   "type_id": 10,
+   "name": "OBSERVATION BOX",
+   "source": "10-observation-box.png",
+   "region": [
+    1309,
+    4,
+    104,
+    503
+   ],
+   "front": [
+    51.5,
     501.0
    ],
    "rear": [
-    80.0,
-    0.0
+    51.5,
+    1.0
    ],
-   "alpha_span": 502
+   "alpha_span": 501,
+   "solid_width": 102,
+   "length": 1.01
   },
-  "sleeper": {
+  "cannon": {
+   "type_id": 11,
+   "name": "CANNON",
+   "source": "11-cannon.png",
    "region": [
-    1103,
-    6,
-    160,
-    506
+    1454,
+    4,
+    120,
+    504
    ],
    "front": [
-    79.5,
+    59.5,
+    502.0
+   ],
+   "rear": [
+    59.5,
+    1.0
+   ],
+   "alpha_span": 502,
+   "solid_width": 118,
+   "length": 1.01
+  },
+  "machine-gun": {
+   "type_id": 12,
+   "name": "MACHINE GUN",
+   "source": "12-machine-gun.png",
+   "region": [
+    1599,
+    4,
+    135,
+    503
+   ],
+   "front": [
+    67.0,
+    500.0
+   ],
+   "rear": [
+    67.0,
+    1.0
+   ],
+   "alpha_span": 500,
+   "solid_width": 133,
+   "length": 1.01
+  },
+  "missile-launcher": {
+   "type_id": 13,
+   "name": "MISSILE-LAUNCHER",
+   "source": "13-missile-launcher.png",
+   "region": [
+    1744,
+    4,
+    108,
+    505
+   ],
+   "front": [
+    53.5,
+    502.0
+   ],
+   "rear": [
+    53.5,
+    1.0
+   ],
+   "alpha_span": 502,
+   "solid_width": 106,
+   "length": 1.01
+  },
+  "tank": {
+   "type_id": 14,
+   "name": "TANK",
+   "source": "14-tank.png",
+   "region": [
+    4,
+    516,
+    106,
+    500
+   ],
+   "front": [
+    52.5,
+    498.0
+   ],
+   "rear": [
+    52.5,
+    1.0
+   ],
+   "alpha_span": 498,
+   "solid_width": 104,
+   "length": 1.0
+  },
+  "oil": {
+   "type_id": 15,
+   "name": "OIL",
+   "source": "15-oil.png",
+   "region": [
+    149,
+    516,
+    100,
+    504
+   ],
+   "front": [
+    49.5,
+    502.0
+   ],
+   "rear": [
+    49.5,
+    1.0
+   ],
+   "alpha_span": 502,
+   "solid_width": 98,
+   "length": 1.01
+  },
+  "crane": {
+   "type_id": 16,
+   "name": "CRANE",
+   "source": "16-crane.png",
+   "region": [
+    294,
+    516,
+    109,
+    499
+   ],
+   "front": [
+    54.0,
+    496.0
+   ],
+   "rear": [
+    54.0,
+    1.0
+   ],
+   "alpha_span": 496,
+   "solid_width": 107,
+   "length": 1.0
+  },
+  "merchandise": {
+   "type_id": 17,
+   "name": "MERCHANDISE",
+   "source": "17-merchandise-combat.png",
+   "region": [
+    439,
+    516,
+    137,
+    492
+   ],
+   "front": [
+    67.5,
+    490.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 490,
+   "solid_width": 134,
+   "length": 0.99
+  },
+  "xl-merchandise": {
+   "type_id": 18,
+   "name": "XL MERCHANDISE",
+   "source": "18-xl-merchandise.png",
+   "region": [
+    584,
+    516,
+    121,
+    508
+   ],
+   "front": [
+    60.0,
+    506.0
+   ],
+   "rear": [
+    60.0,
+    1.0
+   ],
+   "alpha_span": 506,
+   "solid_width": 119,
+   "length": 1.02
+  },
+  "bio-greenhouse": {
+   "type_id": 19,
+   "name": "BIO-GREENHOUSE",
+   "source": "19-bio-greenhouse.png",
+   "region": [
+    729,
+    516,
+    100,
+    504
+   ],
+   "front": [
+    49.5,
+    502.0
+   ],
+   "rear": [
+    49.5,
+    1.0
+   ],
+   "alpha_span": 502,
+   "solid_width": 98,
+   "length": 1.01
+  },
+  "refrigerator": {
+   "type_id": 20,
+   "name": "REFRIGERATOR",
+   "source": "20-refrigerator.png",
+   "region": [
+    874,
+    516,
+    105,
+    499
+   ],
+   "front": [
+    52.0,
+    497.0
+   ],
+   "rear": [
+    52.0,
+    1.0
+   ],
+   "alpha_span": 497,
+   "solid_width": 103,
+   "length": 1.0
+  },
+  "tender": {
+   "type_id": 21,
+   "name": "TENDER",
+   "source": "21-tender-combat.png",
+   "region": [
+    1019,
+    516,
+    141,
+    502
+   ],
+   "front": [
+    70.0,
+    500.0
+   ],
+   "rear": [
+    70.0,
+    1.0
+   ],
+   "alpha_span": 500,
+   "solid_width": 139,
+   "length": 1.01
+  },
+  "spy": {
+   "type_id": 22,
+   "name": "SPY",
+   "source": "22-spy.png",
+   "region": [
+    1164,
+    516,
+    102,
+    499
+   ],
+   "front": [
+    50.0,
+    497.0
+   ],
+   "rear": [
+    50.0,
+    1.0
+   ],
+   "alpha_span": 497,
+   "solid_width": 99,
+   "length": 1.0
+  },
+  "barracks": {
+   "type_id": 23,
+   "name": "BARRACKS",
+   "source": "23-barracks-combat.png",
+   "region": [
+    1309,
+    516,
+    141,
+    491
+   ],
+   "front": [
+    70.0,
+    489.0
+   ],
+   "rear": [
+    70.0,
+    1.0
+   ],
+   "alpha_span": 489,
+   "solid_width": 139,
+   "length": 0.99
+  },
+  "xl-barracks": {
+   "type_id": 24,
+   "name": "XL BARRACKS",
+   "source": "24-xl-barracks.png",
+   "region": [
+    1454,
+    516,
+    101,
+    494
+   ],
+   "front": [
+    50.0,
+    492.0
+   ],
+   "rear": [
+    50.0,
+    1.0
+   ],
+   "alpha_span": 492,
+   "solid_width": 99,
+   "length": 0.99
+  },
+  "boiler": {
+   "type_id": 25,
+   "name": "BOILER",
+   "source": "25-boiler.png",
+   "region": [
+    1599,
+    516,
+    112,
+    508
+   ],
+   "front": [
+    55.5,
     505.0
    ],
    "rear": [
-    79.5,
-    0.0
+    55.5,
+    1.0
    ],
-   "alpha_span": 506
-  },
-  "boxcar": {
-   "region": [
-    270,
-    512,
-    157,
-    482
-   ],
-   "front": [
-    78.0,
-    481.0
-   ],
-   "rear": [
-    78.0,
-    0.0
-   ],
-   "alpha_span": 482
-  },
-  "observation": {
-   "region": [
-    684,
-    512,
-    169,
-    485
-   ],
-   "front": [
-    84.0,
-    484.0
-   ],
-   "rear": [
-    84.0,
-    0.0
-   ],
-   "alpha_span": 485
-  },
-  "armored": {
-   "region": [
-    1101,
-    512,
-    165,
-    485
-   ],
-   "front": [
-    82.0,
-    484.0
-   ],
-   "rear": [
-    82.0,
-    0.0
-   ],
-   "alpha_span": 485
+   "alpha_span": 505,
+   "solid_width": 110,
+   "length": 1.02
   }
  }
 }

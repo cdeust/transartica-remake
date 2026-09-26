@@ -15,3 +15,9 @@ is generic authored scenery and cannot reveal an unknown rail or location.
 
 The train is currently one sprite. Independent wagon movement through curves,
 train reorganisation and combat animations are not implemented by this asset.
+
+vehicles-overhead.png/json: current travel-view atlas, one rigid top-down drawing
+per original wagon type 1-25, built by tools/build_overhead_atlas.py from the
+remake art masters in output/imagegen/wagon-catalogue-20260926/ (remake
+silhouettes, not reconstructed original sprites). The older per-heading
+vehicles-*.png sheets and train-east.png are no longer drawn by the renderer.
