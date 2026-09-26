@@ -6,4 +6,6 @@ Le worktree appartient à la session Codex qui réalise le test. La PR distante 
 
 La réussite exige que le chemin du worktree et sa branche locale aient disparu, tandis que le commit reste disponible dans la PR GitHub. Leur présence après le push constitue un échec.
 
-État : préparation du test.
+PR de test : https://github.com/cdeust/transartica-remake/pull/1
+
+État : ce commit constitue le push mesuré. Le résultat sera vérifié depuis le checkout principal après le retour du push.
