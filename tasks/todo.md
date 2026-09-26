@@ -1,3 +1,13 @@
+## Décision : train en vue de dessus (propriétaire, 26 septembre)
+
+Réponse « oui » du propriétaire à : vue de dessus, wagons à l'échelle, redessinés ; abandon de la 3D et de
+la perspective oblique pour les véhicules. Base : prototype Codex `output/imagegen/vehicles-overhead-prototype-v2.*`,
+bancs `tasks/validation/review_overhead_{prototype,convoy}.gd`.
+
+- [ ] Intégrer la planche de dessus au voyage (rotation rigide, gabarit identique dans les 8 caps).
+- [ ] Composition dessinée dérivée de la table des wagons (`train_wagons.gd`), un dessin par type ; 6 types initiaux d'abord.
+- [ ] Dessiner les 19 autres types (achat à l'atelier).
+
 ## Commerce en ville (26 septembre, Claude)
 
 - [x] Masse des wagons décodée (TIME 0x2a77/0x2b4a) ; table des wagons et masse dynamique.
@@ -43,7 +53,7 @@ Ownership: Codex generates images and owns travel integration; Claude owns sprit
 
 - [x] Frein de service progressif (−5/cycle, régulateur conservé) ; preuves dans evidence/braking-rules.md.
 - [x] Circulation sur tout le réseau : règles TIME décodées (evidence/rail-network.md), game/scripts/rail_network.gd, train_journey.gd v2, aiguillages cliquables et sauvegardés. 8 suites PASS.
-- [x] Vue oblique pixel art restaurée (référence propriétaire), caméra fixe avec recentrage en bord d'écran, rails depuis le réseau vivant, aiguillages cliquables. La vue de dessus est abandonnée (« cheap view »).
+- [x] Vue oblique pixel art restaurée (référence propriétaire), caméra fixe avec recentrage en bord d'écran, rails depuis le réseau vivant, aiguillages cliquables. L'ancienne vue de dessus plate de la carte (« cheap view ») est abandonnée ; ne pas confondre avec la vue de dessus des véhicules retenue le 26 septembre (section « Décision : train en vue de dessus »).
 - [ ] Sprites du train pour W, SE, NW, NE (S, N, SW par symétrie) : prompts dans output/imagegen/travel-train-headings-prompt.md. En attendant, les diagonales utilisent une rotation, rejetée par le propriétaire (« adapter la perspective »).
   - [x] Claude : `tools/sprite_pipeline.py` contrôle, met à l'échelle et ancre chaque image générée, puis écrit le manifeste des 8 caps. Mode d'emploi et constats (échelle NE/SE, ancres, intégration) : tasks/handoff-sprites.md.
   - [x] Claude : module autonome `game/scripts/pixel_field.gd` (fumée, vapeur, neige, étincelles, débris, lueur additive ; inspiré de Noita), testé, non raccordé à la scène. Même note de passation.
