@@ -49,7 +49,8 @@ func load_from_project(project_root: String) -> bool:
 	if not FileAccess.file_exists(path):
 		return false
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
-	if not parsed is Dictionary or not parsed.has("stock_init") or parsed.goods_names.size() != GOODS_KINDS:
+	if not parsed is Dictionary or not parsed.has("stock_init") or parsed.goods_names.size() != GOODS_KINDS \
+			or not parsed.has("workshop") or parsed.get("wagon_names", []).size() != 25:
 		return false
 	data = parsed
 	return true
