@@ -322,3 +322,13 @@ Contrôle final : 59 dépôts examinés ; le worktree concurrent
 est apparu pendant l’audit et contient 7 fichiers modifiés ou nouveaux non commités.
 Il est préservé. Un dépôt de fixture temporaire a renvoyé une erreur Git ;
 aucune suppression dans les sessions Claude actives. Aucun processus Godot restant.
+
+## Codex native cleanup test, 2026-09-26
+
+- [x] Create documentation-only draft test PR #2, commit ccdf0f9c7b623027d337ca6c094e785308572680.
+- [x] Verify real push removes its registered worktree and local branch automatically, with no manual worktree disposal.
+- [x] Observe native SessionStart, Stop and SessionEnd, each exit 0; startup 0.114 s and end 0.543 s in the recorded probe.
+- [x] Confirm active writer protection, Cortex completion receipt, then automatic rollout removal.
+- [x] Remove recorder, intermediate captures and empty worktree parents; verify native test processes exited.
+
+Evidence: tasks/validation/codex-hook-native-20260926.json. PR remains draft, not for merge. Existing Claude worktree and concurrent game edits were preserved. No CI checks configured on test PR.
