@@ -48,8 +48,10 @@ bancs `tasks/validation/review_overhead_{prototype,convoy}.gd`.
   référence avant : `overhead-train-after-tests.log`, code de jeu inchangé depuis). Captures natives :
   `tasks/validation/overhead-atlas-{straight,curve,after-purchase}.png` (achat réel de CANNON, CRANE, TANK,
   THE DRILL : 10 véhicules dessinés).
-  Limites connues : largeurs dessinées inégales (95 à 139 texels ; les 19 nouveaux sont plus étroits que les
-  6 de départ), propriété des dessins, pas corrigée ; XL MERCHANDISE et XL BARRACKS dessinés de la même
+  Largeurs : corrigées par le redesign Codex (`output/imagegen/wagon-redesign-20260926/`, commit `7c704fa`) ;
+  l'outil lit désormais ce catalogue, 25 largeurs mesurées 134-139 texels (auparavant 95-139), longueurs 0.99-1.01.
+  Tests 11/11 PASS (`tasks/validation/overhead-atlas-redesign-tests.log`), captures natives régénérées.
+  Limites restantes : XL MERCHANDISE et XL BARRACKS dessinés de la même
   longueur que les autres, donc non plus longs à l'écran ; attelage arrière de la locomotive touchant le bord
   haut du canevas source (3 px) ; alpha max 254 comme dans le prototype. Sens physique des extrémités
   toujours non vérifié contre une source.

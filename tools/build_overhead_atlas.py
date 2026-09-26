@@ -37,7 +37,7 @@ from PIL import Image
 from scipy import ndimage
 
 REPO = Path(__file__).resolve().parent.parent
-SOURCE_DIR = REPO / "output/imagegen/wagon-catalogue-20260926"
+SOURCE_DIR = REPO / "output/imagegen/wagon-redesign-20260926"
 OUT_PNG = REPO / "game/assets/travel/vehicles-overhead.png"
 OUT_JSON = REPO / "game/assets/travel/vehicles-overhead.json"
 SCALE = 3  # 1488 source px of locomotive -> ~496 texels, the previous atlas density.
