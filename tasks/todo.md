@@ -1,5 +1,8 @@
 ## Décision : train en vue de dessus (propriétaire, 26 septembre)
 
+Catalogue graphique Codex en cours : [plan, sources et préparation du combat](wagon-art-catalogue.md).
+Livrables dans `output/imagegen/wagon-catalogue-20260926/`; intégration du voyage conservée par Opus.
+
 Réponse « oui » du propriétaire à : vue de dessus, wagons à l'échelle, redessinés ; abandon de la 3D et de
 la perspective oblique pour les véhicules. Base : prototype Codex `output/imagegen/vehicles-overhead-prototype-v2.*`,
 bancs `tasks/validation/review_overhead_{prototype,convoy}.gd`.
