@@ -1,0 +1,38 @@
+{
+  "run_id": "run_mug6076t_9i5whr",
+  "status": "failed_missing_codebase_mcp",
+  "feature": "Testable pixel-art faithful Transarctica remake preview: English Amiga 500 ECS reference, original map and story, modern keyboard/mouse controls, simulation timing independent of rendering; no invented original rules, economy, or story.",
+  "source_documents_read": [
+    "FIDELITE.md",
+    "README.md"
+  ],
+  "preflight": {
+    "tool": "mcp__cortex__memory_stats",
+    "success": true,
+    "total_memories": 48719,
+    "episodic_count": 45255,
+    "semantic_count": 3464,
+    "has_vector_search": true
+  },
+  "runner": {
+    "submit_action_result_correlation_id": "preflight_cortex_probe",
+    "submit_error": "unknown run_id: run_mug6076t_9i5whr",
+    "get_pipeline_state_error": "unknown run_id: run_mug6076t_9i5whr"
+  },
+  "context_budget": {
+    "prd_context": "poc",
+    "context_window_size": 12000,
+    "total_budget": -29200,
+    "overhead_estimate": 40000,
+    "generation_budget": -14600,
+    "note": "Runner returned negative allocations; no section generation was attempted."
+  },
+  "spec_output": null,
+  "reason": "The existing run ID is unknown to the PRD runner. No new run was started and no hand-written specification was substituted for pipeline output.",
+  "root_verification": {
+    "existing_run_found": true,
+    "next_action": "preflight_ai_architect_probe",
+    "error": "health_check pipeline tool not exposed; runner terminal failed",
+    "effect": "Formal grounded PRD unavailable. Existing FIDELITE and execution-contract govern preview; no formal spec claimed."
+  }
+}

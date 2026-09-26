@@ -1,0 +1,30 @@
+{
+  "trace_sha256": "f7c62605da8c8cd1bdbb7f662edd9ad21636c682483045c033a8f66f77185ebf",
+  "trace_bytes": 188701524,
+  "private_trace": "reference-private/runtime.trace.gz",
+  "events": [
+    {
+      "script": "traduc.co",
+      "debug_file_address": "0x03d666",
+      "instruction": "oinkey",
+      "observed_value": 49,
+      "observed_key": "1"
+    },
+    {
+      "script": "traduc.co",
+      "debug_file_address": "0x03d68b",
+      "instructions": "cstore oimmb 0x01 smainb 0x0015",
+      "effect": "main byte at offset0x15 set to1 after language selection"
+    },
+    {
+      "script": "carte.co",
+      "debug_file_address": "0x051ff3",
+      "instruction": "cstop",
+      "observation": "map script was executed after language selection; not evidence of a completed campaign"
+    }
+  ],
+  "limits": [
+    "Runtime addresses are not offsets in the unpacked script file.",
+    "No full campaign or final interaction observed."
+  ]
+}

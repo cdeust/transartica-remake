@@ -1,0 +1,10 @@
+Use case: precise-object-edit. Create a replacement southeast-facing atlas for the six modular vehicles in reference image 2, preserving the accepted dark navy steel, brass trim, snowy roofs, glowing amber windows, rivets and detailed pixel art of reference image 1. This is a game art correction: each vehicle must keep its complete apparent screen-space LENGTH AND WIDTH across headings. Do NOT use perspective foreshortening, do NOT stretch existing pixels, do NOT enlarge widths to compensate. Redraw the roofs/chassis to the specified silhouette dimensions. Keep elevated oblique depiction with visible front faces, same front-facing south direction as image 2, not a pure overhead view. All vehicles nose down, rear up, centered on vertical axes. No ground, shadows, glow clouds, text or rails. Truly transparent background.
+Output exactly 1536x1536 pixels in 3 columns x 2 rows, each cell 512x768. Centers: first row (256,384),(768,384),(1280,384); second row (256,1152),(768,1152),(1280,1152).
+Full opaque silhouette dimensions including couplers, in output pixels:
+locomotive first cell 563 high x276 wide;
+coal tender second cell 404 high x223 wide;
+sleeper passenger third cell 459 high x218 wide;
+wooden boxcar fourth cell 450 high x237 wide;
+glazed observation fifth cell 512 high x233 wide;
+armored gun wagon sixth cell 452 high x250 wide.
+These are measured from the accepted reference, not optional suggestions. Each silhouette centered in its cell. Both coupling ends visible along vertical centerline. Preserve six unique vehicle identities and asymmetric front details: locomotive boiler/cowcatcher at bottom, observation rounded conservatory at bottom, cannon aimed bottom. No additional vehicles. Snow and brass detail same scale across all vehicles. Roof length must be redrawn longer where required while front face width stays fixed.

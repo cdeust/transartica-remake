@@ -1,0 +1,60 @@
+{
+  "project": "/Users/cdeust/Developments/Transartica",
+  "research_tests": {
+    "passed": 18,
+    "log": "tasks/validation/research-tests.txt"
+  },
+  "application_tests": {
+    "status": "pass",
+    "log": "tasks/validation/game-tests.txt",
+    "suites": 5
+  },
+  "macos_export": {
+    "status": "pass",
+    "native_window_opened": false,
+    "save_path": "builds/macos/save/view.json",
+    "packaged_restart_test": "pass",
+    "log": "tasks/validation/engine-room-export.txt",
+    "native_window_note": "This final revision tested headless packaged runtime; native UI inspected from same source."
+  },
+  "windows_export": {
+    "status": "built",
+    "format": "PE32+ GUI x86-64",
+    "executed_on_windows": false
+  },
+  "quality_gates": {
+    "craftsmanship": "0 errors, 0 warnings",
+    "source_discipline": "0 errors, 3 advisory authored visual palette constants"
+  },
+  "scope": "Interactive engine room and separate live instrument screen; original locomotive vectors, complete session persistence, prototype discovery mask. No world travel, commerce, crew management or playable campaign.",
+  "artifacts": [
+    {
+      "file": "Transartica-Windows.zip",
+      "bytes": 41451360,
+      "sha256": "c4e91f1b07829ea396bae9b7bdea4c4fc53cdf82f14288ca9dc1f05ef08c779c"
+    },
+    {
+      "file": "Transartica-macOS.zip",
+      "bytes": 70628854,
+      "sha256": "7938877065a01711e0b9afb190483bd80e26d600b435af5294fd1e8d8081ea68"
+    }
+  ],
+  "visual_revision": "Approved engine room, alpha-matte engineer hover, separate illustrated instruments. Oblique world and full gameplay are next phases.",
+  "visual_validation": "Native source engine room hover and instrument scene inspected; exported runtime probe recorded separately.",
+  "engine_model": {
+    "cadence": "1 second per cycle provisional; 3 original game minutes per cycle",
+    "source": "tasks/evidence/locomotive-rules.md",
+    "native_input_test": "pass",
+    "packaged_model_test": "pass",
+    "save_state": true
+  },
+  "performance": {
+    "before_cpu_seconds": 3.18,
+    "after_cpu_seconds": 2.12,
+    "before_wall_seconds": 22.36,
+    "after_wall_seconds": 21.31,
+    "after_max_rss_bytes": 258670592,
+    "protocol": "10s active plus10s paused, native1440x900, one run each; no endurance claim",
+    "changes": "60fps cap, cached paused draw state, low-processor mode"
+  }
+}

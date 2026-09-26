@@ -1,0 +1,46 @@
+[
+  {
+    "file": "output/imagegen/vehicles-southeast-gabarit-attempt-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "requested_size": [
+      1536,
+      1536
+    ],
+    "alpha_corners": [
+      0,
+      0,
+      1,
+      0
+    ],
+    "transparent_pixels": 890794,
+    "integration": "rejected",
+    "reason": "diagonal orientation instead of vertical; wrong canvas",
+    "sha256": "72a0b3593d4730764979ae5ec678b8a9d88b527ef79f44ac03162f6805d82007",
+    "artifact_removed": "2026-09-26 owner-requested cleanup; prompts and rejection measurements retained"
+  },
+  {
+    "file": "output/imagegen/vehicles-southeast-gabarit-attempt-v2.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "requested_size": [
+      1536,
+      1536
+    ],
+    "alpha_corners": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "transparent_pixels": 628652,
+    "integration": "rejected",
+    "reason": "canvas 1024x1536 instead of 1536x1536; requested cell layout not satisfied; dimension conformance not established",
+    "sha256": "b4879c5d35fabd69f01c1eb9506c163b69a386ad6a91a84d819d956bcfd32088",
+    "artifact_removed": "2026-09-26 owner-requested cleanup; prompts and rejection measurements retained"
+  }
+]

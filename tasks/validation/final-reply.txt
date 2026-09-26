@@ -1,0 +1,3 @@
+J’ai corrigé le suivi par wagon et rouvert une version de test en pause. Chaque véhicule suit désormais le chemin parcouru, avec sa propre vue directionnelle. Les neuf suites Godot passent.
+
+Le test repart du départ : l’ancienne sauvegarde ne permet pas de retrouver la position des wagons à l’aiguillage. Elle est conservée intacte. Espace reprend le jeu ; B commande le frein.

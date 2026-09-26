@@ -1,0 +1,23 @@
+unittest.case.FunctionTestCase (test_carte_map_layout_and_reachability) ... ok
+unittest.case.FunctionTestCase (test_cdim_22_and_fail_closed) ... ok
+unittest.case.FunctionTestCase (test_clive_transitive_store_operand) ... ok
+unittest.case.FunctionTestCase (test_relative_jump_and_nested_expression) ... ok
+unittest.case.FunctionTestCase (test_source_dispatch_and_real_prefixes) ... ok
+unittest.case.FunctionTestCase (test_text2k_entry_reachable_boundaries) ... ok
+unittest.case.FunctionTestCase (test_time_entry_reachable_boundaries) ... ok
+unittest.case.FunctionTestCase (test_yoda_and_textek_reachable_boundaries) ... ok
+test_independent_guide_matches_43_records_and_keeps_tibesti_unresolved (test_decode_cities.DecodeCitiesTests.test_independent_guide_matches_43_records_and_keeps_tibesti_unresolved) ... ok
+test_real_alis_switches_extract_names_categories_and_footprint_offsets (test_decode_cities.DecodeCitiesTests.test_real_alis_switches_extract_names_categories_and_footprint_offsets) ... ok
+test_triplet_decoder_preserves_raw_values_and_sign_extends_field0 (test_decode_cities.DecodeCitiesTests.test_triplet_decoder_preserves_raw_values_and_sign_extends_field0) ... ok
+test_column_major_conversion_roundtrips_every_byte (test_decode_map.DecodeMapTests.test_column_major_conversion_roundtrips_every_byte) ... ok
+test_decode_writes_numeric_grid_and_standalone_html (test_decode_map.DecodeMapTests.test_decode_writes_numeric_grid_and_standalone_html) ... ok
+test_real_observation_matches_independent_city_oracle_when_present (test_decode_map.DecodeMapTests.test_real_observation_matches_independent_city_oracle_when_present) ... ok
+test_rejects_bad_input_size (test_decode_map.DecodeMapTests.test_rejects_bad_input_size) ... ok
+test_scheduler_separates_blocks_and_eof_flushes (test_index_trace.TraceIndexTests.test_scheduler_separates_blocks_and_eof_flushes) ... ok
+test_variants_retain_branch_outcomes_and_counts (test_index_trace.TraceIndexTests.test_variants_retain_branch_outcomes_and_counts) ... ok
+test_time_reader_matches_every_observed_instruction (test_trace_oracle.RuntimeOracleTests.test_time_reader_matches_every_observed_instruction) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.110s
+
+OK

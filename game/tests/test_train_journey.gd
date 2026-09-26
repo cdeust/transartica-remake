@@ -1,0 +1,304 @@
+extends SceneTree
+
+const EngineState = preload("res://scripts/engine_state.gd")
+const EngineSession = preload("res://scripts/engine_session.gd")
+const TrainJourney = preload("res://scripts/train_journey.gd")
+const RailNetwork = preload("res://scripts/rail_network.gd")
+const WorldData = preload("res://scripts/world_data.gd")
+
+var map_bytes := PackedByteArray()
+
+
+func _initialize() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
+	var failures: Array[String] = []
+	var world = WorldData.new()
+	if not world.load_from_project(ProjectSettings.globalize_path("res://").trim_suffix("/")):
+		push_error("private reference map unavailable")
+		quit(1)
+		return
+	map_bytes = world.map_bytes
+	_test_legacy_route(failures)
+	_test_path_samples(failures)
+	_test_visual_curve(failures)
+	_test_initial_progress(failures)
+	_test_engine_session_drives_movement(failures)
+	_test_pause_and_brake(failures)
+	_test_decoded_heading_rules(failures)
+	_test_initial_route(failures)
+	_test_switch_changes_route(failures)
+	_test_destroyed_track_blocks(failures)
+	_test_snapshot_and_validation(failures)
+	_test_network_snapshot(failures)
+	if failures.is_empty():
+		print("PASS: decoded rail network, curves, switches, double-speed tiles, boundaries, persistence")
+		quit(0)
+	else:
+		for failure in failures:
+			push_error(failure)
+		quit(1)
+
+
+func _network() -> RailNetwork:
+	var network := RailNetwork.new()
+	network.load_bytes(map_bytes)
+	return network
+
+
+func _journey(network = null) -> TrainJourney:
+	var journey := TrainJourney.new()
+	journey.network = network if network != null else _network()
+	return journey
+
+
+func _synthetic(cells: Dictionary) -> RailNetwork:
+	var bytes := PackedByteArray()
+	bytes.resize(RailNetwork.WIDTH * RailNetwork.HEIGHT)
+	for cell in cells:
+		var value: int = cells[cell]
+		bytes[cell.x * RailNetwork.HEIGHT + cell.y] = value + 256 if value < 0 else value
+	var network := RailNetwork.new()
+	network.load_bytes(bytes)
+	for cell in RailNetwork.INITIAL_WRITES:
+		# Keep synthetic maps free of the TABLE writes unless a test places them.
+		if not cells.has(cell):
+			network._initial[cell.x * RailNetwork.HEIGHT + cell.y] = 0
+	network.reset()
+	return network
+
+
+func _test_initial_progress(failures: Array[String]) -> void:
+	var detached := TrainJourney.new()
+	detached.advance(450)
+	_check(detached.distance_ticks == 0, "journey without a network does not move", failures)
+	var journey := _journey()
+	_check(journey.position == Vector2i(12, 62) and journey.heading == 6, "starts at the original position heading east", failures)
+	journey.advance(0)
+	journey.advance(-1)
+	_check(journey.distance_ticks == 0, "nonpositive speed does not move", failures)
+	journey.advance(450)
+	_check(journey.distance_ticks == 22 and journey.phase == 0, "capped speed divided by twenty, strict threshold", failures)
+	journey.advance(450)
+	_check(journey.distance_ticks == 21 and journey.phase == 1, "subtracts 23 ticks and advances one phase above 22", failures)
+	# Constant rate over the three phases: 23 + 21 of 69 ticks, cell center at 0.5.
+	_check(is_equal_approx(journey.fractional_position().x, 12.0 + (23.0 + 21.0) / 69.0 - 0.5), "interpolates along the heading", failures)
+
+
+func _test_engine_session_drives_movement(failures: Array[String]) -> void:
+	var large_engine = EngineState.new()
+	var small_engine = EngineState.new()
+	large_engine.speed = 450
+	small_engine.speed = 450
+	var large_journey := _journey()
+	var small_journey := _journey()
+	var large_session = EngineSession.new(large_engine, 0.5)
+	var small_session = EngineSession.new(small_engine, 0.5)
+	large_session.cycle_completed.connect(func() -> void: large_journey.advance(large_engine.speed))
+	small_session.cycle_completed.connect(func() -> void: small_journey.advance(small_engine.speed))
+	large_session.advance(60.0)
+	for frame in 240:
+		small_session.advance(0.25)
+	_check(large_journey.snapshot() == small_journey.snapshot(), "journey is independent of frame batching (15/60 FPS equivalent)", failures)
+
+
+func _test_pause_and_brake(failures: Array[String]) -> void:
+	var engine = EngineState.new()
+	engine.speed = 450
+	var journey := _journey()
+	var session = EngineSession.new(engine, 1.0)
+	session.cycle_completed.connect(func() -> void: journey.advance(engine.speed))
+	session.paused = true
+	session.advance(5.0)
+	_check(engine.cycles == 0 and journey.distance_ticks == 0, "pause prevents movement", failures)
+	var braked = EngineState.new()
+	braked.brake = true
+	var braked_journey := _journey()
+	var braked_session = EngineSession.new(braked, 1.0)
+	braked_session.cycle_completed.connect(func() -> void: braked_journey.advance(braked.speed))
+	braked_session.advance(3.0)
+	_check(braked.cycles == 3 and braked_journey.distance_ticks == 0, "stationary braked train does not move", failures)
+
+
+func _test_decoded_heading_rules(failures: Array[String]) -> void:
+	var network := _synthetic({Vector2i(5, 5): 6, Vector2i(6, 5): 22, Vector2i(7, 5): 23, Vector2i(8, 5): 15, Vector2i(9, 5): 40})
+	_check(network.turn(Vector2i(5, 5), 6) == 3 and network.turn(Vector2i(5, 5), 7) == 4, "curve tile 6: east to south-east, north-west to west", failures)
+	_check(network.turn(Vector2i(5, 5), 2) == 2, "curve keeps unrelated headings", failures)
+	_check(network.turn(Vector2i(6, 5), 6) == 6 and network.turn(Vector2i(7, 5), 6) == 3, "switch 22 straight, 23 diverges south-east", failures)
+	_check(network.turn(Vector2i(6, 5), 7) == 4, "trailing move through switch 22 rejoins westward", failures)
+	_check(network.progress_speed(Vector2i(8, 5), 6, 100) == 200 and network.progress_speed(Vector2i(8, 5), 2, 100) == 100, "tile 15 doubles progress only along 4/6", failures)
+	_check(network.progress_speed(Vector2i(9, 5), 8, 100) == 200, "tiles 38-52 double progress", failures)
+	_check(network.toggle_switch(Vector2i(6, 5)) and network.tile(Vector2i(6, 5)) == 23, "click on even switch adds one", failures)
+	_check(network.toggle_switch(Vector2i(6, 5)) and network.tile(Vector2i(6, 5)) == 22, "click on odd switch subtracts one", failures)
+	_check(not network.toggle_switch(Vector2i(5, 5)), "non-switch tiles cannot be toggled", failures)
+
+
+func _drive(journey: TrainJourney, limit: int) -> Array[Vector2i]:
+	var visited: Array[Vector2i] = [journey.position]
+	for cycle in limit:
+		journey.advance(450)
+		if visited[-1] != journey.position:
+			visited.append(journey.position)
+		if journey.blocked:
+			break
+	return visited
+
+
+func _test_initial_route(failures: Array[String]) -> void:
+	var journey := _journey()
+	var visited := _drive(journey, 20000)
+	_check(Vector2i(34, 62) in visited, "crosses the (34, 62) crossing that bounded the trial route", failures)
+	_check(Vector2i(40, 63) in visited and Vector2i(44, 67) in visited, "curve at (39, 62) turns onto the south-east diagonal", failures)
+	_check(Vector2i(45, 67) in visited and Vector2i(130, 68) in visited, "curve at (44, 67) resumes eastward", failures)
+	_check(journey.blocked and journey.position == Vector2i(130, 68) and journey.stop_reason == "station", "stops before the unported station tile at (131, 68)", failures)
+	_check(journey.next_cell() == Vector2i(131, 68), "reports the refused cell", failures)
+	var stopped := journey.snapshot()
+	journey.advance(450)
+	_check(journey.snapshot() == stopped, "boundary prevents further movement", failures)
+	var never_off_track := true
+	for cell in visited:
+		never_off_track = never_off_track and journey.network.tile(cell) != 0
+	_check(never_off_track, "every visited cell holds track", failures)
+	journey.reset()
+	_check(journey.position == Vector2i(12, 62) and not journey.blocked and journey.stop_reason.is_empty(), "reset clears the journey", failures)
+
+
+func _test_switch_changes_route(failures: Array[String]) -> void:
+	var network := _network()
+	_check(network.tile(Vector2i(54, 67)) == 22, "(54, 67) is a straight-set switch at game start", failures)
+	network.toggle_switch(Vector2i(54, 67))
+	var journey := _journey(network)
+	var visited := _drive(journey, 20000)
+	_check(Vector2i(55, 68) in visited and not Vector2i(55, 67) in visited, "diverging switch sends the train south-east", failures)
+	_check(journey.blocked and journey.next_cell() == Vector2i(138, 71), "diverging branch reaches a different station", failures)
+
+
+func _test_destroyed_track_blocks(failures: Array[String]) -> void:
+	var cells := {}
+	for x in range(10, 16):
+		cells[Vector2i(x, 62)] = 2
+	cells[Vector2i(16, 62)] = -50
+	var journey := _journey(_synthetic(cells))
+	journey.position = Vector2i(10, 62)
+	_drive(journey, 500)
+	_check(journey.blocked and journey.position == Vector2i(15, 62) and journey.stop_reason == "track destroyed", "negative track tile refuses entry", failures)
+
+
+func _test_snapshot_and_validation(failures: Array[String]) -> void:
+	var journey := _journey()
+	for cycle in 200:
+		journey.advance(450)
+	var before := journey.snapshot()
+	var resumed := _journey()
+	_check(resumed.restore(JSON.parse_string(JSON.stringify(before))), "restores JSON-decoded snapshot", failures)
+	_check(resumed.snapshot() == before, "round trip preserves partial state", failures)
+	var legacy := {"version": 1, "position": [33.0, 62.0], "heading": 6.0, "distance_ticks": 0.0, "phase": 0.0, "blocked": true}
+	_check(resumed.restore(legacy) and not resumed.blocked and resumed.position == Vector2i(33, 62), "old trial saves resume on ordinary track", failures)
+	var stable := resumed.snapshot()
+	var empty_cell := Vector2i(-1, -1)
+	for x in RailNetwork.WIDTH:
+		if resumed.network.tile(Vector2i(x, 36)) == 0:
+			empty_cell = Vector2i(x, 36)
+			break
+	for invalid in [
+		{"version": 2, "position": [empty_cell.x, empty_cell.y], "heading": 6, "distance_ticks": 0, "phase": 0, "blocked": false, "stop_reason": ""},
+		{"version": 2, "position": [12, 62], "heading": 5, "distance_ticks": 0, "phase": 0, "blocked": false, "stop_reason": ""},
+		{"version": 2, "position": [12, 62], "heading": 6, "distance_ticks": 23, "phase": 0, "blocked": false, "stop_reason": ""},
+		{"version": 2, "position": [12, 62], "heading": 6, "distance_ticks": 0, "phase": 3, "blocked": false, "stop_reason": ""},
+		{"version": 2, "position": [12, 62], "heading": 6, "distance_ticks": 0, "phase": 0, "blocked": true, "stop_reason": ""},
+		{"version": 3, "position": [12, 62], "heading": 6, "distance_ticks": 0, "phase": 0, "blocked": false, "stop_reason": ""},
+	]:
+		_check(not resumed.restore(invalid), "rejects malformed journey state %s" % JSON.stringify(invalid), failures)
+		_check(resumed.snapshot() == stable, "invalid restore leaves state unchanged", failures)
+
+
+func _test_network_snapshot(failures: Array[String]) -> void:
+	var network := _network()
+	network.toggle_switch(Vector2i(54, 67))
+	var saved: Variant = JSON.parse_string(JSON.stringify(network.snapshot()))
+	var restored := _network()
+	_check(restored.restore(saved) and restored.tile(Vector2i(54, 67)) == 23, "switch positions survive save and load", failures)
+	_check(not restored.restore({"version": 1, "switches": {"12,62": 3}}), "non-switch edits are rejected", failures)
+	_check(not restored.restore({"version": 1, "switches": {"54,67": 24}}), "switch values outside the pair are rejected", failures)
+	_check(restored.tile(Vector2i(54, 67)) == 23, "rejected restore keeps switches", failures)
+	restored.reset()
+	_check(restored.tile(Vector2i(54, 67)) == 22 and restored.tile(Vector2i(83, 67)) == 63, "reset returns to the TABLE-initialised map", failures)
+
+
+func _check(condition: bool, label: String, failures: Array[String]) -> void:
+	if not condition:
+		failures.append(label)
+
+
+func _test_visual_curve(failures: Array[String]) -> void:
+	var journey := _journey(_synthetic({Vector2i(11,62): 2, Vector2i(12,62): 6, Vector2i(13,63): 5}))
+	journey.advance(450)
+	var point := journey.fractional_position()
+	_check(point.x <= 12.0 and point.y == 62.0, "curve before the center remains on entry-to-center rail", failures)
+	journey.advance(450)
+	point = journey.fractional_position()
+	_check(is_equal_approx(point.x - 12.0, point.y - 62.0), "curve past the center follows center-to-exit rail", failures)
+
+
+func _test_path_samples(failures: Array[String]) -> void:
+	var cells := {}
+	for x in range(6, 13):
+		cells[Vector2i(x, 62)] = 2
+	cells[Vector2i(12,62)] = 23
+	cells[Vector2i(13,63)] = 5
+	cells[Vector2i(14,64)] = 5
+	var network := _synthetic(cells)
+	var journey := _journey(network)
+	var tail: Dictionary = journey.sample_behind(4.0)
+	_check(tail.ok and tail.position == Vector2(7.5,62) and tail.heading == 6, "initial tail follows connected straight track", failures)
+	_check(not journey.sample_behind(20.0).ok, "missing history is explicit", failures)
+	_check(not journey.sample_behind(-1.0).ok and not journey.sample_behind(INF).ok, "invalid offset rejected", failures)
+	var last := journey.distance_travelled()
+	for cycle in 4:
+		var old := journey.fractional_position()
+		journey.advance(450)
+		var arc := journey.distance_travelled()
+		_check(arc >= last, "arc coordinate is monotonic across phase and cell commits", failures)
+		_check(journey.fractional_position().distance_to(old) <= arc - last + 0.00001, "movement does not teleport across a phase", failures)
+		last = arc
+	var samples := []
+	for offset in [0.0, 0.25, 0.5, 0.75, 1.0, 2.0, 4.0]:
+		var sample: Dictionary = journey.sample_behind(offset)
+		_check(sample.ok, "curve history supplies wagon offset", failures)
+		if sample.ok:
+			var point: Vector2 = sample.position
+			_check((point.x <= 12.0 and is_equal_approx(point.y,62.0)) or is_equal_approx(point.x-12.0,point.y-62.0), "wagon point lies on actual straight or diagonal rail", failures)
+		samples.append(sample)
+	network.toggle_switch(Vector2i(12,62))
+	var saved := journey.snapshot()
+	var restored := _journey(network)
+	_check(restored.restore(JSON.parse_string(JSON.stringify(saved))), "history JSON restore succeeds", failures)
+	_check(is_equal_approx(restored.distance_travelled(), journey.distance_travelled()), "restore retains arc coordinate", failures)
+	var index := 0
+	for offset in [0.0, 0.25, 0.5, 0.75, 1.0, 2.0, 4.0]:
+		_check(journey.sample_behind(offset) == samples[index], "switch change cannot rewrite traveled route", failures)
+		_check(restored.sample_behind(offset) == samples[index], "saved route restores identical wagon samples", failures)
+		index += 1
+	var bad := saved.duplicate(true)
+	bad.path = [[12,62],[99,62]]
+	_check(not restored.restore(bad), "disconnected saved history rejected", failures)
+	_check(restored.snapshot() == saved, "failed history restore is atomic", failures)
+
+
+func _test_legacy_route(failures: Array[String]) -> void:
+	var network := _synthetic({Vector2i(12,62): 22, Vector2i(11,62): 2, Vector2i(13,62): 2, Vector2i(13,63): 5})
+	var journey := _journey(network)
+	var legacy := {"version": 2, "position": [12,62], "heading": 4, "distance_ticks": 0, "phase": 2, "blocked": false, "stop_reason": ""}
+	_check(journey.restore(legacy), "legacy trailing-switch state migrates", failures)
+	# Phase 2, tick 0: the head is 46/69 - 0.5 = 1/6 cell past the center.
+	_check(journey.sample_behind(0.15).ok, "known outgoing half remains renderable after migration", failures)
+	_check(not journey.sample_behind(0.2).ok, "legacy ambiguous incoming route is not invented", failures)
+	var migrated := journey.snapshot()
+	var restored := _journey(network)
+	_check(restored.restore(migrated) and restored.snapshot() == migrated, "explicit unknown incoming route round trips", failures)
+	var old := journey.distance_travelled()
+	for cycle in 3:
+		journey.advance(450)
+	_check(journey.distance_travelled() >= old, "legacy route resumes and records new actual path", failures)

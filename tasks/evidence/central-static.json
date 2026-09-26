@@ -1,0 +1,177 @@
+{
+  "scope": "static bytecode only; no successful full campaign execution",
+  "source": "reference-private/unpacked/carte.alis",
+  "trigger": {
+    "global_word": "0x1c",
+    "required_value": 33,
+    "meaning": "UI action meaning not yet established"
+  },
+  "tile_case": -124,
+  "flag_write": {
+    "instruction": "0x28cc",
+    "main_offset": "0x6515",
+    "value": 1
+  },
+  "message_queue": {
+    "instruction": "0x290b",
+    "id": 125,
+    "text_switch": "TEXTEK 0x46f8 case125 target0x4708",
+    "meaning": "central computer destroyed and Gycode passage announced open"
+  },
+  "unknowns": [
+    "all prerequisites for action33",
+    "flag readers that perform world change",
+    "complete ending sequence"
+  ],
+  "instructions": [
+    {
+      "offset": 10260,
+      "end": 10269,
+      "code": 31,
+      "name": "ceval",
+      "args": [
+        {
+          "offset": 10261,
+          "code": 56,
+          "name": "oeval",
+          "args": [
+            {
+              "offset": 10262,
+              "code": 32,
+              "name": "omainw",
+              "args": [
+                28
+              ]
+            },
+            {
+              "offset": 10265,
+              "code": 74,
+              "name": "oegal",
+              "args": [
+                {
+                  "offset": 10266,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    33
+                  ]
+                }
+              ]
+            },
+            {
+              "offset": 10268,
+              "code": 58,
+              "name": "ofin",
+              "args": []
+            }
+          ]
+        }
+      ],
+      "targets": [],
+      "flow": "next"
+    },
+    {
+      "offset": 10348,
+      "end": 10372,
+      "code": 46,
+      "name": "cswitch1",
+      "args": [
+        {
+          "offset": 10349,
+          "code": 20,
+          "name": "odirw",
+          "args": [
+            48
+          ]
+        },
+        4,
+        -124,
+        -121,
+        -117,
+        63,
+        64
+      ],
+      "targets": [
+        10444,
+        10427,
+        10410,
+        10376,
+        10393
+      ],
+      "flow": "switch"
+    },
+    {
+      "offset": 10444,
+      "end": 10450,
+      "code": 30,
+      "name": "cstore",
+      "args": [
+        {
+          "offset": 10445,
+          "code": 0,
+          "name": "oimmb",
+          "args": [
+            1
+          ]
+        },
+        {
+          "offset": 10447,
+          "code": 30,
+          "name": "smainb",
+          "args": [
+            25877
+          ]
+        }
+      ],
+      "targets": [],
+      "flow": "next"
+    },
+    {
+      "offset": 10507,
+      "end": 10518,
+      "code": 30,
+      "name": "cstore",
+      "args": [
+        {
+          "offset": 10508,
+          "code": 0,
+          "name": "oimmb",
+          "args": [
+            125
+          ]
+        },
+        {
+          "offset": 10510,
+          "code": 56,
+          "name": "seval",
+          "args": [
+            {
+              "offset": 10511,
+              "code": 30,
+              "name": "omainb",
+              "args": [
+                24911
+              ]
+            },
+            {
+              "offset": 10514,
+              "code": 58,
+              "name": "ofin",
+              "args": []
+            },
+            {
+              "offset": 10515,
+              "code": 38,
+              "name": "smaintc",
+              "args": [
+                24914
+              ]
+            }
+          ]
+        }
+      ],
+      "targets": [],
+      "flow": "next"
+    }
+  ]
+}

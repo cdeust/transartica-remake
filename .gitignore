@@ -1,0 +1,13 @@
+/reference-private/
+__pycache__/
+*.pyc
+
+/.toolchain/
+/.cache/
+/builds/
+/game/.godot/
+/game/private-data/
+/game/save/
+
+.DS_Store
+/.claude/session-cache.json

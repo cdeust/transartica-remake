@@ -1,0 +1,8 @@
+MAGIC_NUMBER (warn)    game/scripts/engine_room_controls.gd:129: draw_rect(Rect2(260, 12, 1080, 34), Color(0.025, 0.04, 0.055, 0.90))
+MAGIC_NUMBER (warn)    game/scripts/engine_room_controls.gd:168: draw_rect(Rect2(370, 330, 860, 348), Color(0.035, 0.055, 0.07, 0.97))
+MAGIC_NUMBER (warn)    game/scripts/engine_room_controls.gd:176: draw_rect(Rect2(400, 375, 800, 190), Color(0.04, 0.055, 0.065, 0.97))
+
+Profile: standard  (files mode)
+Errors:   0  (blocking)
+Warnings: 3  (informational — promoted to errors when profile=strict)
+PASSED: no blocking violations.

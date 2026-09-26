@@ -1,0 +1,511 @@
+{
+  "version": 1,
+  "source": "Authored ground-contact anchors measured on generated vehicle atlases, 26 September 2026; reference identity game/assets/travel/train-east.png. Visual calibration, not original game physics. Regions preserve original generated image bytes.",
+  "headings": {
+    "6": {
+      "file": "vehicles-east.png",
+      "vehicles": {
+        "locomotive": {
+          "region": [
+            0,
+            0,
+            550,
+            512
+          ],
+          "front": [
+            486,
+            443
+          ],
+          "rear": [
+            62,
+            205
+          ]
+        },
+        "tender": {
+          "region": [
+            550,
+            0,
+            474,
+            512
+          ],
+          "front": [
+            939,
+            383
+          ],
+          "rear": [
+            621,
+            205
+          ]
+        },
+        "sleeper": {
+          "region": [
+            1024,
+            0,
+            512,
+            512
+          ],
+          "front": [
+            1451,
+            423
+          ],
+          "rear": [
+            1124,
+            241
+          ]
+        },
+        "boxcar": {
+          "region": [
+            0,
+            512,
+            512,
+            512
+          ],
+          "front": [
+            424,
+            900
+          ],
+          "rear": [
+            93,
+            715
+          ]
+        },
+        "observation": {
+          "region": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "front": [
+            962,
+            921
+          ],
+          "rear": [
+            590,
+            713
+          ]
+        },
+        "armored": {
+          "region": [
+            1024,
+            512,
+            512,
+            512
+          ],
+          "front": [
+            1458,
+            916
+          ],
+          "rear": [
+            1119,
+            728
+          ]
+        }
+      }
+    },
+    "4": {
+      "file": "vehicles-west.png",
+      "vehicles": {
+        "locomotive": {
+          "region": [
+            0,
+            0,
+            550,
+            512
+          ],
+          "front": [
+            65,
+            240
+          ],
+          "rear": [
+            443,
+            450
+          ]
+        },
+        "tender": {
+          "region": [
+            550,
+            0,
+            474,
+            512
+          ],
+          "front": [
+            622,
+            280
+          ],
+          "rear": [
+            923,
+            447
+          ]
+        },
+        "sleeper": {
+          "region": [
+            1024,
+            0,
+            512,
+            512
+          ],
+          "front": [
+            1100,
+            282
+          ],
+          "rear": [
+            1455,
+            479
+          ]
+        },
+        "boxcar": {
+          "region": [
+            0,
+            512,
+            512,
+            512
+          ],
+          "front": [
+            100,
+            747
+          ],
+          "rear": [
+            430,
+            930
+          ]
+        },
+        "observation": {
+          "region": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "front": [
+            594,
+            750
+          ],
+          "rear": [
+            951,
+            949
+          ]
+        },
+        "armored": {
+          "region": [
+            1024,
+            512,
+            512,
+            512
+          ],
+          "front": [
+            1090,
+            798
+          ],
+          "rear": [
+            1472,
+            990
+          ]
+        }
+      }
+    },
+    "3": {
+      "file": "vehicles-southeast-v3.png",
+      "vehicles": {
+        "locomotive": {
+          "region": [
+            0,
+            0,
+            550,
+            512
+          ],
+          "front": [
+            320,
+            497
+          ],
+          "rear": [
+            320,
+            163.06
+          ]
+        },
+        "tender": {
+          "region": [
+            550,
+            0,
+            474,
+            512
+          ],
+          "front": [
+            774,
+            479
+          ],
+          "rear": [
+            774,
+            228.54
+          ]
+        },
+        "sleeper": {
+          "region": [
+            1024,
+            0,
+            512,
+            512
+          ],
+          "front": [
+            1203,
+            480
+          ],
+          "rear": [
+            1203,
+            222.86
+          ]
+        },
+        "boxcar": {
+          "region": [
+            0,
+            512,
+            512,
+            512
+          ],
+          "front": [
+            320,
+            932
+          ],
+          "rear": [
+            320,
+            671.52
+          ]
+        },
+        "observation": {
+          "region": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "front": [
+            774,
+            940
+          ],
+          "rear": [
+            774,
+            646.13
+          ]
+        },
+        "armored": {
+          "region": [
+            1024,
+            512,
+            512,
+            512
+          ],
+          "front": [
+            1203,
+            936
+          ],
+          "rear": [
+            1203,
+            668.84
+          ]
+        }
+      }
+    },
+    "7": {
+      "file": "vehicles-northwest-v2.png",
+      "vehicles": {
+        "locomotive": {
+          "region": [
+            0,
+            0,
+            550,
+            512
+          ],
+          "front": [
+            346,
+            151.06
+          ],
+          "rear": [
+            346,
+            485
+          ]
+        },
+        "tender": {
+          "region": [
+            550,
+            0,
+            474,
+            512
+          ],
+          "front": [
+            768,
+            234.54
+          ],
+          "rear": [
+            768,
+            485
+          ]
+        },
+        "sleeper": {
+          "region": [
+            1024,
+            0,
+            512,
+            512
+          ],
+          "front": [
+            1187,
+            227.86
+          ],
+          "rear": [
+            1187,
+            485
+          ]
+        },
+        "boxcar": {
+          "region": [
+            0,
+            512,
+            512,
+            512
+          ],
+          "front": [
+            346,
+            676.52
+          ],
+          "rear": [
+            346,
+            937
+          ]
+        },
+        "observation": {
+          "region": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "front": [
+            768,
+            643.13
+          ],
+          "rear": [
+            768,
+            937
+          ]
+        },
+        "armored": {
+          "region": [
+            1024,
+            512,
+            512,
+            512
+          ],
+          "front": [
+            1187,
+            669.84
+          ],
+          "rear": [
+            1187,
+            937
+          ]
+        }
+      }
+    },
+    "9": {
+      "file": "vehicles-northeast.png",
+      "vehicles": {
+        "locomotive": {
+          "region": [
+            0,
+            0,
+            570,
+            560
+          ],
+          "front": [
+            543,
+            505
+          ],
+          "rear": [
+            33,
+            505
+          ]
+        },
+        "tender": {
+          "region": [
+            570,
+            0,
+            450,
+            560
+          ],
+          "front": [
+            966,
+            505
+          ],
+          "rear": [
+            596,
+            505
+          ]
+        },
+        "sleeper": {
+          "region": [
+            1020,
+            0,
+            516,
+            560
+          ],
+          "front": [
+            1502,
+            505
+          ],
+          "rear": [
+            1048,
+            505
+          ]
+        },
+        "boxcar": {
+          "region": [
+            0,
+            560,
+            480,
+            464
+          ],
+          "front": [
+            449,
+            920
+          ],
+          "rear": [
+            48,
+            920
+          ]
+        },
+        "observation": {
+          "region": [
+            480,
+            560,
+            550,
+            464
+          ],
+          "front": [
+            1005,
+            920
+          ],
+          "rear": [
+            505,
+            920
+          ]
+        },
+        "armored": {
+          "region": [
+            1030,
+            560,
+            506,
+            464
+          ],
+          "front": [
+            1500,
+            916
+          ],
+          "rear": [
+            1061,
+            916
+          ]
+        }
+      }
+    }
+  }
+}

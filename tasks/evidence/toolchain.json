@@ -1,0 +1,10 @@
+{
+  "version": "4.5.stable.official.876b29033",
+  "macos_archive": {
+    "file": ".toolchain/godot-macos.zip",
+    "bytes": 159601985,
+    "sha256": "abb7cabe99fead0bd63ce03bd8c611734b2941f9b90051e8e3b5c6691527954d",
+    "source": "https://github.com/godotengine/godot-builds/releases/download/4.5-stable/Godot_v4.5-stable_macos.universal.zip"
+  },
+  "execution": "--headless --version exit 0 on macOS host"
+}

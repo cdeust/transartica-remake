@@ -1,0 +1,3 @@
+J’ai recentré le prototype sur la conduite : stocks des deux charbons, chauffe, régulateur et frein, avec des calculs tirés des scripts originaux. Le décor glaciaire et les rails ont été repris ; la carte affiche désormais les lieux nommés, avec la grille brute en option.
+Ce banc fonctionne encore par cycles manuels. Les déplacements, le commerce, le personnel et la progression narrative restent à raccorder. Aucune règle de moral n’est encore confirmée.
+La préversion macOS est ouverte et testée. L’archive Windows est reconstruite, mais non exécutée sur Windows.

@@ -1,0 +1,294 @@
+{
+  "method": "Alpha >=128 bounding boxes at unchanged east-reference uniform texel scale, zoom1. No image resampling.",
+  "scale": 0.4234877203076051,
+  "rows": [
+    {
+      "heading": "3",
+      "vehicle": "locomotive",
+      "before": {
+        "bbox_atlas": [
+          184,
+          10,
+          393,
+          508
+        ],
+        "width_screen": 88.5,
+        "height_screen": 210.9
+      },
+      "after": {
+        "bbox_atlas": [
+          213,
+          46,
+          427,
+          510
+        ],
+        "width_screen": 90.6,
+        "height_screen": 196.5
+      }
+    },
+    {
+      "heading": "3",
+      "vehicle": "tender",
+      "before": {
+        "bbox_atlas": [
+          657,
+          15,
+          880,
+          492
+        ],
+        "width_screen": 94.4,
+        "height_screen": 202.0
+      },
+      "after": {
+        "bbox_atlas": [
+          666,
+          174,
+          882,
+          489
+        ],
+        "width_screen": 91.5,
+        "height_screen": 133.4
+      }
+    },
+    {
+      "heading": "3",
+      "vehicle": "sleeper",
+      "before": {
+        "bbox_atlas": [
+          1134,
+          15,
+          1368,
+          491
+        ],
+        "width_screen": 99.1,
+        "height_screen": 201.6
+      },
+      "after": {
+        "bbox_atlas": [
+          1092,
+          84,
+          1316,
+          492
+        ],
+        "width_screen": 94.9,
+        "height_screen": 172.8
+      }
+    },
+    {
+      "heading": "3",
+      "vehicle": "boxcar",
+      "before": {
+        "bbox_atlas": [
+          173,
+          516,
+          403,
+          977
+        ],
+        "width_screen": 97.4,
+        "height_screen": 195.2
+      },
+      "after": {
+        "bbox_atlas": [
+          206,
+          537,
+          434,
+          943
+        ],
+        "width_screen": 96.6,
+        "height_screen": 171.9
+      }
+    },
+    {
+      "heading": "3",
+      "vehicle": "observation",
+      "before": {
+        "bbox_atlas": [
+          636,
+          513,
+          901,
+          998
+        ],
+        "width_screen": 112.2,
+        "height_screen": 205.4
+      },
+      "after": {
+        "bbox_atlas": [
+          650,
+          530,
+          895,
+          951
+        ],
+        "width_screen": 103.8,
+        "height_screen": 178.3
+      }
+    },
+    {
+      "heading": "3",
+      "vehicle": "armored",
+      "before": {
+        "bbox_atlas": [
+          1112,
+          514,
+          1385,
+          998
+        ],
+        "width_screen": 115.6,
+        "height_screen": 205.0
+      },
+      "after": {
+        "bbox_atlas": [
+          1074,
+          525,
+          1333,
+          947
+        ],
+        "width_screen": 109.7,
+        "height_screen": 178.7
+      }
+    },
+    {
+      "heading": "7",
+      "vehicle": "locomotive",
+      "before": {
+        "bbox_atlas": [
+          191,
+          38,
+          403,
+          501
+        ],
+        "width_screen": 89.8,
+        "height_screen": 196.1
+      },
+      "after": {
+        "bbox_atlas": [
+          246,
+          44,
+          445,
+          496
+        ],
+        "width_screen": 84.3,
+        "height_screen": 191.4
+      }
+    },
+    {
+      "heading": "7",
+      "vehicle": "tender",
+      "before": {
+        "bbox_atlas": [
+          658,
+          92,
+          880,
+          485
+        ],
+        "width_screen": 94.0,
+        "height_screen": 166.4
+      },
+      "after": {
+        "bbox_atlas": [
+          661,
+          141,
+          877,
+          496
+        ],
+        "width_screen": 91.5,
+        "height_screen": 150.3
+      }
+    },
+    {
+      "heading": "7",
+      "vehicle": "sleeper",
+      "before": {
+        "bbox_atlas": [
+          1135,
+          92,
+          1377,
+          497
+        ],
+        "width_screen": 102.5,
+        "height_screen": 171.5
+      },
+      "after": {
+        "bbox_atlas": [
+          1083,
+          109,
+          1292,
+          496
+        ],
+        "width_screen": 88.5,
+        "height_screen": 163.9
+      }
+    },
+    {
+      "heading": "7",
+      "vehicle": "boxcar",
+      "before": {
+        "bbox_atlas": [
+          174,
+          551,
+          419,
+          958
+        ],
+        "width_screen": 103.8,
+        "height_screen": 172.4
+      },
+      "after": {
+        "bbox_atlas": [
+          241,
+          562,
+          450,
+          947
+        ],
+        "width_screen": 88.5,
+        "height_screen": 163.0
+      }
+    },
+    {
+      "heading": "7",
+      "vehicle": "observation",
+      "before": {
+        "bbox_atlas": [
+          645,
+          559,
+          892,
+          958
+        ],
+        "width_screen": 104.6,
+        "height_screen": 169.0
+      },
+      "after": {
+        "bbox_atlas": [
+          662,
+          528,
+          875,
+          947
+        ],
+        "width_screen": 90.2,
+        "height_screen": 177.4
+      }
+    },
+    {
+      "heading": "7",
+      "vehicle": "armored",
+      "before": {
+        "bbox_atlas": [
+          1120,
+          532,
+          1392,
+          961
+        ],
+        "width_screen": 115.2,
+        "height_screen": 181.7
+      },
+      "after": {
+        "bbox_atlas": [
+          1073,
+          516,
+          1303,
+          947
+        ],
+        "width_screen": 97.4,
+        "height_screen": 182.5
+      }
+    }
+  ]
+}

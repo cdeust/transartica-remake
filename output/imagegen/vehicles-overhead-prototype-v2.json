@@ -1,0 +1,56 @@
+[
+  {
+    "kind": "locomotive",
+    "region": [
+      273,
+      6,
+      151,
+      506
+    ]
+  },
+  {
+    "kind": "tender",
+    "region": [
+      688,
+      10,
+      161,
+      502
+    ]
+  },
+  {
+    "kind": "sleeper",
+    "region": [
+      1103,
+      6,
+      160,
+      506
+    ]
+  },
+  {
+    "kind": "boxcar",
+    "region": [
+      270,
+      512,
+      157,
+      482
+    ]
+  },
+  {
+    "kind": "observation",
+    "region": [
+      684,
+      512,
+      169,
+      485
+    ]
+  },
+  {
+    "kind": "armored",
+    "region": [
+      1101,
+      512,
+      165,
+      485
+    ]
+  }
+]

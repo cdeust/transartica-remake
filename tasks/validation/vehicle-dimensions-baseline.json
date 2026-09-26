@@ -1,0 +1,308 @@
+{
+  "units": "atlas texels at common scale",
+  "alpha_min": 128,
+  "scope": "source drawings; horizontal mirrors preserve dimensions",
+  "verdict": "measurement only, no artistic acceptance",
+  "measurements": [
+    {
+      "heading": "6",
+      "kind": "locomotive",
+      "file": "vehicles-east.png",
+      "sha256": "102be0b383a36f4ec1b52ba64093c7d0e1e03b48a9cddc4b3c0d01fbfbff2b02",
+      "length": 562.823717090665,
+      "width": 275.61419552131537,
+      "length_ratio_to_east": 1.0,
+      "width_ratio_to_east": 1.0
+    },
+    {
+      "heading": "6",
+      "kind": "tender",
+      "file": "vehicles-east.png",
+      "sha256": "102be0b383a36f4ec1b52ba64093c7d0e1e03b48a9cddc4b3c0d01fbfbff2b02",
+      "length": 403.75018119218487,
+      "width": 223.13853140715577,
+      "length_ratio_to_east": 1.0,
+      "width_ratio_to_east": 1.0
+    },
+    {
+      "heading": "6",
+      "kind": "sleeper",
+      "file": "vehicles-east.png",
+      "sha256": "102be0b383a36f4ec1b52ba64093c7d0e1e03b48a9cddc4b3c0d01fbfbff2b02",
+      "length": 459.18817162793613,
+      "width": 217.74195665539074,
+      "length_ratio_to_east": 1.0,
+      "width_ratio_to_east": 1.0
+    },
+    {
+      "heading": "6",
+      "kind": "boxcar",
+      "file": "vehicles-east.png",
+      "sha256": "102be0b383a36f4ec1b52ba64093c7d0e1e03b48a9cddc4b3c0d01fbfbff2b02",
+      "length": 449.67546697651323,
+      "width": 236.74597257344337,
+      "length_ratio_to_east": 1.0,
+      "width_ratio_to_east": 1.0
+    },
+    {
+      "heading": "6",
+      "kind": "observation",
+      "file": "vehicles-east.png",
+      "sha256": "102be0b383a36f4ec1b52ba64093c7d0e1e03b48a9cddc4b3c0d01fbfbff2b02",
+      "length": 512.1047930205461,
+      "width": 233.0445178318186,
+      "length_ratio_to_east": 1.0,
+      "width_ratio_to_east": 1.0
+    },
+    {
+      "heading": "6",
+      "kind": "armored",
+      "file": "vehicles-east.png",
+      "sha256": "102be0b383a36f4ec1b52ba64093c7d0e1e03b48a9cddc4b3c0d01fbfbff2b02",
+      "length": 451.4597715248769,
+      "width": 250.19586638654948,
+      "length_ratio_to_east": 1.0,
+      "width_ratio_to_east": 1.0
+    },
+    {
+      "heading": "4",
+      "kind": "locomotive",
+      "file": "vehicles-west.png",
+      "sha256": "7c9230e8145d4981c519f21119d625c6d0358d3975f6cee2dcc9b5020fbec4a1",
+      "length": 476.99848700365243,
+      "width": 252.2429384541815,
+      "length_ratio_to_east": 0.8475095709707148,
+      "width_ratio_to_east": 0.9152029995300937
+    },
+    {
+      "heading": "4",
+      "kind": "tender",
+      "file": "vehicles-west.png",
+      "sha256": "7c9230e8145d4981c519f21119d625c6d0358d3975f6cee2dcc9b5020fbec4a1",
+      "length": 392.27099913528656,
+      "width": 219.264350108013,
+      "length_ratio_to_east": 0.9715686020920093,
+      "width_ratio_to_east": 0.9826377754002797
+    },
+    {
+      "heading": "4",
+      "kind": "sleeper",
+      "file": "vehicles-west.png",
+      "sha256": "7c9230e8145d4981c519f21119d625c6d0358d3975f6cee2dcc9b5020fbec4a1",
+      "length": 494.7271392695767,
+      "width": 233.08515788944717,
+      "length_ratio_to_east": 1.0773952158123894,
+      "width_ratio_to_east": 1.0704650654827144
+    },
+    {
+      "heading": "4",
+      "kind": "boxcar",
+      "file": "vehicles-west.png",
+      "sha256": "7c9230e8145d4981c519f21119d625c6d0358d3975f6cee2dcc9b5020fbec4a1",
+      "length": 466.0540189584471,
+      "width": 237.02203079456484,
+      "length_ratio_to_east": 1.0364230499209985,
+      "width_ratio_to_east": 1.0011660524490478
+    },
+    {
+      "heading": "4",
+      "kind": "observation",
+      "file": "vehicles-west.png",
+      "sha256": "7c9230e8145d4981c519f21119d625c6d0358d3975f6cee2dcc9b5020fbec4a1",
+      "length": 479.1720368114331,
+      "width": 250.06269222916228,
+      "length_ratio_to_east": 0.9356913728245622,
+      "width_ratio_to_east": 1.0730254225916835
+    },
+    {
+      "heading": "4",
+      "kind": "armored",
+      "file": "vehicles-west.png",
+      "sha256": "7c9230e8145d4981c519f21119d625c6d0358d3975f6cee2dcc9b5020fbec4a1",
+      "length": 548.6213522889976,
+      "width": 281.7626604399027,
+      "length_ratio_to_east": 1.2152164752928973,
+      "width_ratio_to_east": 1.1261683276756576
+    },
+    {
+      "heading": "3",
+      "kind": "locomotive",
+      "file": "vehicles-southeast-v3.png",
+      "sha256": "2b6d4f8c093434585311097a41030a8227bb25004ec52b23c8e3c9b7b69cb3d0",
+      "length": 464.0,
+      "width": 214.0,
+      "length_ratio_to_east": 0.8244144408101666,
+      "width_ratio_to_east": 0.7764476702487181
+    },
+    {
+      "heading": "3",
+      "kind": "tender",
+      "file": "vehicles-southeast-v3.png",
+      "sha256": "2b6d4f8c093434585311097a41030a8227bb25004ec52b23c8e3c9b7b69cb3d0",
+      "length": 315.0,
+      "width": 216.0,
+      "length_ratio_to_east": 0.7801854083876192,
+      "width_ratio_to_east": 0.9680085220506796
+    },
+    {
+      "heading": "3",
+      "kind": "sleeper",
+      "file": "vehicles-southeast-v3.png",
+      "sha256": "2b6d4f8c093434585311097a41030a8227bb25004ec52b23c8e3c9b7b69cb3d0",
+      "length": 408.0,
+      "width": 224.0,
+      "length_ratio_to_east": 0.8885246293551915,
+      "width_ratio_to_east": 1.0287406407140611
+    },
+    {
+      "heading": "3",
+      "kind": "boxcar",
+      "file": "vehicles-southeast-v3.png",
+      "sha256": "2b6d4f8c093434585311097a41030a8227bb25004ec52b23c8e3c9b7b69cb3d0",
+      "length": 406.0,
+      "width": 228.0,
+      "length_ratio_to_east": 0.902873360492236,
+      "width_ratio_to_east": 0.9630575655485324
+    },
+    {
+      "heading": "3",
+      "kind": "observation",
+      "file": "vehicles-southeast-v3.png",
+      "sha256": "2b6d4f8c093434585311097a41030a8227bb25004ec52b23c8e3c9b7b69cb3d0",
+      "length": 421.0,
+      "width": 245.0,
+      "length_ratio_to_east": 0.822097363152602,
+      "width_ratio_to_east": 1.051301280456678
+    },
+    {
+      "heading": "3",
+      "kind": "armored",
+      "file": "vehicles-southeast-v3.png",
+      "sha256": "2b6d4f8c093434585311097a41030a8227bb25004ec52b23c8e3c9b7b69cb3d0",
+      "length": 422.0,
+      "width": 259.0,
+      "length_ratio_to_east": 0.9347455224518193,
+      "width_ratio_to_east": 1.0351889651120305
+    },
+    {
+      "heading": "7",
+      "kind": "locomotive",
+      "file": "vehicles-northwest-v2.png",
+      "sha256": "82e455467b473d3f7fb2077130de62e05d70133a71381a2772f1e12c82f86bf4",
+      "length": 452.0,
+      "width": 199.0,
+      "length_ratio_to_east": 0.8030933776857657,
+      "width_ratio_to_east": 0.7220237681284809
+    },
+    {
+      "heading": "7",
+      "kind": "tender",
+      "file": "vehicles-northwest-v2.png",
+      "sha256": "82e455467b473d3f7fb2077130de62e05d70133a71381a2772f1e12c82f86bf4",
+      "length": 355.0,
+      "width": 216.0,
+      "length_ratio_to_east": 0.8792565713574756,
+      "width_ratio_to_east": 0.9680085220506796
+    },
+    {
+      "heading": "7",
+      "kind": "sleeper",
+      "file": "vehicles-northwest-v2.png",
+      "sha256": "82e455467b473d3f7fb2077130de62e05d70133a71381a2772f1e12c82f86bf4",
+      "length": 387.0,
+      "width": 209.0,
+      "length_ratio_to_east": 0.8427917440207331,
+      "width_ratio_to_east": 0.9598517585233874
+    },
+    {
+      "heading": "7",
+      "kind": "boxcar",
+      "file": "vehicles-northwest-v2.png",
+      "sha256": "82e455467b473d3f7fb2077130de62e05d70133a71381a2772f1e12c82f86bf4",
+      "length": 385.0,
+      "width": 209.0,
+      "length_ratio_to_east": 0.856173014259879,
+      "width_ratio_to_east": 0.8828027684194881
+    },
+    {
+      "heading": "7",
+      "kind": "observation",
+      "file": "vehicles-northwest-v2.png",
+      "sha256": "82e455467b473d3f7fb2077130de62e05d70133a71381a2772f1e12c82f86bf4",
+      "length": 419.0,
+      "width": 213.0,
+      "length_ratio_to_east": 0.8181919124962951,
+      "width_ratio_to_east": 0.9139884601521322
+    },
+    {
+      "heading": "7",
+      "kind": "armored",
+      "file": "vehicles-northwest-v2.png",
+      "sha256": "82e455467b473d3f7fb2077130de62e05d70133a71381a2772f1e12c82f86bf4",
+      "length": 431.0,
+      "width": 230.0,
+      "length_ratio_to_east": 0.9546808534993699,
+      "width_ratio_to_east": 0.9192797759682123
+    },
+    {
+      "heading": "9",
+      "kind": "locomotive",
+      "file": "vehicles-northeast.png",
+      "sha256": "d5633fe8a6eadd71b6fd580c0e3dc1ea8ba83ada73cafeb3ce31b3e8765e0070",
+      "length": 538.0,
+      "width": 255.0,
+      "length_ratio_to_east": 0.9558943300773052,
+      "width_ratio_to_east": 0.9252063360440332
+    },
+    {
+      "heading": "9",
+      "kind": "tender",
+      "file": "vehicles-northeast.png",
+      "sha256": "d5633fe8a6eadd71b6fd580c0e3dc1ea8ba83ada73cafeb3ce31b3e8765e0070",
+      "length": 401.0,
+      "width": 211.0,
+      "length_ratio_to_east": 0.9931884087728104,
+      "width_ratio_to_east": 0.9456009173735805
+    },
+    {
+      "heading": "9",
+      "kind": "sleeper",
+      "file": "vehicles-northeast.png",
+      "sha256": "d5633fe8a6eadd71b6fd580c0e3dc1ea8ba83ada73cafeb3ce31b3e8765e0070",
+      "length": 487.0,
+      "width": 233.0,
+      "length_ratio_to_east": 1.0605673884705349,
+      "width_ratio_to_east": 1.0700739700284654
+    },
+    {
+      "heading": "9",
+      "kind": "boxcar",
+      "file": "vehicles-northeast.png",
+      "sha256": "d5633fe8a6eadd71b6fd580c0e3dc1ea8ba83ada73cafeb3ce31b3e8765e0070",
+      "length": 432.0,
+      "width": 223.0,
+      "length_ratio_to_east": 0.9606928367799161,
+      "width_ratio_to_east": 0.9419378820935208
+    },
+    {
+      "heading": "9",
+      "kind": "observation",
+      "file": "vehicles-northeast.png",
+      "sha256": "d5633fe8a6eadd71b6fd580c0e3dc1ea8ba83ada73cafeb3ce31b3e8765e0070",
+      "length": 535.0,
+      "width": 232.0,
+      "length_ratio_to_east": 1.0447080505620951,
+      "width_ratio_to_east": 0.9955179472079562
+    },
+    {
+      "heading": "9",
+      "kind": "armored",
+      "file": "vehicles-northeast.png",
+      "sha256": "d5633fe8a6eadd71b6fd580c0e3dc1ea8ba83ada73cafeb3ce31b3e8765e0070",
+      "length": 465.0,
+      "width": 260.0,
+      "length_ratio_to_east": 1.02999210412345,
+      "width_ratio_to_east": 1.0391858337031965
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: original locomotive rule vectors, world data, city selection, pan/zoom, and render-independent clock
+
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: engine session frame independence, pause, residual time, restore, reset, and event stop
+
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: map interaction, zoom bounds, evidenced rail glyph ports, and source-data preservation
+
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: persistent map discovery, bounded visits, camera invariance, and hidden-city filtering
+
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: live instrument readouts, regulator, full-screen routing, and running session

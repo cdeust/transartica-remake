@@ -1,0 +1,27 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4
+
+BENCH_PHASE active
+{"cycles":10,"draw_calls":34.0,"fps":60.0,"memory_static":32982889.0,"objects":1590.0,"phase":"active","process_ms":3.47}
+BENCH_PHASE paused
+{"cycles":10,"draw_calls":19.0,"fps":60.0,"memory_static":32968773.0,"objects":1565.0,"phase":"paused","process_ms":0.138}
+PASS: native engine room active and paused measurement completed
+BENCH_PHASE paused
+       21.31 real         1.33 user         0.79 sys
+           258670592  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               28724  page reclaims
+                4083  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   2  messages sent
+                   0  messages received
+                   0  signals received
+                1829  voluntary context switches
+               68454  involuntary context switches
+         13228998993  instructions retired
+          7493516597  cycles elapsed
+           285869136  peak memory footprint

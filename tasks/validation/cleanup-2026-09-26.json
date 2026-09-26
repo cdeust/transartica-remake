@@ -1,0 +1,81 @@
+{
+  "free_bytes_before": 30097682432,
+  "free_bytes_after": 32843833344,
+  "removed": [
+    {
+      "path": "/Users/cdeust/Developments/.reviews/session-optimizer-pr44-8de3910",
+      "allocated_kib_before": 102880
+    },
+    {
+      "path": "/Users/cdeust/Developments/.reviews/.uv-cache",
+      "allocated_kib_before": 39368
+    },
+    {
+      "path": "/Users/cdeust/Developments/Transartica/.cache/live-test",
+      "allocated_kib_before": 1022320
+    },
+    {
+      "path": "/Users/cdeust/Developments/Transartica/.cache/uv",
+      "allocated_kib_before": 92704
+    },
+    {
+      "path": "/Users/cdeust/Developments/Transartica/.cache/travel_world-before-camera-scale.gd",
+      "allocated_kib_before": 20,
+      "sha256": "3d34585442309812d4317af453e73a3161dc99d45cded6539cb358d8743ce4bb"
+    },
+    {
+      "path": "/Users/cdeust/Developments/Transartica/.toolchain/godot-macos.zip",
+      "allocated_kib_before": 155864,
+      "sha256": "abb7cabe99fead0bd63ce03bd8c611734b2941f9b90051e8e3b5c6691527954d"
+    },
+    {
+      "path": "/Users/cdeust/Developments/Transartica/.toolchain/export-templates.tpz",
+      "allocated_kib_before": 1325056,
+      "sha256": "375d83b661794f91746d2dec9b569a99d4d24f85a70c4ec0068aafb18b551d53"
+    },
+    {
+      "path": "/Users/cdeust/.codex/generated_images/01a0ddb5-9cc1-7230-8a94-91b2b0ba7fd2",
+      "allocated_kib_before": 4492
+    },
+    {
+      "path": "/Users/cdeust/Developments/Transartica/output/imagegen/vehicles-southeast-gabarit-attempt-v1.png",
+      "allocated_kib_before": 1860,
+      "sha256": "72a0b3593d4730764979ae5ec678b8a9d88b527ef79f44ac03162f6805d82007"
+    },
+    {
+      "path": "/Users/cdeust/Developments/Transartica/output/imagegen/vehicles-southeast-gabarit-attempt-v2.png",
+      "allocated_kib_before": 2632,
+      "sha256": "b4879c5d35fabd69f01c1eb9506c163b69a386ad6a91a84d819d956bcfd32088"
+    }
+  ],
+  "pr44_preserved_evidence": "/Users/cdeust/Developments/Transartica/tasks/validation/pr44",
+  "protected": "active Claude scratchpad sessions under /private/tmp/claude-501; main checkouts; project deliverables",
+  "final_worktree_check": {
+    "repositories_checked": 59,
+    "secondary_worktrees": [
+      {
+        "repository": "/Users/cdeust/Developments/anthropic-partnership/ai-architect-mcp-codebase",
+        "paths": [
+          "/Users/cdeust/Developments/anthropic-partnership/ai-architect-mcp-codebase",
+          "/Users/cdeust/Developments/anthropic-partnership/ai-architect-mcp-codebase/.claude/worktrees/fix-366a"
+        ]
+      }
+    ],
+    "git_errors": [
+      "/private/tmp/claude-501/-Users-cdeust-Developments/cc13a18e-36d3-41ab-a6b4-d471d0871cff/scratchpad/mutant-test/repo"
+    ],
+    "scan_roots": [
+      "/Users/cdeust/Developments",
+      "/private/tmp",
+      "/Users/cdeust/.codex/worktrees",
+      "/Users/cdeust/.claude/worktrees"
+    ],
+    "max_directory_depth": 8
+  },
+  "protected_worktree": {
+    "path": "/Users/cdeust/Developments/anthropic-partnership/ai-architect-mcp-codebase/.claude/worktrees/fix-366a",
+    "reason": "appeared during audit; 6 tracked modifications and 1 untracked source file from another session; not safe to remove",
+    "status": " M src/lsp_resolver.rs\n M src/lsp_resolver/edges.rs\n M src/lsp_resolver/health_gate_tests.rs\n M src/lsp_resolver/outside_targets_tests.rs\n M src/lsp_resolver/pass.rs\n M src/lsp_resolver/sites.rs\n M src/lsp_resolver/unlinked_tests.rs\n?? src/lsp_resolver/edges_tests.rs\n"
+  },
+  "final_godot_process_count": 0
+}

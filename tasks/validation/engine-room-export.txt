@@ -1,0 +1,5 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: packaged locomotive heat, consumption, acceleration and brake
+Runtime save path: /Users/cdeust/Developments/Transartica/builds/macos/save/view.json
+PASS: packaged cities, locomotive rules, chart and full JSON session survive restart; path=/Users/cdeust/Developments/Transartica/builds/macos/save/view.json

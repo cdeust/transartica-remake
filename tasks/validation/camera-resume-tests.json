@@ -1,0 +1,22 @@
+[
+  {
+    "suite": "test_camera_scale",
+    "exit": 0,
+    "output": "Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org\n\nPASS: fixed zoom, oversized consist, stable camera, manual zoom\n"
+  },
+  {
+    "suite": "test_travel_world",
+    "exit": 0,
+    "output": "Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org\n\nPASS: fixed camera, eight directional vehicle frames, rail-contact registration, bent convoy, evolving consist, switch clicks, fog and arc interpolation\n"
+  },
+  {
+    "suite": "test_playable_trip",
+    "exit": 0,
+    "output": "Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org\n\nPASS: playable map travel, coal use, fog, brake, pause and saved journey\n"
+  },
+  {
+    "suite": "test_world_interaction",
+    "exit": 0,
+    "output": "Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org\n\nPASS: map interaction, zoom bounds, evidenced rail glyph ports, and source-data preservation\n"
+  }
+]

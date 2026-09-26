@@ -1,0 +1,121 @@
+"""Source-grounded operand boundaries and actual unpacked-script anchors."""
+
+import importlib.util
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+spec = importlib.util.spec_from_file_location('alis_disasm', ROOT / 'tools/alis_disasm.py')
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+
+def load_tests(loader, standard_tests, pattern):
+    """Include function tests in the project's stdlib discovery command."""
+    functions = sorted(
+        (name, value) for name, value in globals().items()
+        if name.startswith('test_') and callable(value)
+    )
+    return unittest.TestSuite(unittest.FunctionTestCase(test) for _, test in functions)
+
+
+def test_source_dispatch_and_real_prefixes():
+    tables = module.source_tables()
+    assert tables['opcode'][0x29] == 'cdim'
+    assert tables['opcode'][0x2f] == 'cswitch2'
+    assert tables['oper'][0x38] == 'oeval'
+    usine = (ROOT / 'reference-private/unpacked/usine.alis').read_bytes()
+    result = module.disassemble(usine, 0x18, 20, reachable=True)
+    by_offset = {entry['offset']: entry for entry in result['instructions']}
+    assert by_offset[0x18]['targets'] == [0x54]
+    assert by_offset[0x60]['end'] == 0x65
+    assert by_offset[0x6e]['name'] == 'ctopalet'
+    ville = (ROOT / 'reference-private/unpacked/ville.alis').read_bytes()
+    result = module.disassemble(ville, 0x18, 30, reachable=True)
+    by_offset = {entry['offset']: entry for entry in result['instructions']}
+    assert by_offset[0x18]['end'] == 0x1f
+    assert by_offset[0x29]['targets'] == [0x3c, 0x4a, 0x62, 0x58]
+    assert by_offset[0x74]['name'] == 'csleep'
+
+
+def test_cdim_22_and_fail_closed():
+    tables = module.source_tables()
+    # opcodes.c cdim reads s16 offset, u8 count, u8 value, then count s16 words.
+    data = bytes.fromhex('29 00 76 01 01 00 49 42')
+    result = module.disassemble(data, 0, 2)
+    assert result['instructions'][0]['args'] == [118, 1, 1, 73]
+    assert result['instructions'][0]['end'] == 7
+    assert result['instructions'][1]['name'] == 'cstop'
+    result = module.disassemble(bytes.fromhex('29 00 76 01 01 00'), 0, 1)
+    assert result['instructions'] == []
+    assert 'truncated' in result['errors'][0]['error']
+    result = module.disassemble(bytes.fromhex('ff'), 0, 1)
+    assert result['errors']
+    main = (ROOT / 'reference-private/unpacked/main.alis').read_bytes()
+    first = module.disassemble(main, 0x18, 1)['instructions'][0]
+    assert first['name'] == 'cdim' and first['end'] == 0x1f
+
+
+def test_relative_jump_and_nested_expression():
+    tables = module.source_tables()
+    jump = module.disassemble(bytes.fromhex('0a ff ff fc 42'), 0, 2)
+    assert jump['instructions'][0]['targets'] == [0]
+    assert jump['instructions'][0]['end'] == 4
+    expr = module.disassemble(bytes.fromhex('1f 38 00 05 4c 00 05 3a 42'), 0, 2)
+    assert expr['instructions'][0]['end'] == 8
+    assert expr['instructions'][0]['args'][0]['args'][-1]['name'] == 'ofin'
+
+
+def test_clive_transitive_store_operand():
+    # opcodes.c clive -> clivin reads s16 ID then cstore_continue.
+    time = (ROOT / 'reference-private/unpacked/time.alis').read_bytes()
+    result = module.disassemble(time, 0x470, 3)
+    first = result['instructions'][0]
+    assert first['name'] == 'clive' and first['end'] == 0x475
+    assert first['args'][0] == 32
+    assert first['args'][1]['name'] == 'sdirw'
+    assert result['instructions'][1]['offset'] == 0x475
+
+
+def test_time_entry_reachable_boundaries():
+    time = (ROOT / 'reference-private/unpacked/time.alis').read_bytes()
+    result = module.disassemble(time, 0x18, 5000, reachable=True)
+    by_offset = {entry['offset']: entry for entry in result['instructions']}
+    assert len(by_offset) == 1218
+    assert result['errors'] == []
+    assert by_offset[0x180]['name'] == 'csend'
+    assert by_offset[0x470]['end'] == 0x475
+    short = module.disassemble(time, 0x18, 1, reachable=True)
+    assert short['truncated'] and short['pending_offsets'] == [0x25]
+
+
+def test_text2k_entry_reachable_boundaries():
+    text2k = (ROOT / 'reference-private/unpacked/texte2k.alis').read_bytes()
+    result = module.disassemble(text2k, 0x18, 5000, reachable=True)
+    by_offset = {entry['offset']: entry for entry in result['instructions']}
+    assert len(by_offset) == 608
+    assert result['errors'] == [] and not result['truncated']
+    assert by_offset[0x22]['name'] == 'cfindcla'
+    assert by_offset[0x2676]['name'] == 'cerasen'
+
+
+def test_yoda_and_textek_reachable_boundaries():
+    for name, expected in (('yoda', 1510), ('textek', 1929)):
+        data = (ROOT / f'reference-private/unpacked/{name}.alis').read_bytes()
+        result = module.disassemble(data, 0x18, 5000, reachable=True)
+        assert len(result['instructions']) == expected
+        assert result['errors'] == [] and not result['truncated']
+
+
+def test_carte_map_layout_and_reachability():
+    carte = (ROOT / 'reference-private/unpacked/carte.alis').read_bytes()
+    result = module.disassemble(carte, 0x18, 5000, reachable=True)
+    by_offset = {entry['offset']: entry for entry in result['instructions']}
+    assert len(by_offset) == 1486
+    assert result['errors'] == [] and not result['truncated']
+    assert by_offset[0x128]['name'] == 'cdefmap'
+    assert by_offset[0x13d]['name'] == 'csetmap'
+    assert by_offset[0x13d]['end'] == 0x151
+    assert by_offset[0x86a]['name'] == 'cputmap'
+    assert by_offset[0x12f0]['name'] == 'cputnat'

@@ -1,0 +1,10 @@
+{
+  "script": "main.alis",
+  "sha256": "02f16fd69d6c0cac00548ceb02b3cdab911a8c3b40f65e2ab027e6123c61722c",
+  "size": 6832,
+  "alis_commit": "19a95afdc07b45d997467806d4dd1bf83c5f8076",
+  "declaration_offset_hex": "18",
+  "declaration_bytes": "29 00 76 01 01 00 49",
+  "read_block_offset_hex": "78d",
+  "read_block_bytes": "70 76 69 6c 6c 65 2e 66 69 63 00 00 02 77 5f e4 00 8a 71 70 63 61 72 74 65 2e 66 69 63 00 00 02 77 00 76 2d a0 71 70 68 69 6d 61 2e 66 69 63 00 00 02 77 62 c6 00 f0 71 70 74 72 61 6e 73 2e 66 69 63 00 00 02 77 63 ba 01 14 71 70 6f 61 73 69 73 2e 66 69 63 00 00 02 77 64 d2 00 1b"
+}

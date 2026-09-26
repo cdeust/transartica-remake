@@ -1,0 +1,1 @@
+PASS: analytic 5x3 rectangle; perpendicular axis; diagonal square support; mirror; empty mask and zero axis rejected; 30 source measurements reproduced unchanged.

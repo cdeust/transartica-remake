@@ -1,0 +1,14 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+ERROR: edge recenter preserves chosen zoom
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_camera_scale.gd:49)
+ERROR: oversized consist keeps locomotive visible
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_camera_scale.gd:49)
+ERROR: manual zoom survives travel framing
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_camera_scale.gd:49)
