@@ -67,3 +67,5 @@
 - Correction propriétaire du 26 septembre : nettoyer les résidus avant chaque fin de session. Supprimer les worktrees de l’agent dès la PR poussée et son HEAD distant vérifié, sans attendre le merge. Retirer clones de revue terminés, processus possédés, captures temporaires et archives en double. Vérifier les fichiers ouverts et préserver tout travail actif ou non sauvegardé. Mesurer les suppressions réelles avant de déclarer le nettoyage terminé.
 
 - Redesign demandé le 26 septembre : avant de produire une famille de wagons, verrouiller le même châssis de référence et mesurer les largeurs solides. Une résolution de toile commune et un prompt de style commun ne suffisent pas; ne pas corriger les écarts par étirement des sprites.
+
+- Répartition confirmée par le propriétaire : Codex possède la partie design, y compris revue visuelle en jeu, corrections, couches graphiques destructibles, intérieurs et pièces mobiles. Opus possède intégration et moteur. Ne pas renvoyer la préparation artistique des combats à Opus ni demander au propriétaire de détecter les défauts à la place du designer.

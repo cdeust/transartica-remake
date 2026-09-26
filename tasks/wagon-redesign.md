@@ -23,3 +23,9 @@ Mesure : comparer l'enveloppe solide avec la convention alpha >= 128 utilisée p
 Mesure source : 401–407 pixels de large pour les 19 redesigns, contre 401–417 pour les six références. Mesure après exécution en mémoire des fonctions `clean_alpha`, `downscale` et `solid_box` de `tools/build_overhead_atlas.py` au commit `db3c4b4` : 134–136 texels pour les 19 redesigns, contre 134–139 pour les six références. Résultats par type dans `atlas-measurements.json`. Aucun PNG source ni atlas de jeu modifié par cette mesure.
 
 Les 25 fichiers sont lisibles; les 19 longueurs restent dans la plage des six références. Les coins à alpha 1 des types 4, 8 et 19 sont rapportés dans les mesures; garder le détourage existant. Revue visuelle des 19 images effectuée. Ruff et vérification des liens de galerie effectués. Aucun test de jeu revendiqué : cette livraison est artistique et attend le raccordement d’Opus.
+
+## Revue de l’intégration 8242d1c
+
+Codex a examiné `overhead-atlas-after-purchase.png` et `overhead-atlas-curve.png`. Les caisses ajoutées ont une largeur visuellement cohérente avec le convoi initial sur la capture à dix véhicules. À cette échelle de voyage, les équipements les plus fins se confondent partiellement; ces captures ne valident pas encore la lisibilité au zoom de combat. Le journal `overhead-atlas-redesign-tests.log` contient 11 PASS et exit=0; les tests n’ont pas été relancés par Codex pour cette revue.
+
+Responsabilité de la suite artistique : Codex. Livrables restants : châssis et intérieur sous le toit, toit séparé, armes et équipements mobiles séparés avec pivots, cartes de matériaux et occupation contrôlées sur les pixels. Opus assure leur intégration et la simulation. Les coefficients physiques et règles de dégâts ne sont pas décidés par les images.
