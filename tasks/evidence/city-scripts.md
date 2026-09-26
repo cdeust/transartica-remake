@@ -188,8 +188,25 @@ Formules de stock exportées : `reference-private/city-scripts/stock-init.json` 
 - Adaptations : libellés et refus rédigés par le remake (pas les textes texte2k) ; en ville 8–9 sans
   fiche d'espion libre, l'enrôlement direct n'est lancé qu'à l'arrivée (l'original y revient après
   chaque transaction) ; une marchandise doit être choisie avant « + ».
-- Non portés : atelier des villes 10–16 (achat de wagons : correspondance type → véhicule dessiné
-  inconnue), textes d'histoire des villes TOWN, gare-atelier, marque de visite (champ 2 négatif),
+- Atelier des villes 10–16 (§2.4, relu le 26 septembre sur `0x1905–0x21e7`) : `city_trade.gd`
+  (`workshop_list`, `workshop_refusal`, `buy_wagons`) et `city_screen.gd` (menu « achat de wagons » /
+  départ ; liste ; sélection → quantité 0 ; + / − sans effet sans sélection ; validation : débit sans
+  plafond, ajout de `qté` wagons `[type,0,0,0]`, désélection, on reste dans la liste ; sortie → menu de
+  l'atelier, pas départ). Refus de +1 dans l'ordre : `nb + qté > 99` (msg 17), tender si `tenders
+  intacts + qté ≥ 6` (**silencieux**, `0x2174`), argent `< total + prix` (msg 50). Listes (7 villes :
+  8/8/5/7/6/1/8 entrées) et 25 noms textek extraits par `reference-private/city-scripts/workshop.py`
+  vers `commerce.json` (clés `workshop`, `wagon_names`).
+  Hypothèses : les emplacements de `Lw[0x44]` au-delà de la liste valent 0 (variables locales à
+  l'entrée du script, non prouvé) ; l'original n'écrit que `[0]` du nouveau wagon, les autres octets
+  gardent l'ancien contenu de l'emplacement — nuls tant que la destruction (gare-atelier) n'existe pas.
+- Correspondance type → véhicule dessiné : **non décodable**. L'original dessine chaque type avec son
+  propre sprite (glieu `cputnat … 48+(type−4)`, usine `29+(v−4)`) ; les six véhicules de
+  `train_consist.gd` sont des illustrations du remake. Les wagons achetés comptent pour la masse et les
+  capacités mais ne sont pas dessinés : choix artistique laissé au propriétaire.
+- Non portés : drapeaux `0x27c3` (`main+0x307b`, `main+0x62c1` : lecteurs inconnus) et `csend LOC-40 99`
+  après achat ; textes d'histoire des villes TOWN, gare-atelier, marque de visite (champ 2 négatif),
   effets des mammouths/esclaves/soldats au-delà de leur masse.
+- Captures natives de l'atelier (clic et touches réels) : `tasks/validation/city-workshop-in-salah.png`,
+  `city-workshop-in-salah-bought.png`.
 - Tests : `game/tests/test_city_trade.gd`, `test_playable_trip.gd::_test_city_trade_screen` ;
   captures natives `tasks/validation/station-arrival-bhopal.png`, `city-trade-kuwait.png`.

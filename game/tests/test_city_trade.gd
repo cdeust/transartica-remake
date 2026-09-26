@@ -31,8 +31,9 @@ func _run() -> void:
 	_test_goods_sale(trade, failures)
 	_test_other_markets(trade, failures)
 	_test_persistence(trade, failures)
+	_test_workshop(trade, failures)
 	if failures.is_empty():
-		print("PASS: glieu trade rules, wagon loading order, sale coal cap, money clamp, TIME wagon mass, persistence")
+		print("PASS: glieu trade rules, wagon loading order, sale coal cap, money clamp, TIME wagon mass, persistence, workshop")
 		quit(0)
 	else:
 		for failure in failures:
@@ -162,3 +163,37 @@ func _test_city_alignment(trade, failures: Array[String]) -> void:
 		if tables.has(int(city.kind)):
 			aligned = aligned and trade.data[tables[int(city.kind)]].has(str(index))
 	_check(world.cities.size() == 46 and aligned, "46 cities share glieu indices and each trading kind has its prices", failures)
+
+
+# glieu 0x1905..0x21e7 (city-scripts evidence §2.4).
+func _test_workshop(trade, failures: Array[String]) -> void:
+	var sizes := []
+	for city in range(10, 17):
+		sizes.append(trade.workshop_list(city).size())
+	_check(sizes == [8, 8, 5, 7, 6, 1, 8] and trade.workshop_list(9).is_empty(), "workshops only in cities 10..16, with 8/8/5/7/6/1/8 wagons", failures)
+	_check(String(trade.data.city_names[10]) == "IN SALAH" and trade.workshop_list(10)[0] == [21, 100], "IN SALAH lists a tender at 100 first", failures)
+	_check(String(trade.data.city_names[15]) == "RUM" and trade.workshop_list(15) == [[8, 800]], "RUM sells only THE DRILL at 800", failures)
+	_check(trade.wagon_name(1) == "LOCOMOTIVE" and trade.wagon_name(21) == "TENDER" and trade.wagon_name(25) == "BOILER", "textek names types 1..25", failures)
+	var wagons = TrainWagons.new()
+	var engine = EngineState.new()
+	engine.lignite = 10000
+	var tender: Array = [21, 100]
+	_check(trade.intact_tenders(wagons) == 1, "the TABLE train has one intact tender", failures)
+	_check(trade.workshop_refusal(tender, 4, wagons, engine) == 0 and trade.workshop_refusal(tender, 5, wagons, engine) == CityTrade.TENDER_LIMIT, "at most six intact tenders, refused silently", failures)
+	wagons.wagons[1][TrainWagons.STATE] = 3
+	_check(trade.workshop_refusal(tender, 5, wagons, engine) == 0, "a scrap tender does not count", failures)
+	wagons.wagons[1][TrainWagons.STATE] = 0
+	engine.lignite = 299
+	var drill: Array = [8, 800]
+	_check(trade.workshop_refusal([7, 300], 0, wagons, engine) == CityTrade.NO_MONEY, "total + price must be affordable (msg 50)", failures)
+	engine.lignite = 1600
+	_check(trade.workshop_refusal(drill, 1, wagons, engine) == 0 and trade.workshop_refusal(drill, 2, wagons, engine) == CityTrade.NO_MONEY, "two drills cost 1600", failures)
+	trade.buy_wagons(drill, 2, wagons, engine)
+	_check(engine.lignite == 0 and wagons.count() == 8 and wagons.wagons[6] == [8, 0, 0, 0] and wagons.wagons[7] == [8, 0, 0, 0], "validation debits once and appends two drills", failures)
+	_check(wagons.mass() == 1266 + 2 * 105, "bought wagons add their TIME base weight", failures)
+	engine.lignite = 100000
+	var cheap: Array = [7, 1]
+	_check(trade.workshop_refusal(cheap, 91, wagons, engine) == 0 and trade.workshop_refusal(cheap, 92, wagons, engine) == CityTrade.WAGONS_FULL, "no more than 99 wagons (msg 17)", failures)
+	var encoded: Variant = JSON.parse_string(JSON.stringify(wagons.snapshot()))
+	var copy = TrainWagons.new()
+	_check(copy.restore(encoded) and copy.snapshot() == wagons.snapshot(), "a bought train round-trips through JSON", failures)

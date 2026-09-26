@@ -53,6 +53,7 @@ func _run() -> void:
 	_check(app.journey.snapshot() == stopped, "braked map does not move once stopped")
 	_test_station_departure_restore(app)
 	_test_city_trade_screen(app)
+	_test_workshop_screen(app)
 	_test_legacy_route_restore(app)
 	_test_invalid_discovery(app)
 	app.world_view.selected_city = 0
@@ -183,3 +184,26 @@ func _test_city_trade_screen(app) -> void:
 	_check(app._city_panel.visible, "restore in a station reopens the city")
 	app._city_panel.handle_key(KEY_ENTER)
 	_check(not app._city_panel.visible, "Enter in the menu leaves the city")
+
+
+# glieu 0x1d64..0x21e7: IN SALAH (city 10) opens the workshop instead of a market.
+func _test_workshop_screen(app) -> void:
+	app._restart_engine()
+	var panel = app._city_panel
+	panel.open(10, "IN SALAH", 0, "")
+	_check(panel.visible and not panel.in_transaction(), "a workshop city opens on its menu")
+	panel.start_workshop()
+	_check(panel.in_transaction() and panel._list.item_count == 8, "IN SALAH lists eight wagons")
+	panel.handle_key(KEY_EQUAL)
+	panel.handle_key(KEY_ENTER)
+	_check(app.wagons.count() == 6 and app.engine.lignite == 2000, "nothing is bought without a selection")
+	panel._select_goods(7) # LIVESTOCK, 300
+	panel.handle_key(KEY_EQUAL)
+	panel.handle_key(KEY_EQUAL)
+	panel.handle_key(KEY_ENTER)
+	_check(app.engine.lignite == 1400 and app.wagons.count() == 8 and app.wagons.wagons[-1] == [7, 0, 0, 0], "two livestock wagons cost 600 lignite")
+	_check(app.engine.train_mass == 1266 + 120, "bought wagons weigh on the train")
+	_check(panel.in_transaction() and panel._entry.is_empty(), "validation stays in the list without a selection")
+	panel.handle_key(KEY_ESCAPE)
+	_check(panel.visible and not panel.in_transaction(), "exit returns to the workshop menu")
+	panel.hide()

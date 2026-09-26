@@ -3,7 +3,9 @@
 - [x] Masse des wagons décodée (TIME 0x2a77/0x2b4a) ; table des wagons et masse dynamique.
 - [x] Règles glieu : marchandises, mammouths, esclaves, soldats, espions ; stocks sauvegardés.
 - [x] Écran de ville : menu, transaction, refus, départ ; captures natives BHOPAL et KUWAIT.
-- [ ] Atelier des villes 10–16 (achat de wagons) : relier types 1–25 et véhicules dessinés.
+- [x] Atelier des villes 10–16 (achat de wagons) : règles, écran, tests, captures natives (IN SALAH).
+- [ ] Dessin des wagons achetés : types 1–25 sans correspondance décodable avec les 6 véhicules
+  illustrés (l'original a un sprite par type) — décision artistique du propriétaire.
 - [ ] Textes d'histoire (TOWN), gare-atelier, effets de l'équipage et des animaux.
 Preuves : tasks/evidence/city-scripts.md §5–6 et « Portage ».
 Note de propriété : `main.gd` (Codex) touché pour raccorder l'écran : champs de sauvegarde v7

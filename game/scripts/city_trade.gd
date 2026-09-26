@@ -30,6 +30,11 @@ const NO_MONEY := 50
 const NOT_ENOUGH_LOAD := 52
 const NO_COAL_ROOM := 54
 const STOCK_LIMIT := 1 # glieu 0x63c: silent refusal (cstop), not a message.
+# Workshop of cities 10..16 (glieu 0x1d64..0x21e7, city-scripts evidence §2.4).
+const WAGONS_FULL := 17 # texte2k message, glieu 0x2137: count + quantity > 99
+const WORKSHOP_WAGON_LIMIT := 99
+const TENDER_LIMIT := 2 # glieu 0x2158: silent refusal, no message.
+const MAX_INTACT_TENDERS := 6
 const PRIVATE_NAME := "commerce.json"
 
 var data: Dictionary = {}
@@ -258,6 +263,51 @@ func _unload(o: Dictionary, quantity: int, wagons) -> void:
 				wagon[Wagons.GOODS] = 0
 		if left == 0:
 			return
+
+
+# glieu 0x1905: [type, price] pairs offered by the workshop of city 10..16.
+func workshop_list(city: int) -> Array:
+	var result: Array = []
+	if data.has("workshop"):
+		for entry in data.workshop.get(str(city), []):
+			result.append([int(entry[0]), int(entry[1])])
+	return result
+
+
+# textek 0x3172: names of wagon types 1..25.
+func wagon_name(wagon_type: int) -> String:
+	return String(data.wagon_names[wagon_type - 1])
+
+
+# glieu 0x1f29..0x1f6b: tenders not in scrap state, recounted on every loop.
+func intact_tenders(wagons) -> int:
+	var count := 0
+	for wagon in wagons.wagons:
+		if wagon[Wagons.TYPE] == TENDER_TYPE and wagon[Wagons.STATE] != SCRAP_STATE:
+			count += 1
+	return count
+
+
+# glieu 0x2137..0x21a0: refusal of "+1" for entry [type, price], 0 when accepted.
+func workshop_refusal(entry: Array, quantity: int, wagons, engine) -> int:
+	if quantity + wagons.count() > WORKSHOP_WAGON_LIMIT:
+		return WAGONS_FULL
+	if entry[0] == TENDER_TYPE and intact_tenders(wagons) + quantity >= MAX_INTACT_TENDERS:
+		return TENDER_LIMIT
+	if engine.lignite < quantity * int(entry[1]) + int(entry[1]):
+		return NO_MONEY
+	return 0
+
+
+# glieu 0x2092..0x20ce: debit without clamp, then append quantity wagons. The
+# original writes only field [0]; the slot's other fields keep their old bytes,
+# which are zero until wagons can be destroyed (gare-atelier, not ported).
+func buy_wagons(entry: Array, quantity: int, wagons, engine) -> void:
+	if quantity <= 0:
+		return
+	engine.lignite -= quantity * int(entry[1])
+	for _wagon in quantity:
+		wagons.wagons.append([int(entry[0]), 0, 0, 0])
 
 
 func snapshot() -> Dictionary:

@@ -2,7 +2,8 @@ extends PanelContainer
 
 # City scene driven by the glieu.co menu (tasks/evidence/city-scripts.md §2).
 # Rules live in city_trade.gd; this panel only mirrors the original flow:
-# menu -> transaction (+1 / -1 / validate / exit) -> menu, or departure.
+# menu -> transaction (+1 / -1 / validate / exit) -> menu, or departure;
+# cities 10..16 open the workshop instead (wagon purchase, glieu 0x1d64).
 # The original reads choices 50..53 from main+0x1c, whose writer is not decoded:
 # the button roles (buy/sell, validate, -, +, exit) are inferred from their effects.
 # The wording of labels and refusals is the remake's own, not texte2k text.
@@ -17,6 +18,7 @@ const REFUSALS := {
 	CityTrade.NO_MONEY: "Not enough lignite to pay.",
 	CityTrade.NOT_ENOUGH_LOAD: "You do not carry that many.",
 	CityTrade.NO_COAL_ROOM: "The tenders cannot hold that much more coal.",
+	CityTrade.WAGONS_FULL: "The train cannot take more wagons.",
 }
 const WORKSHOP_CITIES := [10, 11, 12, 13, 14, 15, 16] # glieu 0x4a: usine + workshop 0x1d64
 const AUTO_DEPART_CITIES := [5, 6, 7] # glieu 0x790
@@ -34,6 +36,8 @@ var _direct := false
 var _arriving := false
 var _depart_after_notice := false
 var _rows: Array = []
+var _workshop := false
+var _entry: Array = [] # workshop selection [type, price]; empty = L0x3e -1
 
 var _title: Label
 var _subtitle: Label
@@ -122,11 +126,13 @@ func in_transaction() -> bool:
 func _show_menu() -> void:
 	_trade_box.hide()
 	_offer = {}
+	_workshop = false
 	_depart_after_notice = false
 	for child in _menu.get_children():
 		child.queue_free()
 	if city in WORKSHOP_CITIES:
-		_notice.text = "Workshop (wagon purchase, glieu 0x1d64) is not ported yet."
+		# glieu 0x1d64..0x1d98: the workshop menu replaces trade (50 buy, 52 depart).
+		_button(_menu, "Buy wagons", start_workshop)
 	else:
 		match kind:
 			CityTrade.COMMERCIAL:
@@ -183,6 +189,22 @@ func start(mode: int) -> void:
 	_refresh()
 
 
+# glieu 0x1dd7..0x1efc: list of the city's wagons and prices, no selection.
+func start_workshop() -> void:
+	_workshop = true
+	_entry = []
+	_quantity = 0
+	_notice.text = ""
+	_rows = trade.workshop_list(city)
+	_list.clear()
+	for row in _rows:
+		_list.add_item("%s  %d" % [trade.wagon_name(row[0]), row[1]])
+	_menu.hide()
+	_list.show()
+	_trade_box.show()
+	_refresh()
+
+
 func _show_depart_only() -> void:
 	for child in _menu.get_children():
 		child.queue_free()
@@ -202,6 +224,13 @@ func _fill_list() -> void:
 
 # glieu 0x464..0x4a9: picking goods loads its prices and restarts at zero.
 func _select_goods(index: int) -> void:
+	if _workshop:
+		# glieu 0x1fdf..0x2059: select a wagon, quantity restarts at zero.
+		_entry = _rows[index]
+		_quantity = 0
+		_notice.text = ""
+		_refresh()
+		return
 	_offer = trade.offer(city, kind, _mode, _rows[index][0])
 	_quantity = 0
 	_notice.text = "" if not _offer.is_empty() else "No price is recorded for these goods."
@@ -209,9 +238,15 @@ func _select_goods(index: int) -> void:
 
 
 func increment() -> void:
-	if _offer.is_empty():
+	var refusal := 0
+	if _workshop:
+		if _entry.is_empty():
+			return
+		refusal = trade.workshop_refusal(_entry, _quantity, wagons, engine)
+	elif _offer.is_empty():
 		return
-	var refusal: int = trade.increment_refusal(_offer, _quantity, wagons, engine)
+	else:
+		refusal = trade.increment_refusal(_offer, _quantity, wagons, engine)
 	if refusal == 0:
 		_quantity += 1
 		_notice.text = ""
@@ -228,6 +263,16 @@ func decrement() -> void:
 
 # glieu 0x529..0x5ad: pay or cash in, load or unload, then continue.
 func validate() -> void:
+	if _workshop:
+		# glieu 0x2085..0x20f4: buy, then clear quantity and selection; stay in the list.
+		if _quantity > 0:
+			trade.buy_wagons(_entry, _quantity, wagons, engine)
+			cargo_changed.emit()
+		_quantity = 0
+		_entry = []
+		_list.deselect_all()
+		_refresh()
+		return
 	if _offer.is_empty():
 		return
 	if _quantity > 0:
@@ -242,6 +287,10 @@ func validate() -> void:
 
 
 func leave_transaction() -> void:
+	if _workshop:
+		# glieu 0x21a9..0x21d8: exit returns to the workshop menu, not departure.
+		_show_menu()
+		return
 	_finish()
 
 
@@ -256,6 +305,12 @@ func _finish() -> void:
 func _refresh() -> void:
 	_funds.text = "Lignite %d  ·  Anthracite %d" % [engine.lignite, engine.anthracite]
 	if not _trade_box.visible:
+		return
+	if _workshop:
+		if _entry.is_empty():
+			_detail.text = "Choose a wagon in the list.\nWagons %d" % wagons.count()
+		else:
+			_detail.text = "Buy %s · %d each\nQuantity %d · total %d lignite\nWagons %d" % [trade.wagon_name(_entry[0]), _entry[1], _quantity, _quantity * int(_entry[1]), wagons.count()]
 		return
 	if _offer.is_empty():
 		_detail.text = "Choose goods in the list."

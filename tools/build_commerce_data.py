@@ -3,6 +3,7 @@
 Inputs (private, derived from glieu.alis and table.alis; tasks/evidence/city-scripts.md):
   reference-private/city-scripts/glieu-commerce.json  prices and accepted wagons per city
   reference-private/city-scripts/stock-init.json      TABLE 0x75d..0xf0a stock formulas
+  reference-private/city-scripts/workshop.json        glieu 0x1905 wagon lists, textek 0x3172 names
 Output (private): reference-private/commerce.json. Never publish it with MIT code.
 """
 import json
@@ -23,6 +24,8 @@ def build():
     source = json.loads((SOURCE / 'glieu-commerce.json').read_text())
     prices = source['data']
     stock = json.loads((SOURCE / 'stock-init.json').read_text())['stock']
+    workshop = json.loads((SOURCE / 'workshop.json').read_text())
+    assert len(workshop['wagon_names']) == 25 and sorted(workshop['workshop']) == [str(c) for c in range(10, 17)]
     goods_names = list(prices['goods'])
     assert len(goods_names) == 16 and len(stock) == 22
     goods = {}
@@ -35,7 +38,7 @@ def build():
                         'wagon_b': cell['wagon_b'][0], 'cap_b': cell['wagon_b'][1]})
         goods[str(city)] = row
     return {
-        'source': 'glieu.alis 0xcd1/0xd23/0xd5f/0xdd2 and TABLE 0x75d..0xf0a; see tasks/evidence/city-scripts.md',
+        'source': 'glieu.alis 0xcd1/0xd23/0xd5f/0xdd2/0x1905, textek.alis 0x3172 and TABLE 0x75d..0xf0a; see tasks/evidence/city-scripts.md',
         'city_names': [source['city_names'][str(i)] for i in range(46)],
         'goods_names': goods_names,
         'goods': goods,
@@ -44,6 +47,9 @@ def build():
         'soldiers': {k: _offer(v['enrol']) for k, v in prices['soldiers'].items()},
         'spies': {k: _offer(v['spy']) for k, v in prices['soldiers'].items()},
         'stock_init': stock,
+        # Per workshop city 10..16: [wagon type, price] in list order.
+        'workshop': workshop['workshop'],
+        'wagon_names': workshop['wagon_names'],
     }
 
 
