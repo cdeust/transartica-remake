@@ -1,0 +1,38 @@
+unittest.case.FunctionTestCase (test_carte_map_layout_and_reachability) ... ok
+unittest.case.FunctionTestCase (test_cdim_22_and_fail_closed) ... ok
+unittest.case.FunctionTestCase (test_clive_transitive_store_operand) ... ok
+unittest.case.FunctionTestCase (test_file_opcodes_from_main) ... ok
+unittest.case.FunctionTestCase (test_header_entries_and_resource_boundary) ... ok
+unittest.case.FunctionTestCase (test_relative_jump_and_nested_expression) ... ok
+unittest.case.FunctionTestCase (test_source_dispatch_and_real_prefixes) ... ok
+unittest.case.FunctionTestCase (test_text2k_entry_reachable_boundaries) ... ok
+unittest.case.FunctionTestCase (test_time_entry_reachable_boundaries) ... ok
+unittest.case.FunctionTestCase (test_yoda_and_textek_reachable_boundaries) ... ok
+test_independent_guide_matches_43_records_and_keeps_tibesti_unresolved (test_decode_cities.DecodeCitiesTests.test_independent_guide_matches_43_records_and_keeps_tibesti_unresolved) ... ok
+test_real_alis_switches_extract_names_categories_and_footprint_offsets (test_decode_cities.DecodeCitiesTests.test_real_alis_switches_extract_names_categories_and_footprint_offsets) ... ok
+test_triplet_decoder_preserves_raw_values_and_sign_extends_field0 (test_decode_cities.DecodeCitiesTests.test_triplet_decoder_preserves_raw_values_and_sign_extends_field0) ... ok
+test_column_major_conversion_roundtrips_every_byte (test_decode_map.DecodeMapTests.test_column_major_conversion_roundtrips_every_byte) ... ok
+test_decode_writes_numeric_grid_and_standalone_html (test_decode_map.DecodeMapTests.test_decode_writes_numeric_grid_and_standalone_html) ... ok
+test_real_observation_matches_independent_city_oracle_when_present (test_decode_map.DecodeMapTests.test_real_observation_matches_independent_city_oracle_when_present) ... ok
+test_rejects_bad_input_size (test_decode_map.DecodeMapTests.test_rejects_bad_input_size) ... ok
+test_scheduler_separates_blocks_and_eof_flushes (test_index_trace.TraceIndexTests.test_scheduler_separates_blocks_and_eof_flushes) ... ok
+test_variants_retain_branch_outcomes_and_counts (test_index_trace.TraceIndexTests.test_variants_retain_branch_outcomes_and_counts) ... ok
+test_cli_normalises_scale_and_writes_manifest (test_sprite_pipeline.SpritePipelineTests.test_cli_normalises_scale_and_writes_manifest) ... ok
+test_expected_screen_directions_follow_travel_projection (test_sprite_pipeline.SpritePipelineTests.test_expected_screen_directions_follow_travel_projection) ... ok
+test_harden_alpha_removes_halo (test_sprite_pipeline.SpritePipelineTests.test_harden_alpha_removes_halo) ... ok
+test_measures_axis_of_synthetic_convoys (test_sprite_pipeline.SpritePipelineTests.test_measures_axis_of_synthetic_convoys) ... ok
+test_mirror_maps_east_to_south (test_sprite_pipeline.SpritePipelineTests.test_mirror_maps_east_to_south) ... ok
+test_palette_is_shared (test_sprite_pipeline.SpritePipelineTests.test_palette_is_shared) ... ok
+test_pixelize_produces_uniform_cells (test_sprite_pipeline.SpritePipelineTests.test_pixelize_produces_uniform_cells) ... ok
+test_reference_sprite_axis_matches_authored_constant_when_present (test_sprite_pipeline.SpritePipelineTests.test_reference_sprite_axis_matches_authored_constant_when_present) ... ok
+test_rejects_wrong_orientation_and_opaque_background (test_sprite_pipeline.SpritePipelineTests.test_rejects_wrong_orientation_and_opaque_background) ... ok
+test_warns_when_body_thickness_drifts (test_sprite_pipeline.SpritePipelineTests.test_warns_when_body_thickness_drifts) ... ok
+test_time_reader_matches_every_observed_instruction (test_trace_oracle.RuntimeOracleTests.test_time_reader_matches_every_observed_instruction) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 1.203s
+
+OK
+E: OK
+NE: OK
+  warning: body thickness 253px vs reference 122px (+108%); check foreshortening on the contact sheet

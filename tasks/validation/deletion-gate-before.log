@@ -1,0 +1,105 @@
+Selected excerpts: first PNG decoding failure and complete test summary.
+Local absolute paths normalized; repeated tracebacks omitted.
+
+FF.FFFFFFFFF..FFFF                                                       [100%]
+=================================== FAILURES ===================================
+___________ test_binary_changes_preserve_source_detection[add-None] ____________
+
+repo = PosixPath('<project>/.cache/disk-hygiene-hycqs6uv/pytest-of-cdeust/pytest-0/test_binary_changes_preserve_s0')
+mode = None, change = 'add'
+
+    @pytest.mark.parametrize('mode', [None, dgg.MODE_STAGED, dgg.MODE_WORKTREE])
+    @pytest.mark.parametrize('change', ['add', 'modify', 'delete', 'rename'])
+    def test_binary_changes_preserve_source_detection(repo: Path, mode, change: str):
+        image = repo / 'image.png'
+        if change == 'add':
+            (repo / 'new.png').write_bytes(PNG_SIGNATURE)
+        elif change == 'modify':
+            image.write_bytes(PNG_SIGNATURE + b'new')
+        elif change == 'delete':
+            image.unlink()
+        else:
+            image.rename(repo / 'renamed.png')
+        (repo / 'lib.py').write_text('')
+        base = git(repo, 'rev-parse', 'HEAD')
+        if mode != dgg.MODE_WORKTREE:
+            git(repo, 'add', '-A')
+        if mode is None:
+            git(repo, 'commit', '-qm', 'changed')
+>       removed, added = dgg.collect_definitions(str(repo), base, 'HEAD', mode)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_deletion_gate_binary.py:55:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools/deletion_gate_git.py:149: in collect_definitions
+    post_text = None if status == "D" else post_content(repo, head, new_path, mode)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tools/deletion_gate_git.py:133: in post_content
+    return show_file(repo, head, path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tools/deletion_gate_git.py:74: in show_file
+    proc = subprocess.run(
+/opt/homebrew/Cellar/python@3.14/3.14.4/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:557: in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.4/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:1221: in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.4/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:2194: in _communicate
+    stdout = self._translate_newlines(stdout,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Popen: returncode: 0 args: ['git', '-C', '/Users/cdeust/Developments/Transa...>
+data = b'\x89PNG\r\n\x1a\n', encoding = 'UTF-8', errors = 'strict'
+
+    def _translate_newlines(self, data, encoding, errors):
+>       data = data.decode(encoding, errors)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       UnicodeDecodeError: 'utf-8' codec can't decode byte 0x89 in position 0: invalid start byte
+
+/opt/homebrew/Cellar/python@3.14/3.14.4/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:1099: UnicodeDecodeError
+__________ test_binary_changes_preserve_source_detection[add-staged] ___________
+
+repo = PosixPath('<project>/.cache/disk-hygiene-hycqs6uv/pytest-of-cdeust/pytest-0/test_binary_changes_preserve_s1')
+mode = 'staged', change = 'add'
+
+    @pytest.mark.parametrize('mode', [None, dgg.MODE_STAGED, dgg.MODE_WORKTREE])
+    @pytest.mark.parametrize('change', ['add', 'modify', 'delete', 'rename'])
+    def test_binary_changes_preserve_source_detection(repo: Path, mode, change: str):
+        image = repo / 'image.png'
+        if change == 'add':
+            (repo / 'new.png').write_bytes(PNG_SIGNATURE)
+        elif change == 'modify':
+            image.write_bytes(PNG_SIGNATURE + b'new')
+        elif change == 'delete':
+            image.unlink()
+        else:
+            image.rename(repo / 'renamed.png')
+        (repo / 'lib.py').write_text('')
+        base = git(repo, 'rev-parse', 'HEAD')
+        if mode != dgg.MODE_WORKTREE:
+            git(repo, 'add', '-A')
+        if mode is None:
+            git(repo, 'commit', '-qm', 'changed')
+
+[Repeated tracebacks omitted]
+
+
+tests/test_deletion_gate_binary.py:83: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_deletion_gate_binary.py::test_binary_changes_preserve_source_detection[add-None]
+FAILED tests/test_deletion_gate_binary.py::test_binary_changes_preserve_source_detection[add-staged]
+FAILED tests/test_deletion_gate_binary.py::test_binary_changes_preserve_source_detection[modify-None]
+FAILED tests/test_deletion_gate_binary.py::test_binary_changes_preserve_source_detection[modify-staged]
+FAILED tests/test_deletion_gate_binary.py::test_binary_changes_preserve_source_detection[modify-worktree]
+FAILED tests/test_deletion_gate_binary.py::test_binary_changes_preserve_source_detection[delete-None]
+FAILED tests/test_deletion_gate_binary.py::test_binary_changes_preserve_source_detection[delete-staged]
+FAILED tests/test_deletion_gate_binary.py::test_binary_changes_preserve_source_detection[delete-worktree]
+FAILED tests/test_deletion_gate_binary.py::test_binary_changes_preserve_source_detection[rename-None]
+FAILED tests/test_deletion_gate_binary.py::test_binary_changes_preserve_source_detection[rename-staged]
+FAILED tests/test_deletion_gate_binary.py::test_binary_changes_preserve_source_detection[rename-worktree]
+FAILED tests/test_deletion_gate_binary.py::test_real_post_tool_hook_handles_binary_and_still_blocks_callers[False-]
+FAILED tests/test_deletion_gate_binary.py::test_real_post_tool_hook_handles_binary_and_still_blocks_callers[False-plugins/zetetic-gates]
+FAILED tests/test_deletion_gate_binary.py::test_real_post_tool_hook_handles_binary_and_still_blocks_callers[True-]
+FAILED tests/test_deletion_gate_binary.py::test_real_post_tool_hook_handles_binary_and_still_blocks_callers[True-plugins/zetetic-gates]
+15 failed, 3 passed in 4.71s

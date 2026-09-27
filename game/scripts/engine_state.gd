@@ -17,6 +17,7 @@ var event_pending := false
 var event_message := ""
 var cycles := 0
 var train_mass := 1266 # TABLE 0x699..0x6f4, TIME 0x2a77..0x2bd6: six original wagons.
+# Cargo changes it; main.gd sets it from train_wagons.gd::mass() (TIME 0x2a77/0x2b4a).
 # Remake adaptation approved by the owner on 26 September 2026 (FIDELITE.md).
 # ECS TIME 0x2e4..0x2fa zeroes speed when the lever is set; the remake instead
 # lowers it by the original regulator step (TIME 0x280..0x2e3) on every cycle.
@@ -140,7 +141,7 @@ func _snapshot_values_valid(data: Dictionary) -> bool:
 		and _is_int_in_range(data.temperature, 0, 600) \
 		and _is_int_in_range(data.pressure_reserve, 0, 32000) \
 		and _is_int_in_range(data.cycles, 0, 2147483647) \
-		and _is_int_in_range(data.train_mass, 1266, 1266) \
+		and _is_int_in_range(data.train_mass, 1, 32767) \
 		and typeof(data.brake) == TYPE_BOOL \
 		and typeof(data.event_pending) == TYPE_BOOL \
 		and typeof(data.event_message) == TYPE_STRING

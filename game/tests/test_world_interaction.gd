@@ -82,7 +82,8 @@ func _test_glyph_ports(failures: Array[String]) -> void:
 		10: [Vector2(0, 0.5), Vector2(-0.5, -0.5)], 11: [Vector2(0, 0.5), Vector2(0.5, -0.5)],
 		12: [Vector2(0, -0.5), Vector2(-0.5, 0.5)], 13: [Vector2(0, -0.5), Vector2(0.5, 0.5)],
 		14: [Vector2(0, -0.5), Vector2(0.5, 0), Vector2(0, 0.5), Vector2(-0.5, 0)],
-		15: [Vector2(0, -0.5), Vector2(0, 0.5)], 16: [Vector2(-0.5, 0), Vector2(0.5, 0)],
+		15: [Vector2(0, -0.5), Vector2(0.5, 0), Vector2(0, 0.5), Vector2(-0.5, 0)],
+		16: [Vector2(0, -0.5), Vector2(0.5, 0), Vector2(0, 0.5), Vector2(-0.5, 0)],
 		17: [Vector2(0.5, -0.5), Vector2(0.5, 0.5), Vector2(-0.5, 0.5), Vector2(-0.5, -0.5)],
 		18: [Vector2(-0.5, 0), Vector2(0.5, 0), Vector2(0.5, -0.5)],
 		20: [Vector2(-0.5, 0), Vector2(0.5, 0), Vector2(-0.5, -0.5)],
@@ -95,14 +96,23 @@ func _test_glyph_ports(failures: Array[String]) -> void:
 	}
 	for code in expected:
 		var variants := [int(code)]
-		if code >= 18:
+		if code >= 18 and code <= 33:
 			variants.append(int(code) + 1)
 		if code == 2:
-			variants.append(16)
+			variants.append_array([39, 50, 54, 56, 58])
 		if code == 3:
-			variants.append(15)
+			variants.append_array([38, 52, 53])
+		if code == 17:
+			variants.append(49)
+		if code == 4:
+			variants.append(41)
+		if code == 5:
+			variants.append(40)
 		for variant in variants:
 			_check(RailGlyphs.ports_for_code(variant) == expected[code], "evidenced ports for code %d" % variant, failures)
+	_check(RailGlyphs.ports_for_code(-121) == expected[2] and RailGlyphs.ports_for_code(135) == expected[2] and RailGlyphs.ports_for_code(63) == expected[2], "E-W bridges -121 (byte 135) and 63", failures)
+	_check(RailGlyphs.ports_for_code(-117) == expected[3] and RailGlyphs.ports_for_code(64) == expected[3], "N-S bridges -117 and 64", failures)
+	_check(RailGlyphs.ports_for_code(-50) == RailGlyphs.ports_for_code(50) and RailGlyphs.ports_for_code(121).is_empty(), "destroyed track keeps its glyph; positive decor 121 has none", failures)
 	for code in [1, 34, 70, 77, 255]:
 		_check(RailGlyphs.ports_for_code(code).is_empty(), "unknown code %d has no inferred ports" % code, failures)
 	for code in range(71, 77):

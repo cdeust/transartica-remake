@@ -21,7 +21,8 @@ def prepare_data():
     destination = ROOT / 'game/private-data'
     destination.mkdir(exist_ok=True)
     for source, output in [('CARTE.FIC', 'CARTE.FIC'),
-                           ('villes-decoded.csv', 'villes-decoded.data')]:
+                           ('villes-decoded.csv', 'villes-decoded.data'),
+                           ('commerce.json', 'commerce.json')]:
         shutil.copyfile(ROOT / 'reference-private' / source, destination / output)
 
 

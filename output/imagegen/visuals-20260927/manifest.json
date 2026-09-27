@@ -1,0 +1,590 @@
+{
+  "date": "2026-09-27",
+  "count": 32,
+  "assets": [
+    {
+      "id": "captain-boudoir",
+      "title": "Boudoir du capitaine",
+      "file": "captain-boudoir.png",
+      "prompt": "prompts/captain-boudoir.txt",
+      "width": 1829,
+      "height": 860,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "bcd4dd813c67a47883707f59094d4d1e67aef885740898a993da8e96f2fa1ef7",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/aga-08.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "city-trading-station",
+      "title": "Ville marchande",
+      "file": "city-trading-station.png",
+      "prompt": "prompts/city-trading-station.txt",
+      "width": 1916,
+      "height": 821,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "6c83bacc9be65e8f398c1ba329c3f1b56ca244dc3981a24cd9e5407badb2a0ba",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/aga-11.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "rail-track-kit",
+      "title": "Rails et aiguillages",
+      "file": "rail-track-kit.png",
+      "prompt": "prompts/rail-track-kit.txt",
+      "width": 1447,
+      "height": 1087,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_percent": 49.93,
+      "sha256": "6905fe2c3a7c6a4788958bf47e85b6d9f43c8352b3c8edbc5c6d1ad3d660ae26",
+      "source_images": [],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "city-industrial-workshop",
+      "title": "Atelier ferroviaire",
+      "file": "city-industrial-workshop.png",
+      "prompt": "prompts/city-industrial-workshop.txt",
+      "width": 1829,
+      "height": 860,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "00110840c629d2c15771d81c59f11924ba81d77d8a3be8c6e18cc08b2f301be6",
+      "source_images": [],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "city-mammoth-fair",
+      "title": "Marché aux mammouths",
+      "file": "city-mammoth-fair.png",
+      "prompt": "prompts/city-mammoth-fair.txt",
+      "width": 1827,
+      "height": 861,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "d13c32e20e4429301fdfeaa6576973c0682d2c4f15468acc77b8d4e4709c8d7d",
+      "source_images": [],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "world-landmarks-kit",
+      "title": "Lieux de la carte",
+      "file": "world-landmarks-kit.png",
+      "prompt": "prompts/world-landmarks-kit.txt",
+      "width": 1448,
+      "height": 1086,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_percent": 48.18,
+      "sha256": "e07056d80d16036368cc288500bad6c18afb4ff0300cad0dd216efbb94aeec85",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/ecs-07.png"
+      ],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "combat-background",
+      "title": "Combat — décor sans trains",
+      "file": "combat-background.png",
+      "prompt": "prompts/combat-background.txt",
+      "width": 1774,
+      "height": 887,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "a9508579b865a401061bea230b9254863f4bf048aff0f1561d2cab3866cc7a79",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/dos-07.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "combat-train-kit",
+      "title": "Combat — six véhicules principaux",
+      "file": "combat-train-kit.png",
+      "prompt": "prompts/combat-train-kit.txt",
+      "width": 2172,
+      "height": 724,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_percent": 49.49,
+      "sha256": "e823d0297106571255571d5b22ac41d51fca4b9490edbf911712017e1d4d5bb9",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/dos-07.png"
+      ],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex",
+      "wagon_sheet": {
+        "type_ids_reading_order": [
+          1,
+          21,
+          2,
+          3,
+          23,
+          11
+        ],
+        "columns": 3,
+        "rows": 2,
+        "order": "gauche à droite, haut en bas",
+        "note": "cellules de rangement seulement ; découpe et ancrages à relever sur le dessin"
+      }
+    },
+    {
+      "id": "combat-scene-reference",
+      "title": "Combat — composition de référence",
+      "file": "combat-scene-reference.png",
+      "prompt": "prompts/combat-scene-reference.txt",
+      "width": 1774,
+      "height": 887,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "aaa8c3aeb130692d0b6e3ff46693f4148c043c18f47256ba0dbc4679b7bdfbc3",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/dos-07.png",
+        "reference-private/art-direction/web-20260927/dos-10.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "combat-actors-kit",
+      "title": "Soldats, mammouths et acteurs",
+      "file": "combat-actors-kit.png",
+      "prompt": "prompts/combat-actors-kit.txt",
+      "width": 1448,
+      "height": 1086,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_percent": 60.45,
+      "sha256": "8f3b93a9ce8b05bbdc740865b2b48d98df8c14c0e54bf82a08cd494d0bebb1ed",
+      "source_images": [],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "combat-equipment-kit",
+      "title": "Armement et équipements séparés",
+      "file": "combat-equipment-kit.png",
+      "prompt": "prompts/combat-equipment-kit.txt",
+      "width": 1536,
+      "height": 1024,
+      "alpha_min": 0,
+      "alpha_max": 254,
+      "fully_transparent_percent": 65.0,
+      "sha256": "16fb68a85ede8fc578733a637b5fd46322bc311fd1c765bbd8c8c999039b5620",
+      "source_images": [],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "world-chart-frame",
+      "title": "Cadre de la carte — centre transparent",
+      "file": "world-chart-frame.png",
+      "prompt": "prompts/world-chart-frame.txt",
+      "width": 1774,
+      "height": 887,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_percent": 77.53,
+      "sha256": "c2b99042ed99b3fa4267e7033f3af14c77821fb9995032b45964daf8b05ff130",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/ecs-04.png"
+      ],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "command-room-background",
+      "title": "Salle de commandement — décor seul",
+      "file": "command-room-background.png",
+      "prompt": "prompts/command-room-background.txt",
+      "width": 1820,
+      "height": 864,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "01493f78936ac61e412bec30fd5ca4157f899d3f7e0ad2099fb8e33ff0ec1108",
+      "source_images": [
+        "output/imagegen/command-room-20260927/command-room-v1.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "combat-wagons-04-10",
+      "title": "Combat — types 4 à 9",
+      "file": "combat-wagons-04-10.png",
+      "prompt": "prompts/combat-wagons-04-10.txt",
+      "width": 1536,
+      "height": 1024,
+      "alpha_min": 0,
+      "alpha_max": 254,
+      "fully_transparent_percent": 46.91,
+      "sha256": "3c2c885aa452106056c4d1e62549b86202784efeac3bc28fbdb4833d1ff58874",
+      "source_images": [
+        "output/imagegen/visuals-20260927/combat-train-kit.png"
+      ],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex",
+      "wagon_sheet": {
+        "type_ids_reading_order": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "columns": 2,
+        "rows": 3,
+        "order": "gauche à droite, haut en bas",
+        "note": "cellules de rangement seulement ; découpe et ancrages à relever sur le dessin"
+      }
+    },
+    {
+      "id": "combat-wagons-10-17",
+      "title": "Combat — types 10, 12 à 16",
+      "file": "combat-wagons-10-17.png",
+      "prompt": "prompts/combat-wagons-10-17.txt",
+      "width": 1536,
+      "height": 1024,
+      "alpha_min": 0,
+      "alpha_max": 254,
+      "fully_transparent_percent": 47.68,
+      "sha256": "f00fe83347e2c93ab645f2eca4974850b7561bcde59dc572c457cd9f8a600ae7",
+      "source_images": [
+        "output/imagegen/visuals-20260927/combat-train-kit.png"
+      ],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex",
+      "wagon_sheet": {
+        "type_ids_reading_order": [
+          10,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "columns": 2,
+        "rows": 3,
+        "order": "gauche à droite, haut en bas",
+        "note": "cellules de rangement seulement ; découpe et ancrages à relever sur le dessin"
+      }
+    },
+    {
+      "id": "combat-wagons-17-25",
+      "title": "Combat — sept autres types",
+      "file": "combat-wagons-17-25.png",
+      "prompt": "prompts/combat-wagons-17-25.txt",
+      "width": 1536,
+      "height": 1024,
+      "alpha_min": 0,
+      "alpha_max": 254,
+      "fully_transparent_percent": 43.71,
+      "sha256": "4bf752fea5e0ce25a1eaccab451a9bb76a93f786259d395ae1a7162974846210",
+      "source_images": [
+        "output/imagegen/visuals-20260927/combat-train-kit.png"
+      ],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex",
+      "wagon_sheet": {
+        "type_ids_reading_order": [
+          17,
+          18,
+          19,
+          20,
+          22,
+          24,
+          25
+        ],
+        "columns": 2,
+        "rows": 4,
+        "order": "gauche à droite, haut en bas",
+        "note": "cellules de rangement seulement ; découpe et ancrages à relever sur le dessin"
+      }
+    },
+    {
+      "id": "bridge-works-alpha",
+      "title": "Obstacles et travaux — trois états",
+      "file": "bridge-works-alpha.png",
+      "prompt": "prompts/bridge-works-alpha.txt",
+      "width": 1536,
+      "height": 1024,
+      "alpha_min": 0,
+      "alpha_max": 254,
+      "fully_transparent_percent": 42.78,
+      "sha256": "f00e5292484b6b9d265b551e3ff357a430c3aa9109f8eefe23fafbe64554d29e",
+      "source_images": [],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "city-information",
+      "title": "Ville de renseignements",
+      "file": "city-information.png",
+      "prompt": "prompts/city-information.txt",
+      "width": 1828,
+      "height": 860,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "3c4b0abda3ed429b577eb949b159e2b307aded9ef3abb23ae80c7a137fd8214e",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/dos-information-city.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "city-slave-market",
+      "title": "Marché aux esclaves",
+      "file": "city-slave-market.png",
+      "prompt": "prompts/city-slave-market.txt",
+      "width": 1829,
+      "height": 860,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "ff5492ad36a4eae7501a514a6db1714189dd98de98cb7683ad962436e3c4e3e8",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/dos-slave-market.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "city-garrison",
+      "title": "Garnison",
+      "file": "city-garrison.png",
+      "prompt": "prompts/city-garrison.txt",
+      "width": 1827,
+      "height": 861,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "a369b090d95b483450fbeaa26883837b70b0405dc27627c5f0ce8fe5ecdb2eec",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/dos-garrison.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "coal-mine",
+      "title": "Mine de charbon",
+      "file": "coal-mine.png",
+      "prompt": "prompts/coal-mine.txt",
+      "width": 1829,
+      "height": 860,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "652b3f09df16e86ff9ecd3c22c908ee3786e04ae61b3e8cf2efa34607c106e72",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/dos-mining.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "event-railway-works",
+      "title": "Rencontre — travaux ferroviaires",
+      "file": "event-railway-works.png",
+      "prompt": "prompts/event-railway-works.txt",
+      "width": 1827,
+      "height": 861,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "f31150175ca6f6d09c0f30052c99e5f7896b6aedb00a86ad3922cb27fa83ee24",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/dos-06.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "event-nomad-camp",
+      "title": "Rencontre — camp nomade",
+      "file": "event-nomad-camp.png",
+      "prompt": "prompts/event-nomad-camp.txt",
+      "width": 1942,
+      "height": 809,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "894df580ea523963d09d62fd3faae7031039b173c30125c7523c147796285273",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/dos-09.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "event-tunnel-ambush",
+      "title": "Rencontre — embuscade dans le tunnel",
+      "file": "event-tunnel-ambush.png",
+      "prompt": "prompts/event-tunnel-ambush.txt",
+      "width": 1821,
+      "height": 864,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "dc482c79723453fd037182ad0040ae5c2eed67d87774cead0420ce7c640f872c",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/dos-12.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "final-project-sun-overcast",
+      "title": "Projet Soleil — ciel couvert",
+      "file": "final-project-sun-overcast.png",
+      "prompt": "prompts/final-project-sun-overcast.txt",
+      "width": 1774,
+      "height": 887,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "f6c60435e1565604617fc53d7c6605a63e2f2c51cbb03af909b056a1c9053087",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/dos-ending-before.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "crew-and-city-characters",
+      "title": "Équipage et personnages — portraits et découpes",
+      "file": "crew-and-city-characters.png",
+      "prompt": "prompts/crew-and-city-characters.txt",
+      "width": 1536,
+      "height": 1024,
+      "alpha_min": 0,
+      "alpha_max": 254,
+      "fully_transparent_percent": 51.03,
+      "sha256": "567624c5ff77133e4e61f7f3347e28b105cd522d7f78528f3491dec873839f5b",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/ecs-06.png",
+        "reference-private/art-direction/web-20260927/ecs-05.png"
+      ],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "combat-effects-kit",
+      "title": "Effets et dégâts — poses clés",
+      "file": "combat-effects-kit.png",
+      "prompt": "prompts/combat-effects-kit.txt",
+      "width": 1448,
+      "height": 1086,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_percent": 64.07,
+      "sha256": "95ea54932cc40749531c8554089ba4ed930750bcdc311fc13826f7995ce1c9e5",
+      "source_images": [],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "enemy-train-kit",
+      "title": "Trains adverses — propositions graphiques",
+      "file": "enemy-train-kit.png",
+      "prompt": "prompts/enemy-train-kit.txt",
+      "width": 1774,
+      "height": 887,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_percent": 43.28,
+      "sha256": "7466ad6871a8b2f92123e787ea7b21ca34cdedc28a984675b95c747b85751215",
+      "source_images": [
+        "reference-private/art-direction/web-20260927/dos-07.png"
+      ],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "final-project-sun-restored",
+      "title": "Projet Soleil — retour du soleil",
+      "file": "final-project-sun-restored.png",
+      "prompt": "prompts/final-project-sun-restored.txt",
+      "width": 1774,
+      "height": 887,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "9893187c88693e11fa53d41aa82ab5e105cc9aed214dbd5f7146d20d5fdc8417",
+      "source_images": [
+        "output/imagegen/visuals-20260927/final-project-sun-overcast.png",
+        "reference-private/art-direction/web-20260927/dos-ending-after.png"
+      ],
+      "provenance": "composition observée, dessin réinterprété",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "story-urga-refuge",
+      "title": "Urga — refuge et clé",
+      "file": "story-urga-refuge.png",
+      "prompt": "prompts/story-urga-refuge.txt",
+      "width": 1916,
+      "height": 821,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "acb30924d6a4a4f82e852ae4116225129b93512dc7356f1a08384778b65711ac",
+      "source_images": [],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "story-mammoth-mausoleum",
+      "title": "Mausolée du mammouth",
+      "file": "story-mammoth-mausoleum.png",
+      "prompt": "prompts/story-mammoth-mausoleum.txt",
+      "width": 1916,
+      "height": 821,
+      "alpha_min": 93,
+      "alpha_max": 243,
+      "fully_transparent_percent": 0.0,
+      "sha256": "59529330038d0d3f248c64b3ad2ccd75e3c8c3e190d6698d6594e93eeaa16add",
+      "source_images": [],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    },
+    {
+      "id": "story-oslo-vault",
+      "title": "Oslo — coffre et appareil Geiger",
+      "file": "story-oslo-vault.png",
+      "prompt": "prompts/story-oslo-vault.txt",
+      "width": 1926,
+      "height": 817,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_percent": 0.0,
+      "sha256": "76c14b13727a0f699e5aaee7b2f0593b8170fe32bf9a57efcb7e33ccc160e54e",
+      "source_images": [],
+      "provenance": "adaptation / extrapolation artistique",
+      "integration_status": "design livré ; intégration non effectuée par Codex"
+    }
+  ]
+}

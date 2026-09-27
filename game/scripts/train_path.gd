@@ -23,7 +23,7 @@ func _incoming_choices(network, cell: Vector2i, outgoing: int) -> Array[int]:
 	var choices: Array[int] = []
 	if network == null:
 		return choices
-	var ports: Array[Vector2] = Glyphs.ports_for_code(absi(network.tile(cell)))
+	var ports: Array[Vector2] = Glyphs.ports_for_code(network.tile(cell))
 	if not Vector2(Rails.DELTAS[outgoing]) * 0.5 in ports:
 		return choices
 	for candidate in Rails.DELTAS:

@@ -1,0 +1,101 @@
+{
+  "date": "2026-09-27",
+  "recovery_commit": "7034997cfd50387615a729f06c3c875214347fa3",
+  "removed_files": [
+    {
+      "path": "output/imagegen/train-northeast-raw.png",
+      "bytes": 916683,
+      "sha256": "c7acf0c9c361e92e96f436f4dea8091df776691002b163a64b034c80b8861721",
+      "reason": "superseded directional artwork or its import sidecar"
+    },
+    {
+      "path": "output/imagegen/train-northwest-raw.png",
+      "bytes": 1454981,
+      "sha256": "8442515192a3aab2979ea1e2f0e553c3e77ac5aa158a22af6434750e7d419293",
+      "reason": "superseded directional artwork or its import sidecar"
+    },
+    {
+      "path": "output/imagegen/train-northwest-v2.png",
+      "bytes": 1437662,
+      "sha256": "21183d2df2200a8f0ed40c390ff058e6e4c7047b484565884d8b8c907c30a3e8",
+      "reason": "superseded directional artwork or its import sidecar"
+    },
+    {
+      "path": "output/imagegen/train-southeast-raw.png",
+      "bytes": 1433938,
+      "sha256": "1de97b594678fb21609b3103f6310fc5165b7617bf3b04e30a5f229f968d0bf1",
+      "reason": "superseded directional artwork or its import sidecar"
+    },
+    {
+      "path": "output/imagegen/train-west-raw.png",
+      "bytes": 1684343,
+      "sha256": "fb3e66bd2e8d93631ff832580fb70b9d4e44714e063194a6af736b3c8636b7b7",
+      "reason": "superseded directional artwork or its import sidecar"
+    },
+    {
+      "path": "output/imagegen/train-west-v2.png",
+      "bytes": 1663348,
+      "sha256": "40ed0fbdd2efd67b32629adb0f350a9fe307281df8604d841785a734367e86de",
+      "reason": "superseded directional artwork or its import sidecar"
+    },
+    {
+      "path": "output/imagegen/train-west-v3.png",
+      "bytes": 1622468,
+      "sha256": "f146de13d34655938e34c992d4812d6ac63281e963cd90e62ee935ce44bbdf71",
+      "reason": "superseded directional artwork or its import sidecar"
+    },
+    {
+      "path": "output/imagegen/vehicles-southeast-v3.png",
+      "bytes": 2014792,
+      "sha256": "2b6d4f8c093434585311097a41030a8227bb25004ec52b23c8e3c9b7b69cb3d0",
+      "reason": "duplicate retained in game/assets/travel"
+    },
+    {
+      "path": "output/imagegen/vehicles-northwest-v2.png",
+      "bytes": 1909046,
+      "sha256": "82e455467b473d3f7fb2077130de62e05d70133a71381a2772f1e12c82f86bf4",
+      "reason": "duplicate retained in game/assets/travel"
+    },
+    {
+      "path": "game/assets/travel/vehicles-southeast.png",
+      "bytes": 2246952,
+      "sha256": "40da61cf07b63ec74e2ae4ca5bd6d04cfb5b2b122e2694e5f81beedfda7390d8",
+      "reason": "superseded directional artwork or its import sidecar"
+    },
+    {
+      "path": "game/assets/travel/vehicles-southeast.png.import",
+      "bytes": 971,
+      "sha256": "463c9ba4fd2b084925f726517ba997bb2ec5c23a0f3f5f7ca92274ab6fcd39b8",
+      "reason": "superseded directional artwork or its import sidecar"
+    },
+    {
+      "path": "game/assets/travel/vehicles-southeast-v2.png",
+      "bytes": 2181914,
+      "sha256": "2f03df2d66b545058faeaa11606e631af8f50232476b15c7da2c6e4a816d8cf0",
+      "reason": "superseded directional artwork or its import sidecar"
+    },
+    {
+      "path": "game/assets/travel/vehicles-southeast-v2.png.import",
+      "bytes": 981,
+      "sha256": "4cfb6d8c2ac2ee6db7b69fe9aea1442d66ea8714f506494b466f0a981e1d4eed",
+      "reason": "superseded directional artwork or its import sidecar"
+    },
+    {
+      "path": "game/assets/travel/vehicles-northwest.png",
+      "bytes": 2044298,
+      "sha256": "b0810f61b20bd25c8c567c88bed6f7dc92697a292ced750957f2a7bd2a1dd651",
+      "reason": "superseded directional artwork or its import sidecar"
+    },
+    {
+      "path": "game/assets/travel/vehicles-northwest.png.import",
+      "bytes": 971,
+      "sha256": "0f8a3f7da6255e7353b1363c6107cd2dba57af1625be2af42aec71bb3d68da04",
+      "reason": "superseded directional artwork or its import sidecar"
+    }
+  ],
+  "removed_bytes": 20613348,
+  "runtime_assets_changed": false,
+  "note": "Only superseded unused variants removed. Runtime textures, current build sources, pending integration art and audit fixtures retained.",
+  "status": "removed after binary gate fix",
+  "native_post_tool_gate": "subsequent exec result verifies the installed hook on these real PNG deletions"
+}

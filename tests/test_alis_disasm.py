@@ -119,3 +119,25 @@ def test_carte_map_layout_and_reachability():
     assert by_offset[0x13d]['end'] == 0x151
     assert by_offset[0x86a]['name'] == 'cputmap'
     assert by_offset[0x12f0]['name'] == 'cputnat'
+
+
+def test_header_entries_and_resource_boundary():
+    # alis.c: interrupt handler at header+10+s32, post-tick at header+6+s32;
+    # adresdes: resources at header+0x0e+s32. ville code ends at 0x76.
+    ville = (ROOT / 'reference-private/unpacked/ville.alis').read_bytes()
+    header = module.header_entries(ville)
+    assert header == {'entries': [0x18], 'resources': 0x76}
+    result = module.disassemble(ville, 0x18, 1000, reachable=True)
+    assert max(i['end'] for i in result['instructions']) == 0x76
+    usine = (ROOT / 'reference-private/unpacked/usine.alis').read_bytes()
+    assert module.header_entries(usine)['entries'] == [0x18, 0x1c]
+
+
+def test_file_opcodes_from_main():
+    # opcodes.c cfopen: C string + u16 mode; cfreadb (< v30): s16 addr + u16 length.
+    main = (ROOT / 'reference-private/unpacked/main.alis').read_bytes()
+    result = module.disassemble(main, 0x78d, 3)
+    names = [i['name'] for i in result['instructions']]
+    assert names == ['cfopen', 'cfreadb', 'cfclose']
+    assert result['instructions'][0]['args'] == ['ville.fic', 2]
+    assert result['instructions'][1]['args'] == [0x5fe4, 0x8a]

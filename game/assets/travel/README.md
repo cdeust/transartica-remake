@@ -13,5 +13,17 @@ world-anchored texture coordinates; knowledge comes from MapDiscovery. Rails
 and city markers are filtered by that same discovery model. Terrain outside it
 is generic authored scenery and cannot reveal an unknown rail or location.
 
-The train is currently one sprite. Independent wagon movement through curves,
-train reorganisation and combat animations are not implemented by this asset.
+The original single-convoy sprite is retained as a sprite-pipeline test fixture.
+The current renderer draws independent vehicles from the overhead atlas.
+
+vehicles-overhead.png/json: current travel-view atlas, one rigid top-down drawing
+per original wagon type 1-25, built by tools/build_overhead_atlas.py from the
+remake art masters in output/imagegen/wagon-redesign-20260926/catalogue.json
+(including six retained sources in wagon-catalogue-20260926; remake
+silhouettes, not reconstructed original sprites). The older per-heading
+vehicles-*.png sheets and train-east.png are no longer drawn by the renderer.
+
+Only the legacy sheets referenced by vehicles.json remain for the dimension
+audit tools. Superseded variants and duplicate generated copies were removed
+on 27 September; see tasks/asset-cleanup-20260927.md for the inventory and Git
+recovery instructions. No runtime texture was removed.

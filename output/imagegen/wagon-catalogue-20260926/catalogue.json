@@ -1,0 +1,662 @@
+{
+  "generator": "built-in image_gen",
+  "style_reference": "../vehicles-overhead-prototype-v2.png",
+  "game_name_source": "reference-private/commerce.json: wagon_names",
+  "description_source": "reference-private/city-scripts/texte2k-messages.txt:60-81",
+  "missing_types_covered": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    22,
+    24,
+    25
+  ],
+  "checks": {
+    "exact_25_ids": true,
+    "missing_19_covered": true,
+    "png_load_25": true,
+    "rgba_25": true,
+    "dimensions_1024x1536_25": true,
+    "transparent_corners_25": true
+  },
+  "assets": [
+    {
+      "type_id": 1,
+      "name": "LOCOMOTIVE",
+      "file": "01-locomotive-combat.png",
+      "role": "detailed_initial_vehicle",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1059627,
+      "nonzero_alpha_bbox": [
+        25,
+        0,
+        1012,
+        1496
+      ],
+      "sha256": "351d38a4b4d31c450dc790c98afa9949a49e86fe10cf24b9c6825771afb78ad4",
+      "bytes": 1834071,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 2,
+      "name": "GENERAL QUARTERS",
+      "file": "02-general-quarters-combat.png",
+      "role": "detailed_initial_vehicle",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1045644,
+      "nonzero_alpha_bbox": [
+        65,
+        12,
+        1010,
+        1524
+      ],
+      "sha256": "8e11dc74defed9a565fb4007faa8abbb31a2956622b8852d9ea828b12c421ef5",
+      "bytes": 1733146,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 3,
+      "name": "BOUDOIR",
+      "file": "03-boudoir-combat.png",
+      "role": "detailed_initial_vehicle",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1065145,
+      "nonzero_alpha_bbox": [
+        49,
+        7,
+        1010,
+        1536
+      ],
+      "sha256": "846552d25056038e0dcc5b5290136e51b19b2896d62f5a292fd140847b317587",
+      "bytes": 1780458,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 4,
+      "name": "OBSERVATORY",
+      "file": "04-observatory.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1164741,
+      "nonzero_alpha_bbox": [
+        49,
+        0,
+        1010,
+        1503
+      ],
+      "sha256": "ef6c7711ea3c5e0d1dacf773296798adfa4bc3acc61a46868e8319916e97dd77",
+      "bytes": 1649353,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 5,
+      "name": "PRISON",
+      "file": "05-prison.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1104781,
+      "nonzero_alpha_bbox": [
+        65,
+        0,
+        944,
+        1496
+      ],
+      "sha256": "5effff5f6b33f6c12e2b79bdcf7683fe7c162b59469a1d0bd873ac3d31284a84",
+      "bytes": 1803136,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 6,
+      "name": "ALCATRAZ",
+      "file": "06-alcatraz.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1103314,
+      "nonzero_alpha_bbox": [
+        65,
+        0,
+        962,
+        1518
+      ],
+      "sha256": "7cdc32a49686cc5c0bd55ddb096c80b160280cb6b511cff1601e00bc7c741c52",
+      "bytes": 1745686,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 7,
+      "name": "LIVESTOCK",
+      "file": "07-livestock.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1147548,
+      "nonzero_alpha_bbox": [
+        45,
+        0,
+        1010,
+        1497
+      ],
+      "sha256": "c8504ef29a8c13abed72cbd56df9bd8ebe43197f954110be5bc0d515ffe43359",
+      "bytes": 1717782,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 8,
+      "name": "THE DRILL",
+      "file": "08-drill.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1198718,
+      "nonzero_alpha_bbox": [
+        65,
+        0,
+        1010,
+        1536
+      ],
+      "sha256": "196bd3f54292d4acb108c897f351dce31922877661dc804a7af0cda25503e60d",
+      "bytes": 1625717,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 9,
+      "name": "HARPOON",
+      "file": "09-harpoon.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1125985,
+      "nonzero_alpha_bbox": [
+        45,
+        0,
+        1012,
+        1518
+      ],
+      "sha256": "963875ad8a558dd5b8ab82165054075390f002ce45379dabff109cdc26f70971",
+      "bytes": 1783061,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 10,
+      "name": "OBSERVATION BOX",
+      "file": "10-observation-box.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1167188,
+      "nonzero_alpha_bbox": [
+        65,
+        0,
+        942,
+        1518
+      ],
+      "sha256": "51d5c81c55a088f38d1cf431dbb5221e44ec59b5a91ac1aadcb54cd53bc012c4",
+      "bytes": 1639021,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 11,
+      "name": "CANNON",
+      "file": "11-cannon.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1106811,
+      "nonzero_alpha_bbox": [
+        65,
+        0,
+        962,
+        1536
+      ],
+      "sha256": "a816c3528f9ece28c6c2bf1c7a173550e04056a2d616a7e080d4f34109b83570",
+      "bytes": 1775102,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 12,
+      "name": "MACHINE GUN",
+      "file": "12-machine-gun.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1084648,
+      "nonzero_alpha_bbox": [
+        65,
+        0,
+        1012,
+        1509
+      ],
+      "sha256": "8d7dd1a1daccdac03ca1ef96366fb68f65f5b22a70fa6ce74f094460784eda42",
+      "bytes": 1815016,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 13,
+      "name": "MISSILE-LAUNCHER",
+      "file": "13-missile-launcher.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1157012,
+      "nonzero_alpha_bbox": [
+        55,
+        0,
+        1012,
+        1520
+      ],
+      "sha256": "0e311f15c5edbd1ea982ff202aa6cdbb5eadbbf2db61c8438060ccf11e539487",
+      "bytes": 1687909,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 14,
+      "name": "TANK",
+      "file": "14-tank.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1179415,
+      "nonzero_alpha_bbox": [
+        25,
+        2,
+        1010,
+        1508
+      ],
+      "sha256": "2faca3ec99aa02f8f6bc0dbb9b90f8f6af7a7f0b7d1066f063c5003631c23ea6",
+      "bytes": 1656023,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 15,
+      "name": "OIL",
+      "file": "15-oil.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1194352,
+      "nonzero_alpha_bbox": [
+        65,
+        8,
+        1012,
+        1521
+      ],
+      "sha256": "4d50144fde4344186b1affe78f6090c64454d02cb2d0d6cbd97a029f99c0169c",
+      "bytes": 1626980,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 16,
+      "name": "CRANE",
+      "file": "16-crane.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1155118,
+      "nonzero_alpha_bbox": [
+        65,
+        0,
+        962,
+        1495
+      ],
+      "sha256": "68148e5865f4d49ac39a9379a6e864ced3821ebb49abbdea5f236dec2e58b601",
+      "bytes": 1702083,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 17,
+      "name": "MERCHANDISE",
+      "file": "17-merchandise-combat.png",
+      "role": "detailed_initial_vehicle",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1075073,
+      "nonzero_alpha_bbox": [
+        65,
+        3,
+        1012,
+        1536
+      ],
+      "sha256": "70459e2ba59a7ff19acc44ff4eee18b31422964e0f604471309195b73a82310d",
+      "bytes": 1737895,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 18,
+      "name": "XL MERCHANDISE",
+      "file": "18-xl-merchandise.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1101658,
+      "nonzero_alpha_bbox": [
+        65,
+        0,
+        962,
+        1526
+      ],
+      "sha256": "d866852d9813b7a36781610de8dc997982bccb370bacb14b463423673f0021e3",
+      "bytes": 1870477,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 19,
+      "name": "BIO-GREENHOUSE",
+      "file": "19-bio-greenhouse.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1170647,
+      "nonzero_alpha_bbox": [
+        65,
+        0,
+        962,
+        1517
+      ],
+      "sha256": "2211ad179509a3975e900461456db4081c55559279701a10b3fc324e85425e80",
+      "bytes": 1665302,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 20,
+      "name": "REFRIGERATOR",
+      "file": "20-refrigerator.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1167724,
+      "nonzero_alpha_bbox": [
+        65,
+        11,
+        962,
+        1507
+      ],
+      "sha256": "93fb3ee6884a7b95feb234e6515f58036d3c5914196d6f3fc10ae94cbe35f298",
+      "bytes": 1621051,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 21,
+      "name": "TENDER",
+      "file": "21-tender-combat.png",
+      "role": "detailed_initial_vehicle",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1036147,
+      "nonzero_alpha_bbox": [
+        65,
+        0,
+        1012,
+        1520
+      ],
+      "sha256": "a42fb2f3afd9a6352e5c149c74c248c5c86bf587975dbc1475b9d2bb64f21b8e",
+      "bytes": 1835960,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 22,
+      "name": "SPY",
+      "file": "22-spy.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1182213,
+      "nonzero_alpha_bbox": [
+        65,
+        9,
+        944,
+        1507
+      ],
+      "sha256": "3c56b00cc12f959356f33bd8effcd44ceaa7c7b91d4f3843ad3a685ed7c6bc01",
+      "bytes": 1590220,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 23,
+      "name": "BARRACKS",
+      "file": "23-barracks-combat.png",
+      "role": "detailed_initial_vehicle",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1053622,
+      "nonzero_alpha_bbox": [
+        0,
+        10,
+        1010,
+        1502
+      ],
+      "sha256": "8827008321e0bd579b21ed7fa764f3df2f916cee58e737417bb116f13b143909",
+      "bytes": 1864675,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 24,
+      "name": "XL BARRACKS",
+      "file": "24-xl-barracks.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1179698,
+      "nonzero_alpha_bbox": [
+        65,
+        0,
+        914,
+        1522
+      ],
+      "sha256": "01547015524a614939d7bf8ab9e0d89d690842ee59ea9e0237096772e96b3586",
+      "bytes": 1659112,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    },
+    {
+      "type_id": 25,
+      "name": "BOILER",
+      "file": "25-boiler.png",
+      "role": "new_missing_type",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "transparent_pixels": 1147351,
+      "nonzero_alpha_bbox": [
+        65,
+        0,
+        1012,
+        1536
+      ],
+      "sha256": "b45e0552c78d41c7af41ca636cb2f254cfee128d2b5926f23c834bbd581cf453",
+      "bytes": 1734153,
+      "status": "art_master_not_integrated",
+      "layer_masks_ready": false,
+      "anchors_ready": false
+    }
+  ]
+}

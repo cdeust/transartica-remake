@@ -9,11 +9,21 @@ const RoomArtScript = preload("res://scripts/engine_room_art.gd")
 const RoomControlsScript = preload("res://scripts/engine_room_controls.gd")
 const AtlasThemeScript = preload("res://scripts/atlas_theme.gd")
 const RailNetworkScript = preload("res://scripts/rail_network.gd")
+const CityScreenScript = preload("res://scripts/city_screen.gd")
+const CityTradeScript = preload("res://scripts/city_trade.gd")
+const WorksDialogScript = preload("res://scripts/works_dialog.gd")
+const GameCalendarScript = preload("res://scripts/game_calendar.gd")
+const TrainWagonsScript = preload("res://scripts/train_wagons.gd")
 # source: tasks/evidence/engine-room-integration.md; provisional real-time calibration.
 const SECONDS_PER_CYCLE := 1.0
 
 var journey = preload("res://scripts/train_journey.gd").new()
 var network = RailNetworkScript.new()
+var wagons = TrainWagonsScript.new()
+var trade = CityTradeScript.new()
+var _trade_rng := RandomNumberGenerator.new()
+var works_dialog
+var calendar = GameCalendarScript.new()
 var travel_controls
 var clock
 var engine
@@ -33,6 +43,7 @@ var _map_panel: VBoxContainer
 var _journal: RichTextLabel
 var _modal_title: Label
 var _map_opened := false
+var _city_panel
 
 
 func _ready() -> void:
@@ -49,17 +60,29 @@ func _ready() -> void:
 		push_error("Local reference map has an unexpected size.")
 		set_process(false)
 		return
+	network.set_city_anchors(world_data.city_anchors())
+	if not trade.load_from_project(root_path):
+		push_error("Local commerce table is unavailable (python3 tools/build_commerce_data.py).")
+		set_process(false)
+		return
+	_trade_rng.randomize()
+	trade.reset(_trade_rng)
+	engine.train_mass = wagons.mass()
 	journey.network = network
 	_build_interface()
 	session.cycle_completed.connect(_advance_journey)
 	world_view.journey = journey
+	# Rendered composition is derived from the wagon-rules table, never an
+	# independent list (tasks/todo.md, "Decision : train en vue de dessus").
+	world_view.consist.derive_from_wagons(wagons)
 	_restore_after_layout()
 
 
 func _process(delta: float) -> void:
 	if session == null or room_controls == null:
 		return
-	var blocked: bool = (_modal.visible and _journal.visible) or room_controls.show_help
+	var blocked: bool = (_modal.visible and _journal.visible) or room_controls.show_help or _city_panel.visible \
+			or (works_dialog != null and works_dialog.visible)
 	if not blocked:
 		session.advance(delta)
 	clock.paused = session.paused or blocked or engine.event_pending
@@ -97,6 +120,8 @@ func _build_interface() -> void:
 	add_child(instruments)
 	instruments.hide()
 	_build_modal()
+	_build_city_screen()
+	_build_works_dialog()
 
 
 func _build_modal() -> void:
@@ -179,6 +204,93 @@ func _build_journal(body: VBoxContainer) -> void:
 	_journal.hide()
 
 
+# Arrival scene for TIME message 76 (tasks/evidence/station-arrival.md): the
+# glieu menu and its transactions (tasks/evidence/city-scripts.md), in city_screen.gd.
+# YODA 0x104 (-120): brake, TEXTEK 52, then the 0x18e3 reversal with speed 0.
+func _reverse_at_event() -> void:
+	engine.brake = true
+	engine.speed = 0
+	works_dialog.inform(52)
+	journey.depart_from_station()
+	world_view.update_train()
+
+
+func _advance_calendar() -> void:
+	for event in calendar.advance_cycle():
+		if event in ["bridge_open", "bridge_closed"]:
+			network.set_timed_bridge(calendar.bridge_code())
+			world_view.queue_redraw()
+
+
+func _build_works_dialog() -> void:
+	works_dialog = WorksDialogScript.new()
+	works_dialog.journey = journey
+	works_dialog.wagons = wagons
+	works_dialog.rng = _trade_rng
+	if not works_dialog.load_texts(ProjectSettings.globalize_path("res://")):
+		push_warning("TEXTEK texts unavailable (python3 tools/claude/export_textek.py); message ids shown instead.")
+	works_dialog.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	works_dialog.finished.connect(_on_works_finished)
+	add_child(works_dialog)
+
+
+# YODA 0x2390: the train stays braked in front of the cell; a repair lets TIME retry the entry.
+func _on_works_finished(repaired: bool) -> void:
+	engine.train_mass = wagons.mass()
+	if works_dialog.kind.is_empty():
+		status_label.text = "Turned back · heading %s." % journey.heading_name()
+		return
+	var ahead: Vector2i = journey.next_cell()
+	status_label.text = ("Track repaired at (%d, %d)." if repaired else "Still blocked at (%d, %d).") % [ahead.x, ahead.y]
+	world_view.queue_redraw()
+
+
+func _build_city_screen() -> void:
+	_city_panel = CityScreenScript.new()
+	_city_panel.trade = trade
+	_city_panel.wagons = wagons
+	_city_panel.engine = engine
+	_city_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	_city_panel.depart_requested.connect(depart_from_city)
+	_city_panel.cargo_changed.connect(_on_cargo_changed)
+	add_child(_city_panel)
+	_city_panel.hide()
+
+
+func _open_city(index: int) -> void:
+	var city: Dictionary = world_data.cities[index]
+	trade.visit(index, _trade_rng)
+	# Adaptation: the travel clock pauses while the city is open; whether time
+	# runs during the original city scene is not established.
+	session.paused = true
+	_city_panel.open(index, String(city.name), int(city.kind), String(city.type))
+	_city_panel.position = (size - _city_panel.size) * 0.5
+	world_view.selected_city = index
+	room_controls.announce("Arrived at %s" % String(city.name))
+
+
+# TIME 0x2a77/0x2b4a weigh the cargo: trading changes the train mass. Buying
+# or losing a wagon also changes the drawn composition; both are derived from
+# the same wagons table, never set independently.
+func _on_cargo_changed() -> void:
+	engine.train_mass = wagons.mass()
+	world_view.consist.derive_from_wagons(wagons)
+	world_view.update_train()
+	_update_status()
+
+
+func depart_from_city() -> void:
+	if not journey.depart_from_station():
+		return
+	engine.speed = 0 # yoda 0x18e3 writes 0 to main+0x2fb4, the effective speed.
+	_city_panel.hide()
+	session.paused = false
+	world_view.update_train()
+	_update_status()
+	_modal_title.text = "   TRANSARCTICA · (%d, %d) %s · %d km/h" % [journey.position.x, journey.position.y, journey.heading_name(), engine.speed]
+	room_controls.announce("Departing · heading %s" % journey.heading_name())
+
+
 func _open_panel(panel: String) -> void:
 	if panel in ["instruments", "room"]:
 		instruments.visible = panel == "instruments"
@@ -212,6 +324,11 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		return
 	if get_viewport().gui_get_focus_owner() is LineEdit:
 		return
+	if _city_panel.visible:
+		# Layout keycode: the - and + keys differ between QWERTY and AZERTY.
+		if _city_panel.handle_key(event.keycode):
+			get_viewport().set_input_as_handled()
+		return
 	match event.physical_keycode:
 		KEY_L: room_controls.activate("lignite")
 		KEY_A: room_controls.activate("anthracite")
@@ -233,6 +350,11 @@ func _restart_engine() -> void:
 	session.reset()
 	journey.reset()
 	network.reset()
+	wagons.reset()
+	trade.reset(_trade_rng)
+	engine.train_mass = wagons.mass()
+	world_view.consist.derive_from_wagons(wagons)
+	_city_panel.hide()
 	world_view.selected_city = -1
 	_map_opened = false
 	world_view.following_train = false
@@ -240,6 +362,7 @@ func _restart_engine() -> void:
 	_filter_cities("")
 	world_view.fit_discovered()
 	clock.set_elapsed(0)
+	calendar = GameCalendarScript.new()
 	_modal.hide()
 	instruments.hide()
 	room_controls.announce("New engine session · coal stocks restored")
@@ -263,7 +386,10 @@ func save_view() -> bool:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		return false
-	var state := {"version": 6, "consist": world_view.consist.snapshot(), "travel_camera": {"x": world_view.camera_world.x, "y": world_view.camera_world.y, "follow": world_view.following_train}, "journey": journey.snapshot(), "network": network.snapshot(), "session": session.snapshot(), "discovery": world_view.discovery.snapshot(), "zoom": world_view.zoom, "offset_x": world_view.offset.x, "offset_y": world_view.offset.y, "selected_city": world_view.selected_city, "elapsed_seconds": clock.elapsed_seconds}
+	# No "consist" key: the drawn composition is derived from "wagons" at
+	# restore time (train_consist.gd::derive_from_wagons), never saved as an
+	# independent list that could drift from the wagons table.
+	var state := {"version": 7, "wagons": wagons.snapshot(), "trade": trade.snapshot(), "travel_camera": {"x": world_view.camera_world.x, "y": world_view.camera_world.y, "follow": world_view.following_train}, "journey": journey.snapshot(), "network": network.snapshot(), "session": session.snapshot(), "discovery": world_view.discovery.snapshot(), "zoom": world_view.zoom, "offset_x": world_view.offset.x, "offset_y": world_view.offset.y, "selected_city": world_view.selected_city, "elapsed_seconds": clock.elapsed_seconds, "calendar": calendar.snapshot()}
 	file.store_string(JSON.stringify(state))
 	return true
 
@@ -294,12 +420,36 @@ func _restore_view() -> void:
 	if parsed.has("journey") and not restored_journey.restore(parsed.journey):
 		room_controls.announce("Journey save is invalid; current session kept")
 		return
-	var restored_consist = preload("res://scripts/train_consist.gd").new()
-	if parsed.has("consist") and not restored_consist.restore(parsed.consist):
-		room_controls.announce("Train composition is invalid; current session kept")
+	# "consist" (v7 saves before this composition-derivation change) is
+	# accepted and ignored: composition is derived from "wagons" below, never
+	# read back as its own list, so an old save cannot diverge from its wagons.
+	var restored_wagons = TrainWagonsScript.new()
+	if parsed.has("wagons") and not restored_wagons.restore(parsed.wagons):
+		room_controls.announce("Cargo save is invalid; current session kept")
 		return
-	if not restored_journey.sample_behind(restored_consist.length_world()).ok:
+	var restored_consist = preload("res://scripts/train_consist.gd").new()
+	restored_consist.derive_from_wagons(restored_wagons)
+	# Root-cause note (found while recalibrating LENGTHS for the overhead art,
+	# tasks/todo.md "Decision : train en vue de dessus"): this used to check
+	# against the WHOLE consist's length_world(). The overhead LENGTHS are
+	# less differentiated than the old oblique ones (all near 1.0 cell
+	# instead of 0.75-1.0), so their sum grew past the ~5.0-cell decoded
+	# track history that genuinely exists behind START_POSITION before the
+	# train has ever moved (train_path.gd::seed stops where the decoded rails
+	# stop or turn ambiguous -- not a guessed bound). Rejecting the whole
+	# restore on that account was stricter than what the renderer actually
+	# needs: poses() already renders a partial consist gracefully when later
+	# wagons lack history ("insufficient history omits poses without
+	# off-track extrapolation", game/tests/test_travel_world.gd), and a
+	# newly-departed train is explicitly allowed to be missing wagon history
+	# (history_starts_in_station(), train_journey.gd). The minimum a restored
+	# journey must place is the locomotive itself.
+	if not restored_journey.sample_behind(restored_consist.LENGTHS.locomotive).ok and not restored_journey.history_starts_in_station():
 		room_controls.announce("This save cannot recover wagon positions. Current journey kept; saved file unchanged.")
+		return
+	var restored_trade = CityTradeScript.new()
+	if parsed.has("trade") and not restored_trade.restore(parsed.trade):
+		room_controls.announce("City stock save is invalid; current session kept")
 		return
 	if parsed.has("session") and not session.restore(parsed.session):
 		room_controls.announce("Save state is invalid; current session kept")
@@ -309,11 +459,21 @@ func _restore_view() -> void:
 	else:
 		network.reset()
 	journey.restore(restored_journey.snapshot())
-	world_view.consist = restored_consist
+	# Saves before version 7 carry no cargo: they resume with the TABLE train and fresh stocks.
+	wagons.restore(restored_wagons.snapshot())
+	if parsed.has("trade"):
+		trade.restore(restored_trade.snapshot())
+	else:
+		trade.reset(_trade_rng)
+	engine.train_mass = wagons.mass()
+	world_view.consist.derive_from_wagons(wagons)
 	world_view._visual_initialized = false
 	_restore_chart(parsed)
 	world_view.visit_cell(journey.position)
 	room_controls.announce("Journey and engine restored" if parsed.has("journey") else "Previous engine restored · first journey starts at departure")
+	_city_panel.hide()
+	if journey.station_result() >= 0:
+		_open_city(journey.station_result())
 
 
 func _restore_chart(parsed: Dictionary) -> void:
@@ -325,6 +485,10 @@ func _restore_chart(parsed: Dictionary) -> void:
 	var city_index := int(parsed.get("selected_city", -1))
 	world_view.selected_city = city_index if city_index >= 0 and city_index < world_data.cities.size() and _city_discovered(city_index) else -1
 	clock.set_elapsed(float(parsed.get("elapsed_seconds", 0.0)))
+	# Saves before the calendar port start at day 1, 00:00 (TABLE 0x0130).
+	calendar = GameCalendarScript.new()
+	if parsed.has("calendar") and not calendar.restore(parsed.calendar):
+		calendar = GameCalendarScript.new()
 	_map_opened = parsed.has("travel_camera")
 	if _map_opened and parsed.travel_camera is Dictionary:
 		world_view.camera_world = Vector2(float(parsed.travel_camera.get("x", 12.5)), float(parsed.travel_camera.get("y", 62.5)))
@@ -403,17 +567,41 @@ func _save_path() -> String:
 func _advance_journey() -> void:
 	if engine.event_pending:
 		return
+	# TIME re-checks the cell once the brake is released (obstacles-unknowns.md §1).
+	if journey.at_obstacle() and not engine.brake and not works_dialog.visible:
+		journey.resume_after_works()
+	var was_blocked: bool = journey.blocked
+	_advance_calendar()
 	journey.advance(engine.speed)
 	world_view.visit_cell(journey.position)
 	world_view.update_train()
 	_filter_cities(search_box.text)
 	_update_status()
 	if _map_panel.visible:
-		_modal_title.text = "   TRANSARCTICA · (%d, %d) %s · %d km/h" % [journey.position.x, journey.position.y, journey.heading_name(), engine.speed]
+		_modal_title.text = "   TRANSARCTICA · %s · (%d, %d) %s · %d km/h" % [calendar.display_text(), journey.position.x, journey.position.y, journey.heading_name(), engine.speed]
 	if journey.blocked:
+		var station := journey.station_result()
+		if station >= 0:
+			_open_city(station)
+			return
+		if journey.at_reversal_event():
+			if not was_blocked:
+				_reverse_at_event()
+			return
+		if journey.at_obstacle():
+			# YODA 0x2318: the question brakes the train; asked once per refused entry.
+			if not was_blocked:
+				engine.brake = true
+				engine.speed = 0
+				works_dialog.ask(network)
+			return
 		engine.brake = true
 		engine.speed = 0
 		session.paused = true
 		var ahead: Vector2i = journey.next_cell()
-		room_controls.announce("Stopped before %s at (%d, %d) · not yet ported" % [journey.stop_reason, ahead.x, ahead.y])
-		status_label.text = "Stopped before %s at (%d, %d).\nR starts a new run." % [journey.stop_reason, ahead.x, ahead.y]
+		var reason: String = journey.stop_reason
+		if journey.at_station():
+			# TIME 0x2483..0x24c3: -1 sends message 34, -2..-5 send messages 22..25.
+			reason = "station without city (message 34)" if station == -1 else "story station (message %d)" % (absi(station) + 20)
+		room_controls.announce("Stopped before %s at (%d, %d) · not yet ported" % [reason, ahead.x, ahead.y])
+		status_label.text = "Stopped before %s at (%d, %d).\nR starts a new run." % [reason, ahead.x, ahead.y]

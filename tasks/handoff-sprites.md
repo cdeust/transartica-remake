@@ -1,5 +1,7 @@
 # Passation Claude → Codex : sprites du train par direction
 
+> Archive du 26 septembre. Les anciens convois et variantes remplacées ont été retirés le 27 septembre ; les commandes ci-dessous décrivent cet état historique. Voir [le rapport de nettoyage](asset-cleanup-20260927.md) pour les fichiers conservés et la récupération Git.
+
 26 septembre 2026. Outil neuf, aucun fichier existant du jeu modifié. `train-east.png`
 reste l'image acceptée par le propriétaire ; rien n'a été réécrit dans `game/assets/`.
 

@@ -49,3 +49,29 @@ Les codes 18 à 33 regroupent huit **paires de variantes d'aiguillage**. Les deu
 | 32, 33 | N, S, NW | NW sur 6/6 et 1/1; N/S sur la plupart |
 
 Méthode vérifiable : pour chaque cellule de code `t`, compter parmi ses huit voisins ceux dont le code absolu est entre 1 et 33, sans boucler la carte à ses bords. Les grandes séries 2–5 ont une direction dominante sans ambiguïté; les rares voisins latéraux reflètent les croisements, les aiguillages ou des tracés proches. Un voisin manquant peut être un bord de carte, une case de ville ou un autre code de raccordement : le décompte seul ne prouve donc pas la circulation. Pour restituer les **pixels originaux** et distinguer visuellement les variantes, il reste à décoder la banque de sprites référencée par `CARTE 0x128` (`cdefmap`) et le chemin de rendu `src/image.c:4074–4144`. Aucun glyph inconnu ne doit devenir une voie franchissable par simple dessin.
+
+## Codes 38–58 et croisements 15/16 (27 septembre 2026)
+
+Constat du propriétaire : le train roulait sans rails visibles, par exemple en (41,59) où la ligne y = 59, x 35–47, est en code 39. `ports_for_code` renvoyait une liste vide pour 38–41, 49, 50, 52–54, 56 et 58. TIME les traite pourtant comme voie : règle de vitesse double sur 38–52 et 55–57 (`0x0486`), et toute tuile hors courbes et aiguillages conserve la direction (`0x14c9`).
+
+Le décompte précédent ne comptait que les voisins de codes 1 à 33, ce qui masquait l'axe E–W de 15 (ligne de 39) et l'axe N–S de 16. Recompté avec l'ensemble ferroviaire complet (|code| 1–33 et 38–58, gares et tuiles d'événement exclues) par `tools/claude/glyph_ports.py reference-private/CARTE.FIC <codes>` :
+
+| Code | Occurrences | Voisins ferroviaires | Ports retenus |
+| ---: | ---: | --- | --- |
+| 15 | 6 | N5 E6 S6 W6 | N, E, S, W (croisement ; TIME double la vitesse en direction 4/6) |
+| 16 | 4 | N4 E4 S4 W4 | N, E, S, W (croisement ; vitesse double en direction 2/8) |
+| 38 | 19 | N19 S19, diagonales 2 | N–S |
+| 39 | 114 | E114 W114, autres ≤ 9 | E–W |
+| 40 | 17 | SE17 NW17 | NW–SE |
+| 41 | 20 | NE20 SW20 | NE–SW |
+| 49 | 2 | NE2 SE2 SW2 NW2 | quatre diagonales, comme 17 |
+| 50 | 2 | E2 W2 | E–W |
+| 52 | 1 | N1 S1 | N–S, appui unique |
+| 53 | 1 | N1 S1 | N–S, appui unique |
+| 54 | 2 | E2 W2 | E–W |
+| 56 | 3 | E3 W3 | E–W |
+| 58 | 3 | E3 W3, SE1 | E–W |
+
+Les courbes 42–48, 51, 55, 57 gardent leurs ports de 6–13 ; le décompte les confirme (48 : N2 SE2 avec NE2 NW2 parasites sur 2 occurrences). Les codes 49, 52, 53 et 54 ont un appui de 1 ou 2 cellules seulement ; leur forme reste une déduction de voisinage, pas une lecture des sprites d'origine.
+
+Vérification native : `game/tests/review_rail_glyphs.gd` place le train en (36,59) vers l'est et capture `tasks/validation/rails-fast-line-row59.png` puis `rails-curves-49-55.png` ; les voies apparaissent entre les courbes signalées par le propriétaire.

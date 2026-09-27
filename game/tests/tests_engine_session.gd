@@ -84,14 +84,14 @@ func _test_snapshot_resume_and_validation(failures: Array[String]) -> void:
 	_check(not resumed.restore(invalid), "non-finite residual is refused", failures)
 	_check(resumed.snapshot() == before, "non-finite restore leaves session unchanged", failures)
 	invalid = saved.duplicate(true)
-	invalid.engine.train_mass = 1267
-	_check(not resumed.restore(invalid), "unsupported train mass is refused", failures)
+	invalid.engine.train_mass = 0
+	_check(not resumed.restore(invalid), "zero train mass is refused (divisor undefined)", failures)
 	_check(resumed.snapshot() == before, "unsupported mass leaves session unchanged", failures)
 	_check(not resumed_engine.restore({"lignite": -1}), "incomplete engine state is refused", failures)
 	_check(resumed_engine.snapshot() == source_engine.snapshot(), "invalid engine restore is transactional", failures)
 	var invalid_engine: Dictionary = source_engine.snapshot()
-	invalid_engine.train_mass = 1267
-	_check(not resumed_engine.restore(invalid_engine), "engine snapshot rejects unsupported train mass", failures)
+	invalid_engine.train_mass = 32768
+	_check(not resumed_engine.restore(invalid_engine), "engine snapshot rejects mass beyond 16 bits", failures)
 	_check(resumed_engine.snapshot() == source_engine.snapshot(), "unsupported engine mass is transactional", failures)
 
 

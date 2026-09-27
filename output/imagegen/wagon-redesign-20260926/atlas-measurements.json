@@ -1,0 +1,130 @@
+{
+  "method": "Existing clean_alpha, downscale and solid_box functions; in-memory only, no atlas files written",
+  "assets": [
+    {
+      "type_id": 1,
+      "solid_width": 138,
+      "solid_length": 496
+    },
+    {
+      "type_id": 2,
+      "solid_width": 136,
+      "solid_length": 502
+    },
+    {
+      "type_id": 3,
+      "solid_width": 134,
+      "solid_length": 493
+    },
+    {
+      "type_id": 4,
+      "solid_width": 134,
+      "solid_length": 493
+    },
+    {
+      "type_id": 5,
+      "solid_width": 136,
+      "solid_length": 496
+    },
+    {
+      "type_id": 6,
+      "solid_width": 135,
+      "solid_length": 495
+    },
+    {
+      "type_id": 7,
+      "solid_width": 134,
+      "solid_length": 494
+    },
+    {
+      "type_id": 8,
+      "solid_width": 135,
+      "solid_length": 494
+    },
+    {
+      "type_id": 9,
+      "solid_width": 135,
+      "solid_length": 494
+    },
+    {
+      "type_id": 10,
+      "solid_width": 135,
+      "solid_length": 494
+    },
+    {
+      "type_id": 11,
+      "solid_width": 134,
+      "solid_length": 494
+    },
+    {
+      "type_id": 12,
+      "solid_width": 135,
+      "solid_length": 495
+    },
+    {
+      "type_id": 13,
+      "solid_width": 135,
+      "solid_length": 495
+    },
+    {
+      "type_id": 14,
+      "solid_width": 134,
+      "solid_length": 494
+    },
+    {
+      "type_id": 15,
+      "solid_width": 134,
+      "solid_length": 493
+    },
+    {
+      "type_id": 16,
+      "solid_width": 134,
+      "solid_length": 494
+    },
+    {
+      "type_id": 17,
+      "solid_width": 134,
+      "solid_length": 490
+    },
+    {
+      "type_id": 18,
+      "solid_width": 135,
+      "solid_length": 492
+    },
+    {
+      "type_id": 19,
+      "solid_width": 135,
+      "solid_length": 494
+    },
+    {
+      "type_id": 20,
+      "solid_width": 134,
+      "solid_length": 496
+    },
+    {
+      "type_id": 21,
+      "solid_width": 139,
+      "solid_length": 500
+    },
+    {
+      "type_id": 22,
+      "solid_width": 134,
+      "solid_length": 494
+    },
+    {
+      "type_id": 23,
+      "solid_width": 139,
+      "solid_length": 489
+    },
+    {
+      "type_id": 24,
+      "solid_width": 134,
+      "solid_length": 495
+    },
+    {
+      "type_id": 25,
+      "solid_width": 134,
+      "solid_length": 493
+    }
+  ]
+}

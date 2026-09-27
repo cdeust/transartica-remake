@@ -1,9 +1,15 @@
 """Readable infix view of reference-private/*-listing.json (ALIS bytecode).
 Semantics assumed (to verify against alis-source): operand ops load acc;
-opushacc pushes acc; binary ops compute acc = acc OP arg; opile pops;
+opushacc pushes acc; binary ops compute acc = acc OP arg; with opile the
+left operand is the popped value (opernames.c opile/readexec_opername_saveD7);
 array ops (omaintc/tabchar) take the last index from acc and earlier ones from the stack."""
 import json, sys, re
 BIN={'oand':'&','oor':'|','oxor':'^','oadd':'+','osub':'-','omul':'*','odiv':'/','oegal':'==','odiff':'!=','oinf':'<','osup':'>','oinfeg':'<=','osupeg':'>=','omod':'%'}
+def space(nm):
+    # [osa]maintX = main-process array; [osa]dirtX = this process's own array.
+    # suffix: tc = byte cells, ti = 16-bit cells ('w'), tp = strings ('p').
+    base='main' if 'main' in nm else 'LOC' if 'loc' in nm else 'L'
+    return base+{'i':'w','p':'p'}.get(nm[-1],'')
 def loc(n,w): return f"L{n:#04x}{w}"
 def fmt(node, stack=None):
     n=node['name']; a=node.get('args',[])
@@ -14,16 +20,19 @@ def fmt(node, stack=None):
             if nm=='ofin':
                 if n=='seval' and k+1<len(a):
                     t=a[k+1]; prev=st.pop() if st else '?'
-                    return f"main[{t['args'][0]:#06x}][{prev}][{acc}]"
+                    return f"{space(t['name'])}[{t['args'][0]:#06x}][{prev}][{acc}]"
                 break
             if nm=='opushacc': st.append(acc); continue
             if nm in BIN:
                 arg=it['args'][0]
-                rhs = (st.pop() if st else '?') if arg['name']=='opile' else fmt(arg,st)
-                acc=f"({acc} {BIN[nm]} {rhs})"; continue
+                if arg['name']=='opile':
+                    # opernames.c opile: D7 = old acc, D6 = popped value, so the
+                    # operator computes (popped OP acc), not (acc OP popped).
+                    acc=f"({st.pop() if st else '?'} {BIN[nm]} {acc})"; continue
+                acc=f"({acc} {BIN[nm]} {fmt(arg,st)})"; continue
             if re.match(r'^[osa](main|dir|loc)t[a-z]$', nm):
                 idx=acc; prev=st.pop() if st else '?'
-                acc=f"main[{it['args'][0]:#06x}][{prev}][{idx}]"; continue
+                acc=f"{space(nm)}[{it['args'][0]:#06x}][{prev}][{idx}]"; continue
             if not it.get('args') and nm not in ('oimmb','oimmw','oimml'):
                 acc=f"{nm[1:]}({acc})"; continue
             acc=fmt(it,st)

@@ -49,11 +49,14 @@ Aiguillages, paire (pair = voie directe, impair = déviée) pour le train du jou
 Toute autre tuile conserve la direction. Clic d'aiguillage (CARTE `0x123f–0x1270`) :
 une tuile 18–33 paire devient +1, impaire −1, écrite dans la carte.
 
-## État initial (TABLE 0x12ea–0x137c)
+## État initial (TABLE 0x12ea–0x137c) : non porté
 
-Écritures inconditionnelles au démarrage : (54,5)=−121, (144,4)=−121, (6,9)=64,
-(70,19)=−117, (25,24)=63, (134,40)=63, (94,37)=64, (71,54)=−121, (139,57)=64,
-(83,67)=63, (116,55)=70, (114,55)=81.
+Correction du 27 septembre 2026 : ces douze écritures (ponts intacts en (54,5), (25,24), (83,67)…)
+ne sont atteintes que par le cas « super scenar » du menu de débogage TABLE 0x060c
+(`cswitch2 L0x0c`, cas 3 → 0x0679 → 0x1294), à côté de « super train », « super mechant » et
+« victory ». Une partie normale suit le cas par défaut 0x0699 (trace d'exécution). Les cases gardent
+donc leurs valeurs de CARTE.FIC : crevasses et lacs bloquent dès le départ
+(tasks/evidence/obstacles-unknowns.md §6).
 
 ## Contrôles de la case candidate (TIME 0x2392–0x257e, 0x1b9d–0x2044)
 
@@ -72,5 +75,5 @@ Aucun contenu de ville, d'événement ou d'histoire n'est inventé.
 
 `tools/claude/explore_network.py` : depuis (12,62) direction 6, en prenant les deux branches
 de chaque aiguillage : 2 240 états, 1 566 cases, **0 sortie vers une tuile 0**. Fins : gares 34–37
-(48), 65 (4), −120 (1). 31 des 48 gares sont à ≤ 4 cases d'une ancre de ville décodée.
+(48), 65 (4), −120 (1). Le parcours traverse les crevasses et lacs comme de la voie ; il ne tient pas compte des travaux. 31 des 48 gares sont à ≤ 4 cases d'une ancre de ville décodée.
 Limite : validation de cohérence statique ; aucune trace d'exécution d'un trajet n'a encore été enregistrée.

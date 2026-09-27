@@ -1,5 +1,17 @@
 # Règles de travail
 
+- Revue PR #3 : une recherche de contact ne réussit pas seulement parce qu’un échantillon existe. Vérifier que sa corde atteint la longueur du wagon et retourner la distance de cet échantillon exact. Un historique trop court masque le wagon ; il ne réduit ni sa taille ni la composition sauvegardée. Régression : `game/tests/test_train_renderer.gd`.
+
+- Instruction du propriétaire du 27 septembre : Opus est au seuil de son quota. Codex reprend l’implémentation, l’intégration et le design ; l’ancienne répartition ci-dessous est historique. Le propriétaire apportera des correctifs après rétablissement du quota. La fusion de la PR Transartica #3 est autorisée pour repartir de `main`.
+
+- Correction du 27 septembre : « les changements doivent push, et les branches remote doivent etre clean ». Pour Transartica, vérifier le SHA distant de la branche livrée et les branches obsolètes ; un commit local ou la PR d'un correctif de plugin ne prouve pas la publication du jeu. Préserver les commits propres aux branches d'essai avant leur suppression.
+
+- Correction du 27 septembre : maintenir `tasks/todo.md` comme état courant, consolidé depuis les commits et preuves. Retirer les demandes remplacées par une décision ultérieure ; distinguer dessin livré, logique portée, intégration et validation native. Les anciens comptes rendus restent dans Git.
+
+- Instruction du propriétaire du 27 septembre : Opus intègre les designs, Codex produit maintenant les visuels. Utiliser les captures web, solutions et parties complètes pour retrouver les omissions ; extrapoler les compositions manquantes en les identifiant. Ne pas substituer un nouvel inventaire à la livraison de PNG. Fournir prompts, sources, correspondances et limites graphiques à Opus.
+
+- Correction propriétaire du 27 septembre 2026 : le remake doit couvrir l'intégralité des visuels originaux avec une qualité inspirée de Noita. Rechercher les omissions dans les références sans dépendre de ses souvenirs. Recenser séparément villes, quartiers du capitaine, commandement, combat et son échelle, cartes, travaux, rails et aiguillages, puis toutes les variantes et scènes de campagne. Un catalogue de wagons ne clôt pas le design. Une image produite ne vaut ni intégration ni validation en jeu. Voir `tasks/visual-coverage.md`.
+
 - Correction du propriétaire : ne pas faire de l'identification exhaustive des versions un préalable au travail sur Transarctica. Avancer avec Amiga 500 ECS anglais ; enquêter sur les variantes seulement si un écart concret menace la fidélité. La taille des disquettes ne sert pas de preuve d'identité entre éditions.
 
 - Correction du propriétaire du 24 septembre 2026 : ne jamais assimiler « remake communautaire » ou « jouable » à une reproduction complète et fidèle. Exiger des preuves pour la carte, l'histoire et une campagne terminée avant toute affirmation de complétude. Référence : FIDELITE.md.
@@ -65,3 +77,7 @@
 - Mise à jour des plugins Codex : une session ouverte conserve les chemins des hooks chargés. Retirer une version avec `codex plugin remove` supprime son cache et casse ces sessions. Lors d'une migration, désactiver l'ancienne entrée pour les nouvelles sessions mais conserver ses fichiers jusqu'à la fermeture des sessions existantes. Incident observé sur context-guard 2.0.0 après installation 2.1.0 ; copie exacte restaurée et nouvelle configuration vérifiée sans double activation.
 
 - Correction propriétaire du 26 septembre : nettoyer les résidus avant chaque fin de session. Supprimer les worktrees de l’agent dès la PR poussée et son HEAD distant vérifié, sans attendre le merge. Retirer clones de revue terminés, processus possédés, captures temporaires et archives en double. Vérifier les fichiers ouverts et préserver tout travail actif ou non sauvegardé. Mesurer les suppressions réelles avant de déclarer le nettoyage terminé.
+
+- Redesign demandé le 26 septembre : avant de produire une famille de wagons, verrouiller le même châssis de référence et mesurer les largeurs solides. Une résolution de toile commune et un prompt de style commun ne suffisent pas; ne pas corriger les écarts par étirement des sprites.
+
+- Répartition confirmée par le propriétaire : Codex possède la partie design, y compris revue visuelle en jeu, corrections, couches graphiques destructibles, intérieurs et pièces mobiles. Opus possède intégration et moteur. Ne pas renvoyer la préparation artistique des combats à Opus ni demander au propriétaire de détecter les défauts à la place du designer.

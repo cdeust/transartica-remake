@@ -1,0 +1,559 @@
+{
+ "version": 2,
+ "source": "output/imagegen/wagon-catalogue-20260926 (Codex art masters, types 1-25; owner choice 2026-09-26)",
+ "note": "Single rigid top-down drawing per original wagon type, rotated continuously to the projected travel direction. front=bottom-centre, rear=top-centre (tools/build_overhead_atlas.py). length = alpha_span / locomotive alpha_span, a drawn proportion, not a historical rule.",
+ "file": "vehicles-overhead.png",
+ "scale": "1/3",
+ "vehicles": {
+  "locomotive": {
+   "type_id": 1,
+   "name": "LOCOMOTIVE",
+   "source": "../wagon-catalogue-20260926/01-locomotive-combat.png",
+   "region": [
+    4,
+    4,
+    140,
+    497
+   ],
+   "front": [
+    69.5,
+    495.0
+   ],
+   "rear": [
+    69.5,
+    0.0
+   ],
+   "alpha_span": 496,
+   "solid_width": 138,
+   "length": 1.0
+  },
+  "general-quarters": {
+   "type_id": 2,
+   "name": "GENERAL QUARTERS",
+   "source": "../wagon-catalogue-20260926/02-general-quarters-combat.png",
+   "region": [
+    149,
+    4,
+    138,
+    504
+   ],
+   "front": [
+    68.5,
+    502.0
+   ],
+   "rear": [
+    68.5,
+    1.0
+   ],
+   "alpha_span": 502,
+   "solid_width": 136,
+   "length": 1.01
+  },
+  "boudoir": {
+   "type_id": 3,
+   "name": "BOUDOIR",
+   "source": "../wagon-catalogue-20260926/03-boudoir-combat.png",
+   "region": [
+    294,
+    4,
+    136,
+    496
+   ],
+   "front": [
+    67.5,
+    493.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 493,
+   "solid_width": 134,
+   "length": 0.99
+  },
+  "observatory": {
+   "type_id": 4,
+   "name": "OBSERVATORY",
+   "source": "04-observatory.png",
+   "region": [
+    439,
+    4,
+    136,
+    496
+   ],
+   "front": [
+    67.5,
+    493.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 493,
+   "solid_width": 134,
+   "length": 0.99
+  },
+  "prison": {
+   "type_id": 5,
+   "name": "PRISON",
+   "source": "05-prison.png",
+   "region": [
+    584,
+    4,
+    138,
+    499
+   ],
+   "front": [
+    68.5,
+    496.0
+   ],
+   "rear": [
+    68.5,
+    1.0
+   ],
+   "alpha_span": 496,
+   "solid_width": 136,
+   "length": 1.0
+  },
+  "alcatraz": {
+   "type_id": 6,
+   "name": "ALCATRAZ",
+   "source": "06-alcatraz.png",
+   "region": [
+    729,
+    4,
+    137,
+    497
+   ],
+   "front": [
+    68.0,
+    495.0
+   ],
+   "rear": [
+    68.0,
+    1.0
+   ],
+   "alpha_span": 495,
+   "solid_width": 135,
+   "length": 1.0
+  },
+  "livestock": {
+   "type_id": 7,
+   "name": "LIVESTOCK",
+   "source": "07-livestock.png",
+   "region": [
+    874,
+    4,
+    136,
+    496
+   ],
+   "front": [
+    67.5,
+    494.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 494,
+   "solid_width": 134,
+   "length": 1.0
+  },
+  "drill": {
+   "type_id": 8,
+   "name": "THE DRILL",
+   "source": "08-drill.png",
+   "region": [
+    1019,
+    4,
+    137,
+    497
+   ],
+   "front": [
+    68.0,
+    494.0
+   ],
+   "rear": [
+    68.0,
+    1.0
+   ],
+   "alpha_span": 494,
+   "solid_width": 135,
+   "length": 1.0
+  },
+  "harpoon": {
+   "type_id": 9,
+   "name": "HARPOON",
+   "source": "09-harpoon.png",
+   "region": [
+    1164,
+    4,
+    137,
+    496
+   ],
+   "front": [
+    68.0,
+    494.0
+   ],
+   "rear": [
+    68.0,
+    1.0
+   ],
+   "alpha_span": 494,
+   "solid_width": 135,
+   "length": 1.0
+  },
+  "observation-box": {
+   "type_id": 10,
+   "name": "OBSERVATION BOX",
+   "source": "10-observation-box.png",
+   "region": [
+    1309,
+    4,
+    137,
+    496
+   ],
+   "front": [
+    68.0,
+    494.0
+   ],
+   "rear": [
+    68.0,
+    1.0
+   ],
+   "alpha_span": 494,
+   "solid_width": 135,
+   "length": 1.0
+  },
+  "cannon": {
+   "type_id": 11,
+   "name": "CANNON",
+   "source": "11-cannon.png",
+   "region": [
+    1454,
+    4,
+    137,
+    496
+   ],
+   "front": [
+    67.5,
+    494.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 494,
+   "solid_width": 134,
+   "length": 1.0
+  },
+  "machine-gun": {
+   "type_id": 12,
+   "name": "MACHINE GUN",
+   "source": "12-machine-gun.png",
+   "region": [
+    1599,
+    4,
+    138,
+    498
+   ],
+   "front": [
+    68.0,
+    495.0
+   ],
+   "rear": [
+    68.0,
+    1.0
+   ],
+   "alpha_span": 495,
+   "solid_width": 135,
+   "length": 1.0
+  },
+  "missile-launcher": {
+   "type_id": 13,
+   "name": "MISSILE-LAUNCHER",
+   "source": "13-missile-launcher.png",
+   "region": [
+    1744,
+    4,
+    137,
+    497
+   ],
+   "front": [
+    68.0,
+    495.0
+   ],
+   "rear": [
+    68.0,
+    1.0
+   ],
+   "alpha_span": 495,
+   "solid_width": 135,
+   "length": 1.0
+  },
+  "tank": {
+   "type_id": 14,
+   "name": "TANK",
+   "source": "14-tank.png",
+   "region": [
+    4,
+    512,
+    137,
+    497
+   ],
+   "front": [
+    67.5,
+    494.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 494,
+   "solid_width": 134,
+   "length": 1.0
+  },
+  "oil": {
+   "type_id": 15,
+   "name": "OIL",
+   "source": "15-oil.png",
+   "region": [
+    149,
+    512,
+    136,
+    495
+   ],
+   "front": [
+    67.5,
+    493.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 493,
+   "solid_width": 134,
+   "length": 0.99
+  },
+  "crane": {
+   "type_id": 16,
+   "name": "CRANE",
+   "source": "16-crane.png",
+   "region": [
+    294,
+    512,
+    136,
+    496
+   ],
+   "front": [
+    67.5,
+    494.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 494,
+   "solid_width": 134,
+   "length": 1.0
+  },
+  "merchandise": {
+   "type_id": 17,
+   "name": "MERCHANDISE",
+   "source": "../wagon-catalogue-20260926/17-merchandise-combat.png",
+   "region": [
+    439,
+    512,
+    137,
+    492
+   ],
+   "front": [
+    67.5,
+    490.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 490,
+   "solid_width": 134,
+   "length": 0.99
+  },
+  "xl-merchandise": {
+   "type_id": 18,
+   "name": "XL MERCHANDISE",
+   "source": "18-xl-merchandise.png",
+   "region": [
+    584,
+    512,
+    137,
+    495
+   ],
+   "front": [
+    68.0,
+    492.0
+   ],
+   "rear": [
+    68.0,
+    1.0
+   ],
+   "alpha_span": 492,
+   "solid_width": 135,
+   "length": 0.99
+  },
+  "bio-greenhouse": {
+   "type_id": 19,
+   "name": "BIO-GREENHOUSE",
+   "source": "19-bio-greenhouse.png",
+   "region": [
+    729,
+    512,
+    137,
+    497
+   ],
+   "front": [
+    68.0,
+    494.0
+   ],
+   "rear": [
+    68.0,
+    1.0
+   ],
+   "alpha_span": 494,
+   "solid_width": 135,
+   "length": 1.0
+  },
+  "refrigerator": {
+   "type_id": 20,
+   "name": "REFRIGERATOR",
+   "source": "20-refrigerator.png",
+   "region": [
+    874,
+    512,
+    136,
+    498
+   ],
+   "front": [
+    67.5,
+    496.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 496,
+   "solid_width": 134,
+   "length": 1.0
+  },
+  "tender": {
+   "type_id": 21,
+   "name": "TENDER",
+   "source": "../wagon-catalogue-20260926/21-tender-combat.png",
+   "region": [
+    1019,
+    512,
+    141,
+    502
+   ],
+   "front": [
+    70.0,
+    500.0
+   ],
+   "rear": [
+    70.0,
+    1.0
+   ],
+   "alpha_span": 500,
+   "solid_width": 139,
+   "length": 1.01
+  },
+  "spy": {
+   "type_id": 22,
+   "name": "SPY",
+   "source": "22-spy.png",
+   "region": [
+    1164,
+    512,
+    136,
+    497
+   ],
+   "front": [
+    67.5,
+    494.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 494,
+   "solid_width": 134,
+   "length": 1.0
+  },
+  "barracks": {
+   "type_id": 23,
+   "name": "BARRACKS",
+   "source": "../wagon-catalogue-20260926/23-barracks-combat.png",
+   "region": [
+    1309,
+    512,
+    141,
+    491
+   ],
+   "front": [
+    70.0,
+    489.0
+   ],
+   "rear": [
+    70.0,
+    1.0
+   ],
+   "alpha_span": 489,
+   "solid_width": 139,
+   "length": 0.99
+  },
+  "xl-barracks": {
+   "type_id": 24,
+   "name": "XL BARRACKS",
+   "source": "24-xl-barracks.png",
+   "region": [
+    1454,
+    512,
+    136,
+    497
+   ],
+   "front": [
+    67.5,
+    495.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 495,
+   "solid_width": 134,
+   "length": 1.0
+  },
+  "boiler": {
+   "type_id": 25,
+   "name": "BOILER",
+   "source": "25-boiler.png",
+   "region": [
+    1599,
+    512,
+    136,
+    496
+   ],
+   "front": [
+    67.5,
+    493.0
+   ],
+   "rear": [
+    67.5,
+    1.0
+   ],
+   "alpha_span": 493,
+   "solid_width": 134,
+   "length": 0.99
+  }
+ }
+}

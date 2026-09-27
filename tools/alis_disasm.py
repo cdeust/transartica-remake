@@ -195,6 +195,27 @@ class Reader:
         elif code == 0x94:
             args.extend((self.number(2, signed=True), self.nested('store')))
 
+    def file_io(self, code, args):
+        # opcodes.c cfopen: 0xff marker -> two oper expressions, else C string + u16 mode.
+        if code == 0x70:
+            if self.data[self.pc:self.pc + 1] == b'\xff':
+                self.number(1)
+                args.extend((self.nested('oper'), self.nested('oper')))
+            else:
+                args.extend((self.cstring(), self.number(2)))
+        elif code in (0x77, 0x78):
+            # cfreadb/cfwriteb: s16 address (0 -> s16 main offset), then
+            # s16 length for ALIS versions < 30 (script_read16 branch).
+            address = self.number(2, signed=True)
+            args.append(address)
+            if address == 0:
+                args.append(self.number(2, signed=True))
+            args.append(self.number(2))
+        elif code == 0x74:
+            args.append(self.nested('store'))  # cfreadv -> cstore_continue
+        elif code in (0x75, 0xcf):
+            args.append(self.nested('oper'))  # cfwritev, cordspr
+
     def instruction(self, offset):
         self.pc = offset
         code = self.number(1)
@@ -231,6 +252,8 @@ class Reader:
         elif code in (0x3d, 0x40, 0x46, 0x47, 0x4e, 0x4f, 0x57, 0x60,
                       0x86, 0x94, 0x9c, 0xca):
             self.indirect(code, args)
+        elif code in (0x70, 0x71, 0x74, 0x75, 0x77, 0x78, 0xcf):
+            self.file_io(code, args)
         elif code == 0x44:
             flow = 'return'
         elif code in (0x3f, 0x42):
@@ -271,6 +294,21 @@ def walk(reader, start, count, reachable=False):
             'truncated': bool(pending_offsets), 'pending_offsets': pending_offsets}
 
 
+def header_entries(data):
+    """Entry points from the script header (alis.c scheduler, alis.c adresdes).
+
+    +0x06: s32 offset of the post-tick handler, run at header+6+offset.
+    +0x0a: s32 offset of the interrupt/scan handler, run at header+10+offset.
+    +0x0e: s32 offset of the resource table; code never extends past it.
+    """
+    word = lambda at: int.from_bytes(data[at:at + 4], 'big', signed=True)
+    entries = [0x18]
+    for field in (0x06, 0x0a):
+        if word(field):
+            entries.append(field + word(field))
+    return {'entries': entries, 'resources': word(0x0e)}
+
+
 def disassemble(data, start, count, reachable=False):
     return walk(Reader(data, source_tables()), start, count, reachable)
 
@@ -282,10 +320,27 @@ def main():
     parser.add_argument('--count', type=int, default=100)  # bounded CLI output
     parser.add_argument('--reachable', action='store_true')
     parser.add_argument('--json', action='store_true')
+    parser.add_argument('--all-entries', action='store_true',
+                        help='walk every header entry point (implies --reachable)')
     parser.add_argument('--source', type=Path, default=SOURCE)
     args = parser.parse_args()
-    result = walk(Reader(args.file.read_bytes(), source_tables(args.source)),
-                  args.start, args.count, args.reachable)
+    data = args.file.read_bytes()
+    reader = Reader(data, source_tables(args.source))
+    if args.all_entries:
+        header = header_entries(data)
+        result = {'instructions': [], 'errors': [], 'pending_offsets': [],
+                  'header': header}
+        seen = set()
+        for entry in header['entries']:
+            part = walk(reader, entry, args.count, True)
+            fresh = [i for i in part['instructions'] if i['offset'] not in seen]
+            seen.update(i['offset'] for i in fresh)
+            result['instructions'] += fresh
+            result['errors'] += part['errors']
+            result['pending_offsets'] += part['pending_offsets']
+        result['truncated'] = bool(result['pending_offsets'])
+    else:
+        result = walk(reader, args.start, args.count, args.reachable)
     if args.json:
         print(json.dumps(result, indent=2))
     else:

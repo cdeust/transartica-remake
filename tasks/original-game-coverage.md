@@ -1,5 +1,11 @@
 # Couverture du jeu original — état local du 25 septembre 2026
 
+Mise à jour du 27 septembre : cette photographie historique ne décrit pas les
+intégrations ultérieures. Pour le design actuel, voir `visual-coverage.md` et la
+première section de `todo.md`. La demande du propriétaire impose une étude
+distincte du cadrage et de l'échelle du combat : la mention de zoom continu
+ci-dessous ne constitue pas une validation de sa présentation finale.
+
 Référence fonctionnelle : [manuel Amiga original reproduit par Lemon Amiga](https://www.lemonamiga.com/doc/transarctica/1676).
 Les règles exécutables sont recoupées avec les scripts ALIS privés, leurs
 listings et les notes dans `tasks/evidence/`. Cette grille décrit le code

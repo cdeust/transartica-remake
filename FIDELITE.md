@@ -33,11 +33,29 @@ Chaque élément relevé distinguera : preuve originale observée, description d
 
 Prochaine étape : rechercher une source vérifiable de l'édition Amiga 500 ECS anglaise, puis établir les inventaires de carte et de campagne. Les documents et vidéos peuvent alimenter ces inventaires dès maintenant ; la fidélité complète ne sera pas déclarée sur cette seule base. Le choix du moteur reste provisoire jusqu'à ce cadrage.
 
-## Licence
+## Couverture visuelle : clarification du 27 septembre 2026
+
+L'intégralité des visuels de l'original entre dans le périmètre du remake, avec
+une qualité de pixel art inspirée de Noita : scènes, villes, intérieurs, cartes,
+voies, aiguillages, obstacles et travaux, personnages, véhicules, combats,
+interfaces et séquences de campagne. Les exemples donnés par le propriétaire
+ne constituent pas une liste limitative. L'inventaire incombe au designer.
+
+Le combat exige une scène et une échelle de présentation étudiées séparément
+du voyage. Partager la composition et l'état du train ne suffit pas à en définir
+le cadrage. Comparer les références ECS avant de fixer projection et dimensions.
+L'exigence de gabarit invariant lors des changements de direction demeure.
+
+Chaque élément doit relier une preuve originale à un dessin du remake, ses
+variantes, son intégration et une vérification dans le jeu. La clôture exige
+une revue des scènes et états de campagne ; aucune complétude ne sera déduite
+du seul nombre de PNG. Suivi : `tasks/visual-coverage.md`.
+
+## Licence des contenus
 
 MIT est le choix pour le code créé dans ce projet. La provenance et les permissions des éléments de contenu seront suivies séparément ; le choix MIT du projet ne constitue pas une autorisation sur les éléments originaux. Les sources sur ce point figurent dans DOSSIER.md.
 
-## Adaptations confirmées — 26 septembre 2026
+## Adaptations confirmées : 26 septembre 2026
 
 Le propriétaire demande un frein de service progressif, pour anticiper l'arrêt.
 Les scripts ECS arrêtent au prochain pas logique avec le levier : le comportement

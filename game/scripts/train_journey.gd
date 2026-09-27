@@ -60,6 +60,76 @@ func advance(speed: int) -> void:
 	stop_reason = reason
 
 
+func at_obstacle() -> bool:
+	return blocked and stop_reason == RailNetworkScript.OBSTACLE_REASON
+
+
+# After YODA 0x2390 repairs the cell, TIME's next phase-3 step retries the entry.
+func resume_after_works() -> bool:
+	if not at_obstacle():
+		return false
+	blocked = false
+	stop_reason = ""
+	return true
+
+
+# Event cells whose YODA handler ends with the 0x18e3 reversal (obstacles.md):
+# the closed bridge -120 (text 52). The workshop 65 and mines 78 follow once ported.
+func at_reversal_event() -> bool:
+	return blocked and stop_reason == "event site" and network != null \
+			and network.tile(next_cell()) in RailNetworkScript.REVERSAL_EVENTS
+
+
+func at_station() -> bool:
+	return blocked and stop_reason == "station"
+
+
+# TIME 0x26fb result for the refused station ahead; see RailNetwork.station_lookup.
+func station_result() -> int:
+	return network.station_lookup(next_cell()) if at_station() and network != null else -1
+
+
+# yoda 0x18e3, reached from glieu message 9 (tasks/evidence/station-arrival.md).
+# Heading 1<->9, 2<->8, 3<->7, 4<->6. The original sets phase |2 - 2| - 1 = -1
+# with remainder 23; progress per step is mini(speed, 450) / 20 <= 22, so its
+# next moving step lands on phase 0 with remainder progress/20, exactly like
+# phase 0 / remainder 0 here. Engine speed is reset by the caller.
+func depart_from_station() -> bool:
+	if not at_station() and not at_reversal_event():
+		return false
+	var station := next_cell()
+	var toward_station: int = heading
+	heading = 10 - heading
+	incoming_heading = heading
+	distance_ticks = 0
+	phase = 0
+	blocked = false
+	stop_reason = ""
+	# Presentation (owner choice, 26 September 2026): the convoy leaves the
+	# station behind the locomotive. The station tile has no decoded rail
+	# geometry, so one straight hidden cell stands in for it; wagons further
+	# back have no history yet and emerge as the train moves away.
+	var step := Vector2(RailNetworkScript.DELTAS[toward_station]) * 0.5
+	_path.clear()
+	_path.points = PackedVector2Array([Vector2(station) + step, Vector2(station), Vector2(station) - step])
+	_path.length = step.length() * 2.0
+	_path_cell = position
+	return true
+
+
+# True when the route history begins in a station (depart_from_station): the
+# missing wagons are inside it, not lost. seed() never enters a station tile,
+# which has no decoded rail ports, so an ordinary history cannot match this.
+func history_starts_in_station() -> bool:
+	if _path.points.size() < 2 or network == null:
+		return false
+	var center: Vector2 = _path.points[1]
+	if center != center.floor():
+		return false
+	var code: int = network.tile(Vector2i(center))
+	return (code >= 34 and code <= 37) or code in RailNetworkScript.REVERSAL_EVENTS
+
+
 func heading_name() -> String:
 	return HEADING_NAMES.get(heading, "STOPPED")
 

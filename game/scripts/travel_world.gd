@@ -183,7 +183,7 @@ func _draw_rails() -> void:
 
 func _tile_code(x: int, y: int) -> int:
 	if network != null and network.is_loaded():
-		return absi(network.tile(Vector2i(x, y)))
+		return network.tile(Vector2i(x, y))
 	return world_data.map_code(x, y)
 
 
@@ -271,10 +271,6 @@ func _draw_train() -> void:
 	train_renderer.draw(self, journey, consist, lag)
 
 
-func train_pose(heading: int) -> Dictionary:
-	return train_renderer.frame_for("locomotive", heading)
-
-
 func _city_screen_point(city: Dictionary) -> Vector2:
 	return _world_to_screen(Vector2(float(city.x) + 0.5, float(city.y) + 0.5))
 
@@ -328,7 +324,7 @@ func _reveal_occupied_track() -> void:
 	if journey == null:
 		return
 	var changed := false
-	for vehicle in train_renderer.poses(journey, consist, 0.0):
+	for vehicle in train_renderer.poses(self, journey, consist, 0.0):
 		for point in [vehicle.front, vehicle.center, vehicle.rear]:
 			var cell := Vector2i((point + Vector2(0.5, 0.5)).floor())
 			changed = discovery.observe_cell(cell) or changed

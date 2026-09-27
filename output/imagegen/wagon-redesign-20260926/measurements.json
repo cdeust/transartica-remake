@@ -1,0 +1,1171 @@
+{
+  "alpha_threshold": 128,
+  "reference_ids": [
+    1,
+    2,
+    3,
+    17,
+    21,
+    23
+  ],
+  "reference_width_range": [
+    401,
+    417
+  ],
+  "reference_length_range": [
+    1466,
+    1506
+  ],
+  "assets": [
+    {
+      "type_id": 1,
+      "name": "LOCOMOTIVE",
+      "file": "output/imagegen/wagon-catalogue-20260926/01-locomotive-combat.png",
+      "redesigned": false,
+      "before": {
+        "sha256": "351d38a4b4d31c450dc790c98afa9949a49e86fe10cf24b9c6825771afb78ad4",
+        "bytes": 1834071,
+        "solid_bbox": [
+          304,
+          0,
+          718,
+          1488
+        ],
+        "solid_width": 414,
+        "solid_length": 1488,
+        "middle_half_median_width": 382.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "351d38a4b4d31c450dc790c98afa9949a49e86fe10cf24b9c6825771afb78ad4",
+        "bytes": 1834071,
+        "solid_bbox": [
+          304,
+          0,
+          718,
+          1488
+        ],
+        "solid_width": 414,
+        "solid_length": 1488,
+        "middle_half_median_width": 382.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 2,
+      "name": "GENERAL QUARTERS",
+      "file": "output/imagegen/wagon-catalogue-20260926/02-general-quarters-combat.png",
+      "redesigned": false,
+      "before": {
+        "sha256": "8e11dc74defed9a565fb4007faa8abbb31a2956622b8852d9ea828b12c421ef5",
+        "bytes": 1733146,
+        "solid_bbox": [
+          308,
+          15,
+          716,
+          1521
+        ],
+        "solid_width": 408,
+        "solid_length": 1506,
+        "middle_half_median_width": 386.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "8e11dc74defed9a565fb4007faa8abbb31a2956622b8852d9ea828b12c421ef5",
+        "bytes": 1733146,
+        "solid_bbox": [
+          308,
+          15,
+          716,
+          1521
+        ],
+        "solid_width": 408,
+        "solid_length": 1506,
+        "middle_half_median_width": 386.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 3,
+      "name": "BOUDOIR",
+      "file": "output/imagegen/wagon-catalogue-20260926/03-boudoir-combat.png",
+      "redesigned": false,
+      "before": {
+        "sha256": "846552d25056038e0dcc5b5290136e51b19b2896d62f5a292fd140847b317587",
+        "bytes": 1780458,
+        "solid_bbox": [
+          311,
+          13,
+          712,
+          1493
+        ],
+        "solid_width": 401,
+        "solid_length": 1480,
+        "middle_half_median_width": 358.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "846552d25056038e0dcc5b5290136e51b19b2896d62f5a292fd140847b317587",
+        "bytes": 1780458,
+        "solid_bbox": [
+          311,
+          13,
+          712,
+          1493
+        ],
+        "solid_width": 401,
+        "solid_length": 1480,
+        "middle_half_median_width": 358.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 4,
+      "name": "OBSERVATORY",
+      "file": "output/imagegen/wagon-redesign-20260926/04-observatory.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "ef6c7711ea3c5e0d1dacf773296798adfa4bc3acc61a46868e8319916e97dd77",
+        "bytes": 1649353,
+        "solid_bbox": [
+          353,
+          11,
+          671,
+          1501
+        ],
+        "solid_width": 318,
+        "solid_length": 1490,
+        "middle_half_median_width": 298.5,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "2ab17be9e013259846491b0124548fd0eb83fc76f1f80a16a0a28e7154f5adc1",
+        "bytes": 1886989,
+        "solid_bbox": [
+          311,
+          12,
+          713,
+          1493
+        ],
+        "solid_width": 402,
+        "solid_length": 1481,
+        "middle_half_median_width": 359,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "transparent_corners": false
+      }
+    },
+    {
+      "type_id": 5,
+      "name": "PRISON",
+      "file": "output/imagegen/wagon-redesign-20260926/05-prison.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "5effff5f6b33f6c12e2b79bdcf7683fe7c162b59469a1d0bd873ac3d31284a84",
+        "bytes": 1803136,
+        "solid_bbox": [
+          327,
+          10,
+          697,
+          1484
+        ],
+        "solid_width": 370,
+        "solid_length": 1474,
+        "middle_half_median_width": 348.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "5014bfdffed34fa60a75b190150b87d81a616d75efc626c898f44ff522f03e38",
+        "bytes": 1792130,
+        "solid_bbox": [
+          307,
+          9,
+          714,
+          1498
+        ],
+        "solid_width": 407,
+        "solid_length": 1489,
+        "middle_half_median_width": 370,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 6,
+      "name": "ALCATRAZ",
+      "file": "output/imagegen/wagon-redesign-20260926/06-alcatraz.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "7cdc32a49686cc5c0bd55ddb096c80b160280cb6b511cff1601e00bc7c741c52",
+        "bytes": 1745686,
+        "solid_bbox": [
+          336,
+          5,
+          688,
+          1513
+        ],
+        "solid_width": 352,
+        "solid_length": 1508,
+        "middle_half_median_width": 328.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "40e6699009bb67d29a666c1db87582b36c6ffe325ad936f689bbd1cdb6c501c1",
+        "bytes": 1790269,
+        "solid_bbox": [
+          310,
+          8,
+          714,
+          1493
+        ],
+        "solid_width": 404,
+        "solid_length": 1485,
+        "middle_half_median_width": 360,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 7,
+      "name": "LIVESTOCK",
+      "file": "output/imagegen/wagon-redesign-20260926/07-livestock.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "c8504ef29a8c13abed72cbd56df9bd8ebe43197f954110be5bc0d515ffe43359",
+        "bytes": 1717782,
+        "solid_bbox": [
+          347,
+          7,
+          677,
+          1493
+        ],
+        "solid_width": 330,
+        "solid_length": 1486,
+        "middle_half_median_width": 307.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "f13de9869ff8e18ed9f0a16f56f1e74103eca4ac460c69953deac23aa94d28f1",
+        "bytes": 1874193,
+        "solid_bbox": [
+          311,
+          12,
+          713,
+          1494
+        ],
+        "solid_width": 402,
+        "solid_length": 1482,
+        "middle_half_median_width": 358.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 8,
+      "name": "THE DRILL",
+      "file": "output/imagegen/wagon-redesign-20260926/08-drill.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "196bd3f54292d4acb108c897f351dce31922877661dc804a7af0cda25503e60d",
+        "bytes": 1625717,
+        "solid_bbox": [
+          370,
+          9,
+          654,
+          1510
+        ],
+        "solid_width": 284,
+        "solid_length": 1501,
+        "middle_half_median_width": 261,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "3de161e9d45b25c615a9881e92cd57cabd41ef77becb687107a1153f6ef60ff8",
+        "bytes": 1885764,
+        "solid_bbox": [
+          310,
+          12,
+          714,
+          1495
+        ],
+        "solid_width": 404,
+        "solid_length": 1483,
+        "middle_half_median_width": 359,
+        "corner_alpha": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "transparent_corners": false
+      }
+    },
+    {
+      "type_id": 9,
+      "name": "HARPOON",
+      "file": "output/imagegen/wagon-redesign-20260926/09-harpoon.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "963875ad8a558dd5b8ab82165054075390f002ce45379dabff109cdc26f70971",
+        "bytes": 1783061,
+        "solid_bbox": [
+          334,
+          11,
+          688,
+          1472
+        ],
+        "solid_width": 354,
+        "solid_length": 1461,
+        "middle_half_median_width": 326,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "e0a613a8e515e27d8111b1b9eb89cfe89b8d516909b5d4e0145bcac24343c331",
+        "bytes": 1832591,
+        "solid_bbox": [
+          309,
+          11,
+          713,
+          1492
+        ],
+        "solid_width": 404,
+        "solid_length": 1481,
+        "middle_half_median_width": 361,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 10,
+      "name": "OBSERVATION BOX",
+      "file": "output/imagegen/wagon-redesign-20260926/10-observation-box.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "51d5c81c55a088f38d1cf431dbb5221e44ec59b5a91ac1aadcb54cd53bc012c4",
+        "bytes": 1639021,
+        "solid_bbox": [
+          360,
+          9,
+          665,
+          1511
+        ],
+        "solid_width": 305,
+        "solid_length": 1502,
+        "middle_half_median_width": 283.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "ed4aa675e251e4f952ddef79e4d423efa36b37f5b659d40cef20ba0e2319aba8",
+        "bytes": 1822897,
+        "solid_bbox": [
+          309,
+          12,
+          714,
+          1494
+        ],
+        "solid_width": 405,
+        "solid_length": 1482,
+        "middle_half_median_width": 360.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 11,
+      "name": "CANNON",
+      "file": "output/imagegen/wagon-redesign-20260926/11-cannon.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "a816c3528f9ece28c6c2bf1c7a173550e04056a2d616a7e080d4f34109b83570",
+        "bytes": 1775102,
+        "solid_bbox": [
+          335,
+          9,
+          689,
+          1514
+        ],
+        "solid_width": 354,
+        "solid_length": 1505,
+        "middle_half_median_width": 322,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "fa4d09c27fa549908573ea6c21e345403600edec816f6453a85f45f8300b4cd6",
+        "bytes": 1826250,
+        "solid_bbox": [
+          310,
+          12,
+          713,
+          1493
+        ],
+        "solid_width": 403,
+        "solid_length": 1481,
+        "middle_half_median_width": 359,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 12,
+      "name": "MACHINE GUN",
+      "file": "output/imagegen/wagon-redesign-20260926/12-machine-gun.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "8d7dd1a1daccdac03ca1ef96366fb68f65f5b22a70fa6ce74f094460784eda42",
+        "bytes": 1815016,
+        "solid_bbox": [
+          313,
+          5,
+          711,
+          1506
+        ],
+        "solid_width": 398,
+        "solid_length": 1501,
+        "middle_half_median_width": 353,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "aa23ca11bbfda89f3f166b19ad14c24a0ed49eee9099646a1220e06c3ba34047",
+        "bytes": 1823461,
+        "solid_bbox": [
+          309,
+          9,
+          715,
+          1495
+        ],
+        "solid_width": 406,
+        "solid_length": 1486,
+        "middle_half_median_width": 360.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 13,
+      "name": "MISSILE-LAUNCHER",
+      "file": "output/imagegen/wagon-redesign-20260926/13-missile-launcher.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "0e311f15c5edbd1ea982ff202aa6cdbb5eadbbf2db61c8438060ccf11e539487",
+        "bytes": 1687909,
+        "solid_bbox": [
+          353,
+          8,
+          671,
+          1515
+        ],
+        "solid_width": 318,
+        "solid_length": 1507,
+        "middle_half_median_width": 299,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "6f865b3f4701ed31b8e446cda1defaf380f6028cd8588a6fd77c3ef9eb9a6f34",
+        "bytes": 1862173,
+        "solid_bbox": [
+          310,
+          7,
+          714,
+          1491
+        ],
+        "solid_width": 404,
+        "solid_length": 1484,
+        "middle_half_median_width": 359.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 14,
+      "name": "TANK",
+      "file": "output/imagegen/wagon-redesign-20260926/14-tank.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "2faca3ec99aa02f8f6bc0dbb9b90f8f6af7a7f0b7d1066f063c5003631c23ea6",
+        "bytes": 1656023,
+        "solid_bbox": [
+          357,
+          13,
+          668,
+          1506
+        ],
+        "solid_width": 311,
+        "solid_length": 1493,
+        "middle_half_median_width": 277,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "023e064dbed519128aa7ccec970aa5e4f080c24262c73977e36f336c6c7dc334",
+        "bytes": 1820524,
+        "solid_bbox": [
+          310,
+          12,
+          713,
+          1495
+        ],
+        "solid_width": 403,
+        "solid_length": 1483,
+        "middle_half_median_width": 360,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 15,
+      "name": "OIL",
+      "file": "output/imagegen/wagon-redesign-20260926/15-oil.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "4d50144fde4344186b1affe78f6090c64454d02cb2d0d6cbd97a029f99c0169c",
+        "bytes": 1626980,
+        "solid_bbox": [
+          365,
+          13,
+          659,
+          1518
+        ],
+        "solid_width": 294,
+        "solid_length": 1505,
+        "middle_half_median_width": 259,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "4546a386ef7053135d1c9def83d5875f87382d1375da9093e463715749a0602a",
+        "bytes": 1832903,
+        "solid_bbox": [
+          311,
+          13,
+          713,
+          1493
+        ],
+        "solid_width": 402,
+        "solid_length": 1480,
+        "middle_half_median_width": 359.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 16,
+      "name": "CRANE",
+      "file": "output/imagegen/wagon-redesign-20260926/16-crane.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "68148e5865f4d49ac39a9379a6e864ced3821ebb49abbdea5f236dec2e58b601",
+        "bytes": 1702083,
+        "solid_bbox": [
+          352,
+          2,
+          672,
+          1492
+        ],
+        "solid_width": 320,
+        "solid_length": 1490,
+        "middle_half_median_width": 289.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "c90512a49bd19f6d2e71d076c7194dd95cc4fead5dd87f212a109f827ed2b60f",
+        "bytes": 1845592,
+        "solid_bbox": [
+          311,
+          11,
+          713,
+          1493
+        ],
+        "solid_width": 402,
+        "solid_length": 1482,
+        "middle_half_median_width": 358.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 17,
+      "name": "MERCHANDISE",
+      "file": "output/imagegen/wagon-catalogue-20260926/17-merchandise-combat.png",
+      "redesigned": false,
+      "before": {
+        "sha256": "70459e2ba59a7ff19acc44ff4eee18b31422964e0f604471309195b73a82310d",
+        "bytes": 1737895,
+        "solid_bbox": [
+          311,
+          14,
+          714,
+          1483
+        ],
+        "solid_width": 403,
+        "solid_length": 1469,
+        "middle_half_median_width": 373,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "70459e2ba59a7ff19acc44ff4eee18b31422964e0f604471309195b73a82310d",
+        "bytes": 1737895,
+        "solid_bbox": [
+          311,
+          14,
+          714,
+          1483
+        ],
+        "solid_width": 403,
+        "solid_length": 1469,
+        "middle_half_median_width": 373,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 18,
+      "name": "XL MERCHANDISE",
+      "file": "output/imagegen/wagon-redesign-20260926/18-xl-merchandise.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "d866852d9813b7a36781610de8dc997982bccb370bacb14b463423673f0021e3",
+        "bytes": 1870477,
+        "solid_bbox": [
+          334,
+          6,
+          691,
+          1523
+        ],
+        "solid_width": 357,
+        "solid_length": 1517,
+        "middle_half_median_width": 327,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "ccf7a4cc5743a161e9965a63b700e64b362a2baf78e0890aba719c01620ce8ee",
+        "bytes": 1853396,
+        "solid_bbox": [
+          310,
+          12,
+          714,
+          1489
+        ],
+        "solid_width": 404,
+        "solid_length": 1477,
+        "middle_half_median_width": 360,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 19,
+      "name": "BIO-GREENHOUSE",
+      "file": "output/imagegen/wagon-redesign-20260926/19-bio-greenhouse.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "2211ad179509a3975e900461456db4081c55559279701a10b3fc324e85425e80",
+        "bytes": 1665302,
+        "solid_bbox": [
+          366,
+          9,
+          659,
+          1514
+        ],
+        "solid_width": 293,
+        "solid_length": 1505,
+        "middle_half_median_width": 283,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "8915fdd4d827ea947127a6fe9b3861297dde6a4ce728ed2838f7545d5f0e4b62",
+        "bytes": 1907239,
+        "solid_bbox": [
+          310,
+          11,
+          714,
+          1494
+        ],
+        "solid_width": 404,
+        "solid_length": 1483,
+        "middle_half_median_width": 361,
+        "corner_alpha": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "transparent_corners": false
+      }
+    },
+    {
+      "type_id": 20,
+      "name": "REFRIGERATOR",
+      "file": "output/imagegen/wagon-redesign-20260926/20-refrigerator.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "93fb3ee6884a7b95feb234e6515f58036d3c5914196d6f3fc10ae94cbe35f298",
+        "bytes": 1621051,
+        "solid_bbox": [
+          358,
+          14,
+          666,
+          1505
+        ],
+        "solid_width": 308,
+        "solid_length": 1491,
+        "middle_half_median_width": 278,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "f1b9302997b33d5b4a9947c2e5f9d4a0f45790a002989be8640312d569830237",
+        "bytes": 1812439,
+        "solid_bbox": [
+          310,
+          9,
+          712,
+          1497
+        ],
+        "solid_width": 402,
+        "solid_length": 1488,
+        "middle_half_median_width": 359.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 21,
+      "name": "TENDER",
+      "file": "output/imagegen/wagon-catalogue-20260926/21-tender-combat.png",
+      "redesigned": false,
+      "before": {
+        "sha256": "a42fb2f3afd9a6352e5c149c74c248c5c86bf587975dbc1475b9d2bb64f21b8e",
+        "bytes": 1835960,
+        "solid_bbox": [
+          304,
+          12,
+          720,
+          1511
+        ],
+        "solid_width": 416,
+        "solid_length": 1499,
+        "middle_half_median_width": 370,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "a42fb2f3afd9a6352e5c149c74c248c5c86bf587975dbc1475b9d2bb64f21b8e",
+        "bytes": 1835960,
+        "solid_bbox": [
+          304,
+          12,
+          720,
+          1511
+        ],
+        "solid_width": 416,
+        "solid_length": 1499,
+        "middle_half_median_width": 370,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 22,
+      "name": "SPY",
+      "file": "output/imagegen/wagon-redesign-20260926/22-spy.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "3c56b00cc12f959356f33bd8effcd44ceaa7c7b91d4f3843ad3a685ed7c6bc01",
+        "bytes": 1590220,
+        "solid_bbox": [
+          363,
+          13,
+          661,
+          1504
+        ],
+        "solid_width": 298,
+        "solid_length": 1491,
+        "middle_half_median_width": 270,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "885d8ac78debef2e876109f7420c53920f74c353308e866124b53db4e13f138d",
+        "bytes": 1778445,
+        "solid_bbox": [
+          311,
+          11,
+          713,
+          1494
+        ],
+        "solid_width": 402,
+        "solid_length": 1483,
+        "middle_half_median_width": 359,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 23,
+      "name": "BARRACKS",
+      "file": "output/imagegen/wagon-catalogue-20260926/23-barracks-combat.png",
+      "redesigned": false,
+      "before": {
+        "sha256": "8827008321e0bd579b21ed7fa764f3df2f916cee58e737417bb116f13b143909",
+        "bytes": 1864675,
+        "solid_bbox": [
+          304,
+          14,
+          721,
+          1480
+        ],
+        "solid_width": 417,
+        "solid_length": 1466,
+        "middle_half_median_width": 385.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "8827008321e0bd579b21ed7fa764f3df2f916cee58e737417bb116f13b143909",
+        "bytes": 1864675,
+        "solid_bbox": [
+          304,
+          14,
+          721,
+          1480
+        ],
+        "solid_width": 417,
+        "solid_length": 1466,
+        "middle_half_median_width": 385.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 24,
+      "name": "XL BARRACKS",
+      "file": "output/imagegen/wagon-redesign-20260926/24-xl-barracks.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "01547015524a614939d7bf8ab9e0d89d690842ee59ea9e0237096772e96b3586",
+        "bytes": 1659112,
+        "solid_bbox": [
+          364,
+          9,
+          661,
+          1484
+        ],
+        "solid_width": 297,
+        "solid_length": 1475,
+        "middle_half_median_width": 278,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "f1f9b63e9014b1f1fd241be3181f7f5875ca3b0df39507c941cfac6a8aaa679e",
+        "bytes": 1865295,
+        "solid_bbox": [
+          311,
+          10,
+          713,
+          1494
+        ],
+        "solid_width": 402,
+        "solid_length": 1484,
+        "middle_half_median_width": 359.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    },
+    {
+      "type_id": 25,
+      "name": "BOILER",
+      "file": "output/imagegen/wagon-redesign-20260926/25-boiler.png",
+      "redesigned": true,
+      "before": {
+        "sha256": "b45e0552c78d41c7af41ca636cb2f254cfee128d2b5926f23c834bbd581cf453",
+        "bytes": 1734153,
+        "solid_bbox": [
+          348,
+          8,
+          677,
+          1524
+        ],
+        "solid_width": 329,
+        "solid_length": 1516,
+        "middle_half_median_width": 292.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      },
+      "after": {
+        "sha256": "37843e8f7a339ef7006f8f99b10692a14f22c314856ea2c8d09d58aa238dac6b",
+        "bytes": 1821412,
+        "solid_bbox": [
+          311,
+          12,
+          712,
+          1492
+        ],
+        "solid_width": 401,
+        "solid_length": 1480,
+        "middle_half_median_width": 359.0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "transparent_corners": true
+      }
+    }
+  ]
+}
