@@ -29,4 +29,4 @@ l’acceptation graphique et les exécutables Windows ne sont pas validés.
 
 Sources : [règles ennemies](../evidence/enemy-trains.md),
 [transaction automatique](../evidence/automatic-combat-integration.md).
-Ce lot dépend de la PR#4 et ne justifie aucun pourcentage global de portage.
+Ce lot prolonge la PR#4 fusionnée et ne justifie aucun pourcentage global de portage.

@@ -5,7 +5,8 @@
 - [x] Raccorder apparition, déplacements et rencontres au voyage.
 - [x] Raccorder l’option originale de résolution automatique et ses conséquences.
 - [x] Sauvegarder ennemis, réglages, hasard et rencontre en attente.
-- [ ] Vérifier les reprises, pertes, butin et absence de double résolution ; publier.
+- [x] Vérifier les reprises, pertes, butin et absence de double résolution.
+- [ ] Publier le lot et retirer le worktree enregistré.
 
 Validation du lot : [rencontres et combat](validation/world-loop-20260927.md).
 Le combat tactique manuel reste un chantier distinct. Aucun objectif de 80 %
