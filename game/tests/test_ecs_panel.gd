@@ -32,6 +32,9 @@ func _run() -> void:
 	_check(not app.world_view.discovery_enabled, "fixed towns and track are not hidden by preview fog")
 	for city in app.world_data.cities:
 		_check(app.world_view._city_is_visible(city), "fixed city visible before visit")
+	var saves = preload("res://scripts/session_saves.gd")
+	var saved_path: String = app.save_path_override
+	_check(saves.save(app, saved_path).ok, "save travel before city inspection")
 	app._open_city(24)
 	var position: Vector2i = app.journey.position
 	app._boudoir_session._panel_action(1)
@@ -42,6 +45,10 @@ func _run() -> void:
 	escape.pressed = true
 	app._unhandled_key_input(escape)
 	_check(app._city_panel.visible and app.journey.position == position, "Escape restores same visit without departing")
+	app._boudoir_session._panel_action(6)
+	_check(app._boudoir_session.city_suspended, "second inspection active")
+	_check(saves.restore(app, saved_path).ok and not app._boudoir_session.city_suspended, "successful load clears suspended visit")
+	DirAccess.remove_absolute(saved_path)
 	app.queue_free()
 	await process_frame
 	for failure in failures:

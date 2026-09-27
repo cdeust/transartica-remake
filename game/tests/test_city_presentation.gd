@@ -14,6 +14,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	OS.low_processor_usage_mode = false
 	root.size = Vector2i(1280, 800)
 	root.content_scale_size = root.size
 	var screen := CityScreen.new()
@@ -137,7 +138,8 @@ func _click_point(position: Vector2) -> void:
 func _capture(_screen: Control, name: String) -> void:
 	if "--capture" not in OS.get_cmdline_user_args():
 		return
-	await RenderingServer.frame_post_draw
+	await process_frame
+	RenderingServer.force_draw()
 	root.get_texture().get_image().save_png(ProjectSettings.globalize_path("res://../.cache/" + name + ".png"))
 
 
