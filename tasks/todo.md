@@ -420,3 +420,13 @@ Evidence: tasks/validation/codex-hook-native-20260926.json. PR remains draft, no
 - [ ] Porter achat/vente et leurs refus (place, stock, argent, stockage tender, plafond 31000).
 - [ ] Porter soldats/espions, mammouths, esclaves, atelier des villes industrielles.
 - [ ] Inconnus : écrivain de main+0x1c, message textek 95, déclencheur du message 65.
+
+## Obstacles et demi-tour : décisions du propriétaire, 27 septembre 2026
+
+Preuve : tasks/evidence/obstacles.md. Rails 38–58 corrigés (6b113e0).
+
+- [ ] Porter les règles du bytecode (choix du propriétaire) : crevasse 67/69 (rails ≥ 10, esclaves ≥ 15, case → 63/64), lac −116/114 (rails ≥ 8, esclaves ≥ 15, case → −121/−117), voie détruite (rails ≥ 2, esclaves ≥ 5, case → abs) ; question oui/non, consommation des rails dans l'ordre, durée avec LIVESTOCK et CRANE.
+- [ ] Tuile 65 = atelier de gare, −120 = pont intact, 78 = mine : écran puis demi-tour ; 79 = arrêt « END OF TRACK ».
+- [ ] Demi-tour : le convoi repart sur sa propre trace, locomotive en tête côté retour (adaptation choisie ; même mécanisme que le départ de gare).
+- [ ] Foreuse : seulement la case (32,67) selon TIME 0x1c31.
+- [ ] Inconnu : effet exact d'un refus (YODA 0x3037, frein main+0x614a).
