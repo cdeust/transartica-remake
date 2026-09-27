@@ -46,6 +46,7 @@ exhaustive de l'original restent à vérifier ; aucune campagne complète annonc
 - [ ] Corriger les limites graphiques restantes : longueurs XL peu différenciées, extrémités et attelages à vérifier ; voir [revue du catalogue](wagon-redesign.md).
 - [ ] Porter textes TOWN, gare-atelier, effets de personnel/animaux et drapeaux de commerce restants. La note de commerce disant que les wagons achetés ne sont pas dessinés décrit l'état antérieur à `8242d1c`.
 - [ ] Vérifier les effets journaliers et horaires encore non raccordés (mines, apparition ennemie, autres événements).
+- [x] Mines portées en règles pures (création tous les 3 jours, épuisement, prospection) : `mines.gd`, `test_mines.gd`, [preuve](evidence/mines.md). Non raccordées : écritures de carte à accepter par `rail_network.gd` (aiguillages 18–33, cases 78/79), dialogue de prospection. `mine.alis` n'est qu'une scène de palette : aucune règle d'exploitation trouvée.
 
 ## Obstacles et travaux
 
@@ -67,7 +68,8 @@ Preuve : [décodage et portage](evidence/combat.md).
 - [x] Composition initiale portée dans `combat_setup.gd` ; fin/butin/résolution automatique dans `combat_outcome.gd` (`584767f`, intégré par `05e0722`).
 - [x] Tests dédiés écrits dans `game/tests/test_combat.gd` ; 13 contrôles annoncés par le commit de portage. Ils n'ont pas été réexécutés lors de cette mise à jour documentaire.
 - [ ] Porter la simulation par pas : déplacements, armes, dynamite, IA et géométrie des emplacements. `combat_state.gd` n'est pas fourni par le portage actuel.
-- [ ] Raccorder le déclenchement, les trains ennemis et le résultat à la session jouable.
+- [x] Trains ennemis portés en règles pures (apparition, déplacement, aiguillages, obstacles, rencontre, retrait) : `enemy_trains.gd`, `test_enemy_trains.gd`, [preuve](evidence/enemy-trains.md). Hors périmètre : rectangle mine TIME 0x2221, bits 64 et 1.
+- [ ] Raccorder le déclenchement, les trains ennemis et le résultat à la session jouable. Instructions d'intégration : [enemy-trains.md §6](evidence/enemy-trains.md), [mines.md §8](evidence/mines.md).
 - [ ] Résoudre la position relative du train joueur, l'option de combat désactivé et la cadence réelle.
 - [ ] Intégrer les nouveaux dessins à une scène de combat, calibrer son échelle et vérifier les actions dans le jeu.
 
