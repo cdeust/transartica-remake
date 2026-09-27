@@ -441,7 +441,7 @@ Répartition du propriétaire : Codex réalise les visuels (dont pixel façon No
 - [x] Boudoir, quartier général, panneau et équipage : `tasks/evidence/captain-crew.md`. Pas de journal ni d'écran d'équipage dans l'original.
 - [x] Villes et cartes d'origine : `tasks/evidence/original-visuals.md`, images privées dans `reference-private/art-direction/decoded-20260927/` (pour Codex).
 - [ ] Logique du combat (sans rendu final) : unités, armes, dynamite, IA, fin, butin, résolution automatique.
-- [ ] Déclenchement : trains ennemis `main[0x5eb4]`, apparition yoda 0x2af7 ; déplacement ennemi TIME 0x11a6–0x1961 à décoder.
+- [x] Trains ennemis (spawn, déplacement, déclenchement de rencontre) décodés et portés en règles pures : `tasks/evidence/enemy-trains.md`, `game/scripts/enemy_trains.gd`, `game/tests/test_enemy_trains.gd`. Reste hors périmètre : rectangle mine (TIME 0x2221), journal de repérage (bit 64), marqueur de départ (bit 1), écrivain de la difficulté/combat désactivé (aucun trouvé hors init à 0). Intégration dans `main.gd` non faite ici (propriétaire différent) : voir §6 du fichier d'evidence pour l'ordre d'appel exact.
 - [ ] Panneau : icônes A–D (locomotive, boudoir, QG, lance-missiles), barre des wagons avec fiches, accélération de l'horloge, inverseur.
 - [ ] Boudoir : bénitier (file de messages `main[0x6152]`), inventaire de Kolotov, revolver (fin), livre = sauvegarde.
 - [ ] Quartier général : espions et dynamite, draisines et missiles, carte générale.
