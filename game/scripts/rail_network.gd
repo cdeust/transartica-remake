@@ -41,6 +41,10 @@ const OBSTACLE_REASON := "obstacle" # crevasse, lake or destroyed track: YODA 0x
 # Not in the TIME 0x243a switch, so TIME lets the train pass; YODA writes them as the
 # repaired lake bridges (tasks/evidence/obstacles.md). Other codes <= -105 stay a frontier.
 const INTACT_LAKE_BRIDGES := [-121, -117]
+const TIMED_BRIDGE := Vector2i(110, 33) # CARTE.FIC -120; YODA toggles it by the hour.
+const TIMED_BRIDGE_OPEN := -121
+const TIMED_BRIDGE_CLOSED := -120
+const REVERSAL_EVENTS := [-120] # TIME 0x24d0 -> YODA 0x104: text 52, then reversal 0x975.
 const SPECIAL_TILE_LIMIT := -105 # source: TIME 0x2401 blocks only -105 < tile < 0.
 # TIME 0x26fb..0x27b0: fixed station results checked before the city search.
 # Negative results -2..-4 also write one map cell (TIME 0x270f, 0x273a, 0x2765).
@@ -186,6 +190,14 @@ func station_lookup(cell: Vector2i) -> int:
 	return -1
 
 
+# YODA 0x33c7/0x33eb: the calendar opens (-121) and closes (-120) the (110,33) bridge.
+func set_timed_bridge(code: int) -> bool:
+	if not code in [TIMED_BRIDGE_OPEN, TIMED_BRIDGE_CLOSED]:
+		return false
+	_tiles[TIMED_BRIDGE.x * HEIGHT + TIMED_BRIDGE.y] = code
+	return true
+
+
 # YODA 0x2390 success: the blocked cell becomes passable track.
 func repair(cell: Vector2i) -> bool:
 	if not in_bounds(cell) or TrackWorks.kind_for(tile(cell)).is_empty():
@@ -230,6 +242,8 @@ func restore(data: Variant) -> bool:
 
 # A saved map may differ from the initial map by a toggled switch or a repaired obstacle.
 func _is_saved_change(original: int, value: int) -> bool:
+	if original == TIMED_BRIDGE_CLOSED and value == TIMED_BRIDGE_OPEN:
+		return true
 	if not TrackWorks.kind_for(original).is_empty():
 		return value == TrackWorks.repaired_code(original)
 	return is_switch_code(original) and absi(value - original) == 1 and is_switch_code(value) \

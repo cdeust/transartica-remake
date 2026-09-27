@@ -61,6 +61,13 @@ func ask(network) -> bool:
 	return true
 
 
+# A TEXTEK message closed by OK, for event handlers without a question.
+func inform(id: int) -> void:
+	kind = ""
+	_ok_result = false
+	_show(_message(id), false)
+
+
 func _accept() -> void:
 	var missing := TrackWorks.shortage(kind, wagons)
 	if not missing.is_empty():

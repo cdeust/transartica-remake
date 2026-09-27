@@ -12,6 +12,7 @@ const RailNetworkScript = preload("res://scripts/rail_network.gd")
 const CityScreenScript = preload("res://scripts/city_screen.gd")
 const CityTradeScript = preload("res://scripts/city_trade.gd")
 const WorksDialogScript = preload("res://scripts/works_dialog.gd")
+const GameCalendarScript = preload("res://scripts/game_calendar.gd")
 const TrainWagonsScript = preload("res://scripts/train_wagons.gd")
 # source: tasks/evidence/engine-room-integration.md; provisional real-time calibration.
 const SECONDS_PER_CYCLE := 1.0
@@ -22,6 +23,7 @@ var wagons = TrainWagonsScript.new()
 var trade = CityTradeScript.new()
 var _trade_rng := RandomNumberGenerator.new()
 var works_dialog
+var calendar = GameCalendarScript.new()
 var travel_controls
 var clock
 var engine
@@ -204,6 +206,22 @@ func _build_journal(body: VBoxContainer) -> void:
 
 # Arrival scene for TIME message 76 (tasks/evidence/station-arrival.md): the
 # glieu menu and its transactions (tasks/evidence/city-scripts.md), in city_screen.gd.
+# YODA 0x104 (-120): brake, TEXTEK 52, then the 0x18e3 reversal with speed 0.
+func _reverse_at_event() -> void:
+	engine.brake = true
+	engine.speed = 0
+	works_dialog.inform(52)
+	journey.depart_from_station()
+	world_view.update_train()
+
+
+func _advance_calendar() -> void:
+	for event in calendar.advance_cycle():
+		if event in ["bridge_open", "bridge_closed"]:
+			network.set_timed_bridge(calendar.bridge_code())
+			world_view.queue_redraw()
+
+
 func _build_works_dialog() -> void:
 	works_dialog = WorksDialogScript.new()
 	works_dialog.journey = journey
@@ -219,6 +237,9 @@ func _build_works_dialog() -> void:
 # YODA 0x2390: the train stays braked in front of the cell; a repair lets TIME retry the entry.
 func _on_works_finished(repaired: bool) -> void:
 	engine.train_mass = wagons.mass()
+	if works_dialog.kind.is_empty():
+		status_label.text = "Turned back · heading %s." % journey.heading_name()
+		return
 	var ahead: Vector2i = journey.next_cell()
 	status_label.text = ("Track repaired at (%d, %d)." if repaired else "Still blocked at (%d, %d).") % [ahead.x, ahead.y]
 	world_view.queue_redraw()
@@ -341,6 +362,7 @@ func _restart_engine() -> void:
 	_filter_cities("")
 	world_view.fit_discovered()
 	clock.set_elapsed(0)
+	calendar = GameCalendarScript.new()
 	_modal.hide()
 	instruments.hide()
 	room_controls.announce("New engine session · coal stocks restored")
@@ -367,7 +389,7 @@ func save_view() -> bool:
 	# No "consist" key: the drawn composition is derived from "wagons" at
 	# restore time (train_consist.gd::derive_from_wagons), never saved as an
 	# independent list that could drift from the wagons table.
-	var state := {"version": 7, "wagons": wagons.snapshot(), "trade": trade.snapshot(), "travel_camera": {"x": world_view.camera_world.x, "y": world_view.camera_world.y, "follow": world_view.following_train}, "journey": journey.snapshot(), "network": network.snapshot(), "session": session.snapshot(), "discovery": world_view.discovery.snapshot(), "zoom": world_view.zoom, "offset_x": world_view.offset.x, "offset_y": world_view.offset.y, "selected_city": world_view.selected_city, "elapsed_seconds": clock.elapsed_seconds}
+	var state := {"version": 7, "wagons": wagons.snapshot(), "trade": trade.snapshot(), "travel_camera": {"x": world_view.camera_world.x, "y": world_view.camera_world.y, "follow": world_view.following_train}, "journey": journey.snapshot(), "network": network.snapshot(), "session": session.snapshot(), "discovery": world_view.discovery.snapshot(), "zoom": world_view.zoom, "offset_x": world_view.offset.x, "offset_y": world_view.offset.y, "selected_city": world_view.selected_city, "elapsed_seconds": clock.elapsed_seconds, "calendar": calendar.snapshot()}
 	file.store_string(JSON.stringify(state))
 	return true
 
@@ -463,6 +485,10 @@ func _restore_chart(parsed: Dictionary) -> void:
 	var city_index := int(parsed.get("selected_city", -1))
 	world_view.selected_city = city_index if city_index >= 0 and city_index < world_data.cities.size() and _city_discovered(city_index) else -1
 	clock.set_elapsed(float(parsed.get("elapsed_seconds", 0.0)))
+	# Saves before the calendar port start at day 1, 00:00 (TABLE 0x0130).
+	calendar = GameCalendarScript.new()
+	if parsed.has("calendar") and not calendar.restore(parsed.calendar):
+		calendar = GameCalendarScript.new()
 	_map_opened = parsed.has("travel_camera")
 	if _map_opened and parsed.travel_camera is Dictionary:
 		world_view.camera_world = Vector2(float(parsed.travel_camera.get("x", 12.5)), float(parsed.travel_camera.get("y", 62.5)))
@@ -545,17 +571,22 @@ func _advance_journey() -> void:
 	if journey.at_obstacle() and not engine.brake and not works_dialog.visible:
 		journey.resume_after_works()
 	var was_blocked: bool = journey.blocked
+	_advance_calendar()
 	journey.advance(engine.speed)
 	world_view.visit_cell(journey.position)
 	world_view.update_train()
 	_filter_cities(search_box.text)
 	_update_status()
 	if _map_panel.visible:
-		_modal_title.text = "   TRANSARCTICA · (%d, %d) %s · %d km/h" % [journey.position.x, journey.position.y, journey.heading_name(), engine.speed]
+		_modal_title.text = "   TRANSARCTICA · %s · (%d, %d) %s · %d km/h" % [calendar.display_text(), journey.position.x, journey.position.y, journey.heading_name(), engine.speed]
 	if journey.blocked:
 		var station := journey.station_result()
 		if station >= 0:
 			_open_city(station)
+			return
+		if journey.at_reversal_event():
+			if not was_blocked:
+				_reverse_at_event()
 			return
 		if journey.at_obstacle():
 			# YODA 0x2318: the question brakes the train; asked once per refused entry.

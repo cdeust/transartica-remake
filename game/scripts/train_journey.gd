@@ -73,6 +73,13 @@ func resume_after_works() -> bool:
 	return true
 
 
+# Event cells whose YODA handler ends with the 0x18e3 reversal (obstacles.md):
+# the closed bridge -120 (text 52). The workshop 65 and mines 78 follow once ported.
+func at_reversal_event() -> bool:
+	return blocked and stop_reason == "event site" and network != null \
+			and network.tile(next_cell()) in RailNetworkScript.REVERSAL_EVENTS
+
+
 func at_station() -> bool:
 	return blocked and stop_reason == "station"
 
@@ -88,7 +95,7 @@ func station_result() -> int:
 # next moving step lands on phase 0 with remainder progress/20, exactly like
 # phase 0 / remainder 0 here. Engine speed is reset by the caller.
 func depart_from_station() -> bool:
-	if not at_station():
+	if not at_station() and not at_reversal_event():
 		return false
 	var station := next_cell()
 	var toward_station: int = heading
@@ -120,7 +127,7 @@ func history_starts_in_station() -> bool:
 	if center != center.floor():
 		return false
 	var code: int = network.tile(Vector2i(center))
-	return code >= 34 and code <= 37
+	return (code >= 34 and code <= 37) or code in RailNetworkScript.REVERSAL_EVENTS
 
 
 func heading_name() -> String:

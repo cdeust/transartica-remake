@@ -7,6 +7,7 @@ const RailNetwork = preload("res://scripts/rail_network.gd")
 const WorldData = preload("res://scripts/world_data.gd")
 const TrackWorks = preload("res://scripts/track_works.gd")
 const TrainWagons = preload("res://scripts/train_wagons.gd")
+const GameCalendar = preload("res://scripts/game_calendar.gd")
 
 const CREVASSE := Vector2i(83, 67) # CARTE.FIC 67 on the first eastbound route.
 
@@ -36,6 +37,7 @@ func _run() -> void:
 	_test_switch_changes_route(failures)
 	_test_destroyed_track_blocks(failures)
 	_test_track_works(failures)
+	_test_calendar_and_timed_bridge(failures)
 	_test_snapshot_and_validation(failures)
 	_test_network_snapshot(failures)
 	_test_station_lookup(world, failures)
@@ -231,6 +233,37 @@ func _test_track_works(failures: Array[String]) -> void:
 	_check(_synthetic(bridge_cells).entry_boundary(Vector2i(15, 62)) == "", "intact lake bridge -121 is passable", failures)
 	bridge_cells[Vector2i(15, 62)] = -119
 	_check(_synthetic(bridge_cells).entry_boundary(Vector2i(15, 62)) == "special site", "other codes <= -105 stay a frontier", failures)
+
+
+func _test_calendar_and_timed_bridge(failures: Array[String]) -> void:
+	var calendar = GameCalendar.new()
+	_check(calendar.display_text() == "DAY 1 00:00" and calendar.bridge_code() == -120, "TABLE 0x0130: day 1, 00:00, bridge closed", failures)
+	var events: Array[String] = []
+	for cycle in 240:
+		events.append_array(calendar.advance_cycle())
+	_check(calendar.hour == 12 and calendar.minute == 0 and events == ["bridge_open"], "240 cycles of 3 minutes reach 12:00 and open the bridge", failures)
+	for cycle in 40:
+		events.append_array(calendar.advance_cycle())
+	_check(calendar.hour == 14 and events[-1] == "bridge_closed" and calendar.bridge_code() == -120, "the bridge closes at 14:00", failures)
+	calendar.factor = GameCalendar.FAST_FACTOR
+	for cycle in 200:
+		events.append_array(calendar.advance_cycle())
+	_check(calendar.day == 2 and calendar.hour == 0 and "new_day" in events, "fast clock keeps 3 minutes per cycle and rolls the day", failures)
+	var restored = GameCalendar.new()
+	_check(restored.restore(calendar.snapshot()) and restored.display_text() == calendar.display_text(), "calendar survives save", failures)
+	_check(not restored.restore({"minute": 60, "hour": 0, "day": 1, "factor": 1}), "invalid minute refused", failures)
+	var cells := {Vector2i(10, 62): 2, Vector2i(11, 62): 2, Vector2i(12, 62): 2, Vector2i(13, 62): -120}
+	var network = _synthetic(cells)
+	var journey := _journey(network)
+	journey.position = Vector2i(10, 62)
+	_drive(journey, 500)
+	_check(journey.at_reversal_event() and journey.next_cell() == Vector2i(13, 62), "closed bridge -120 stops the train", failures)
+	_check(journey.depart_from_station() and journey.heading == 4 and not journey.blocked, "YODA 0x18e3 reversal at the closed bridge", failures)
+	var timed := {Vector2i(109, 33): 2, Vector2i(110, 33): -120, Vector2i(111, 33): 2}
+	var bridge_network = _synthetic(timed)
+	_check(bridge_network.set_timed_bridge(-121) and bridge_network.entry_boundary(Vector2i(110, 33)) == "", "open bridge -121 is passable", failures)
+	var reloaded = _synthetic(timed)
+	_check(reloaded.restore(bridge_network.snapshot()) and reloaded.tile(Vector2i(110, 33)) == -121, "open timed bridge survives save", failures)
 
 
 func _test_snapshot_and_validation(failures: Array[String]) -> void:
