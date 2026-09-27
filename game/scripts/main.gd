@@ -40,7 +40,9 @@ var city_indices: Array[int] = []
 var save_path_override := ""
 var _modal: PanelContainer
 var _map_panel: VBoxContainer
-var _journal: RichTextLabel
+var stoup = preload("res://scripts/stoup_messages.gd").new()
+var boudoir
+var _boudoir_session = preload("res://scripts/boudoir_session.gd").new()
 var _modal_title: Label
 var _map_opened := false
 var _city_panel
@@ -81,10 +83,11 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if session == null or room_controls == null:
 		return
-	var blocked: bool = (_modal.visible and _journal.visible) or room_controls.show_help or _city_panel.visible \
+	var blocked: bool = _boudoir_session.blocks_simulation() or room_controls.show_help or _city_panel.visible \
 			or (works_dialog != null and works_dialog.visible)
 	if not blocked:
-		session.advance(delta)
+		session.advance(delta * calendar.factor)
+	_boudoir_session.present_pending_event()
 	clock.paused = session.paused or blocked or engine.event_pending
 	clock.advance(delta)
 	room_art.paused = clock.paused
@@ -122,6 +125,8 @@ func _build_interface() -> void:
 	_build_modal()
 	_build_city_screen()
 	_build_works_dialog()
+	_boudoir_session.attach(self)
+	boudoir = _boudoir_session.view
 
 
 func _build_modal() -> void:
@@ -137,21 +142,10 @@ func _build_modal() -> void:
 	add_child(_modal)
 	var body := VBoxContainer.new()
 	_modal.add_child(body)
-	var header := HBoxContainer.new()
-	body.add_child(header)
 	_modal_title = Label.new()
-	_modal_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(_modal_title)
-	var overview := Button.new()
-	overview.text = "Known area"
-	overview.pressed.connect(func(): world_view.fit_discovered())
-	header.add_child(overview)
-	var close := Button.new()
-	close.text = "Return to engine room · Esc"
-	close.pressed.connect(func(): _modal.hide())
-	header.add_child(close)
+	body.add_child(_modal_title)
+	_modal_title.hide()
 	_build_map(body)
-	_build_journal(body)
 	_modal.hide()
 
 
@@ -175,6 +169,7 @@ func _build_map(body: VBoxContainer) -> void:
 	travel_controls.requested.connect(_open_panel)
 	travel_controls.follow_requested.connect(world_view.follow_train)
 	_map_panel.add_child(travel_controls)
+	travel_controls.hide()
 	_build_hidden_city_index()
 
 
@@ -192,16 +187,6 @@ func _build_hidden_city_index() -> void:
 	index_container.add_child(status_label)
 	index_container.hide()
 	_filter_cities("")
-
-
-func _build_journal(body: VBoxContainer) -> void:
-	_journal = RichTextLabel.new()
-	_journal.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_journal.bbcode_enabled = true
-	_journal.add_theme_font_size_override("normal_font_size", 22)
-	_journal.text = "[b]IN SEARCH OF THE SUN[/b]\n\nThe world lies beneath ice and a permanent cloud cover. The Viking Union controls the great trains. Your stolen Transarctica carries a small group seeking evidence that the Sun can return.\n\n[b]Keep the locomotive alive[/b]\nLignite feeds the boiler and pays for supplies. Anthracite provides more heat. Watch the reserve, manage the stokers and use the brake without forgetting the fire.\n\nThis engine-room preview preserves the decoded locomotive calculations. The first eastbound trial route is connected. Junction choices, campaign, trade and crew management are not connected yet. The real-time pace is provisional."
-	body.add_child(_journal)
-	_journal.hide()
 
 
 # Arrival scene for TIME message 76 (tasks/evidence/station-arrival.md): the
@@ -292,22 +277,32 @@ func depart_from_city() -> void:
 
 
 func _open_panel(panel: String) -> void:
+	if _boudoir_session.open_panel(panel):
+		_modal.hide()
+		instruments.hide()
+		room_controls.show_instruments = false
+		room_controls.show_help = false
+		_boudoir_session.refresh()
+		return
+	_boudoir_session.leave()
 	if panel in ["instruments", "room"]:
+		_boudoir_session.last_room = "room"
 		instruments.visible = panel == "instruments"
 		room_controls.show_instruments = instruments.visible
 		_modal.hide()
+		_boudoir_session.refresh()
 		return
 	instruments.hide()
-	_modal_title.text = "   TRANSARCTICA · WORLD" if panel == "map" else "   CAPTAIN'S JOURNAL"
-	_map_panel.visible = panel == "map"
-	_journal.visible = panel == "journal"
+	room_controls.show_instruments = false
+	room_controls.show_help = false
+	_map_panel.show()
 	_modal.show()
+	_boudoir_session.refresh()
 	if panel == "map" and not _map_opened:
 		await get_tree().process_frame
-		world_view.zoom = 1.0
 		world_view.following_train = false
 		world_view.update_train()
-		world_view.center_on_train()
+		world_view.fit_complete_consist()
 		_map_opened = true
 	_update_status()
 
@@ -315,14 +310,18 @@ func _open_panel(panel: String) -> void:
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey or not event.pressed or event.echo:
 		return
+	# LineEdit handles Unicode in unhandled_key_input too (Godot 4.5 line_edit.cpp).
+	if get_viewport().gui_get_focus_owner() is LineEdit and event.physical_keycode not in [KEY_ESCAPE, KEY_F1]:
+		return
+	if _boudoir_session.handle_key(event):
+		get_viewport().set_input_as_handled()
+		return
 	if event.physical_keycode == KEY_ESCAPE:
 		_modal.hide()
 		room_controls.show_help = false
 		room_controls.show_instruments = false
 		instruments.hide()
 		get_viewport().set_input_as_handled()
-		return
-	if get_viewport().gui_get_focus_owner() is LineEdit:
 		return
 	if _city_panel.visible:
 		# Layout keycode: the - and + keys differ between QWERTY and AZERTY.
@@ -340,13 +339,14 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		KEY_LEFT: engine.set_regulator(engine.regulator - (1 if event.shift_pressed else 15))
 		KEY_RIGHT: engine.set_regulator(engine.regulator + (1 if event.shift_pressed else 15))
 		KEY_F5: _save_view()
-		KEY_F6: _restore_view()
+		KEY_F6: _open_panel("options")
 		KEY_R: _restart_engine()
 		_: return
 	get_viewport().set_input_as_handled()
 
 
 func _restart_engine() -> void:
+	_boudoir_session.reset()
 	session.reset()
 	journey.reset()
 	network.reset()
@@ -381,17 +381,7 @@ func focus_city(index: int) -> void:
 
 
 func save_view() -> bool:
-	var path := _save_path()
-	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
-	var file := FileAccess.open(path, FileAccess.WRITE)
-	if file == null:
-		return false
-	# No "consist" key: the drawn composition is derived from "wagons" at
-	# restore time (train_consist.gd::derive_from_wagons), never saved as an
-	# independent list that could drift from the wagons table.
-	var state := {"version": 7, "wagons": wagons.snapshot(), "trade": trade.snapshot(), "travel_camera": {"x": world_view.camera_world.x, "y": world_view.camera_world.y, "follow": world_view.following_train}, "journey": journey.snapshot(), "network": network.snapshot(), "session": session.snapshot(), "discovery": world_view.discovery.snapshot(), "zoom": world_view.zoom, "offset_x": world_view.offset.x, "offset_y": world_view.offset.y, "selected_city": world_view.selected_city, "elapsed_seconds": clock.elapsed_seconds, "calendar": calendar.snapshot()}
-	file.store_string(JSON.stringify(state))
-	return true
+	return preload("res://scripts/session_saves.gd").save(self, _save_path()).ok
 
 
 func _save_view() -> void:
@@ -399,107 +389,9 @@ func _save_view() -> void:
 
 
 func _restore_view() -> void:
-	var path := _save_path()
-	if not FileAccess.file_exists(path):
-		return
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
-	if not parsed is Dictionary:
-		room_controls.announce("Save file is invalid; current session kept")
-		return
-	var restored_discovery = preload("res://scripts/map_discovery.gd").new()
-	if parsed.has("discovery") and not restored_discovery.restore(parsed.discovery):
-		room_controls.announce("Discovery save is invalid; current session kept")
-		return
-	var restored_network = RailNetworkScript.new()
-	restored_network.load_bytes(world_data.map_bytes)
-	if parsed.has("network") and not restored_network.restore(parsed.network):
-		room_controls.announce("Switch save is invalid; current session kept")
-		return
-	var restored_journey = preload("res://scripts/train_journey.gd").new()
-	restored_journey.network = restored_network
-	if parsed.has("journey") and not restored_journey.restore(parsed.journey):
-		room_controls.announce("Journey save is invalid; current session kept")
-		return
-	# "consist" (v7 saves before this composition-derivation change) is
-	# accepted and ignored: composition is derived from "wagons" below, never
-	# read back as its own list, so an old save cannot diverge from its wagons.
-	var restored_wagons = TrainWagonsScript.new()
-	if parsed.has("wagons") and not restored_wagons.restore(parsed.wagons):
-		room_controls.announce("Cargo save is invalid; current session kept")
-		return
-	var restored_consist = preload("res://scripts/train_consist.gd").new()
-	restored_consist.derive_from_wagons(restored_wagons)
-	# Root-cause note (found while recalibrating LENGTHS for the overhead art,
-	# tasks/todo.md "Decision : train en vue de dessus"): this used to check
-	# against the WHOLE consist's length_world(). The overhead LENGTHS are
-	# less differentiated than the old oblique ones (all near 1.0 cell
-	# instead of 0.75-1.0), so their sum grew past the ~5.0-cell decoded
-	# track history that genuinely exists behind START_POSITION before the
-	# train has ever moved (train_path.gd::seed stops where the decoded rails
-	# stop or turn ambiguous -- not a guessed bound). Rejecting the whole
-	# restore on that account was stricter than what the renderer actually
-	# needs: poses() already renders a partial consist gracefully when later
-	# wagons lack history ("insufficient history omits poses without
-	# off-track extrapolation", game/tests/test_travel_world.gd), and a
-	# newly-departed train is explicitly allowed to be missing wagon history
-	# (history_starts_in_station(), train_journey.gd). The minimum a restored
-	# journey must place is the locomotive itself.
-	if not restored_journey.sample_behind(restored_consist.LENGTHS.locomotive).ok and not restored_journey.history_starts_in_station():
-		room_controls.announce("This save cannot recover wagon positions. Current journey kept; saved file unchanged.")
-		return
-	var restored_trade = CityTradeScript.new()
-	if parsed.has("trade") and not restored_trade.restore(parsed.trade):
-		room_controls.announce("City stock save is invalid; current session kept")
-		return
-	if parsed.has("session") and not session.restore(parsed.session):
-		room_controls.announce("Save state is invalid; current session kept")
-		return
-	if parsed.has("network"):
-		network.restore(parsed.network)
-	else:
-		network.reset()
-	journey.restore(restored_journey.snapshot())
-	# Saves before version 7 carry no cargo: they resume with the TABLE train and fresh stocks.
-	wagons.restore(restored_wagons.snapshot())
-	if parsed.has("trade"):
-		trade.restore(restored_trade.snapshot())
-	else:
-		trade.reset(_trade_rng)
-	engine.train_mass = wagons.mass()
-	world_view.consist.derive_from_wagons(wagons)
-	world_view._visual_initialized = false
-	_restore_chart(parsed)
-	world_view.visit_cell(journey.position)
-	room_controls.announce("Journey and engine restored" if parsed.has("journey") else "Previous engine restored · first journey starts at departure")
-	_city_panel.hide()
-	if journey.station_result() >= 0:
-		_open_city(journey.station_result())
-
-
-func _restore_chart(parsed: Dictionary) -> void:
-	if parsed.has("discovery"):
-		world_view.discovery.restore(parsed.discovery)
-	_filter_cities(search_box.text)
-	world_view.zoom = clampf(float(parsed.get("zoom", world_view.zoom)), WorldViewScript.TRAVEL_MIN_ZOOM, WorldViewScript.TRAVEL_MAX_ZOOM)
-	world_view.offset = Vector2(float(parsed.get("offset_x", world_view.offset.x)), float(parsed.get("offset_y", world_view.offset.y)))
-	var city_index := int(parsed.get("selected_city", -1))
-	world_view.selected_city = city_index if city_index >= 0 and city_index < world_data.cities.size() and _city_discovered(city_index) else -1
-	clock.set_elapsed(float(parsed.get("elapsed_seconds", 0.0)))
-	# Saves before the calendar port start at day 1, 00:00 (TABLE 0x0130).
-	calendar = GameCalendarScript.new()
-	if parsed.has("calendar") and not calendar.restore(parsed.calendar):
-		calendar = GameCalendarScript.new()
-	_map_opened = parsed.has("travel_camera")
-	if _map_opened and parsed.travel_camera is Dictionary:
-		world_view.camera_world = Vector2(float(parsed.travel_camera.get("x", 12.5)), float(parsed.travel_camera.get("y", 62.5)))
-		world_view.following_train = bool(parsed.travel_camera.get("follow", false))
-	world_view._refresh_discovery_mask()
-	if not parsed.has("discovery"):
-		world_view.fit_discovered()
-	world_view.queue_redraw()
-	_update_status()
-	city_list.deselect_all()
-	_select_visible_city()
+	var result: Dictionary = preload("res://scripts/session_saves.gd").restore(self, _save_path())
+	if not result.notice.is_empty():
+		room_controls.announce(result.notice)
 
 
 func _filter_cities(query: String) -> void:
@@ -556,12 +448,7 @@ func _city_discovered(index: int) -> bool:
 func _save_path() -> String:
 	if not save_path_override.is_empty():
 		return save_path_override
-	if OS.has_feature("template"):
-		var executable_dir := OS.get_executable_path().get_base_dir()
-		if OS.has_feature("macos"):
-			executable_dir = executable_dir.get_base_dir().get_base_dir().get_base_dir()
-		return executable_dir.path_join("save/view.json")
-	return ProjectSettings.globalize_path("res://save/view.json")
+	return preload("res://scripts/session_saves.gd").default_path()
 
 
 func _advance_journey() -> void:

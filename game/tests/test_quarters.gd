@@ -200,7 +200,15 @@ func _test_boudoir_actions(failures: Array[String]) -> void:
 		failures.append("boudoir: book dispatch wrong: %s" % [book])
 
 	# Name entry: lowercase folds to uppercase, backspace works, length is capped at 8,
-	# non-alnum keys are ignored, and 187 is recognised as confirm (not appended).
+	# non-alnum keys are ignored; Return confirms and F1 cancels.
+	if BoudoirActions.append_char("", 49) != "":
+		failures.append("boudoir: first character must be a letter")
+	if BoudoirActions.append_char("A", 49) != "A1":
+		failures.append("boudoir: digit allowed after first letter")
+	if not BoudoirActions.is_confirm(13) or BoudoirActions.is_confirm(187):
+		failures.append("boudoir: Return confirms, F1 must not confirm")
+	if not BoudoirActions.is_cancel(187):
+		failures.append("boudoir: F1 cancels")
 	var name := ""
 	for key in [104, 101, 108, 108, 111, 33, 33, 33]: # "hello" then 3 stray keys (33 = '!')
 		name = BoudoirActions.append_char(name, key)

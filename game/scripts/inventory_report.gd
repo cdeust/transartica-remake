@@ -104,11 +104,14 @@ const TYPE_ORDER := [1, 2, 3, 21, 8, 9, 10, 11, 12, 13, 4, 16, 20, 22, 23, 24, 5
 # before commerce.json is loaded).
 static func type_lines(wagons, trade) -> Array:
 	var counts := {}
+	var quantities := {}
 	for wagon in wagons.wagons:
 		if wagon[Wagons.STATE] == DESTROYED_STATE:
 			continue
 		var wagon_type: int = wagon[Wagons.TYPE]
 		counts[wagon_type] = counts.get(wagon_type, 0) + 1
+		# textek 0x33fc-0x3477: sum contents of intact wagons of this type.
+		quantities[wagon_type] = quantities.get(wagon_type, 0) + wagon[Wagons.QUANTITY]
 	var lines: Array = []
 	for wagon_type in TYPE_ORDER:
 		if not counts.has(wagon_type):
@@ -120,6 +123,7 @@ static func type_lines(wagons, trade) -> Array:
 			"type": wagon_type,
 			"name": name,
 			"count": counts[wagon_type],
+			"quantity": quantities[wagon_type],
 			"contents": CONTENTS_SUFFIX.get(wagon_type, ""),
 		})
 	return lines

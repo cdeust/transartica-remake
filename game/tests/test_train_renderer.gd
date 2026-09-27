@@ -8,9 +8,10 @@ const Consist = preload("res://scripts/train_consist.gd")
 
 class TestProjection:
 	extends RefCounted
-	# Same authored projection as travel_world.gd.
-	const WORLD_EAST := Vector2(180.0, 100.0)
-	const WORLD_SOUTH := Vector2(-180.0, 100.0)
+	# Same original axes and preserved pixel scale as travel_world.gd.
+	const World = preload("res://scripts/travel_world.gd")
+	const WORLD_EAST = World.WORLD_EAST
+	const WORLD_SOUTH = World.WORLD_SOUTH
 
 	func _project(point: Vector2) -> Vector2:
 		return WORLD_EAST * point.x + WORLD_SOUTH * point.y
@@ -30,18 +31,18 @@ func _initialize() -> void:
 	var renderer = Renderer.new()
 	var view = TestProjection.new()
 	var journey = LimitedHistory.new()
-	# Reviewer reproduction: 0.6 cells cannot hold the one-cell locomotive.
+	# Reviewer reproduction: 0.6 cells cannot hold the rescaled 0.75-cell locomotive.
 	journey.available = 0.6
 	var rear: Dictionary = renderer._bisected_rear(view, journey, 0.0, Vector2.ZERO, "locomotive")
 	_check(not rear.ok, "short history rejects a full-size vehicle", failures)
 	var consist = Consist.new()
 	_check(renderer.poses(view, journey, consist, 0.0).is_empty(), "no partial vehicle pose is emitted", failures)
 	# Exactly one authored locomotive length must remain sufficient.
-	journey.available = Consist.LENGTHS.locomotive
+	journey.available = 0.75 # source: complete-train-scale.md authored calibration.
 	rear = renderer._bisected_rear(view, journey, 0.0, Vector2.ZERO, "locomotive")
 	_check(rear.ok, "exact vehicle-length history is accepted", failures)
 	if rear.ok:
-		_check(is_equal_approx(view._project(rear.position).length(), view.WORLD_EAST.length()), "accepted chord matches the rigid sprite", failures)
+		_check(is_equal_approx(view._project(rear.position).length(), view.WORLD_EAST.length() * 0.75), "accepted chord matches the rigid sprite", failures)
 		_check(journey.sample_behind(rear.distance).position == rear.position, "reported distance identifies the returned sample", failures)
 	# A complete locomotive plus the same incomplete tail must draw only one.
 	journey.available += 0.6

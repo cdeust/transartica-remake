@@ -59,11 +59,13 @@ static func revolver_cancel() -> Dictionary:
 
 # room.alis 0x55e-0x5e0+: textek 38 prompt, then per-key filtering. Verified: a
 # lowercase letter is folded to uppercase (-32) before the charset check; accepted
-# keys are A-Z, 0-9, backspace (8, deletes the last char) and 187 (confirm/return).
+# keys are A-Z, then A-Z/0-9 after the initial letter; backspace deletes.
+# room 0x0632 cancels on 187; 0x0713 confirms a nonempty name on Return (13).
 const NAME_PROMPT := 38 # "ENTER THE NAME OF YOUR BACKUP / THEN PRESS RETURN : / TO CANCEL TYPE F1"
 const NAME_MAX_LEN := 8
 const BACKSPACE_KEY := 8
-const CONFIRM_KEY := 187
+const CONFIRM_KEY := 13
+const CANCEL_KEY := 187 # F1; textek38 and room0x0632–0x0644.
 
 
 static func _normalize_key(key: int) -> int:
@@ -84,6 +86,9 @@ static func is_name_char(key: int) -> bool:
 static func append_char(name: String, key: int) -> String:
 	if key == BACKSPACE_KEY:
 		return name.substr(0, maxi(0, name.length() - 1))
+	# room.alis 0x06a6–0x06be rejects digits in the first position.
+	if name.is_empty() and _normalize_key(key) < 65:
+		return name
 	if is_name_char(key) and name.length() < NAME_MAX_LEN:
 		return name + char(_normalize_key(key))
 	return name
@@ -91,6 +96,10 @@ static func append_char(name: String, key: int) -> String:
 
 static func is_confirm(key: int) -> bool:
 	return key == CONFIRM_KEY
+
+
+static func is_cancel(key: int) -> bool:
+	return key == CANCEL_KEY
 
 
 static func save_filename(name: String) -> String:

@@ -23,8 +23,13 @@ Référence : Amiga 500 ECS anglais. Objectif : remake fidèle à la carte et à
 Cette préversion ouvre une chaufferie illustrée et animée. Cliquer les chauffeurs
 règle les deux alimentations en charbon. Cliquer les cadrans ouvre un écran
 d'instruments distinct, avec mesures vivantes, régulateur et retour à la chambre.
-L/A commandent les chauffeurs, B le frein, Espace la pause, F5/F6 la sauvegarde
-complète de cette session, R son redémarrage. M ouvre la carte et J le journal.
+L/A commandent les chauffeurs, B le frein, Espace la pause, F5 la sauvegarde rapide
+complète de cette session, R son redémarrage. M ouvre la carte et J le boudoir. Le bandeau inférieur permet de passer entre
+locomotive, boudoir et quartier général. Dans le boudoir, cliquer Kolotov ouvre
+l’inventaire ; le livre enregistre une sauvegarde nommée. F1 annule la saisie.
+F6 ouvre les options, dont la disquette recharge une sauvegarde nommée.
+Le revolver demande confirmation : clic gauche pour terminer la partie,
+clic droit pour revenir au boudoir.
 La cadence est indépendante du rendu, mais la seconde réelle par cycle reste
 une calibration de préversion. Les événements non portés arrêtent la simulation.
 
@@ -67,3 +72,8 @@ Le protocole prd-gen a été tenté ; son étape d'analyse du code exige un conn
 absent. Son arrêt est consigné dans `tasks/spec-pipeline.json`. Aucun PRD généré
 n'est déclaré terminé. Le contrat de fidélité et le contrat d'exécution guident
 le jalon testable et la suite de la reconstruction.
+
+Le plan général historique est disponible localement après
+`python3 tools/export_general_plan.py`, avec les données originales dans
+`reference-private/`. Ce plan et ses captures restent privés et ne sont pas inclus
+dans un paquet public. Son absence affiche un message explicite dans cette préversion.

@@ -1,0 +1,14 @@
+test_combat
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: combat setup and outcome rules (wdecor/textek)
+
+test_enemy_trains
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: enemy spawn, scheduling, movement, switches, obstacles, encounter, persistence
+
+test_mines
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: mine creation, depletion, prospecting, persistence

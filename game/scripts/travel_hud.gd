@@ -114,7 +114,7 @@ func _draw_readouts() -> void:
 func _draw_labels() -> void:
 	# Tooltips name the existing illustrated buttons without covering their artwork.
 	if not _hover_id.is_empty():
-		tooltip_text = _hover_id.replace("_", " ").to_upper()
+		tooltip_text = "BOUDOIR · J" if _hover_id == "journal" else _hover_id.replace("_", " ").to_upper()
 
 
 func _draw_hover() -> void:

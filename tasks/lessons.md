@@ -81,3 +81,11 @@
 - Redesign demandé le 26 septembre : avant de produire une famille de wagons, verrouiller le même châssis de référence et mesurer les largeurs solides. Une résolution de toile commune et un prompt de style commun ne suffisent pas; ne pas corriger les écarts par étirement des sprites.
 
 - Répartition confirmée par le propriétaire : Codex possède la partie design, y compris revue visuelle en jeu, corrections, couches graphiques destructibles, intérieurs et pièces mobiles. Opus possède intégration et moteur. Ne pas renvoyer la préparation artistique des combats à Opus ni demander au propriétaire de détecter les défauts à la place du designer.
+
+- Correction propriétaire du 27 septembre : respecter l’interface originale du boudoir et le bandeau inférieur de navigation (locomotive, carte, quartier général). Le revolver et sa fin de partie ne sont pas facultatifs. Les boutons génériques de pied de page et les panneaux de tableau de bord sont rejetés. Avant de dessiner ou intégrer une scène, relever sa composition ECS, chaque objet interactif et le retour par les icônes originales ; une modernisation artistique n’autorise pas une nouvelle structure d’interface.
+
+- Correction propriétaire du 27 septembre, bandeau des quartiers : la fidélité de disposition ne suffit pas. Les compteurs de ressources grossiers et les pictogrammes plats ne sont pas au niveau Noita demandé. Dessiner les chiffres à la résolution d’affichage et des icônes détaillées, avec matières et relief ; vérifier lisibilité et cohérence dans la fenêtre native, sans confondre agrandissement de pixels et qualité du pixel art.
+
+- Nouvelle correction propriétaire du 27 septembre : les valeurs débordent encore de leurs cadres, le bandeau reste loin du niveau Noita demandé, et la carte du monde comme l’orientation de la vue du train ne correspondent pas à l’original. Mesurer l’intérieur des cadres et toute l’emprise des glyphes, comparer les deux cartes ECS avant modification, et ne pas qualifier ce rendu de validé sur la seule base des tests.
+
+- Précision propriétaire : conserver le réseau original, mais adapter son échelle visuelle pour montrer le convoi complet, pas seulement la locomotive d’origine. Distinguer topologie, rapport wagon/case et cadrage ; ne pas résoudre le problème par des voies inventées, des wagons masqués ou un zoom variable en mouvement.

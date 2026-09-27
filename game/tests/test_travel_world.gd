@@ -60,7 +60,14 @@ func _test_view(data, failures: Array[String]) -> void:
 func _test_geometry(view, failures: Array[String]) -> void:
 	var world := Vector2(18.25, 41.75)
 	var roundtrip: Vector2 = view._screen_to_world(view._world_to_screen(world))
-	_check(roundtrip.distance_to(world) < 0.0001, "oblique projection round-trips", failures)
+	_check(roundtrip.distance_to(world) < 0.0001, "original square-axis projection round-trips", failures)
+	# CARTE cdefmap16×16 and ECS03: east right, south down, equal scale.
+	var origin: Vector2 = view._world_to_screen(world)
+	var east: Vector2 = view._world_to_screen(world + Vector2.RIGHT) - origin
+	var south: Vector2 = view._world_to_screen(world + Vector2.DOWN) - origin
+	_check(east.x > 0.0 and is_zero_approx(east.y), "original east step stays horizontal", failures)
+	_check(south.y > 0.0 and is_zero_approx(south.x), "original south step stays vertical", failures)
+	_check(is_equal_approx(east.length(), south.length()), "original tiles have equal axis scale", failures)
 	var anchor := Vector2(310, 220)
 	var before: Vector2 = view._screen_to_world(anchor)
 	view.zoom_by(1.5, anchor)
@@ -103,7 +110,7 @@ func _test_top_down_and_switches(view, failures: Array[String]) -> void:
 	var origin: Vector2 = view._world_to_screen(Vector2(20, 30))
 	var east: Vector2 = view._world_to_screen(Vector2(21, 30)) - origin
 	var south: Vector2 = view._world_to_screen(Vector2(20, 31)) - origin
-	_check(east.x > 0.0 and east.y > 0.0 and south.x < 0.0 and south.y > 0.0, "oblique map: east runs down-right, south down-left", failures)
+	_check(east.x > 0.0 and is_zero_approx(east.y) and is_zero_approx(south.x) and south.y > 0.0, "original map: east runs right, south runs down", failures)
 	var switch_cell := Vector2i(54, 67)
 	_check(not view.toggle_switch_at(switch_cell), "undiscovered switch cannot be clicked", failures)
 	view.discovery.visit_cell(switch_cell)
@@ -125,7 +132,7 @@ func _test_top_down_and_switches(view, failures: Array[String]) -> void:
 	_check(view.camera_world == fixed_camera, "fixed camera stays put while the train is in view", failures)
 	view.camera_world = Vector2(100, 10)
 	view._keep_train_in_view()
-	_check(view.camera_world.distance_to(_initial_route_point(CONSIST_HALF - (view._visual_position.x - 11.5)) + Vector2(0.5,0.5)) < 0.001, "fixed camera recentres on full consist midpoint", failures)
+	_check(view.camera_world.distance_to(_initial_route_point(CONSIST_HALF * 0.75 - (view._visual_position.x - 11.5)) + Vector2(0.5,0.5)) < 0.001, "fixed camera recentres on full consist midpoint", failures)
 	view.journey.reset()
 	view.update_train()
 
@@ -185,10 +192,10 @@ func _test_vehicle_routes(view, failures: Array[String]) -> void:
 	# Measured CARTE.FIC path ends at (9, 65.5): only five complete rigid
 	# vehicles fit; the old sixth pose used an incomplete chord (PR #3 review).
 	var initial_poses: Array[Dictionary] = renderer.poses(view,view.journey,view.consist,0.0)
-	_check(initial_poses.size() == 5, "original map omits the incomplete last vehicle", failures)
+	_check(initial_poses.size() == 6, "rescaled original network fits the complete initial train", failures)
 	_check(view.consist.vehicles.size() == 6, "hidden last vehicle remains in the train composition", failures)
 	for pose in initial_poses:
-		var target: float = ConsistScript.LENGTHS[pose.kind] * view.WORLD_EAST.length()
+		var target: float = ConsistScript.LENGTHS[pose.kind] * 0.75 * view.WORLD_EAST.length()
 		_check(is_equal_approx(view._project(pose.front).distance_to(view._project(pose.rear)), target), "every visible initial vehicle has its complete rigid chord", failures)
 	var journey = _wide_bend_journey()
 	var consist = ConsistScript.new()
@@ -202,7 +209,7 @@ func _test_vehicle_routes(view, failures: Array[String]) -> void:
 		var pose: Dictionary = poses[index]
 		var kind: String = pose.kind
 		var chord: float = view._project(pose.front).distance_to(view._project(pose.rear))
-		var target: float = ConsistScript.LENGTHS[kind] * view.WORLD_EAST.length()
+		var target: float = ConsistScript.LENGTHS[kind] * 0.75 * view.WORLD_EAST.length()
 		_check(absf(chord - target) < 0.05, "%s keeps its screen gabarit through the bend" % kind, failures)
 		if index > 0:
 			_check(pose.front.distance_to(poses[index - 1].rear) < 0.00001, "neighboring vehicle contacts join on route", failures)
@@ -325,10 +332,10 @@ func _test_occupied_track(view, failures: Array[String]) -> void:
 	_check(view.discovery.current_position == marker, "revealing occupied train leaves saved player marker unchanged", failures)
 	_check(not view.discovery.is_discovered(0,0) and mask.get_pixel(0,0).r < 0.1, "remote map remains fogged", failures)
 	view.center_on_train()
-	_check(view.camera_world.distance_to(_initial_route_point(CONSIST_HALF) + Vector2(0.5,0.5)) < 0.00001, "initial camera centers full consist rather than locomotive nose", failures)
+	_check(view.camera_world.distance_to(_initial_route_point(CONSIST_HALF * 0.75) + Vector2(0.5,0.5)) < 0.00001, "initial camera centers full consist rather than locomotive nose", failures)
 	view.consist.vehicles.append("boudoir")
 	view.center_on_train()
-	_check(view.camera_world.distance_to(_initial_route_point(CONSIST_HALF + ConsistScript.LENGTHS.boudoir * 0.5) + Vector2(0.5,0.5)) < 0.00001, "camera center adapts to added wagon length", failures)
+	_check(view.camera_world.distance_to(_initial_route_point((CONSIST_HALF + ConsistScript.LENGTHS.boudoir * 0.5) * 0.75) + Vector2(0.5,0.5)) < 0.00001, "camera center adapts to added wagon length", failures)
 	view.consist.vehicles.pop_back()
 	view.center_on_train()
 
