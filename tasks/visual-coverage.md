@@ -3,7 +3,7 @@
 État du 27 septembre 2026. Exigence : tous les visuels de Transarctica Amiga
 500 ECS anglais, redessinés avec la qualité de pixel art demandée, inspirée de
 Noita. Codex possède le design, la préparation des assets et la revue visuelle.
-L'intégration et le moteur restent dans la répartition existante avec Opus.
+Codex assure aussi l’intégration et le moteur depuis la reprise du 27 septembre.
 
 Cette matrice est un inventaire initial des familles, pas un inventaire exhaustif
 des images originales. Les variantes inconnues restent à relever. Le statut
@@ -38,6 +38,17 @@ avec 25 types, carte, voies, travaux, rencontres et campagne ont des dessins.
 Les états ci-dessous décrivent le constat initial, avant cette production ;
 le document de remise donne les livraisons et limites actuelles.
 L’intégration et la fermeture des variantes restent ouvertes.
+
+## Intégration du boudoir et du bandeau
+
+Le lot courant rétablit les objets du boudoir, les icônes de navigation et le
+quartier général illustré. Inventaire noir/doré, saisie de sauvegarde en bas,
+chargement par les options et séquence du revolver suivent les ressources ECS
+relevées dans [boudoir-layout.md](evidence/boudoir-layout.md) et
+[panel-layout.md](evidence/panel-layout.md). Les fonctions de récit, espions,
+draisines, inverseur et lance-missiles restent incomplètes. La carte générale
+réutilise le rendu cartographique existant ; elle ne reproduit pas encore le
+plan illustré original. La barre de composition du train reste à raccorder.
 
 ## Matrice de départ : constat avant production
 

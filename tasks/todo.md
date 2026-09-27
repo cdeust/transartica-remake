@@ -1,5 +1,27 @@
 # État du projet et travail restant
 
+## Boudoir et bandeau ECS — correction visuelle requise
+
+- [x] Relever les écrans ECS et les commandes décodées : [boudoir](evidence/boudoir-layout.md), [bandeau](evidence/panel-layout.md).
+- [x] Raccorder Kolotov, livre, bénitier et revolver ; confirmation, épitaphe, Terre et retour aux options.
+- [x] Restituer les accès locomotive, boudoir, quartier général et cartes dans le bandeau original.
+- [x] Remplacer les panneaux génériques par l’inventaire encadré et la ligne de sauvegarde de l’original.
+- [x] Reprendre les miniatures, les matières des charbons et les chiffres du bandeau après correction visuelle du propriétaire.
+- [x] Vérifier les entrées natives, le redimensionnement, les sauvegardes et les événements interrompant le voyage.
+- [x] Contenir les chiffres dans les cadres, avec vérification des glyphes à plusieurs tailles.
+- [ ] Refaire le bandeau au niveau de pixel art demandé ; le dernier rendu est rejeté.
+- [x] Rétablir les axes ECS et le plan général exact, chargé depuis les seules données privées.
+- [x] Calibrer le rapport wagon/case et le cadrage initial pour six véhicules complets, sans modifier le réseau.
+- [ ] Redessiner le plan général en conservant sa géographie avant une distribution publique.
+- [ ] Publier la PR après corrections et revue indépendante, puis retirer le worktree enregistré.
+
+Revue et limites : [validation du lot](validation/boudoir-integration-20260927.md).
+La barre de composition, les espions, la préparation complète des wagons, le
+lance-missiles et les effets de récit restent à intégrer. Le bénitier conserve
+les messages mais leurs effets ne sont pas portés. Les options de difficulté,
+musique et combat restent indisponibles. L’acceptation esthétique appartient au
+propriétaire ; les tests fonctionnels ne la remplacent pas.
+
 ## Reprise de l’implémentation et fusion de la PR #3
 
 - [x] Confirmer que Codex reprend aussi le moteur et l’intégration.

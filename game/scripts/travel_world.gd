@@ -4,10 +4,13 @@ class_name TravelWorldView
 const ICE_FIELD_PATH := "res://assets/travel/ice-field.png"
 const GROUND_SHADER_PATH := "res://shaders/travel_ground.gdshader"
 const RailNetworkScript = preload("res://scripts/rail_network.gd")
-const TRAVEL_MIN_ZOOM := 0.35 # source: authored oblique-scene framing choice.
-const TRAVEL_MAX_ZOOM := 2.0 # source: authored oblique-scene inspection choice.
-const WORLD_EAST := Vector2(180.0, 100.0) # source: authored projection aligned to the supplied train sprite.
-const WORLD_SOUTH := Vector2(-180.0, 100.0) # source: authored projection aligned to the supplied train sprite.
+const TRAVEL_MIN_ZOOM := 0.001 # source: authored inspection floor permits complete long consists in a 320px viewport.
+const TRAVEL_MAX_ZOOM := 2.0 # source: authored viewport inspection choice.
+# Source: map-orientation-audit.md, original CARTE16×16 axes. The authored
+# enlargement preserves the previous east-axis length, hence vehicle pixels.
+const CELL_PIXELS := sqrt(180.0 * 180.0 + 100.0 * 100.0)
+const WORLD_EAST := Vector2(CELL_PIXELS, 0.0)
+const WORLD_SOUTH := Vector2(0.0, CELL_PIXELS)
 const TRACK_DARK := Color("#202a2c") # source: authored steel-and-ice rail palette.
 const TRACK_METAL := Color("#657b87") # source: authored steel highlight.
 const TRACK_SNOW := Color("#829ba9") # source: authored snow-edge palette.
@@ -16,6 +19,7 @@ const TRAIN_NOSE_SCREEN := Vector2(0.72, 0.65) # source: authored framing keeps 
 const SWITCH_ACTIVE := Color("#e8c46a") # source: authored: branch currently selected by a switch.
 const SWITCH_IDLE := Color("#4a5a60") # source: authored: unused branch.
 
+var inspecting_map := false
 var camera_world := Vector2(12.5, 62.5)
 var session
 var network # RailNetwork: live tiles with TABLE writes and switch positions.
@@ -87,8 +91,19 @@ func _update_ground_shader() -> void:
 	_ground_material.set_shader_parameter("camera_world", camera_world)
 	_ground_material.set_shader_parameter("camera_offset", offset)
 	_ground_material.set_shader_parameter("zoom_level", _effective_zoom())
+	_ground_material.set_shader_parameter("cell_pixels", CELL_PIXELS)
 	_ground_material.set_shader_parameter("discovery_mask", _discovery_mask)
 	_ground_material.set_shader_parameter("ice_texture", _ice_field)
+
+
+# Explicit initial/manual calibration only; movement never invokes this method.
+func fit_complete_consist() -> void:
+	if size.x <= 0.0 or size.y <= 0.0:
+		return
+	zoom = clampf(preload("res://scripts/train_camera_fit.gd").initial_zoom(self), TRAVEL_MIN_ZOOM, TRAVEL_MAX_ZOOM)
+	following_train = false
+	center_on_train()
+	_update_ground_shader()
 
 
 func fit_world() -> void:
@@ -112,29 +127,13 @@ func visit_cell(position: Vector2i) -> bool:
 
 
 func _fit_bounds(bounds: Rect2i) -> void:
-	var corners := _bounds_corners(bounds)
-	var projected := _projected_bounds(corners)
+	var projected := preload("res://scripts/train_camera_fit.gd").projected_bounds(self, bounds)
 	var extent := Vector2(maxf(projected.size.x, 1.0), maxf(projected.size.y, 1.0))
 	zoom = clampf(minf(size.x / extent.x, size.y / extent.y) * 0.9, TRAVEL_MIN_ZOOM, TRAVEL_MAX_ZOOM)
 	camera_world = (Vector2(bounds.position) + Vector2(bounds.end)) * 0.5
 	offset = Vector2.ZERO
 	following_train = false
 	queue_redraw()
-
-
-func _bounds_corners(bounds: Rect2i) -> Array[Vector2]:
-	return [Vector2(bounds.position), Vector2(bounds.end), Vector2(bounds.position.x, bounds.end.y), Vector2(bounds.end.x, bounds.position.y)]
-
-
-func _projected_bounds(points: Array[Vector2]) -> Rect2:
-	var first := _project(points[0])
-	var minimum := first
-	var maximum := first
-	for point in points.slice(1):
-		var projected := _project(point)
-		minimum = minimum.min(projected)
-		maximum = maximum.max(projected)
-	return Rect2(minimum, maximum - minimum)
 
 
 func zoom_by(factor: float, anchor: Vector2 = Vector2.ZERO) -> void:
@@ -292,6 +291,7 @@ func _city_at(point: Vector2) -> int:
 
 
 func follow_train() -> void:
+	inspecting_map = false
 	following_train = true
 	update_train()
 	queue_redraw()
@@ -352,6 +352,7 @@ func _process(delta: float) -> void:
 
 
 func center_on_train() -> void:
+	inspecting_map = false
 	_center_camera(_visual_position if _visual_initialized else _current_journey_position())
 	_keep_train_in_view()
 	queue_redraw()
@@ -361,7 +362,7 @@ func _center_camera(position: Vector2) -> void:
 	var middle := position
 	if journey != null:
 		var lag := maxf(0.0, journey.distance_travelled() - _visual_arc) if _visual_initialized else 0.0
-		var sample: Dictionary = journey.sample_behind(consist.length_world() * 0.5 + lag)
+		var sample: Dictionary = journey.sample_behind(consist.length_world() * train_renderer.WAGON_CELL_RATIO * 0.5 + lag)
 		if sample.ok:
 			middle = sample.position
 	camera_world = middle + Vector2(0.5, 0.5)
@@ -371,7 +372,7 @@ func _center_camera(position: Vector2) -> void:
 
 # Fixed camera: recenter only when the train leaves the viewport.
 func _keep_train_in_view() -> void:
-	if size.x <= 0.0 or size.y <= 0.0 or journey == null:
+	if inspecting_map or size.x <= 0.0 or size.y <= 0.0 or journey == null:
 		return
 	var lag := maxf(0.0, journey.distance_travelled() - _visual_arc)
 	var bounds: Rect2 = train_renderer.screen_bounds(self, journey, consist, lag)
@@ -441,9 +442,7 @@ func _screen_to_world(point: Vector2) -> Vector2:
 
 
 func _unproject(projected: Vector2) -> Vector2:
-	var east_axis := projected.x / WORLD_EAST.x
-	var south_axis := projected.y / WORLD_SOUTH.y
-	return Vector2((east_axis + south_axis) * 0.5, (south_axis - east_axis) * 0.5)
+	return projected / CELL_PIXELS
 
 
 func _cell_polygon(x: int, y: int) -> PackedVector2Array:

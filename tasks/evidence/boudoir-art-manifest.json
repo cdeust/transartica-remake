@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-27",
+  "provenance": "New artwork generated with imagegen, using original ECS layout references; historical bitmaps are private and are not bundled.",
+  "assets": [
+    {
+      "path": "game/assets/boudoir/general-quarters.png",
+      "sha256": "36ed4c9742a5ce98323f022fcec53e498783bd60a0756ed72c355ddde9b9e536",
+      "bytes": 2718831
+    },
+    {
+      "path": "game/assets/boudoir/captain-boudoir.png",
+      "sha256": "5ed691b39e1cb95252cd271a6848dd867fbfa2b1df0e9bce407da29015542ef8",
+      "bytes": 2382650
+    },
+    {
+      "path": "game/assets/interface/inventory-frame.png",
+      "sha256": "d2637468a53c14dcd8f048082033767fbc5a6e2637bf771c1faf83037d3fc822",
+      "bytes": 704083
+    },
+    {
+      "path": "game/assets/interface/mort-earth.png",
+      "sha256": "918aa442adacc6b39dbd04fc33c49cd1a65177cf3cf1ef45e4a454badc42c43e",
+      "bytes": 1708800
+    },
+    {
+      "path": "game/assets/interface/reception.png",
+      "sha256": "912d47e266e1abd454f15c989eda936913828c2b1dc281055fb3fbef10b01096",
+      "bytes": 2010710
+    },
+    {
+      "path": "game/assets/interface/panel-icons.png",
+      "sha256": "a85acb24d1c803030ccc4ed91ccc9a3a46e949deff6b7bbc0ae54c275e586fca",
+      "bytes": 2295565
+    },
+    {
+      "path": "game/assets/interface/original-panel.png",
+      "sha256": "3712e5a2e38801e2ac559bbcfbb1da5b45df81f7ed89c531cbd8ce412fa73979",
+      "bytes": 1287354
+    }
+  ]
+}

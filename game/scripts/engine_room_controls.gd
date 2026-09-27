@@ -12,7 +12,7 @@ const HOTSPOTS := [
 	["regulator", Rect2(550, 72, 140, 215), "REGULATOR · drag the engineer · arrow keys"],
 	["pause", Rect2(32, 790, 199, 205), "CLOCK · pause / resume · Space"],
 	["map", Rect2(803, 785, 338, 86), "ROUTE CHART · M"],
-	["journal", Rect2(416, 885, 178, 105), "JOURNAL · J"],
+	["journal", Rect2(416, 885, 178, 105), "BOUDOIR · J"],
 	["brake", Rect2(610, 885, 182, 105), "BRAKE · apply / release · B"],
 ]
 

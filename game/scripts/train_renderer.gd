@@ -24,6 +24,9 @@ var texels_per_cell := 0.0
 # nominal world length shrink the remaining uncertainty in world distance to
 # well under 1e-6 cell, far below one screen pixel at any reachable zoom;
 # termination therefore does not depend on how the loop body behaves.
+# source: tasks/evidence/complete-train-scale.md; fixed authored ratio, verified
+# against the initial original rail history. Same ratio for every heading.
+const WAGON_CELL_RATIO := 0.75
 const CHORD_ITERATIONS := 24
 const CHORD_BRACKET_LOW := 0.35
 const CHORD_BRACKET_HIGH := 2.2
@@ -87,25 +90,14 @@ func registration(frame: Dictionary, center: Vector2, rotation: float, scale: fl
 # Screen pixels per atlas texel at the view's current zoom.
 func texel_scale(view) -> float:
 	var cell: Vector2 = view._world_to_screen(Vector2(1.0, 0.0)) - view._world_to_screen(Vector2.ZERO)
-	return cell.length() / texels_per_cell
+	return cell.length() * WAGON_CELL_RATIO / texels_per_cell
 
 
-# The travel projection (view.WORLD_EAST / WORLD_SOUTH) is anisotropic: a
-# world-length segment projects to ~206px/cell east-west, ~141px/cell on the
-# SE/NW diagonal and ~255px/cell on the NE/SW diagonal (verified from the
-# authored constants). Consist.LENGTHS is calibrated in "east-equivalent"
-# cells (tasks/todo.md, train_consist.gd). If poses() simply added
-# Consist.LENGTHS[kind] of world arc per vehicle regardless of heading, the
-# same LENGTHS value would project to a visibly different screen chord on a
-# diagonal than on a cardinal heading -- exactly the "gap/overlap on turns"
-# defect already rejected once (tasks/checkpoint-codex-2026-09-26.md). This
-# bisects the world arc consumed by one vehicle so its PROJECTED chord (the
-# quantity the owner's constraint is actually about: same gabarit on screen)
-# is constant, while its front and rear anchors remain exact rail samples
-# (journey.sample_behind), preserving "chaque vehicule suit le trajet
-# reellement parcouru".
+# A rigid chord across a curve consumes more route arc than its straight length.
+# Bisect the known route to retain invariant vehicle size while keeping both
+# contacts on the actual rails. Missing history never authorizes extrapolation.
 func _bisected_rear(view, journey, front_distance: float, front_screen: Vector2, kind: String) -> Dictionary:
-	var nominal: float = Consist.LENGTHS[kind]
+	var nominal: float = Consist.LENGTHS[kind] * WAGON_CELL_RATIO
 	var target: float = nominal * view.WORLD_EAST.length()
 	var low := front_distance + nominal * CHORD_BRACKET_LOW
 	var high := front_distance + nominal * CHORD_BRACKET_HIGH

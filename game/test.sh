@@ -38,3 +38,10 @@ run_suite test_travel_world.gd
 run_suite test_camera_scale.gd
 
 run_suite test_pixel_field.gd
+
+run_suite test_quarters.gd
+run_suite test_session_saves.gd
+run_suite test_boudoir.gd
+run_suite test_original_panel.gd
+
+run_suite test_ecs_overview.gd
