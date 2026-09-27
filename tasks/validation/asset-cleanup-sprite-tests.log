@@ -1,0 +1,18 @@
+test_cli_normalises_scale_and_writes_manifest (test_sprite_pipeline.SpritePipelineTests.test_cli_normalises_scale_and_writes_manifest) ... ok
+test_expected_screen_directions_follow_travel_projection (test_sprite_pipeline.SpritePipelineTests.test_expected_screen_directions_follow_travel_projection) ... ok
+test_harden_alpha_removes_halo (test_sprite_pipeline.SpritePipelineTests.test_harden_alpha_removes_halo) ... ok
+test_measures_axis_of_synthetic_convoys (test_sprite_pipeline.SpritePipelineTests.test_measures_axis_of_synthetic_convoys) ... ok
+test_mirror_maps_east_to_south (test_sprite_pipeline.SpritePipelineTests.test_mirror_maps_east_to_south) ... ok
+test_palette_is_shared (test_sprite_pipeline.SpritePipelineTests.test_palette_is_shared) ... ok
+test_pixelize_produces_uniform_cells (test_sprite_pipeline.SpritePipelineTests.test_pixelize_produces_uniform_cells) ... ok
+test_reference_sprite_axis_matches_authored_constant_when_present (test_sprite_pipeline.SpritePipelineTests.test_reference_sprite_axis_matches_authored_constant_when_present) ... ok
+test_rejects_wrong_orientation_and_opaque_background (test_sprite_pipeline.SpritePipelineTests.test_rejects_wrong_orientation_and_opaque_background) ... ok
+test_warns_when_body_thickness_drifts (test_sprite_pipeline.SpritePipelineTests.test_warns_when_body_thickness_drifts) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.994s
+
+OK
+E: OK
+NE: OK
+  warning: body thickness 253px vs reference 122px (+108%); check foreshortening on the contact sheet

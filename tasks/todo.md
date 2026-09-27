@@ -107,3 +107,10 @@ Les changements de cette livraison ne touchent pas le moteur. Les contrôles
 applicables portent sur les assets, la galerie, les données de remise et le diff.
 Les tests moteur mentionnés ci-dessus sont des preuves historiques identifiées,
 pas de nouveaux résultats exécutés par cette mise à jour.
+
+## Nettoyage des visuels (27 septembre)
+
+- [x] Examiner références moteur, manifestes, outils, tests et comparatifs avant suppression.
+- [x] Retirer 12 PNG remplacés ou dupliqués et les trois fichiers d'import associés ; conserver leurs empreintes et le commit de récupération.
+- [x] Vérifier les références restantes, les galeries et les tests des outils graphiques.
+- [x] Mesurer le gain : 20 613 348 octets. Préparer le commit de nettoyage, travaux concurrents préservés. [Rapport](asset-cleanup-20260927.md).

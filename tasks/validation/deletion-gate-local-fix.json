@@ -1,0 +1,13 @@
+{
+  "installed_path": ".local-home/.codex/plugins/cache/zetetic-gates-validation/zetetic-gates/1.1.0/tools/deletion_gate_git.py",
+  "before_sha256": "36ff50d5eb2e471a74aea1e288853352f01d1c013c04cad767c2c83d17565eb4",
+  "after_sha256": "f2e335bf70bec2f0886c694087199ef9446b63c7cd71bf9699421459c179fbd4",
+  "source": "fix/deletion-gate-binary-assets",
+  "targeted_tests": "141 passed",
+  "deployment": "copy of tested canonical package file; no gate disabled",
+  "native_cleanup": "15 actual file removals; tool returned exit 0 after the installed hook; 20613348 bytes",
+  "source_commit": "48ec4b86c6d4b750122b31c071b93f037260988e",
+  "pr": "https://github.com/cdeust/zetetic-team-subagents/pull/151",
+  "full_suites": "41 passed, 0 failed",
+  "fail_before": "18 changed tests fail against origin/main"
+}

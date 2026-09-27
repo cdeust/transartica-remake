@@ -1,5 +1,7 @@
 # Reprise Codex, 26 septembre 2026
 
+> Archive du 26 septembre. Les anciens convois et variantes remplacées ont été retirés le 27 septembre ; les commandes ci-dessous décrivent cet état historique. Voir [le rapport de nettoyage](asset-cleanup-20260927.md) pour les fichiers conservés et la récupération Git.
+
 Le handoff Claude dans tasks/handoff-sprites.md est lu. Codex corrige W (canon et verrière) et NW (verrière) via imagegen, versions distinctes v2. Les quatre sources initiales et leurs prompts sont maintenant sous output/imagegen/train-*-raw.png et train-*-prompt.txt.
 
 Le propriétaire a précisé que le train évolue avec les achats de wagons et armements. La composition de départ ne doit pas être figée dans un unique sprite. Architecture attendue : sprites par véhicule et cap, armement séparé, assemblage depuis la composition actuelle, commun au voyage et au combat. Les images actuelles restent des références de perspective.
