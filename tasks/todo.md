@@ -425,8 +425,24 @@ Evidence: tasks/validation/codex-hook-native-20260926.json. PR remains draft, no
 
 Preuve : tasks/evidence/obstacles.md. Rails 38–58 corrigés (6b113e0).
 
-- [ ] Porter les règles du bytecode (choix du propriétaire) : crevasse 67/69 (rails ≥ 10, esclaves ≥ 15, case → 63/64), lac −116/114 (rails ≥ 8, esclaves ≥ 15, case → −121/−117), voie détruite (rails ≥ 2, esclaves ≥ 5, case → abs) ; question oui/non, consommation des rails dans l'ordre, durée avec LIVESTOCK et CRANE.
+- [x] Porter les règles du bytecode (choix du propriétaire) : crevasse 67/69 (rails ≥ 10, esclaves ≥ 15, case → 63/64), lac −116/114 (rails ≥ 8, esclaves ≥ 15, case → −121/−117), voie détruite (rails ≥ 2, esclaves ≥ 5, case → abs) ; question oui/non, consommation des rails dans l'ordre, durée avec LIVESTOCK et CRANE.
 - [ ] Tuile 65 = atelier de gare, −120 = pont intact, 78 = mine : écran puis demi-tour ; 79 = arrêt « END OF TRACK ».
 - [ ] Demi-tour : le convoi repart sur sa propre trace, locomotive en tête côté retour (adaptation choisie ; même mécanisme que le départ de gare).
 - [ ] Foreuse : seulement la case (32,67) selon TIME 0x1c31.
 - [ ] Inconnu : effet exact d'un refus (YODA 0x3037, frein main+0x614a).
+
+Fait (705a559) : travaux de voie portés, ponts intacts franchissables et dessinés, revue native `review_track_works.gd`. Restent : compte à rebours des travaux, effet d'un refus, écrans 65/−120/78/79.
+
+## Rétro-ingénierie du 27 septembre (Claude) : preuves et suite
+
+Répartition du propriétaire : Codex réalise les visuels (dont pixel façon Noita) ; Claude fait règles, décodage et logique.
+
+- [x] Combat décodé : `tasks/evidence/combat.md` (wdecor.alis, déclenchement, règles, IA, butin, résolution automatique).
+- [x] Boudoir, quartier général, panneau et équipage : `tasks/evidence/captain-crew.md`. Pas de journal ni d'écran d'équipage dans l'original.
+- [x] Villes et cartes d'origine : `tasks/evidence/original-visuals.md`, images privées dans `reference-private/art-direction/decoded-20260927/` (pour Codex).
+- [ ] Logique du combat (sans rendu final) : unités, armes, dynamite, IA, fin, butin, résolution automatique.
+- [ ] Déclenchement : trains ennemis `main[0x5eb4]`, apparition yoda 0x2af7 ; déplacement ennemi TIME 0x11a6–0x1961 à décoder.
+- [ ] Panneau : icônes A–D (locomotive, boudoir, QG, lance-missiles), barre des wagons avec fiches, accélération de l'horloge, inverseur.
+- [ ] Boudoir : bénitier (file de messages `main[0x6152]`), inventaire de Kolotov, revolver (fin), livre = sauvegarde.
+- [ ] Quartier général : espions et dynamite, draisines et missiles, carte générale.
+- [ ] Inconnues : train du joueur en haut ou en bas au combat, option combat désactivé, cadence réelle, algorithme de réordonnancement de l'atelier.
