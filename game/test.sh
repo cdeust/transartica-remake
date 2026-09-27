@@ -33,6 +33,7 @@ run_suite test_train_journey.gd
 run_suite test_city_trade.gd
 run_suite test_playable_trip.gd
 
+run_suite test_train_renderer.gd
 run_suite test_travel_world.gd
 run_suite test_camera_scale.gd
 

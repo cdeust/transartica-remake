@@ -96,6 +96,7 @@ func _test_legacy_route_restore(app) -> void:
 	var active_network: Dictionary = app.network.snapshot()
 	var active_discovery: Dictionary = app.world_view.discovery.snapshot()
 	var active_consist: Array = app.world_view.consist.snapshot()
+	var active_poses: Array = app.world_view.train_renderer.poses(app.world_view,app.journey,app.world_view.consist,0.0)
 	var legacy: Dictionary = valid.duplicate(true)
 	# Owner's pre-route-history checkpoint: current direction cannot recover
 	# the entry branch at this tile, so a full train cannot be placed safely.
@@ -111,7 +112,7 @@ func _test_legacy_route_restore(app) -> void:
 	_check(app.journey.snapshot() == active_journey, "ambiguous legacy save cannot replace valid active journey")
 	_check(app.session.snapshot() == active_session and app.network.snapshot() == active_network, "rejected wagon history cannot partially restore engine or switches")
 	_check(app.world_view.discovery.snapshot() == active_discovery and app.world_view.consist.snapshot() == active_consist, "rejected wagon history preserves discovery and consist")
-	_check(app.world_view.train_renderer.poses(app.world_view,app.journey,app.world_view.consist,0.0).size() == 6, "active six-vehicle train remains renderable after rejected restore")
+	_check(app.world_view.train_renderer.poses(app.world_view,app.journey,app.world_view.consist,0.0) == active_poses, "rejected restore preserves every complete vehicle pose")
 	_check(FileAccess.get_file_as_bytes(app.save_path_override) == preserved, "rejected restore leaves saved file byte-for-byte unchanged")
 	_check(app.room_controls.notice == "This save cannot recover wagon positions. Current journey kept; saved file unchanged.", "rejected legacy restore announces actionable reason")
 	# Known initial route still migrates from v2; current v3 was tested above.

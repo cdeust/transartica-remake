@@ -110,6 +110,7 @@ func _bisected_rear(view, journey, front_distance: float, front_screen: Vector2,
 	var low := front_distance + nominal * CHORD_BRACKET_LOW
 	var high := front_distance + nominal * CHORD_BRACKET_HIGH
 	var last_ok := {}
+	var last_distance := front_distance
 	# invariant: after each iteration, [low, high] still brackets the distance
 	# whose projected chord equals target, given chord(distance) monotonic
 	# non-decreasing over this range (true for rail turns, which are bounded
@@ -121,6 +122,7 @@ func _bisected_rear(view, journey, front_distance: float, front_screen: Vector2,
 			high = mid
 			continue
 		last_ok = sample
+		last_distance = mid
 		var chord := front_screen.distance_to(view._project(sample.position))
 		if chord < target:
 			low = mid
@@ -128,7 +130,12 @@ func _bisected_rear(view, journey, front_distance: float, front_screen: Vector2,
 			high = mid
 	if last_ok.is_empty():
 		return {"ok": false}
-	return {"ok": true, "distance": (low + high) * 0.5, "position": last_ok.position}
+	# Missing history also shrinks the bracket: it does not prove that a full
+	# vehicle fits. Source: PR #3 short-history regression (0.6 of 1 cell),
+	# tasks/validation/pr3-review-20260927.md; retain Godot float comparison.
+	if not is_equal_approx(front_screen.distance_to(view._project(last_ok.position)), target):
+		return {"ok": false}
+	return {"ok": true, "distance": last_distance, "position": last_ok.position}
 
 
 func poses(view, journey, consist, lag: float) -> Array[Dictionary]:

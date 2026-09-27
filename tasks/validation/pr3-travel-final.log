@@ -1,0 +1,3 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: fixed camera, rigid overhead rotation at any heading, constant-chord bent convoy, wagon-table composition, switch clicks, fog and arc interpolation

@@ -1,5 +1,23 @@
 # État du projet et travail restant
 
+## Reprise de l’implémentation et fusion de la PR #3
+
+- [x] Confirmer que Codex reprend aussi le moteur et l’intégration.
+- [x] Vérifier le SHA distant, la base de la PR et les fichiers des autres sessions.
+- [x] Corriger le défaut signalé par la revue : rejet des poses de wagons sur historique incomplet, régression native échouant avant et réussissant après. [Preuve](validation/pr3-review-20260927.md).
+
+La fusion de la PR #3 vers `main` est autorisée, avec approbation indépendante
+du SHA final avant exécution. Après fusion, synchroniser le
+checkout principal et supprimer la branche publiée et le worktree de revue
+enregistré ; préserver les fichiers et worktrees des autres sessions.
+
+Point visuel vérifié : au départ, le sixième wagon reste dans la composition
+mais est masqué tant que le trajet connu ne permet pas de le placer entièrement.
+
+Prochain lot : raccorder le boudoir illustré, l’inventaire et la sauvegarde aux
+règles déjà portées, avec accès depuis le jeu et vérification des entrées natives.
+Les effets de récit encore indécodés restent explicitement hors de ce lot.
+
 ## Publication et branches distantes (27 septembre)
 
 - [x] Identifier les commits locaux et les deux branches d'essai des PR fermées #1 et #2.
@@ -9,19 +27,22 @@
 
 Revue : suivi dans `tasks/validation/remote-cleanup-20260927.md`.
 
-Mis à jour le 27 septembre 2026. État du moteur examiné : `05e0722`.
+Mis à jour le 27 septembre 2026. État du moteur testé : PR #3, code de `5b5e61a`.
 Cette liste remplace l'empilement des comptes rendus du 24 au 27 septembre ;
 l'historique reste dans Git et dans les documents de preuve liés ci-dessous.
 Une case cochée valide uniquement l'action nommée. Une logique portée n'est
 pas nécessairement raccordée à une scène ; un PNG n'est pas une scène jouable.
 
-Répartition : Codex possède le design ; Opus possède l'intégration et les règles.
+Répartition du 27 septembre : Codex reprend le design, l'intégration et les règles.
+Opus est indisponible pour cause de quota ; les futurs correctifs du propriétaire
+seront examinés avant intégration, sans écraser le travail en cours.
 Les travaux présents uniquement dans des worktrees ne sont pas comptés comme
 intégrés à cette branche. Aucun pourcentage de campagne complète n'est établi.
 
 ## Priorité design : couverture de tous les visuels (27 septembre)
 
-Instruction propriétaire : Codex produit les visuels, Opus les intègre.
+Instruction actuelle : Codex produit les visuels et les intègre. La remise
+initialement destinée à Opus reste la référence des dessins livrés.
 [Galerie des 32 PNG](../output/imagegen/visuals-20260927/index.html) ·
 [Remise à Opus](handoff-visuals-20260927.md) · [Couverture](visual-coverage.md).
 
@@ -35,7 +56,7 @@ Instruction propriétaire : Codex produit les visuels, Opus les intègre.
 - [x] Livrer prompts, galerie, manifeste, sources et indications de montage ; vérifier 32 PNG, alpha, empreintes et identifiants 1–25.
 - [ ] Fermer l'inventaire original scène par scène, y compris variantes, menus et transitions.
 - [ ] Compléter les animations et couches matérielles après calibration de la scène de combat.
-- [ ] Opus : découper, calibrer et intégrer les dessins aux états réels du jeu.
+- [ ] Codex : découper, calibrer et intégrer les dessins aux états réels du jeu.
 - [ ] Vérifier à taille de jeu et parcourir la campagne pour contrôler les omissions.
 
 Revue : 32 PNG livrés (76 874 777 octets), dont 14 avec transparence. Deux
@@ -75,7 +96,7 @@ Preuve : [décodage et portage](evidence/combat.md).
 
 - [x] Déclenchement, composition, classes de combat, fin, butin et résolution automatique étudiés dans les scripts.
 - [x] Composition initiale portée dans `combat_setup.gd` ; fin/butin/résolution automatique dans `combat_outcome.gd` (`584767f`, intégré par `05e0722`).
-- [x] Tests dédiés écrits dans `game/tests/test_combat.gd` ; 13 contrôles annoncés par le commit de portage. Ils n'ont pas été réexécutés lors de cette mise à jour documentaire.
+- [x] Tests dédiés écrits dans `game/tests/test_combat.gd` ; 13 contrôles annoncés par le commit de portage. Suite réexécutée avec succès avant publication : `validation/pre-push-godot-extra-20260927.log`.
 - [ ] Porter la simulation par pas : déplacements, armes, dynamite, IA et géométrie des emplacements. `combat_state.gd` n'est pas fourni par le portage actuel.
 - [x] Trains ennemis portés en règles pures (apparition, déplacement, aiguillages, obstacles, rencontre, retrait) : `enemy_trains.gd`, `test_enemy_trains.gd`, [preuve](evidence/enemy-trains.md). Hors périmètre : rectangle mine TIME 0x2221, bits 64 et 1.
 - [ ] Raccorder le déclenchement, les trains ennemis et le résultat à la session jouable. Instructions d'intégration : [enemy-trains.md §6](evidence/enemy-trains.md), [mines.md §8](evidence/mines.md).
@@ -105,7 +126,7 @@ Les anciennes tâches qui les présentaient comme des écrans obligatoires doive
 - [ ] Reprendre le pipeline de spécification arrêté sur le connecteur absent : `spec-pipeline.json` décrit l'arrêt historique.
 - [ ] Reconstruire les distributions après intégration des changements actuels. Les exports du 25 septembre ne valident pas le moteur du 27.
 - [ ] Exécuter le binaire Windows sur Windows ; le contrôle PE x86-64 historique ne suffit pas.
-- [ ] Refaire les contrôles de régression caméra/voyage : le commit `584767f` signale des échecs de `test_camera_scale.gd` et `test_travel_world.gd` avant et après son portage. Les anciens journaux verts ne prouvent donc pas l'état courant.
+- [x] Refaire les contrôles de régression caméra/voyage : suites réussies sur le code de la PR #3 ; voir `validation/pre-push-godot-20260927.log`.
 
 ## Commit des visuels et vérification documentaire
 
@@ -116,8 +137,9 @@ Les anciennes tâches qui les présentaient comme des écrans obligatoires doive
 
 Les changements de cette livraison ne touchent pas le moteur. Les contrôles
 applicables portent sur les assets, la galerie, les données de remise et le diff.
-Les tests moteur mentionnés ci-dessus sont des preuves historiques identifiées,
-pas de nouveaux résultats exécutés par cette mise à jour.
+Les journaux `validation/pre-push-*-20260927.log` établissent les résultats
+locaux de la PR #3 : 30 tests Python et 15 suites Godot. Ils ne prouvent pas
+une campagne complète ni le fonctionnement du binaire Windows.
 
 ## Nettoyage des visuels (27 septembre)
 

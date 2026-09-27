@@ -1,5 +1,9 @@
 # Règles de travail
 
+- Revue PR #3 : une recherche de contact ne réussit pas seulement parce qu’un échantillon existe. Vérifier que sa corde atteint la longueur du wagon et retourner la distance de cet échantillon exact. Un historique trop court masque le wagon ; il ne réduit ni sa taille ni la composition sauvegardée. Régression : `game/tests/test_train_renderer.gd`.
+
+- Instruction du propriétaire du 27 septembre : Opus est au seuil de son quota. Codex reprend l’implémentation, l’intégration et le design ; l’ancienne répartition ci-dessous est historique. Le propriétaire apportera des correctifs après rétablissement du quota. La fusion de la PR Transartica #3 est autorisée pour repartir de `main`.
+
 - Correction du 27 septembre : « les changements doivent push, et les branches remote doivent etre clean ». Pour Transartica, vérifier le SHA distant de la branche livrée et les branches obsolètes ; un commit local ou la PR d'un correctif de plugin ne prouve pas la publication du jeu. Préserver les commits propres aux branches d'essai avant leur suppression.
 
 - Correction du 27 septembre : maintenir `tasks/todo.md` comme état courant, consolidé depuis les commits et preuves. Retirer les demandes remplacées par une décision ultérieure ; distinguer dessin livré, logique portée, intégration et validation native. Les anciens comptes rendus restent dans Git.

@@ -182,7 +182,14 @@ func _test_vehicle_frames(view, failures: Array[String]) -> void:
 
 func _test_vehicle_routes(view, failures: Array[String]) -> void:
 	var renderer = view.train_renderer
-	_check(renderer.poses(view,view.journey,view.consist,0.0).size() == 6, "original map supplies all six initial vehicle poses", failures)
+	# Measured CARTE.FIC path ends at (9, 65.5): only five complete rigid
+	# vehicles fit; the old sixth pose used an incomplete chord (PR #3 review).
+	var initial_poses: Array[Dictionary] = renderer.poses(view,view.journey,view.consist,0.0)
+	_check(initial_poses.size() == 5, "original map omits the incomplete last vehicle", failures)
+	_check(view.consist.vehicles.size() == 6, "hidden last vehicle remains in the train composition", failures)
+	for pose in initial_poses:
+		var target: float = ConsistScript.LENGTHS[pose.kind] * view.WORLD_EAST.length()
+		_check(is_equal_approx(view._project(pose.front).distance_to(view._project(pose.rear)), target), "every visible initial vehicle has its complete rigid chord", failures)
 	var journey = _wide_bend_journey()
 	var consist = ConsistScript.new()
 	var poses: Array[Dictionary] = renderer.poses(view,journey,consist,0.0)

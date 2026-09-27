@@ -1,0 +1,53 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+WARNING: TEXTEK texts unavailable (python3 tools/claude/export_textek.py); message ids shown instead.
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] _build_works_dialog (res://scripts/main.gd:231)
+       [1] _build_interface (res://scripts/main.gd:124)
+       [2] _ready (res://scripts/main.gd:72)
+       [3] _test_application_view_persistence (res://tests/run_tests.gd:108)
+       [4] _run_tests (res://tests/run_tests.gd:25)
+PASS: original locomotive rule vectors, world data, city selection, pan/zoom, and render-independent clock
+pendent clock
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: engine session frame independence, pause, residual time, restore, reset, and event stop
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: map interaction, zoom bounds, evidenced rail glyph ports, and source-data preservation
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: persistent map discovery, bounded visits, camera invariance, and hidden-city filtering
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: live instrument readouts, regulator, full-screen routing, and running session
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: decoded rail network, curves, switches, double-speed tiles, boundaries, stations, persistence
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: glieu trade rules, wagon loading order, sale coal cap, money clamp, TIME wagon mass, persistence, workshop
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+WARNING: TEXTEK texts unavailable (python3 tools/claude/export_textek.py); message ids shown instead.
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] _build_works_dialog (res://scripts/main.gd:231)
+       [1] _build_interface (res://scripts/main.gd:124)
+       [2] _ready (res://scripts/main.gd:72)
+       [3] _run (res://tests/test_playable_trip.gd:11)
+PASS: playable map travel, coal use, fog, brake, pause and saved journey
+ved journey
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: short route history cannot emit incomplete rigid vehicle poses
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: fixed camera, rigid overhead rotation at any heading, constant-chord bent convoy, wagon-table composition, switch clicks, fog and arc interpolation
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: fixed zoom, oversized consist, stable camera, manual zoom
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: pixel field determinism, gas rise, snow fall, conservation, fading and native render
