@@ -89,3 +89,5 @@
 - Nouvelle correction propriétaire du 27 septembre : les valeurs débordent encore de leurs cadres, le bandeau reste loin du niveau Noita demandé, et la carte du monde comme l’orientation de la vue du train ne correspondent pas à l’original. Mesurer l’intérieur des cadres et toute l’emprise des glyphes, comparer les deux cartes ECS avant modification, et ne pas qualifier ce rendu de validé sur la seule base des tests.
 
 - Précision propriétaire : conserver le réseau original, mais adapter son échelle visuelle pour montrer le convoi complet, pas seulement la locomotive d’origine. Distinguer topologie, rapport wagon/case et cadrage ; ne pas résoudre le problème par des voies inventées, des wagons masqués ou un zoom variable en mouvement.
+
+- Correction propriétaire sur le quota : prioriser les boucles de gameplay intégrées avant les itérations graphiques répétées ; conserver une réserve pour tests, push et reprise. Ne pas confondre volume de dessins, modules isolés et progression du portage complet.

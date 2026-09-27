@@ -28,7 +28,7 @@ func advance(delta: float) -> void:
 		accumulator = maxf(0.0, accumulator - seconds_per_cycle)
 		engine.step_cycle()
 		cycle_completed.emit()
-		if engine.event_pending:
+		if paused or engine.event_pending:
 			accumulator = 0.0
 			return
 

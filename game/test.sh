@@ -45,3 +45,7 @@ run_suite test_boudoir.gd
 run_suite test_original_panel.gd
 
 run_suite test_ecs_overview.gd
+
+run_suite test_enemy_trains.gd
+run_suite test_automatic_combat.gd
+run_suite test_world_encounters.gd
