@@ -444,7 +444,7 @@ func _update_status() -> void:
 
 func _city_discovered(index: int) -> bool:
 	var city: Dictionary = world_data.cities[index]
-	return world_view.discovery.is_discovered(int(city.x), int(city.y))
+	return world_view._city_is_visible(city)
 
 
 func _save_path() -> String:

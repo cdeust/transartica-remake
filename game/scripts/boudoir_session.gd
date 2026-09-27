@@ -14,6 +14,7 @@ var event
 var reception
 var overview
 var last_room := "room"
+var city_suspended := false
 
 
 func attach(owner_app) -> void:
@@ -90,10 +91,18 @@ func leave() -> void:
 
 
 func blocks_simulation() -> bool:
-	return view.blocks_simulation() or event.visible or reception.visible
+	return city_suspended or view.blocks_simulation() or event.visible or reception.visible
 
 
 func handle_key(input: InputEventKey) -> bool:
+	if city_suspended and input.physical_keycode == KEY_ESCAPE:
+		leave()
+		app._modal.hide()
+		app.instruments.hide()
+		app._city_panel.show()
+		city_suspended = false
+		refresh()
+		return true
 	if event.visible:
 		event.handle_key(input.physical_keycode)
 	elif reception.visible:
@@ -124,6 +133,10 @@ func _action(code: int) -> void:
 
 
 func _panel_action(code: int) -> void:
+	# Temporary inspection preserves the visit; Escape returns, EXIT departs.
+	if app._city_panel.visible and code in [1, 4, 6, 7, 8]:
+		app._city_panel.hide()
+		city_suspended = true
 	match code:
 		1:
 			app._open_panel(last_room if overview.visible else "overview" if app._modal.visible else "map")
@@ -199,7 +212,7 @@ func _new_journey() -> void:
 
 
 func refresh() -> void:
-	panel.visible = not app._city_panel.visible and not app.works_dialog.visible
+	panel.visible = not app.works_dialog.visible
 	panel.map_context = app._modal.visible or overview.visible
 	panel.overview_context = overview.visible
 	panel.refresh()
@@ -212,6 +225,7 @@ func present_pending_event() -> void:
 
 
 func reset() -> void:
+	city_suspended = false
 	app.world_view.inspecting_map = false
 	app.stoup.restore([])
 	last_room = "room"

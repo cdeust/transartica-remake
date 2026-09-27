@@ -100,6 +100,7 @@ static func _restore_parsed(app, parsed: Dictionary) -> Dictionary:
 
 
 static func _commit(app, parsed: Dictionary, restored_journey, restored_wagons, restored_trade, restored_encounters) -> Dictionary:
+	app._boudoir_session.city_suspended = false
 	if parsed.has("session"):
 		app.session.restore(parsed.session)
 	if _has_stoup(app):

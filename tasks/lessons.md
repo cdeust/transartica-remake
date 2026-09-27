@@ -91,3 +91,5 @@
 - Précision propriétaire : conserver le réseau original, mais adapter son échelle visuelle pour montrer le convoi complet, pas seulement la locomotive d’origine. Distinguer topologie, rapport wagon/case et cadrage ; ne pas résoudre le problème par des voies inventées, des wagons masqués ou un zoom variable en mouvement.
 
 - Correction propriétaire sur le quota : prioriser les boucles de gameplay intégrées avant les itérations graphiques répétées ; conserver une réserve pour tests, push et reprise. Ne pas confondre volume de dessins, modules isolés et progression du portage complet.
+
+- Correction propriétaire : une règle isolée, un décor livré ou une simulation invisible ne constitue pas un élément porté. Vérifier dans le jeu le parcours complet et comparer ses états aux sources originales avant de cocher sa couverture. Les portages existants et les ressources déjà extraites doivent servir avant toute nouvelle recherche ou invention.

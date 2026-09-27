@@ -49,3 +49,7 @@ run_suite test_ecs_overview.gd
 run_suite test_enemy_trains.gd
 run_suite test_automatic_combat.gd
 run_suite test_world_encounters.gd
+
+run_suite test_ecs_panel.gd
+run_suite test_map_entities.gd
+run_suite test_city_presentation.gd

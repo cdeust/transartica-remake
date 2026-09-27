@@ -19,6 +19,9 @@ const TRAIN_NOSE_SCREEN := Vector2(0.72, 0.65) # source: authored framing keeps 
 const SWITCH_ACTIVE := Color("#e8c46a") # source: authored: branch currently selected by a switch.
 const SWITCH_IDLE := Color("#4a5a60") # source: authored: unused branch.
 
+var encounters
+var wagons
+var map_entities = preload("res://scripts/map_entities.gd").new()
 var inspecting_map := false
 var camera_world := Vector2(12.5, 62.5)
 var session
@@ -42,6 +45,8 @@ var _discovery_mask: ImageTexture
 
 
 func _ready() -> void:
+	# CARTE draws fixed terrain and towns independently of mobile perception.
+	discovery_enabled = false
 	super._ready()
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_ice_field = _load_texture(ICE_FIELD_PATH)
@@ -77,7 +82,7 @@ func _refresh_discovery_mask() -> void:
 	image.fill(Color.BLACK)
 	for x in WorldDataScript.MAP_WIDTH:
 		for y in WorldDataScript.MAP_HEIGHT:
-			if discovery.is_discovered(x, y):
+			if not discovery_enabled or discovery.is_discovered(x, y):
 				image.set_pixel(x, y, Color.WHITE)
 	_discovery_mask = ImageTexture.create_from_image(image)
 	if _ground_material != null:
@@ -165,7 +170,7 @@ func focus_city(index: int) -> void:
 func _draw() -> void:
 	_update_ground_shader()
 	_draw_rails()
-	_draw_cities()
+	map_entities.draw(self)
 	_draw_train()
 
 
@@ -190,6 +195,8 @@ func _draw_rail_tile(x: int, y: int) -> void:
 	var code: int = _tile_code(x, y)
 	var ports: Array[Vector2] = RailGlyphsScript.ports_for_code(code)
 	if ports.is_empty():
+		if code > 0:
+			map_entities.draw_city_tile(self, Vector2i(x, y), code)
 		return
 	var center := _world_to_screen(Vector2(x + 0.5, y + 0.5))
 	for port in ports:
@@ -242,25 +249,6 @@ func _draw_rails_pair(start: Vector2, finish: Vector2, side: Vector2, scale: flo
 		var rail_offset := side * 10.0 * scale * side_sign
 		draw_line(start + rail_offset, finish + rail_offset, TRACK_DARK, 3.0 * scale, true)
 		draw_line(start + rail_offset, finish + rail_offset, TRACK_METAL, 1.1 * scale, true)
-
-
-func _draw_cities() -> void:
-	if world_data == null:
-		return
-	for index in world_data.cities.size():
-		var city: Dictionary = world_data.cities[index]
-		if not _city_is_visible(city):
-			continue
-		var point := _city_screen_point(city)
-		var radius := clampf(5.0 * _effective_zoom(), 3.0, 9.0)
-		draw_circle(point, radius, CITY_MARK)
-		draw_circle(point, radius * 0.55, Color("#21313a"))
-		if index != selected_city:
-			_draw_city_label(point, String(city.name), [])
-	if selected_city >= 0 and selected_city < world_data.cities.size():
-		var selected: Dictionary = world_data.cities[selected_city]
-		if _city_is_visible(selected):
-			_draw_selected_city(_city_screen_point(selected), String(selected.name))
 
 
 func _draw_train() -> void:
