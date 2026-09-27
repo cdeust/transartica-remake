@@ -138,6 +138,7 @@ func _write_fixture(path: String, data: Dictionary) -> void:
 # station (no rail history yet) and the restore must keep the journey.
 func _test_station_departure_restore(app) -> void:
 	app._restart_engine()
+	app.network.repair(Vector2i(83, 67)) # bridge over the first-route crevasse, as built by a player
 	var cycles := 0
 	while not app._city_panel.visible and cycles < 20000:
 		app.engine.speed = 450
@@ -158,6 +159,7 @@ func _test_station_departure_restore(app) -> void:
 func _test_city_trade_screen(app) -> void:
 	var trade_rules = preload("res://scripts/city_trade.gd")
 	app._restart_engine()
+	app.network.repair(Vector2i(83, 67)) # bridge over the first-route crevasse, as built by a player
 	var cycles := 0
 	while not app._city_panel.visible and cycles < 20000:
 		app.engine.speed = 450

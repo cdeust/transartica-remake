@@ -27,13 +27,8 @@ const SWITCH_RULES := {
 	18: [6, 9, 1, 4], 20: [4, 7, 3, 6], 22: [6, 3, 7, 4], 24: [4, 1, 9, 6],
 	26: [2, 3, 7, 8], 28: [2, 1, 9, 8], 30: [8, 9, 1, 2], 32: [8, 7, 3, 2],
 }
-# TABLE 0x12ea..0x137c: unconditional writes when a new game starts.
-const INITIAL_WRITES := {
-	Vector2i(54, 5): -121, Vector2i(144, 4): -121, Vector2i(6, 9): 64,
-	Vector2i(70, 19): -117, Vector2i(25, 24): 63, Vector2i(134, 40): 63,
-	Vector2i(94, 37): 64, Vector2i(71, 54): -121, Vector2i(139, 57): 64,
-	Vector2i(83, 67): 63, Vector2i(116, 55): 70, Vector2i(114, 55): 81,
-}
+# TABLE 0x12ea..0x137c bridge writes are not ported: only the debug "super scenar"
+# case of TABLE 0x060c reaches them (tasks/evidence/obstacles-unknowns.md §6).
 # TIME 0x243a cswitch1 values: event routines not yet ported.
 const EVENT_TILES := [-120, 34, 35, 36, 37, 65, 78, 79] # 67, 69, 114, -116: see OBSTACLE_REASON.
 # TIME 0x1b9d..0x2044: player-train story cells whose handlers are not yet ported.
@@ -74,8 +69,6 @@ func load_bytes(map_bytes: PackedByteArray) -> bool:
 	for index in map_bytes.size():
 		var value := int(map_bytes[index])
 		_initial[index] = value - 256 if value > 127 else value
-	for cell in INITIAL_WRITES:
-		_initial[cell.x * HEIGHT + cell.y] = INITIAL_WRITES[cell]
 	_tiles = _initial.duplicate()
 	return true
 

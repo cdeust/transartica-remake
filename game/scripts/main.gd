@@ -79,7 +79,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if session == null or room_controls == null:
 		return
-	var blocked: bool = (_modal.visible and _journal.visible) or room_controls.show_help or _city_panel.visible
+	var blocked: bool = (_modal.visible and _journal.visible) or room_controls.show_help or _city_panel.visible \
+			or (works_dialog != null and works_dialog.visible)
 	if not blocked:
 		session.advance(delta)
 	clock.paused = session.paused or blocked or engine.event_pending
@@ -540,6 +541,10 @@ func _save_path() -> String:
 func _advance_journey() -> void:
 	if engine.event_pending:
 		return
+	# TIME re-checks the cell once the brake is released (obstacles-unknowns.md §1).
+	if journey.at_obstacle() and not engine.brake and not works_dialog.visible:
+		journey.resume_after_works()
+	var was_blocked: bool = journey.blocked
 	journey.advance(engine.speed)
 	world_view.visit_cell(journey.position)
 	world_view.update_train()
@@ -552,13 +557,16 @@ func _advance_journey() -> void:
 		if station >= 0:
 			_open_city(station)
 			return
+		if journey.at_obstacle():
+			# YODA 0x2318: the question brakes the train; asked once per refused entry.
+			if not was_blocked:
+				engine.brake = true
+				engine.speed = 0
+				works_dialog.ask(network)
+			return
 		engine.brake = true
 		engine.speed = 0
 		session.paused = true
-		if journey.at_obstacle():
-			if not works_dialog.visible:
-				works_dialog.ask(network)
-			return
 		var ahead: Vector2i = journey.next_cell()
 		var reason: String = journey.stop_reason
 		if journey.at_station():

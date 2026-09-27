@@ -21,6 +21,7 @@ func _run() -> void:
 		await process_frame
 	main._open_panel("map")
 	await process_frame
+	main.network.repair(Vector2i(83, 67)) # the first-route crevasse, bridged as by a player
 	main.world_view.following_train = true
 	var cycles := 0
 	while not main._city_panel.visible and cycles < 20000:

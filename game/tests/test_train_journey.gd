@@ -8,6 +8,8 @@ const WorldData = preload("res://scripts/world_data.gd")
 const TrackWorks = preload("res://scripts/track_works.gd")
 const TrainWagons = preload("res://scripts/train_wagons.gd")
 
+const CREVASSE := Vector2i(83, 67) # CARTE.FIC 67 on the first eastbound route.
+
 var map_bytes := PackedByteArray()
 
 
@@ -67,10 +69,6 @@ func _synthetic(cells: Dictionary) -> RailNetwork:
 		bytes[cell.x * RailNetwork.HEIGHT + cell.y] = value + 256 if value < 0 else value
 	var network := RailNetwork.new()
 	network.load_bytes(bytes)
-	for cell in RailNetwork.INITIAL_WRITES:
-		# Keep synthetic maps free of the TABLE writes unless a test places them.
-		if not cells.has(cell):
-			network._initial[cell.x * RailNetwork.HEIGHT + cell.y] = 0
 	network.reset()
 	return network
 
@@ -154,6 +152,10 @@ func _drive(journey: TrainJourney, limit: int) -> Array[Vector2i]:
 func _test_initial_route(failures: Array[String]) -> void:
 	var journey := _journey()
 	var visited := _drive(journey, 20000)
+	# No TABLE bridge writes in a normal game: the (83,67) crevasse blocks the first route.
+	_check(journey.at_obstacle() and journey.position == Vector2i(82, 67) and journey.next_cell() == CREVASSE, "first route stops before the (83, 67) crevasse", failures)
+	_check(journey.network.repair(CREVASSE) and journey.resume_after_works(), "a built bridge reopens the route", failures)
+	visited.append_array(_drive(journey, 20000))
 	_check(Vector2i(34, 62) in visited, "crosses the (34, 62) crossing that bounded the trial route", failures)
 	_check(Vector2i(40, 63) in visited and Vector2i(44, 67) in visited, "curve at (39, 62) turns onto the south-east diagonal", failures)
 	_check(Vector2i(45, 67) in visited and Vector2i(130, 68) in visited, "curve at (44, 67) resumes eastward", failures)
@@ -269,7 +271,7 @@ func _test_network_snapshot(failures: Array[String]) -> void:
 	_check(not restored.restore({"version": 1, "switches": {"54,67": 24}}), "switch values outside the pair are rejected", failures)
 	_check(restored.tile(Vector2i(54, 67)) == 23, "rejected restore keeps switches", failures)
 	restored.reset()
-	_check(restored.tile(Vector2i(54, 67)) == 22 and restored.tile(Vector2i(83, 67)) == 63, "reset returns to the TABLE-initialised map", failures)
+	_check(restored.tile(Vector2i(54, 67)) == 22 and restored.tile(Vector2i(83, 67)) == 67, "reset returns to the CARTE.FIC map, crevasse included", failures)
 
 
 func _check(condition: bool, label: String, failures: Array[String]) -> void:
@@ -388,8 +390,9 @@ func _test_station_departure(world, failures: Array[String]) -> void:
 	var network := _network()
 	network.set_city_anchors(world.city_anchors())
 	var journey := _journey(network)
+	network.repair(CREVASSE)
 	_drive(journey, 20000)
-	_check(journey.at_station() and journey.station_result() == 1, "first route arrives at BHOPAL", failures)
+	_check(journey.at_station() and journey.station_result() == 1, "first route arrives at BHOPAL once the crevasse is bridged", failures)
 	var stopped_head := journey.fractional_position()
 	var saved := journey.snapshot()
 	var restored := _journey(network)

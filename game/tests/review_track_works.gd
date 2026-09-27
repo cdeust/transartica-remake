@@ -1,10 +1,9 @@
 extends SceneTree
 
-# Native review of track works (tasks/evidence/obstacles.md): the intact crevasse bridge
-# at (83,67), then a destroyed cell ahead with the YODA 0x2390 question, YES by mouse,
-# and the train crossing the repaired cell. Run with a window:
+# Native review of track works (tasks/evidence/obstacles.md, obstacles-unknowns.md) at the
+# real crevasse (83,67): question, NO, re-ask after brake release, OK by mouse, bridge 63
+# and crossing. Run with a window:
 #   Godot --path game --script res://tests/review_track_works.gd
-# Destroyed track only appears at runtime (CARTE 0x2852), so the review writes one cell.
 
 const CAPTURE_DIR := "res://../tasks/validation/"
 var failures: Array[String] = []
@@ -23,27 +22,33 @@ func _run() -> void:
 	main._open_panel("map")
 	await process_frame
 	var start := {"version": 1, "position": [78, 67], "heading": 6, "distance_ticks": 0, "phase": 0, "blocked": false}
-	_check(main.journey.restore(start), "journey placed west of the (83,67) bridge")
-	await _drive_until(main, func(): return main.journey.position == Vector2i(84, 67))
-	_check(main.journey.position == Vector2i(84, 67), "train crosses the intact crevasse bridge (83,67)")
-	await _capture("works-bridge-83-67.png")
-	var broken := Vector2i(88, 67)
-	main.network._tiles[broken.x * main.network.HEIGHT + broken.y] = -2
-	main.wagons.wagons.append([17, 0, 1, 12])
-	main.wagons.wagons.append([5, 0, 0, 6])
+	_check(main.journey.restore(start), "journey placed west of the (83,67) crevasse")
+	var crevasse := Vector2i(83, 67)
 	await _drive_until(main, func(): return main.works_dialog.visible)
-	_check(main.works_dialog.visible and main.journey.next_cell() == broken, "question opens before the destroyed cell")
-	await _capture("works-question-destroyed.png")
-	await _click(main.works_dialog._yes.get_global_rect().get_center())
-	_check(main.network.tile(broken) == 2 and main.wagons.wagons[-2][3] == 10, "YES repairs the cell with 2 rails")
-	await _capture("works-repaired.png")
-	await _click(main.works_dialog._ok.get_global_rect().get_center())
-	main.session.paused = false
+	_check(main.works_dialog.visible and main.journey.next_cell() == crevasse and main.engine.brake, "crevasse question brakes the train")
+	await _capture("works-question-crevasse.png")
+	await _click(main.works_dialog._no.get_global_rect().get_center())
+	_check(not main.works_dialog.visible and main.journey.at_obstacle() and main.network.tile(crevasse) == 67, "NO keeps the train blocked and the crevasse unchanged")
+	for cycle in 20:
+		main._advance_journey()
+	_check(not main.works_dialog.visible, "no new question while braked")
 	main.engine.brake = false
-	await _drive_until(main, func(): return main.journey.position.x > broken.x)
-	_check(main.journey.position.x > broken.x, "train crosses the repaired cell")
+	await _drive_until(main, func(): return main.works_dialog.visible)
+	_check(main.works_dialog.visible, "question asked again after the brake is released")
+	main.wagons.wagons.append([18, 0, 1, 25])
+	main.wagons.wagons.append([6, 0, 0, 20])
+	await _click(main.works_dialog._yes.get_global_rect().get_center())
+	var rails_left: int = main.wagons.wagons[-2][3]
+	_check(main.network.tile(crevasse) == 63 and rails_left >= 5 and rails_left <= 9, "OK builds the bridge with 16-20 rails")
+	await _capture("works-bridge-built.png")
+	await _click(main.works_dialog._ok.get_global_rect().get_center())
+	_check(main.engine.brake, "brake stays on after the works")
+	main.engine.brake = false
+	await _drive_until(main, func(): return main.journey.position.x > crevasse.x)
+	_check(main.journey.position.x > crevasse.x, "train crosses the new bridge")
+	await _capture("works-bridge-crossed.png")
 	if failures.is_empty():
-		print("PASS: native intact bridge, destroyed-track question, mouse YES, repair and crossing")
+		print("PASS: native crevasse question, NO, re-ask after brake release, OK, bridge and crossing")
 		quit(0)
 	else:
 		for failure in failures:

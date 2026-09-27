@@ -1,6 +1,7 @@
 extends PanelContainer
 
-# Question and result screens of YODA 0x2390 for a blocked obstacle cell.
+# Question and result screens of YODA 0x2390 for a blocked obstacle cell. After either
+# answer the brake stays on; the player releases it (YODA 0x18e3 never does).
 # Rules: track_works.gd; texts: TEXTEK switch 0x84 in private data (tools/claude/export_textek.py).
 const TrackWorks = preload("res://scripts/track_works.gd")
 const PRIVATE_NAME := "textek.json"
@@ -32,8 +33,9 @@ func _ready() -> void:
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_child(row)
-	_yes = _button(row, "YES", _accept)
+	# TEXTEK resource 11: NO on the left, OK on the right (YODA 0x2d6b click zones).
 	_no = _button(row, "NO", _decline)
+	_yes = _button(row, "OK", _accept)
 	_ok = _button(row, "OK", func(): _close(_ok_result))
 	hide()
 
