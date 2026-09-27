@@ -1,5 +1,18 @@
 # État du projet et travail restant
 
+## Priorité quota : boucle ennemis et combat automatique
+
+- [x] Raccorder apparition, déplacements et rencontres au voyage.
+- [x] Raccorder l’option originale de résolution automatique et ses conséquences.
+- [x] Sauvegarder ennemis, réglages, hasard et rencontre en attente.
+- [x] Vérifier les reprises, pertes, butin et absence de double résolution.
+- [ ] Publier le lot et retirer le worktree enregistré.
+
+Validation du lot : [rencontres et combat](validation/world-loop-20260927.md).
+Le combat tactique manuel reste un chantier distinct. Aucun objectif de 80 %
+n’est annoncé sans inventaire et preuve de campagne.
+
+
 ## Boudoir et bandeau ECS — correction visuelle requise
 
 - [x] Relever les écrans ECS et les commandes décodées : [boudoir](evidence/boudoir-layout.md), [bandeau](evidence/panel-layout.md).
@@ -18,8 +31,8 @@
 Revue et limites : [validation du lot](validation/boudoir-integration-20260927.md).
 La barre de composition, les espions, la préparation complète des wagons, le
 lance-missiles et les effets de récit restent à intégrer. Le bénitier conserve
-les messages mais leurs effets ne sont pas portés. Les options de difficulté,
-musique et combat restent indisponibles. L’acceptation esthétique appartient au
+les messages mais leurs effets ne sont pas portés. La musique reste indisponible. La difficulté et le combat automatique sont
+raccordés dans le lot suivant. L’acceptation esthétique appartient au
 propriétaire ; les tests fonctionnels ne la remplacent pas.
 
 ## Reprise de l’implémentation et fusion de la PR #3

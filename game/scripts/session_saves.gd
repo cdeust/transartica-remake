@@ -16,7 +16,7 @@ static func snapshot(app) -> Dictionary:
 		"session": app.session.snapshot(), "discovery": app.world_view.discovery.snapshot(),
 		"zoom": app.world_view.zoom, "offset_x": app.world_view.offset.x, "offset_y": app.world_view.offset.y,
 		"selected_city": app.world_view.selected_city, "elapsed_seconds": app.clock.elapsed_seconds,
-		"calendar": app.calendar.snapshot(),
+		"calendar": app.calendar.snapshot(), "encounters": app.encounters.snapshot(),
 	}
 	if _has_stoup(app):
 		state.stoup = app.stoup.snapshot()
@@ -58,6 +58,9 @@ static func restore(app, path: String) -> Dictionary:
 
 
 static func _restore_parsed(app, parsed: Dictionary) -> Dictionary:
+	var restored_encounters = preload("res://scripts/world_encounters.gd").new()
+	if parsed.has("encounters") and not restored_encounters.restore(parsed.encounters):
+		return {"ok": false, "notice": "Encounter save is invalid; current session kept"}
 	var restored_discovery = preload("res://scripts/map_discovery.gd").new()
 	if parsed.has("discovery") and not restored_discovery.restore(parsed.discovery):
 		return {"ok": false, "notice": "Discovery save is invalid; current session kept"}
@@ -93,10 +96,10 @@ static func _restore_parsed(app, parsed: Dictionary) -> Dictionary:
 		var candidate_stoup = preload("res://scripts/stoup_messages.gd").new()
 		if not candidate_stoup.restore(parsed.stoup):
 			return {"ok": false, "notice": "Stoup save is invalid; current session kept"}
-	return _commit(app, parsed, restored_journey, restored_wagons, restored_trade)
+	return _commit(app, parsed, restored_journey, restored_wagons, restored_trade, restored_encounters)
 
 
-static func _commit(app, parsed: Dictionary, restored_journey, restored_wagons, restored_trade) -> Dictionary:
+static func _commit(app, parsed: Dictionary, restored_journey, restored_wagons, restored_trade, restored_encounters) -> Dictionary:
 	if parsed.has("session"):
 		app.session.restore(parsed.session)
 	if _has_stoup(app):
@@ -106,6 +109,8 @@ static func _commit(app, parsed: Dictionary, restored_journey, restored_wagons, 
 	else:
 		app.network.reset()
 	app.journey.restore(restored_journey.snapshot())
+	app.encounters.restore(restored_encounters.snapshot())
+	app.encounters.report.hide()
 	# Saves before version 7 carry no cargo: they resume with the TABLE train and fresh stocks.
 	app.wagons.restore(restored_wagons.snapshot())
 	if parsed.has("trade"):
@@ -121,6 +126,9 @@ static func _commit(app, parsed: Dictionary, restored_journey, restored_wagons, 
 	if app.journey.station_result() >= 0:
 		app._open_city(app.journey.station_result())
 
+	if app.encounters.pending >= 0:
+		app.session.paused = true
+		app.encounters.report.open_report({"manual": true})
 	return {"ok": true, "notice": "Journey and engine restored" if parsed.has("journey") else "Previous engine restored · first journey starts at departure"}
 
 

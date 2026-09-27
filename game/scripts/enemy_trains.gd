@@ -282,7 +282,10 @@ func encounter_at(cell_probe: Vector2i) -> int:
 
 
 func snapshot() -> Dictionary:
-	return {"version": TABLE_VERSION, "slots": slots.duplicate(true)}
+	var history := []
+	for position in _switch_history:
+		history.append([position.x, position.y])
+	return {"version": TABLE_VERSION, "slots": slots.duplicate(true), "switch_history": history}
 
 
 func restore(data: Variant) -> bool:
@@ -295,11 +298,36 @@ func restore(data: Variant) -> bool:
 		if not record is Array or record.size() != FIELD_COUNT:
 			return false
 		for value in record:
-			if not typeof(value) in [TYPE_INT, TYPE_FLOAT]:
+			if not typeof(value) in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)) or value != floor(value):
 				return false
-		candidate.append(record.duplicate())
+		if record[STATE] != 0 and record[STATE] != REMOVED_STATE:
+			# Source: periodic and scripted producers encode nonnegative combat pools.
+			if record[STRENGTH] < 0:
+				return false
+			if not RailNetworkScript.DELTAS.has(int(record[HEADING])) or int(record[HEADING]) == 5:
+				return false
+			if record[DX] + 40 < 0 or record[DX] + 40 >= RailNetworkScript.WIDTH or record[Y] < 0 or record[Y] >= RailNetworkScript.HEIGHT:
+				return false
+		# JSON numbers are floats; restore integer arithmetic used by TIME.
+		var normalized: Array = []
+		for value in record:
+			normalized.append(int(value))
+		candidate.append(normalized)
+	var history = data.get("switch_history", [])
+	if not history is Array or history.size() > SWITCH_HISTORY_DEPTH:
+		return false
+	var restored_history: Array[Vector2i] = []
+	for point in history:
+		if not point is Array or point.size() != 2:
+			return false
+		for value in point:
+			if not typeof(value) in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)) or value != floor(value):
+				return false
+		if point[0] < 0 or point[0] >= RailNetworkScript.WIDTH or point[1] < 0 or point[1] >= RailNetworkScript.HEIGHT:
+			return false
+		restored_history.append(Vector2i(point[0], point[1]))
 	slots = candidate
-	_switch_history = []
+	_switch_history = restored_history
 	_presence = PackedByteArray()
 	_presence.resize(RailNetworkScript.WIDTH * RailNetworkScript.HEIGHT)
 	for slot in SLOT_COUNT:

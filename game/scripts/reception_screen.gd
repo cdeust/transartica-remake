@@ -4,6 +4,10 @@ extends "res://scripts/original_screen.gd"
 const SaveBook = preload("res://scripts/save_book.gd")
 signal start_requested
 signal load_requested(slot_name: String)
+signal combat_requested
+signal level_requested
+var automatic_combat := false
+var difficulty := 0
 signal unavailable_requested
 var loader
 var directory := ""
@@ -35,6 +39,10 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color.BLACK)
 	if _art != null:
 		draw_texture_rect(_art, canvas_rect(), false)
+	begin_canvas()
+	text_at(Vector2(204, 61), "AUTO" if automatic_combat else "MANUAL")
+	text_at(Vector2(40, 61), "LEVEL %d" % difficulty)
+	draw_set_transform(Vector2.ZERO)
 
 
 func handle_key(event: InputEventKey) -> void:
@@ -56,6 +64,10 @@ func _gui_input(event: InputEvent) -> void:
 					start_requested.emit()
 				elif action == "load":
 					loader.open_book(directory, true)
+				elif action == "combat":
+					combat_requested.emit()
+				elif action == "level":
+					level_requested.emit()
 				else:
 					unavailable_requested.emit()
 				accept_event()

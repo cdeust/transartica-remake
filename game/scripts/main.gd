@@ -31,6 +31,7 @@ var session
 var room_art
 var room_controls
 var instruments
+var encounters = preload("res://scripts/world_encounters.gd").new()
 var world_data
 var world_view
 var city_list: ItemList
@@ -72,6 +73,7 @@ func _ready() -> void:
 	engine.train_mass = wagons.mass()
 	journey.network = network
 	_build_interface()
+	encounters.attach(self)
 	session.cycle_completed.connect(_advance_journey)
 	world_view.journey = journey
 	# Rendered composition is derived from the wagon-rules table, never an
@@ -83,7 +85,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if session == null or room_controls == null:
 		return
-	var blocked: bool = _boudoir_session.blocks_simulation() or room_controls.show_help or _city_panel.visible \
+	var blocked: bool = encounters.report.visible or _boudoir_session.blocks_simulation() or room_controls.show_help or _city_panel.visible \
 			or (works_dialog != null and works_dialog.visible)
 	if not blocked:
 		session.advance(delta * calendar.factor)
@@ -201,11 +203,7 @@ func _reverse_at_event() -> void:
 
 
 func _advance_calendar() -> void:
-	for event in calendar.advance_cycle():
-		if event in ["bridge_open", "bridge_closed"]:
-			network.set_timed_bridge(calendar.bridge_code())
-			world_view.queue_redraw()
-
+	encounters.advance_calendar()
 
 func _build_works_dialog() -> void:
 	works_dialog = WorksDialogScript.new()
@@ -310,6 +308,9 @@ func _open_panel(panel: String) -> void:
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey or not event.pressed or event.echo:
 		return
+	if encounters.report.visible:
+		encounters.report.handle_key(event)
+		return
 	# LineEdit handles Unicode in unhandled_key_input too (Godot 4.5 line_edit.cpp).
 	if get_viewport().gui_get_focus_owner() is LineEdit and event.physical_keycode not in [KEY_ESCAPE, KEY_F1]:
 		return
@@ -346,6 +347,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 
 func _restart_engine() -> void:
+	encounters.reset()
 	_boudoir_session.reset()
 	session.reset()
 	journey.reset()
@@ -459,7 +461,10 @@ func _advance_journey() -> void:
 		journey.resume_after_works()
 	var was_blocked: bool = journey.blocked
 	_advance_calendar()
+	var old_cell: Vector2i = journey.position
 	journey.advance(engine.speed)
+	if encounters.advance(old_cell):
+		return
 	world_view.visit_cell(journey.position)
 	world_view.update_train()
 	_filter_cities(search_box.text)
