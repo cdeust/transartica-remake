@@ -58,7 +58,8 @@ ciblés passent ; les suppressions réelles passent ensuite le hook installé.
 Le correctif du plugin et ses tests sont dans la [PR #151](https://github.com/cdeust/zetetic-team-subagents/pull/151),
 commit `48ec4b8`. 41 suites complètes passent ; le contrôle fail-before valide
 les 18 nouvelles régressions. Les versions proposées sont 2.42.1 (plugin complet)
-et 1.1.1 (paquet autonome). La diffusion publique dépend de la fusion de cette PR.
+et 1.1.1 (paquet autonome). Les 15 contrôles CI passent sur cette tête, et la PR est fusionnable.
+La diffusion publique dépend de la fusion de cette PR.
 
 ## Fichiers de test protégés
 

@@ -115,4 +115,4 @@ pas de nouveaux résultats exécutés par cette mise à jour.
 - [x] Examiner références moteur, manifestes, outils, tests et comparatifs avant suppression.
 - [x] Retirer 12 PNG remplacés ou dupliqués et les trois fichiers d'import associés ; conserver leurs empreintes et le commit de récupération.
 - [x] Vérifier les références restantes, les galeries et les tests des outils graphiques.
-- [x] Mesurer le gain : 20 613 348 octets. Préparer le commit de nettoyage, travaux concurrents préservés. [Rapport](asset-cleanup-20260927.md).
+- [x] Mesurer le gain : 20 613 348 octets. Nettoyage commité, travaux concurrents préservés. [Rapport](asset-cleanup-20260927.md).
