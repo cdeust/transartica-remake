@@ -158,7 +158,22 @@ matches `(cell.x − 40, cell.y)`, then sends `YODA` message 78 with **that slot
 cell coordinates — unlike crevasse/lake/destroyed, which send `x,y`). This lookup and the
 message dispatch belong to `TIME`/`rail_network.gd` territory (owned elsewhere); `mines.gd`
 only exposes the pure record scan (`slot_for_cell`) so the orchestrator's integration can call
-it without re-deriving the format.
+it without re-deriving the format. `CARTE.FIC` ships **no** pre-placed tile `78` or `79`
+(counted directly: `78` → 0 occurrences, `79` → 0), so this 50-row scan never runs past a
+freshly-created record on a normal day-1 start; the width mismatch (§1) is real but unreachable
+until at least one mine has been created.
+
+**Post-answer tail: partial.** Both YES (`0x2611`) and the shared default case (`0x25de`)
+converge on `YODA 0x2687`, which unconditionally jumps to `0x811` — a routine shared by every
+question scene in the game (entity cleanup, then `cswitch2 main+0x2faa` dispatching on the
+*current scene/game-mode state*, not on the mine's own question code, to one of 33 targets;
+three of those targets are `0x975`, which `obstacles-unknowns.md` §1 already identifies as the
+reversal call). `obstacles.md`'s row for tile 78 states "Fin: demi-tour" (reversal); this decode
+is **consistent with** that claim (reversal is one of the reachable targets) but does not
+independently pin down which `main+0x2faa` value the mine scene leaves behind, so it is not
+re-derived here — cite `obstacles.md`'s existing claim, and treat the reversal-after-YES
+behavior as inherited from the shared YODA scene-close path (owned by whichever agent
+integrates `rail_network.gd`/`travel_*.gd` with this table), not something `mines.gd` decides.
 
 ## 6. Mine exploitation ("what does mining actually give you"): **decoded — no resource path exists**
 
@@ -193,3 +208,23 @@ decoded map/record effect.
 - `main+0x614b`/`main+0x651b` flags — shared cross-event flags, not mine-specific state.
 - `YODA 0x1d1a` notification queue — UI icon/status only.
 - Question/scene presentation (TEXTEK composite, `mine.alis` palette) — rendering, not a rule.
+- The post-YES reversal (`YODA 0x2687`→`0x811`, §5) — inherited from the shared scene-close
+  dispatch, not decided by this table.
+
+## 8. `rail_network.gd` integration surface (for the owning agent, not applied here)
+
+`RailNetwork.restore()`'s `_is_saved_change(original, value)` needs new branches for the map
+writes this table produces, precisely:
+- `original` was a code-2 candidate (before any switch existed) → `value` may be any of
+  `{18, 19, ..., 25}` (the full horizontal switch family, not just the placed base — the new
+  switch is toggled like any other afterward).
+- `original` was a code-3 candidate → `value` may be any of `{26, 27, ..., 33}` (vertical
+  family), same reasoning.
+- `original` was background (`0`, `> 85`, or `< -124`, §3 step 5) → `value` may be `78` (a
+  mine was created there) or `79` (created and already depleted/prospected in the same saved
+  game). `78 → 79` as a *change from the initial map* only appears once at least one mine has
+  been created; it never appears as a change from a `CARTE.FIC`-shipped `78`, because there are
+  none (§5).
+`RailNetwork.station_lookup`/`entry_boundary`/`EVENT_TILES` already special-case tile `78` as
+an event site (`rail_network.gd:33`) and would need the tile-78→slot lookup (§5) wired to
+`MineTable.slot_for_cell` before dispatching to `prospect()`.

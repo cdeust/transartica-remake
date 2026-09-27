@@ -127,6 +127,8 @@ func deplete() -> Dictionary:
 
 
 # YODA 0x1eb9..0x2317: one new mine per rollover, only while a slot is free and day <= 127.
+# precondition: day >= 1 (game_calendar.gd never produces 0; field[2] == 0 is the free-slot
+# sentinel, so day == 0 would silently create an unfindable slot).
 func create(day: int, network, rng: RandomNumberGenerator) -> Dictionary:
 	if day > CREATION_DAY_LIMIT:
 		return {}
@@ -222,7 +224,24 @@ func restore(value: Variant) -> bool:
 		if not _valid_record(entry):
 			return false
 		parsed.append((entry as Array).duplicate())
+	if not _is_contiguous(parsed):
+		return false
 	records = parsed
+	return true
+
+
+# find_free_slot() and create() both stop at the FIRST free slot (YODA 0x1e3c/0x1ea4), and no
+# source ever frees a used slot (mines.md §1/§2): a fresh game's occupancy is therefore always
+# a contiguous run from slot 0. A used slot after a free one is not a state this table's own
+# rules can produce.
+func _is_contiguous(parsed: Array) -> bool:
+	var seen_free := false
+	for entry in parsed:
+		if is_used(entry):
+			if seen_free:
+				return false
+		else:
+			seen_free = true
 	return true
 
 

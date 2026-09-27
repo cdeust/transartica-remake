@@ -136,12 +136,12 @@ func _test_create_finds_nothing_without_a_qualifying_cell(failures: Array[String
 
 
 func _test_create_respects_day_limit(failures: Array[String]) -> void:
-	var table := MineTable.new()
-	var network := _synthetic_network({})
-	var writes := table.create(MineTable.CREATION_DAY_LIMIT + 1, network, _rng(1))
-	_check(writes.is_empty(), "day > 127 never creates a mine", failures)
-	var at_limit := table.create(MineTable.CREATION_DAY_LIMIT, network, _rng(1))
-	_check(at_limit.is_empty(), "an empty search window still yields no writes at the limit day", failures)
+	var center := _center(1)
+	var network := _synthetic_network({center: 2})
+	var over_limit := MineTable.new().create(MineTable.CREATION_DAY_LIMIT + 1, network, _rng(1))
+	_check(over_limit.is_empty(), "day > 127 never creates a mine, even with a valid site", failures)
+	var at_limit := MineTable.new().create(MineTable.CREATION_DAY_LIMIT, network, _rng(1))
+	_check(at_limit.size() == 2, "day == 127 still creates a mine", failures)
 
 
 func _test_create_respects_full_table(failures: Array[String]) -> void:
@@ -200,7 +200,8 @@ func _test_slot_for_cell(failures: Array[String]) -> void:
 
 func _test_snapshot_and_restore(failures: Array[String]) -> void:
 	var table := MineTable.new()
-	table.records[2] = [10, 20, 5, 45]
+	table.records[0] = [10, 20, 5, 45]
+	table.records[1] = [11, 21, -6, 40]
 	var saved := table.snapshot()
 	var restored := MineTable.new()
 	_check(restored.restore(saved) and restored.snapshot() == saved, "snapshot round-trips through restore", failures)
@@ -211,8 +212,12 @@ func _test_snapshot_and_restore(failures: Array[String]) -> void:
 		non_numeric.append([0, 0, 0, 0])
 	_check(not restored.restore(non_numeric), "restore rejects a non-numeric field", failures)
 	var bad := saved.duplicate(true)
-	bad[2][MineTable.FIELD_WEALTH] = MineTable.WEALTH_MIN + MineTable.WEALTH_SPREAD
+	bad[0][MineTable.FIELD_WEALTH] = MineTable.WEALTH_MIN + MineTable.WEALTH_SPREAD
 	_check(not restored.restore(bad), "restore rejects a wealth index above the rnd(10)+40 ceiling", failures)
+	var gap := MineTable.new().snapshot()
+	gap[0] = [0, 0, 0, 0]
+	gap[1] = [10, 20, 5, 45]
+	_check(not restored.restore(gap), "restore rejects a used slot following a free one: occupancy is never a gap", failures)
 
 
 # Every placement create() finds on the real map must sit on a genuine off-track diagonal
@@ -244,4 +249,9 @@ func _test_real_map_invariants(failures: Array[String]) -> void:
 		_check(original_switch_tile == 2 or original_switch_tile == 3, "the switch cell was a genuine code-2/3 candidate before the write", failures)
 		var original_mine_tile := network.tile(mine_at)
 		_check(original_mine_tile == 0 or original_mine_tile > 85 or original_mine_tile < -124, "the mine cell was background before the write", failures)
+		# The new switch's diverging branch (odd code, rail_network.gd SWITCH_RULES[base][1])
+		# must point straight at the mine cell: an independent cross-check between the
+		# corner table above and rail_network.gd's own switch/heading tables.
+		var diverging_heading: int = RailNetwork.SWITCH_RULES[switch_code - switch_code % 2][1]
+		_check(mine_at - switch_at == RailNetwork.DELTAS[diverging_heading], "the switch's diverging branch heads exactly at the mine cell", failures)
 	_check(found > 0, "at least one of 60 seeded centers finds a real placement on the shipped map", failures)
