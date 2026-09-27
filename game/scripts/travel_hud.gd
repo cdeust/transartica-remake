@@ -104,6 +104,8 @@ func _draw_readouts() -> void:
 		message = session.engine.event_message
 	elif journey != null and journey.at_station() and journey.station_result() >= 0:
 		message = "IN STATION"
+	elif journey != null and journey.at_obstacle():
+		message = "TRACK WORKS"
 	elif journey != null and journey.blocked:
 		message = "STOPPED · NOT PORTED"
 	_text(Vector2(820, 67), message, 19, INK)

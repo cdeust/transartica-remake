@@ -35,12 +35,17 @@ const INITIAL_WRITES := {
 	Vector2i(83, 67): 63, Vector2i(116, 55): 70, Vector2i(114, 55): 81,
 }
 # TIME 0x243a cswitch1 values: event routines not yet ported.
-const EVENT_TILES := [-120, -116, 34, 35, 36, 37, 65, 67, 69, 78, 79, 114]
+const EVENT_TILES := [-120, 34, 35, 36, 37, 65, 78, 79] # 67, 69, 114, -116: see OBSTACLE_REASON.
 # TIME 0x1b9d..0x2044: player-train story cells whose handlers are not yet ported.
 const STORY_CELLS := [
 	Vector2i(11, 10), Vector2i(28, 67), Vector2i(29, 67), Vector2i(30, 67),
 	Vector2i(151, 66), Vector2i(152, 66), Vector2i(152, 48),
 ]
+const TrackWorks = preload("res://scripts/track_works.gd")
+const OBSTACLE_REASON := "obstacle" # crevasse, lake or destroyed track: YODA 0x2390 works.
+# Not in the TIME 0x243a switch, so TIME lets the train pass; YODA writes them as the
+# repaired lake bridges (tasks/evidence/obstacles.md). Other codes <= -105 stay a frontier.
+const INTACT_LAKE_BRIDGES := [-121, -117]
 const SPECIAL_TILE_LIMIT := -105 # source: TIME 0x2401 blocks only -105 < tile < 0.
 # TIME 0x26fb..0x27b0: fixed station results checked before the city search.
 # Negative results -2..-4 also write one map cell (TIME 0x270f, 0x273a, 0x2765).
@@ -137,11 +142,11 @@ func entry_boundary(candidate: Vector2i) -> String:
 	if not in_bounds(candidate):
 		return "world edge wrap not verified"
 	var code := tile(candidate)
-	if code < 0 and code > SPECIAL_TILE_LIMIT:
-		return "track destroyed"
+	if not TrackWorks.kind_for(code).is_empty():
+		return OBSTACLE_REASON
 	if code in EVENT_TILES:
 		return "station" if code >= 34 and code <= 37 else "event site"
-	if code <= SPECIAL_TILE_LIMIT:
+	if code <= SPECIAL_TILE_LIMIT and not code in INTACT_LAKE_BRIDGES:
 		return "special site"
 	if candidate in STORY_CELLS:
 		return "story trigger"
@@ -188,6 +193,14 @@ func station_lookup(cell: Vector2i) -> int:
 	return -1
 
 
+# YODA 0x2390 success: the blocked cell becomes passable track.
+func repair(cell: Vector2i) -> bool:
+	if not in_bounds(cell) or TrackWorks.kind_for(tile(cell)).is_empty():
+		return false
+	_tiles[cell.x * HEIGHT + cell.y] = TrackWorks.repaired_code(tile(cell))
+	return true
+
+
 func changed_cells() -> Dictionary:
 	var result := {}
 	for index in _tiles.size():
@@ -215,13 +228,19 @@ func restore(data: Variant) -> bool:
 		if not in_bounds(cell) or not (typeof(value) in [TYPE_INT, TYPE_FLOAT]):
 			return false
 		var original := _initial[cell.x * HEIGHT + cell.y]
-		# Only a toggled switch may differ from the initial map.
-		if not is_switch_code(original) or absi(int(value) - original) != 1 or not is_switch_code(int(value)) \
-				or int(value) - int(value) % 2 != original - original % 2:
+		if not _is_saved_change(original, int(value)):
 			return false
 		candidate[cell.x * HEIGHT + cell.y] = int(value)
 	_tiles = candidate
 	return true
+
+
+# A saved map may differ from the initial map by a toggled switch or a repaired obstacle.
+func _is_saved_change(original: int, value: int) -> bool:
+	if not TrackWorks.kind_for(original).is_empty():
+		return value == TrackWorks.repaired_code(original)
+	return is_switch_code(original) and absi(value - original) == 1 and is_switch_code(value) \
+			and value - value % 2 == original - original % 2
 
 
 func reset() -> void:

@@ -60,6 +60,19 @@ func advance(speed: int) -> void:
 	stop_reason = reason
 
 
+func at_obstacle() -> bool:
+	return blocked and stop_reason == RailNetworkScript.OBSTACLE_REASON
+
+
+# After YODA 0x2390 repairs the cell, TIME's next phase-3 step retries the entry.
+func resume_after_works() -> bool:
+	if not at_obstacle():
+		return false
+	blocked = false
+	stop_reason = ""
+	return true
+
+
 func at_station() -> bool:
 	return blocked and stop_reason == "station"
 

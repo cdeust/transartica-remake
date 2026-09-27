@@ -183,7 +183,7 @@ func _draw_rails() -> void:
 
 func _tile_code(x: int, y: int) -> int:
 	if network != null and network.is_loaded():
-		return absi(network.tile(Vector2i(x, y)))
+		return network.tile(Vector2i(x, y))
 	return world_data.map_code(x, y)
 
 

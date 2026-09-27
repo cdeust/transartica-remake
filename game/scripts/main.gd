@@ -11,6 +11,7 @@ const AtlasThemeScript = preload("res://scripts/atlas_theme.gd")
 const RailNetworkScript = preload("res://scripts/rail_network.gd")
 const CityScreenScript = preload("res://scripts/city_screen.gd")
 const CityTradeScript = preload("res://scripts/city_trade.gd")
+const WorksDialogScript = preload("res://scripts/works_dialog.gd")
 const TrainWagonsScript = preload("res://scripts/train_wagons.gd")
 # source: tasks/evidence/engine-room-integration.md; provisional real-time calibration.
 const SECONDS_PER_CYCLE := 1.0
@@ -20,6 +21,7 @@ var network = RailNetworkScript.new()
 var wagons = TrainWagonsScript.new()
 var trade = CityTradeScript.new()
 var _trade_rng := RandomNumberGenerator.new()
+var works_dialog
 var travel_controls
 var clock
 var engine
@@ -116,6 +118,7 @@ func _build_interface() -> void:
 	instruments.hide()
 	_build_modal()
 	_build_city_screen()
+	_build_works_dialog()
 
 
 func _build_modal() -> void:
@@ -200,6 +203,26 @@ func _build_journal(body: VBoxContainer) -> void:
 
 # Arrival scene for TIME message 76 (tasks/evidence/station-arrival.md): the
 # glieu menu and its transactions (tasks/evidence/city-scripts.md), in city_screen.gd.
+func _build_works_dialog() -> void:
+	works_dialog = WorksDialogScript.new()
+	works_dialog.journey = journey
+	works_dialog.wagons = wagons
+	works_dialog.rng = _trade_rng
+	if not works_dialog.load_texts(ProjectSettings.globalize_path("res://")):
+		push_warning("TEXTEK texts unavailable (python3 tools/claude/export_textek.py); message ids shown instead.")
+	works_dialog.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	works_dialog.finished.connect(_on_works_finished)
+	add_child(works_dialog)
+
+
+# YODA 0x2390: the train stays braked in front of the cell; a repair lets TIME retry the entry.
+func _on_works_finished(repaired: bool) -> void:
+	engine.train_mass = wagons.mass()
+	var ahead: Vector2i = journey.next_cell()
+	status_label.text = ("Track repaired at (%d, %d)." if repaired else "Still blocked at (%d, %d).") % [ahead.x, ahead.y]
+	world_view.queue_redraw()
+
+
 func _build_city_screen() -> void:
 	_city_panel = CityScreenScript.new()
 	_city_panel.trade = trade
@@ -532,6 +555,10 @@ func _advance_journey() -> void:
 		engine.brake = true
 		engine.speed = 0
 		session.paused = true
+		if journey.at_obstacle():
+			if not works_dialog.visible:
+				works_dialog.ask(network)
+			return
 		var ahead: Vector2i = journey.next_cell()
 		var reason: String = journey.stop_reason
 		if journey.at_station():

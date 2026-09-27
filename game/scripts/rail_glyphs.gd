@@ -22,7 +22,20 @@ static func draw_tile(canvas: CanvasItem, code: int, origin: Vector2, tile_size:
 		canvas.draw_circle(center, minf(1.2, tile_size * 0.12), INK)
 
 
+# Accepts signed map codes (and raw bytes > 127). Negative codes: TIME 0x2401 destroyed
+# track (-105 < code < 0) keeps its absolute glyph; intact bridges from the TABLE writes
+# and YODA repairs have fixed axes (tasks/evidence/obstacles.md); other negatives are decor.
 static func ports_for_code(code: int) -> Array[Vector2]:
+	if code > 127:
+		code -= 256
+	if code < 0:
+		match code:
+			-121, -120: return ports_for_code(2)
+			-117: return ports_for_code(3)
+		if code > -105:
+			return ports_for_code(-code)
+		var none: Array[Vector2] = []
+		return none
 	match code:
 		2: return [Vector2(-0.5, 0), Vector2(0.5, 0)]
 		3: return [Vector2(0, -0.5), Vector2(0, 0.5)]
@@ -60,6 +73,9 @@ static func ports_for_code(code: int) -> Array[Vector2]:
 		38, 52, 53: return ports_for_code(3)
 		39, 50, 54, 56, 58: return ports_for_code(2)
 		40: return ports_for_code(5)
+		# Intact bridges: 63 over an E-W crevasse, 64 over a N-S one (obstacles.md).
+		63: return ports_for_code(2)
+		64: return ports_for_code(3)
 		41: return ports_for_code(4)
 		_: return []
 

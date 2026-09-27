@@ -5,6 +5,8 @@ const EngineSession = preload("res://scripts/engine_session.gd")
 const TrainJourney = preload("res://scripts/train_journey.gd")
 const RailNetwork = preload("res://scripts/rail_network.gd")
 const WorldData = preload("res://scripts/world_data.gd")
+const TrackWorks = preload("res://scripts/track_works.gd")
+const TrainWagons = preload("res://scripts/train_wagons.gd")
 
 var map_bytes := PackedByteArray()
 
@@ -31,6 +33,7 @@ func _run() -> void:
 	_test_initial_route(failures)
 	_test_switch_changes_route(failures)
 	_test_destroyed_track_blocks(failures)
+	_test_track_works(failures)
 	_test_snapshot_and_validation(failures)
 	_test_network_snapshot(failures)
 	_test_station_lookup(world, failures)
@@ -185,7 +188,47 @@ func _test_destroyed_track_blocks(failures: Array[String]) -> void:
 	var journey := _journey(_synthetic(cells))
 	journey.position = Vector2i(10, 62)
 	_drive(journey, 500)
-	_check(journey.blocked and journey.position == Vector2i(15, 62) and journey.stop_reason == "track destroyed", "negative track tile refuses entry", failures)
+	_check(journey.blocked and journey.position == Vector2i(15, 62) and journey.stop_reason == "obstacle", "negative track tile refuses entry", failures)
+
+
+func _test_track_works(failures: Array[String]) -> void:
+	_check(TrackWorks.kind_for(67) == "crevasse" and TrackWorks.kind_for(-116) == "lake" and TrackWorks.kind_for(-50) == "destroyed", "obstacle kinds from TIME codes", failures)
+	_check(TrackWorks.kind_for(-120) == "" and TrackWorks.kind_for(-105) == "", "intact bridge and specials are not works", failures)
+	_check(TrackWorks.repaired_code(69) == 64 and TrackWorks.repaired_code(114) == -117 and TrackWorks.repaired_code(-50) == 50, "YODA repair writes", failures)
+	var wagons = TrainWagons.new()
+	_check(TrackWorks.shortage("destroyed", wagons) == "rails", "start train has no rails", failures)
+	wagons.wagons = [[1, 0, 0, 0], [17, 0, 1, 3], [18, 0, 1, 20], [5, 0, 0, 16]]
+	_check(TrackWorks.shortage("crevasse", wagons) == "", "23 rails and 16 slaves allow a crevasse bridge", failures)
+	wagons.wagons[3][3] = 14
+	_check(TrackWorks.shortage("crevasse", wagons) == "slaves", "slaves checked after rails", failures)
+	var used := TrackWorks.consume_rails(wagons, 5)
+	_check(used == 5 and wagons.wagons[1] == [17, 0, 0, 0] and wagons.wagons[2][3] == 18, "rails taken in wagon order, emptied wagon loses goods", failures)
+	var rng := RandomNumberGenerator.new()
+	for draw in 50:
+		var amount := TrackWorks.rails_needed("lake", rng)
+		if amount < 21 or amount > 25:
+			failures.append("lake consumption %d outside 21..25" % amount)
+	_check(TrackWorks.rails_needed("destroyed", rng) == 2, "destroyed track uses 2 rails", failures)
+	var cells := {}
+	for x in range(10, 16):
+		cells[Vector2i(x, 62)] = 2
+	cells[Vector2i(16, 62)] = -50
+	var network = _synthetic(cells)
+	var journey := _journey(network)
+	journey.position = Vector2i(10, 62)
+	_drive(journey, 500)
+	_check(journey.at_obstacle() and network.repair(journey.next_cell()) and journey.resume_after_works(), "repair unblocks the obstacle", failures)
+	_drive(journey, 500)
+	_check(journey.position.x > 16 or journey.position == Vector2i(16, 62), "train crosses the repaired cell", failures)
+	var saved: Dictionary = network.snapshot()
+	var reloaded = _synthetic(cells)
+	_check(reloaded.restore(saved) and reloaded.tile(Vector2i(16, 62)) == 50, "repaired cell persists", failures)
+	saved.switches["16,62"] = 3
+	_check(not reloaded.restore(saved), "arbitrary map change is refused", failures)
+	var bridge_cells := {Vector2i(14, 62): 2, Vector2i(15, 62): -121, Vector2i(16, 62): 2}
+	_check(_synthetic(bridge_cells).entry_boundary(Vector2i(15, 62)) == "", "intact lake bridge -121 is passable", failures)
+	bridge_cells[Vector2i(15, 62)] = -119
+	_check(_synthetic(bridge_cells).entry_boundary(Vector2i(15, 62)) == "special site", "other codes <= -105 stay a frontier", failures)
 
 
 func _test_snapshot_and_validation(failures: Array[String]) -> void:
