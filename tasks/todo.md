@@ -4,8 +4,8 @@
 
 - [x] Identifier les commits locaux et les deux branches d'essai des PR fermées #1 et #2.
 - [x] Vérifier les tests avant le push de `feat/station-arrival` : 30 tests Python sans omission et 15 suites Godot.
-- [ ] Pousser les commits et ouvrir la PR Transartica vers `main`.
-- [ ] Préserver les commits d'essai, supprimer leurs branches distantes et relire les références GitHub.
+- [x] Pousser les commits et ouvrir la [PR Transartica #3](https://github.com/cdeust/transartica-remake/pull/3) vers `main`.
+- [x] Préserver les commits d'essai, supprimer leurs branches distantes et relire les références GitHub : seules `main` et `feat/station-arrival` restent.
 
 Revue : suivi dans `tasks/validation/remote-cleanup-20260927.md`.
 
