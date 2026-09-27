@@ -39,6 +39,7 @@ const CLOCK_CENTER := Vector2(24, 180)
 
 signal requested(code: int)
 
+var ecs_art = preload("res://scripts/ecs_panel_art.gd").new()
 var map_context := false
 var overview_context := false
 var app
@@ -49,6 +50,8 @@ var _last_state: Array = []
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	ecs_art.load_private()
 	if ResourceLoader.exists(ART_PATH):
 		_texture = load(ART_PATH) as Texture2D
 	if ResourceLoader.exists(ICON_ATLAS_PATH):
@@ -114,6 +117,9 @@ func _gui_input(event: InputEvent) -> void:
 		tooltip_text = LABELS.get(code, "")
 		mouse_default_cursor_shape = CURSOR_POINTING_HAND if code != 0 else CURSOR_ARROW
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if ecs_art.available and ecs_art.scroll(self, logical_point(event.position)):
+			accept_event()
+			return
 		var code := hotspot_at(event.position)
 		if code != 0:
 			activate(code)
@@ -129,13 +135,18 @@ func refresh() -> void:
 	var state: Array = [map_context, overview_context]
 	if app != null:
 		state.append_array([app.engine.lignite, app.engine.anthracite, app.engine.speed,
-			app.calendar.hour, app.calendar.minute, app.calendar.factor])
+			app.calendar.hour, app.calendar.minute, app.calendar.factor, app.engine.brake, app.wagons.snapshot()])
 	if state != _last_state:
 		_last_state = state
 		queue_redraw()
 
 
 func _draw() -> void:
+	if ecs_art.available:
+		ecs_art.draw(self)
+		if app != null:
+			_draw_readouts()
+		return
 	if _texture == null:
 		return
 	for slice in ART_SLICES:
@@ -167,6 +178,9 @@ func _draw_readouts() -> void:
 
 
 func readout_window(index: int) -> Rect2:
+	if ecs_art.available:
+		# Original YODA coal icons at z32/20/8, adjacent numeric wells.
+		return screen_rect(Rect2(278, 162 + 12 * index, 40, 11))
 	var source: Rect2 = READOUT_INNERS[index]
 	var source_slice: Rect2 = ART_SLICES[2][0]
 	var logical_slice: Rect2 = ART_SLICES[2][1]

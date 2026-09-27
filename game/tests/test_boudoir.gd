@@ -266,10 +266,8 @@ func _capture(label: String) -> void:
 	if "--capture" not in OS.get_cmdline_user_args():
 		return
 	RenderingServer.force_draw(false)
-	var path := ProjectSettings.globalize_path("res://../tasks/validation/boudoir-%s.png" % label)
-	if label == "overview":
-		# Historical private plan pixels must not enter public validation captures.
-		path = ProjectSettings.globalize_path("res://../reference-private/boudoir-overview.png")
+	# All screens can contain private YODA/CARTE pixels.
+	var path := ProjectSettings.globalize_path("res://../reference-private/boudoir-%s.png" % label)
 	_check(root.get_texture().get_image().save_png(path) == OK, "capture " + label)
 
 

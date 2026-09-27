@@ -62,6 +62,8 @@ func _test_readouts(panel: Control) -> void:
 		for index in range(samples.size()):
 			var sample: Rect2 = samples[index]
 			var logical := Rect2(Vector2(230, 149) + (sample.position - Vector2(1550, 190)) * Vector2(90.0 / 464, 51.0 / 389), sample.size * Vector2(90.0 / 464, 51.0 / 389))
+			if panel.ecs_art.available:
+				logical = Rect2(278, 162 + 12 * index, 40, 11)
 			var safe_window: Rect2 = panel.screen_rect(logical).grow(-1.0)
 			var layout: Dictionary = panel.readout_layout(value, index)
 			_check(not layout.is_empty(), "Readout disappeared at %s index%d value%s" % [panel.size, index, value])

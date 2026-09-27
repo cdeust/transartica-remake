@@ -79,11 +79,11 @@ func _test_fog_and_cities(view, data, failures: Array[String]) -> void:
 	var image: Image = view._discovery_mask.get_image()
 	var known: Vector2i = view.discovery.current_position
 	_check(image.get_pixel(known.x, known.y).r > 0.9, "current cell appears in discovery mask", failures)
-	_check(image.get_pixel(0, 0).r < 0.1, "unknown cell remains fogged", failures)
+	_check(image.get_pixel(0, 0).r > 0.9, "fixed terrain visible without visit", failures)
 	var hidden_index := _find_hidden_city(view, data)
 	_check(hidden_index >= 0, "city list contains a hidden city for fog test", failures)
 	if hidden_index >= 0:
-		_check(not view._city_is_visible(data.cities[hidden_index]), "undiscovered city is hidden", failures)
+		_check(view._city_is_visible(data.cities[hidden_index]), "unvisited fixed city is visible", failures)
 
 
 func _test_interpolation(view, failures: Array[String]) -> void:
@@ -112,7 +112,6 @@ func _test_top_down_and_switches(view, failures: Array[String]) -> void:
 	var south: Vector2 = view._world_to_screen(Vector2(20, 31)) - origin
 	_check(east.x > 0.0 and is_zero_approx(east.y) and is_zero_approx(south.x) and south.y > 0.0, "original map: east runs right, south runs down", failures)
 	var switch_cell := Vector2i(54, 67)
-	_check(not view.toggle_switch_at(switch_cell), "undiscovered switch cannot be clicked", failures)
 	view.discovery.visit_cell(switch_cell)
 	var toggled := [false]
 	view.switch_toggled.connect(func(_cell: Vector2i) -> void: toggled[0] = true)
@@ -330,7 +329,7 @@ func _test_occupied_track(view, failures: Array[String]) -> void:
 		_check(view.discovery.is_discovered(cell.x,cell.y), "all occupied initial wagon track becomes discovered", failures)
 		_check(mask.get_pixel(cell.x,cell.y).r > 0.9, "occupied wagon track also appears in shader mask", failures)
 	_check(view.discovery.current_position == marker, "revealing occupied train leaves saved player marker unchanged", failures)
-	_check(not view.discovery.is_discovered(0,0) and mask.get_pixel(0,0).r < 0.1, "remote map remains fogged", failures)
+	_check(not view.discovery.is_discovered(0,0) and mask.get_pixel(0,0).r > 0.9, "visit memory does not hide original fixed map", failures)
 	view.center_on_train()
 	_check(view.camera_world.distance_to(_initial_route_point(CONSIST_HALF * 0.75) + Vector2(0.5,0.5)) < 0.00001, "initial camera centers full consist rather than locomotive nose", failures)
 	view.consist.vehicles.append("boudoir")

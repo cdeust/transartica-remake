@@ -14,6 +14,8 @@ var report
 
 func attach(owner_app) -> void:
 	app = owner_app
+	app.world_view.encounters = self
+	app.world_view.wagons = app.wagons
 	rng.randomize()
 	report = Report.new()
 	report.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

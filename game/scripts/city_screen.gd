@@ -1,4 +1,4 @@
-extends PanelContainer
+extends Control
 
 # City scene driven by the glieu.co menu (tasks/evidence/city-scripts.md §2).
 # Rules live in city_trade.gd; this panel only mirrors the original flow:
@@ -7,6 +7,7 @@ extends PanelContainer
 # The original reads choices 50..53 from main+0x1c, whose writer is not decoded:
 # the button roles (buy/sell, validate, -, +, exit) are inferred from their effects.
 # The wording of labels and refusals is the remake's own, not texte2k text.
+const Backdrop = preload("res://scripts/city_backdrop.gd")
 const CityTrade = preload("res://scripts/city_trade.gd")
 
 signal depart_requested
@@ -44,53 +45,105 @@ var _subtitle: Label
 var _funds: Label
 var _notice: Label
 var _menu: HBoxContainer
-var _trade_box: VBoxContainer
+var _trade_box: Control
+var _transaction_controls: HBoxContainer
+var _quantity_label: Label
+var backdrop
 var _list: ItemList
 var _detail: Label
 
 
 func _init() -> void:
-	custom_minimum_size = Vector2(620, 420)
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#0d1b23")
-	style.border_color = Color("#c79a4a")
-	style.set_border_width_all(2)
-	style.set_content_margin_all(24)
-	add_theme_stylebox_override("panel", style)
-	var body := VBoxContainer.new()
-	body.add_theme_constant_override("separation", 12)
-	add_child(body)
-	_title = _label(body, 30)
-	_subtitle = _label(body, 15)
-	_funds = _label(body, 15)
-	_trade_box = VBoxContainer.new()
-	_trade_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_child(_trade_box)
+	backdrop = Backdrop.new()
+	backdrop.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	add_child(backdrop)
+	_title = _label(self, 30)
+	_subtitle = _label(self, 15)
+	_subtitle.hide()
+	_funds = _label(self, 15)
+	_funds.hide() # Resource values belong to the shared lower HUD.
+	_trade_box = Control.new()
+	add_child(_trade_box)
 	_list = ItemList.new()
-	_list.custom_minimum_size = Vector2(0, 150)
-	_list.max_columns = 2
+	_list.max_columns = 5 # glieu comp26: five columns; workshop comp105 also five.
 	_list.same_column_width = true
+	_list.max_text_lines = 2
 	_list.item_selected.connect(_select_goods)
 	_trade_box.add_child(_list)
 	_detail = _label(_trade_box, 17)
-	var controls := HBoxContainer.new()
-	controls.alignment = BoxContainer.ALIGNMENT_CENTER
-	_trade_box.add_child(controls)
-	_button(controls, "−  (key -)", decrement)
-	_button(controls, "+  (key +)", increment)
-	_button(controls, "Validate · Enter", validate)
-	_button(controls, "Back · Esc", leave_transaction)
-	_notice = _label(body, 15)
-	_notice.add_theme_color_override("font_color", Color("#e7c27d"))
+	_transaction_controls = HBoxContainer.new()
+	_transaction_controls.alignment = BoxContainer.ALIGNMENT_CENTER
+	add_child(_transaction_controls)
+	# source: glieu composite23 order OK, minus, quantity, plus, EXIT.
+	_button(_transaction_controls, "OK", validate)
+	_button(_transaction_controls, "−", decrement)
+	_quantity_label = _label(_transaction_controls, 17)
+	_button(_transaction_controls, "+", increment)
+	_button(_transaction_controls, "EXIT", leave_transaction)
+	_trade_box.visibility_changed.connect(_transaction_visibility)
+	_notice = _label(self, 15)
 	_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_menu = HBoxContainer.new()
 	_menu.alignment = BoxContainer.ALIGNMENT_CENTER
-	body.add_child(_menu)
+	add_child(_menu)
+	resized.connect(_layout)
+
+
+func _ready() -> void:
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_layout()
+
+
+func _has_point(point: Vector2) -> bool:
+	return backdrop.screen_rect(Rect2(0, 0, 320, 149)).has_point(point)
+
+
+func _layout() -> void:
+	if not is_instance_valid(backdrop):
+		return
+	backdrop.size = size
+	var scale_factor: float = backdrop.frame_rect().size.x / 320.0
+	theme = Backdrop.interface_theme(maxi(7, roundi(6.0 * scale_factor)))
+	_place(_title, Rect2(7, 2, 306, 17))
+	_title.add_theme_font_size_override("font_size", maxi(8, roundi(8.0 * scale_factor)))
+	_place(_menu, Rect2(20, 23, 280, 14))
+	_place(_transaction_controls, Rect2(20, 23, 280, 14))
+	_place(_trade_box, Backdrop.PICTURE)
+	_list.position = Vector2(4, 3) * scale_factor
+	_list.size = Vector2(312, 72) * scale_factor
+	_list.fixed_column_width = maxi(1, roundi(_list.size.x / 5.0) - 2)
+	_list.add_theme_font_size_override("font_size", maxi(7, roundi(5.0 * scale_factor)))
+	_detail.position = Vector2(4, 77) * scale_factor
+	_detail.size = Vector2(312, 29) * scale_factor
+	_place(_notice, Rect2(7, 125, 306, 22))
+	for label in [_detail, _notice, _quantity_label]:
+		label.add_theme_font_size_override("font_size", maxi(7, roundi(5.0 * scale_factor)))
+	_quantity_label.custom_minimum_size.x = 18.0 * scale_factor
+	for row in [_menu, _transaction_controls]:
+		row.add_theme_constant_override("separation", maxi(2, roundi(4.0 * scale_factor)))
+		for child in row.get_children():
+			if child is Button:
+				child.custom_minimum_size = Vector2(34, 13) * scale_factor
+
+
+func _place(control: Control, logical: Rect2) -> void:
+	var rect: Rect2 = backdrop.screen_rect(logical)
+	control.position = rect.position
+	control.size = rect.size
+
+
+func _transaction_visibility() -> void:
+	_transaction_controls.visible = _trade_box.visible
+	backdrop.trading = _trade_box.visible
+	backdrop.queue_redraw()
 
 
 func _label(parent: Control, font_size: int) -> Label:
 	var label := Label.new()
 	label.add_theme_font_size_override("font_size", font_size)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	parent.add_child(label)
 	return label
@@ -98,7 +151,8 @@ func _label(parent: Control, font_size: int) -> Label:
 
 func _button(parent: Control, text: String, action: Callable) -> Button:
 	var button := Button.new()
-	button.text = text
+	button.tooltip_text = text
+	button.text = "BUY" if text.begins_with("Buy") else "SELL" if text.begins_with("Sell") else "EXIT" if text.begins_with("Leave") else "ENLIST" if text.begins_with("Enlist") else "SPY" if text.begins_with("Recruit") else text
 	button.pressed.connect(action)
 	parent.add_child(button)
 	return button
@@ -113,8 +167,10 @@ func open(index: int, name: String, city_kind: int, type_label: String) -> void:
 	_notice.text = ""
 	_arriving = true
 	_direct = false
+	backdrop.set_city(kind, city in WORKSHOP_CITIES)
 	show()
 	_show_menu()
+	_layout()
 	_arriving = false
 
 
@@ -129,6 +185,7 @@ func _show_menu() -> void:
 	_workshop = false
 	_depart_after_notice = false
 	for child in _menu.get_children():
+		_menu.remove_child(child)
 		child.queue_free()
 	if city in WORKSHOP_CITIES:
 		# glieu 0x1d64..0x1d98: the workshop menu replaces trade (50 buy, 52 depart).
@@ -157,10 +214,11 @@ func _show_menu() -> void:
 				if trade.offers_spies(city):
 					_button(_menu, "Recruit spies", start.bind(CityTrade.SELL))
 			CityTrade.TOWN:
-				_notice.text = "Town story pages (texte2k 1..14) are not ported yet."
+				_notice.text = "Town information is not available yet."
 	_button(_menu, "Leave the city · Enter", func(): depart_requested.emit())
 	_menu.show()
 	_refresh()
+	_layout()
 
 
 func start(mode: int) -> void:
@@ -207,6 +265,7 @@ func start_workshop() -> void:
 
 func _show_depart_only() -> void:
 	for child in _menu.get_children():
+		_menu.remove_child(child)
 		child.queue_free()
 	_button(_menu, "Leave the city · Enter", func(): depart_requested.emit())
 	_menu.show()
@@ -304,6 +363,7 @@ func _finish() -> void:
 
 func _refresh() -> void:
 	_funds.text = "Lignite %d  ·  Anthracite %d" % [engine.lignite, engine.anthracite]
+	_quantity_label.text = str(_quantity)
 	if not _trade_box.visible:
 		return
 	if _workshop:

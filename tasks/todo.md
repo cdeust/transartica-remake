@@ -1,3 +1,13 @@
+# Correction des villes et ennemis visibles
+
+Bandeau ECS privé et reprise : [validation](validation/map-places-20260927.md).
+- [x] Dessiner le bandeau depuis YODA, avec composition réelle et défilement.
+
+- [x] Retirer le filtrage de découverte non original des lieux fixes.
+- [x] Afficher les villes par type et les ennemis selon les règles de perception originales.
+- [x] Intégrer les décors de villes et vérifier entrée, transaction et départ.
+- [ ] Vérifier les captures natives, relire, pousser et nettoyer.
+
 # État du projet et travail restant
 
 ## Priorité quota : boucle ennemis et combat automatique
