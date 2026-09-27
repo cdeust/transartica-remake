@@ -1,5 +1,7 @@
 # Règles de travail
 
+- Correction du 27 septembre : « les changements doivent push, et les branches remote doivent etre clean ». Pour Transartica, vérifier le SHA distant de la branche livrée et les branches obsolètes ; un commit local ou la PR d'un correctif de plugin ne prouve pas la publication du jeu. Préserver les commits propres aux branches d'essai avant leur suppression.
+
 - Correction du 27 septembre : maintenir `tasks/todo.md` comme état courant, consolidé depuis les commits et preuves. Retirer les demandes remplacées par une décision ultérieure ; distinguer dessin livré, logique portée, intégration et validation native. Les anciens comptes rendus restent dans Git.
 
 - Instruction du propriétaire du 27 septembre : Opus intègre les designs, Codex produit maintenant les visuels. Utiliser les captures web, solutions et parties complètes pour retrouver les omissions ; extrapoler les compositions manquantes en les identifiant. Ne pas substituer un nouvel inventaire à la livraison de PNG. Fournir prompts, sources, correspondances et limites graphiques à Opus.

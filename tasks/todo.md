@@ -1,5 +1,14 @@
 # État du projet et travail restant
 
+## Publication et branches distantes (27 septembre)
+
+- [x] Identifier les commits locaux et les deux branches d'essai des PR fermées #1 et #2.
+- [x] Vérifier les tests avant le push de `feat/station-arrival` : 30 tests Python sans omission et 15 suites Godot.
+- [ ] Pousser les commits et ouvrir la PR Transartica vers `main`.
+- [ ] Préserver les commits d'essai, supprimer leurs branches distantes et relire les références GitHub.
+
+Revue : suivi dans `tasks/validation/remote-cleanup-20260927.md`.
+
 Mis à jour le 27 septembre 2026. État du moteur examiné : `05e0722`.
 Cette liste remplace l'empilement des comptes rendus du 24 au 27 septembre ;
 l'historique reste dans Git et dans les documents de preuve liés ci-dessous.
