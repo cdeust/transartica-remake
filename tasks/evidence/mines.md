@@ -1,11 +1,19 @@
 # Mines: creation, depletion, prospecting (27 September 2026)
 
-Static decode. Listings: `reference-private/observations/listings-20260927/{yoda,table,time,mine}.json`
+Static decode. Listings: `reference-private/observations/listings-20260927/{yoda,table,time,mine,carte,textek}.json`
 (produced by `tools/claude/xdisasm.py`); pretty view via
-`python3 tools/claude/alis_pretty.py <listing> <start_hex> <end_hex>`. Cross-checked with
-`grep`-equivalent scan of every listing for the mine-table address (`6082`): only `yoda.json`,
-`table.json` and `time.json` touch it for game logic; the other hits (`carte`, `glieu`, `room`,
-`texte*`) are coincidental matches on unrelated instruction offsets, verified individually.
+`python3 tools/claude/alis_pretty.py <listing> <start_hex> <end_hex>`. Every reader of the
+mine table was found with a structural scan (walk each listing's instruction tree for an
+`omaintc` opcode whose immediate argument is `24706` = `0x6082`, the encoding `yoda.json`
+itself uses at `0x1e31` etc.) — not a substring match on `"6082"`, which false-positives on
+unrelated instruction byte-offsets. Real readers: `yoda.json` (creation/depletion/prospect),
+`table.json` (zero-fill), `time.json` (slot lookup on tile-78 approach), `carte.json` (map
+legend icon), and `textek.json`/`texte.json`/`texted.json` (three language builds of the same
+UI text, identical instruction shape: "OPEN/CLOSED \<ORE\> MINE" atlas legend, a
+"DISCOVERY OF A MINE"/"CLOSURE OF A MINE" bulletin, and the prospected mine's own
+"\<ORE\> MINE OF THE YEAR 2714" plaque). `glieu.json`'s and `room.json`'s hits on the substring
+`6082` are confirmed to be coincidental byte-offset matches, not `omaintc[24706]` reads — the
+structural scan finds zero hits in either file.
 
 ## 1. Table shape and slot usage: **proven**
 
@@ -28,14 +36,26 @@ Static decode. Listings: `reference-private/observations/listings-20260927/{yoda
 `YODA 0x1e2c`–`0x1eb8`, driven by the day-rollover gate at `YODA 0x3446` (`day % 3 == 0`,
 already wired into `game/scripts/game_calendar.gd`'s `"mines"` event). For each slot 0..35
 with `field[2] != 0` (occupied):
-- `field[3] -= 5` (`0x1e52`).
-- If `field[3] < 1` (`0x1e5f`): the mine cell `(field[0]+40, field[1])` is set to tile `79`
-  (`0x1e7e`) and `main+0x614b = 1` is raised (a shared "special event today" flag also set by
-  other story/obstacle handlers; not mine-specific, out of scope for this port).
+- **The decrement itself is guarded**: `0x1e40` tests `field[3] > 0` first; if not, the slot is
+  skipped entirely — no decrement, no write, straight to the next slot (`0x1e4e` branches to
+  `0x1ea0`). Only then: `field[3] -= 5` (`0x1e52`).
+- If `field[3] < 1` after the decrement (`0x1e5f`): the mine cell `(field[0]+40, field[1])` is
+  set to tile `79` (`0x1e7e`) and `main+0x614b = 1` is raised (a shared "special event today"
+  flag also set by other story/obstacle handlers; not mine-specific, out of scope for this
+  port).
+- **Consequence of the guard**: the tile-79 write fires exactly once — the tick where the
+  decrement first crosses below 1. Every later tick, `0x1e40` sees `field[3] <= 0` and skips
+  the slot outright (no further decrement, no further write). A depleted or prospected slot is
+  never freed (`field[2]` is only ever written at creation, `main[0x6082]` writes traced
+  exhaustively across `yoda.json`, see §6's scan methodology) and never reconsidered by
+  depletion again. The reachable floor is therefore the one-time -5 undershoot from a creation
+  value in `[40, 49]`: **`[-4, 0]`** (worked out per residue mod 5), or exactly `-1` from
+  `prospect()` YES (§4), never lower.
 - The routine also calls `YODA 0x1d1a` with the depleted slot's index — a bounded (max 10)
   FIFO notification queue (`main+0x614f`, `main[0x6152]`) that drives a status-bar icon
-  (`shimb[74,13]=3`) or an on-screen actor call (`clive 19`/`clive 4`). This is UI
-  presentation, not a map/record rule; **not ported**.
+  (`shimb[74,13]=3`) or an on-screen actor call (`clive 19`/`clive 4`), read back by the
+  TEXTEK "DISCOVERY OF A MINE"/"CLOSURE OF A MINE" bulletin (§0). This is UI presentation, not
+  a map/record rule; **not ported**.
 
 ## 3. Creation (same tick, after depletion): **proven**
 
@@ -50,29 +70,44 @@ routine returns without generating coordinates at all.
 2. Search a 21×21 window `x ∈ [cx−10, cx+10]`, `y ∈ [cy−10, cy+10]`, **x outer, y inner**
    (`0x1ee8`–`0x227d`), first match wins, no further scanning once a placement is committed.
 3. For each `(x, y)` in the window: test tile `== 2` first (§3a); if that yields no placement,
-   test tile `== 3` (§3b). Any other tile value is skipped.
-4. **Tile `2` (horizontal family)** (`0x1f0e`–`0x2092`): for each corner
-   `(dx, dy) ∈ {(-1,-1), (-1,1), (1,-1), (1,1)}`, in that order:
-   - Skip unless the diagonal cell `(x+dx, y+dy)` is "empty" — tile `== 0`, `> 85`, `< -124`,
-     or strictly between `-113` and `-107` (`0x1f0e`, four-way OR).
-   - Then check the **horizontal** neighbor `(x+dx, y)` (same row, shifted by `dx`, not the
-     diagonal cell) for one of a specific switch pair:
-     | Corner (dx,dy) | Neighbor must be | New switch code at (x,y) |
+   test tile `== 3` (§3b). Any other tile value is skipped. Tile `2`/`3` are ordinary track
+   tiles used throughout the real map (e.g. `test_train_journey.gd`'s starting cell (11,62) is
+   a `2`) — not rare reserved placeholders; the search hits real track constantly.
+4. **Branch semantics verified against source** (`reference-private/alis-source/src/opcodes.c`
+   `cbz24`: `offset = varD7 ? 3 : script_read24()` then unconditional jump — i.e. it branches to
+   the encoded target exactly when the tested accumulator is **zero**, falls through to the next
+   instruction otherwise). This is load-bearing for every corner test below: a `cbz24` guarding
+   an `==`/`OR` block branches to its target when the condition is **false**.
+5. **Tile `2` (horizontal family)** (`0x1f0e`–`0x2092`): for each corner
+   `(dx, dy) ∈ {(-1,-1), (-1,1), (1,-1), (1,1)}`, grouped by `dx` (`-1` group first, `1` group
+   second), in that order:
+   - Skip unless the diagonal cell `(x+dx, y+dy)` is "empty" — tile `== 0`, `> 85`, or `< -124`
+     (`0x1f0e`; the fourth disjunct in the raw OR, `value > -107 & value < -113`, is
+     unsatisfiable as written — confirmed from the raw operand dump, not just the pretty-print;
+     dead code, kept dead in the port rather than "corrected" to a guessed live range per
+     FIDELITE.md). If not empty: **try the other `dy` in the same `dx` group** (continue).
+   - If empty, check the **horizontal** neighbor `(x+dx, y)` (same row, shifted by `dx`, not
+     the diagonal cell). If it is **already** one of the codes below (an existing switch of
+     that specific pair), the site is refused and **the whole `dx` group is abandoned —
+     including the other `dy`** (`0x1fb4`/`0x1feb`/`0x2036`/`0x2071` jump straight to the
+     outer `L0x18b` loop increment, past the second corner's own test): move on to the other
+     `dx`. Otherwise (neighbor is anything else, including empty background) place:
+     | Corner (dx,dy) | Neighbor refuses when it is | New switch code at (x,y) |
      |---|---|---|
      | (-1,-1) | 18 or 19 | 20 |
      | (-1,1) | 22 or 23 | 24 |
      | (1,-1) | 20 or 21 | 18 |
      | (1,1) | 24 or 25 | 22 |
-5. **Tile `3` (vertical family)** (`0x20c2`–`0x2256`): same corner order, but the "empty"
-   test is the diagonal cell as before, and the neighbor check is the **vertical** neighbor
+6. **Tile `3` (vertical family)** (`0x20c2`–`0x2256`): identical structure — same `dx`-group
+   abandon-on-refusal behavior, same corner order — but the neighbor checked is **vertical**
    `(x, y+dy)` (same column, shifted by `dy`):
-   | Corner (dx,dy) | Neighbor must be | New switch code at (x,y) |
+   | Corner (dx,dy) | Neighbor refuses when it is | New switch code at (x,y) |
    |---|---|---|
    | (-1,-1) | 28 or 29 | 32 |
    | (-1,1) | 32 or 33 | 28 |
    | (1,-1) | 26 or 27 | 30 |
    | (1,1) | 30 or 31 | 26 |
-6. On the first successful corner (`0x2281`):
+7. On the first successful corner (`0x2281`):
    - `map[x][y] = new_switch_code`.
    - `map[x+dx][y+dy] = 78` (the mine tile).
    - `record[slot] = [ (x+dx) - 40, y+dy, ±day, rnd(10)+40 ]` — the coordinates recorded are
@@ -84,12 +119,13 @@ routine returns without generating coordinates at all.
    - The same slot-index notification queue as depletion (`YODA 0x1d1a`) runs; not ported
      (UI only).
 
-**Correction to the task brief's paraphrase**: the neighbor that must already exist is not a
-generic "straight track tile" — it must be one specific member of an existing switch pair
-(18–33). The candidate center cell itself must be a placeholder tile `2` or `3` (not a literal
-"off-track diagonal" tile in the general sense); these two codes select which axis (horizontal
-vs vertical) the new switch/mine pair uses. This new switch and the mine tile are physically
-adjacent diagonal/orthogonal cells of that placeholder, not any arbitrary off-track diagonal.
+**On the task brief's paraphrase** ("a straight track tile next to an off-track diagonal
+becomes a switch"): confirmed correct at the level of intent — the candidate that becomes the
+switch is an ordinary track cell (`2` or `3`), and its diagonal neighbor is the one converted
+into the mine. The refinement this decode adds: the *governing* neighbor check is a
+**refusal** condition on the perpendicular cell (must not already be a switch of the specific
+complementary pair), not a requirement that a switch already be present, and a refusal on the
+first corner of a `dx` group silently forfeits the second corner of that group too.
 
 ## 4. Prospecting (YES/NO): **proven**
 
@@ -131,9 +167,11 @@ instructions) is a **pure palette/background selection scene**: it reads one fla
 (`L0x0c`, presumably ore kind) and selects between two background palettes, then sleeps and
 exits. No wagon, goods, or economy write anywhere in it.
 
-Scanning every listing for the mine-table address (`6082`) found no other game-logic reader:
-`glieu.json`'s hits are coincidental byte-offset matches, verified individually to be unrelated
-instructions.
+The structural `omaintc[24706]` scan (§0) found every other reader of `main[0x6082]` to be
+display code: `carte.json 0x2536` draws map-legend icons (open/closed mine glyph, no state
+write); `textek.json`/`texte.json`/`texted.json` draw the atlas legend line, the
+discovery/closure bulletin, and the mine's own name plaque (§0) — all read-only against the
+record, none write to it or to any wagon/goods field.
 
 **Conclusion**: prospecting a mine (§4 YES) has exactly one effect — the map/record write
 above. There is no decoded formula for lignite/anthracite quantity, no slave/mammoth/crane

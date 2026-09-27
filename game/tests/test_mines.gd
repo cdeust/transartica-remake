@@ -22,11 +22,13 @@ func _run() -> void:
 	_test_free_slot_and_used(failures)
 	_test_create_horizontal_placeholder(failures)
 	_test_create_vertical_placeholder(failures)
-	_test_create_finds_nothing_without_a_neighbor(failures)
+	_test_create_excluded_neighbor_skips_the_whole_dx_group(failures)
+	_test_create_blocked_diagonal_tries_the_paired_corner(failures)
+	_test_create_finds_nothing_without_a_qualifying_cell(failures)
 	_test_create_respects_day_limit(failures)
 	_test_create_respects_full_table(failures)
 	_test_deplete_timing(failures)
-	_test_deplete_keeps_decaying_after_zero(failures)
+	_test_deplete_freezes_after_crossing_the_threshold(failures)
 	_test_prospect_yes_and_no(failures)
 	_test_slot_for_cell(failures)
 	_test_snapshot_and_restore(failures)
@@ -72,44 +74,65 @@ func _test_free_slot_and_used(failures: Array[String]) -> void:
 	_check(not MineTable.is_anthracite(table.records[0]) and MineTable.mine_cell(table.records[0]) == Vector2i(50, 20), "positive day is lignite; cell is field0+40, field1", failures)
 
 
-# YODA 0x1f8e: candidate (30,30)==2, west neighbor (29,30)==18 -> switch 20 at (30,30), mine at (29,29).
-func _test_create_horizontal_placeholder(failures: Array[String]) -> void:
-	var network := _synthetic_network({Vector2i(30, 30): 2, Vector2i(29, 30): 18})
-	var table := MineTable.new()
-	# rnd(138)+11 then rnd(50)+11 must land the search window on (30,30); seed picked by trial.
-	var rng := _rng(1)
+func _center(seed_value: int) -> Vector2i:
+	var rng := _rng(seed_value)
 	var cx := rng.randi_range(0, MineTable.CENTER_X_SPREAD - 1) + MineTable.CENTER_MIN
 	var cy := rng.randi_range(0, MineTable.CENTER_Y_SPREAD - 1) + MineTable.CENTER_MIN
-	network = _synthetic_network({Vector2i(cx, cy): 2, Vector2i(cx - 1, cy): 18})
-	rng = _rng(1)
-	var writes := table.create(1, network, rng)
-	_check(writes.size() == 2 and writes.get(Vector2i(cx, cy)) == 20 and writes.get(Vector2i(cx - 1, cy - 1)) == 78, "code-2 candidate with a west 18 neighbor becomes switch 20, mine on the NW diagonal", failures)
+	return Vector2i(cx, cy)
+
+
+# YODA 0x1f8e/0x1fb0: candidate ==2, diagonal empty, west neighbor NOT 18/19 -> switch 20 at
+# the candidate, mine on the NW diagonal. An empty (background) west neighbor is not an
+# existing switch, so this is the placement path, not the exclusion path.
+func _test_create_horizontal_placeholder(failures: Array[String]) -> void:
+	var table := MineTable.new()
+	var center := _center(1)
+	var network := _synthetic_network({center: 2})
+	var writes := table.create(1, network, _rng(1))
+	_check(writes.size() == 2 and writes.get(center) == 20 and writes.get(center + Vector2i(-1, -1)) == 78, "a bare code-2 candidate places switch 20, mine on the NW diagonal", failures)
 	var record: Array = table.records[0]
-	_check(MineTable.mine_cell(record) == Vector2i(cx - 1, cy - 1), "the record stores the mine cell, not the switch cell", failures)
+	_check(MineTable.mine_cell(record) == center + Vector2i(-1, -1), "the record stores the mine cell, not the switch cell", failures)
 	_check(record[MineTable.FIELD_WEALTH] >= MineTable.WEALTH_MIN and record[MineTable.FIELD_WEALTH] <= MineTable.WEALTH_MIN + MineTable.WEALTH_SPREAD - 1, "wealth index is rnd(10)+40", failures)
 
 
-# YODA 0x2142: candidate ==3, north neighbor (x,y-1)==28 -> switch 32, mine on the NW diagonal.
+# YODA 0x2142/0x2164: candidate ==3, north neighbor NOT 28/29 -> switch 32, mine on the NW diagonal.
 func _test_create_vertical_placeholder(failures: Array[String]) -> void:
 	var table := MineTable.new()
-	var rng := _rng(1)
-	var cx := rng.randi_range(0, MineTable.CENTER_X_SPREAD - 1) + MineTable.CENTER_MIN
-	var cy := rng.randi_range(0, MineTable.CENTER_Y_SPREAD - 1) + MineTable.CENTER_MIN
-	var network := _synthetic_network({Vector2i(cx, cy): 3, Vector2i(cx, cy - 1): 28})
-	rng = _rng(1)
-	var writes := table.create(1, network, rng)
-	_check(writes.get(Vector2i(cx, cy)) == 32 and writes.get(Vector2i(cx - 1, cy - 1)) == 78, "code-3 candidate with a north 28 neighbor becomes switch 32, mine on the NW diagonal", failures)
+	var center := _center(1)
+	var network := _synthetic_network({center: 3})
+	var writes := table.create(1, network, _rng(1))
+	_check(writes.get(center) == 32 and writes.get(center + Vector2i(-1, -1)) == 78, "a bare code-3 candidate places switch 32, mine on the NW diagonal", failures)
 
 
-func _test_create_finds_nothing_without_a_neighbor(failures: Array[String]) -> void:
+# YODA 0x1fb0/0x1fb4: the west neighbor already being 18 (an existing switch of that family)
+# excludes the NW *and* SW corners together (the bytecode jumps past both), so placement
+# moves on to the east side.
+func _test_create_excluded_neighbor_skips_the_whole_dx_group(failures: Array[String]) -> void:
 	var table := MineTable.new()
-	var rng := _rng(1)
-	var cx := rng.randi_range(0, MineTable.CENTER_X_SPREAD - 1) + MineTable.CENTER_MIN
-	var cy := rng.randi_range(0, MineTable.CENTER_Y_SPREAD - 1) + MineTable.CENTER_MIN
-	var network := _synthetic_network({Vector2i(cx, cy): 2})
-	rng = _rng(1)
-	var writes := table.create(1, network, rng)
-	_check(writes.is_empty() and table.find_free_slot() == 0, "a placeholder with no qualifying neighbor creates nothing and keeps the slot free", failures)
+	var center := _center(1)
+	var network := _synthetic_network({center: 2, center + Vector2i(-1, 0): 18})
+	var writes := table.create(1, network, _rng(1))
+	_check(not writes.has(center + Vector2i(-1, -1)) and not writes.has(center + Vector2i(-1, 1)), "an 18 west neighbor rules out both west corners", failures)
+	_check(writes.get(center) == 18 and writes.get(center + Vector2i(1, -1)) == 78, "placement falls through to the NE corner instead", failures)
+
+
+# YODA 0x1f72: when the NW diagonal is not empty (real track, not background), the routine
+# tries the SW corner for the same west neighbor instead of abandoning the dx group.
+func _test_create_blocked_diagonal_tries_the_paired_corner(failures: Array[String]) -> void:
+	var table := MineTable.new()
+	var center := _center(1)
+	var network := _synthetic_network({center: 2, center + Vector2i(-1, -1): 6})
+	var writes := table.create(1, network, _rng(1))
+	_check(writes.get(center) == 24 and writes.get(center + Vector2i(-1, 1)) == 78, "a blocked NW diagonal falls through to the SW corner, switch 24", failures)
+
+
+func _test_create_finds_nothing_without_a_qualifying_cell(failures: Array[String]) -> void:
+	var table := MineTable.new()
+	var center := _center(1)
+	# No code-2 or code-3 tile anywhere in the search window: nothing to place on.
+	var network := _synthetic_network({center: 5})
+	var writes := table.create(1, network, _rng(1))
+	_check(writes.is_empty() and table.find_free_slot() == 0, "a window without any off-track diagonal creates nothing and keeps the slot free", failures)
 
 
 func _test_create_respects_day_limit(failures: Array[String]) -> void:
@@ -125,7 +148,7 @@ func _test_create_respects_full_table(failures: Array[String]) -> void:
 	var table := MineTable.new()
 	for index in MineTable.SLOT_COUNT:
 		table.records[index] = [0, 0, index + 1, 40]
-	var network := _synthetic_network({Vector2i(30, 30): 2, Vector2i(29, 30): 18})
+	var network := _synthetic_network({_center(1): 2})
 	var writes := table.create(1, network, _rng(1))
 	_check(writes.is_empty(), "a full 36-slot table blocks creation even with a valid site", failures)
 
@@ -143,13 +166,16 @@ func _test_deplete_timing(failures: Array[String]) -> void:
 	_check(ticks == int((MineTable.WEALTH_MIN - MineTable.DECAY_PER_TICK - MineTable.DEPLETED_BELOW) / float(MineTable.DECAY_PER_TICK)) + 1, "depletion timing matches wealth/5 rollovers, YODA 0x1e52", failures)
 
 
-func _test_deplete_keeps_decaying_after_zero(failures: Array[String]) -> void:
+# YODA 0x1e40: the decrement itself is guarded by wealth > 0, so once a slot crosses the
+# depletion threshold it is frozen -- no further decrement, no repeated 79 write.
+func _test_deplete_freezes_after_crossing_the_threshold(failures: Array[String]) -> void:
 	var table := MineTable.new()
-	table.records[0] = [10, 20, 5, MineTable.DEPLETED_BELOW - 1]
-	table.deplete()
-	table.deplete()
-	_check(table.records[0][MineTable.FIELD_WEALTH] == MineTable.DEPLETED_BELOW - 1 - 2 * MineTable.DECAY_PER_TICK, "no source resets a depleted slot; wealth keeps falling (mines.md 1/2)", failures)
-	_check(MineTable.is_used(table.records[0]), "a depleted slot stays occupied forever", failures)
+	table.records[0] = [10, 20, 5, MineTable.DECAY_PER_TICK - 1] # 4: one tick crosses below 1.
+	var first := table.deplete()
+	_check(first.get(Vector2i(50, 20)) == MineTable.DEPLETED_TILE and table.records[0][MineTable.FIELD_WEALTH] == -1, "crossing the threshold writes 79 once, landing at 4-5=-1", failures)
+	var second := table.deplete()
+	_check(second.is_empty() and table.records[0][MineTable.FIELD_WEALTH] == -1, "a frozen slot is skipped on every later tick: no further write, no further decrement", failures)
+	_check(MineTable.is_used(table.records[0]), "a depleted slot stays occupied forever (no field[2] reset in the source)", failures)
 
 
 func _test_prospect_yes_and_no(failures: Array[String]) -> void:
@@ -190,7 +216,9 @@ func _test_snapshot_and_restore(failures: Array[String]) -> void:
 
 
 # Every placement create() finds on the real map must sit on a genuine off-track diagonal
-# next to the matching existing switch family (rail_network.gd SWITCH_RULES bases).
+# (background before the write) next to the matching existing switch family
+# (rail_network.gd SWITCH_RULES bases), and the switch cell itself must have started as a
+# code-2 or code-3 candidate.
 func _test_real_map_invariants(failures: Array[String]) -> void:
 	var network := RailNetwork.new()
 	network.load_bytes(map_bytes)
@@ -212,4 +240,8 @@ func _test_real_map_invariants(failures: Array[String]) -> void:
 		_check(writes.get(mine_at) == MineTable.MINE_TILE, "the recorded mine cell is exactly the written 78 cell", failures)
 		_check(abs(mine_at.x - switch_at.x) == 1 and abs(mine_at.y - switch_at.y) == 1, "the mine sits diagonally adjacent to its switch", failures)
 		_check(RailNetwork.SWITCH_RULES.has(switch_code), "the switch code belongs to the rail-network switch table", failures)
+		var original_switch_tile := network.tile(switch_at)
+		_check(original_switch_tile == 2 or original_switch_tile == 3, "the switch cell was a genuine code-2/3 candidate before the write", failures)
+		var original_mine_tile := network.tile(mine_at)
+		_check(original_mine_tile == 0 or original_mine_tile > 85 or original_mine_tile < -124, "the mine cell was background before the write", failures)
 	_check(found > 0, "at least one of 60 seeded centers finds a real placement on the shipped map", failures)
