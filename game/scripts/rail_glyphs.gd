@@ -24,8 +24,8 @@ static func draw_tile(canvas: CanvasItem, code: int, origin: Vector2, tile_size:
 
 static func ports_for_code(code: int) -> Array[Vector2]:
 	match code:
-		2, 16: return [Vector2(-0.5, 0), Vector2(0.5, 0)]
-		3, 15: return [Vector2(0, -0.5), Vector2(0, 0.5)]
+		2: return [Vector2(-0.5, 0), Vector2(0.5, 0)]
+		3: return [Vector2(0, -0.5), Vector2(0, 0.5)]
 		4: return [Vector2(0.5, -0.5), Vector2(-0.5, 0.5)]
 		5: return [Vector2(-0.5, -0.5), Vector2(0.5, 0.5)]
 		6: return [Vector2(-0.5, 0), Vector2(0.5, 0.5)]
@@ -36,8 +36,9 @@ static func ports_for_code(code: int) -> Array[Vector2]:
 		11: return [Vector2(0, 0.5), Vector2(0.5, -0.5)]
 		12: return [Vector2(0, -0.5), Vector2(-0.5, 0.5)]
 		13: return [Vector2(0, -0.5), Vector2(0.5, 0.5)]
-		14: return [Vector2(0, -0.5), Vector2(0.5, 0), Vector2(0, 0.5), Vector2(-0.5, 0)]
-		17: return [Vector2(0.5, -0.5), Vector2(0.5, 0.5), Vector2(-0.5, 0.5), Vector2(-0.5, -0.5)]
+		# 15/16: four-way per full rail-set neighbours and the TIME 0x0486 axis rule.
+		14, 15, 16: return [Vector2(0, -0.5), Vector2(0.5, 0), Vector2(0, 0.5), Vector2(-0.5, 0)]
+		17, 49: return [Vector2(0.5, -0.5), Vector2(0.5, 0.5), Vector2(-0.5, 0.5), Vector2(-0.5, -0.5)]
 		18, 19: return [Vector2(-0.5, 0), Vector2(0.5, 0), Vector2(0.5, -0.5)]
 		20, 21: return [Vector2(-0.5, 0), Vector2(0.5, 0), Vector2(-0.5, -0.5)]
 		22, 23: return [Vector2(-0.5, 0), Vector2(0.5, 0), Vector2(0.5, 0.5)]
@@ -55,6 +56,11 @@ static func ports_for_code(code: int) -> Array[Vector2]:
 		46: return ports_for_code(11)
 		55: return ports_for_code(12)
 		48: return ports_for_code(13)
+		# Straights of the 38-58 set, from full rail-set neighbours (tasks/evidence/rail-glyphs.md).
+		38, 52, 53: return ports_for_code(3)
+		39, 50, 54, 56, 58: return ports_for_code(2)
+		40: return ports_for_code(5)
+		41: return ports_for_code(4)
 		_: return []
 
 
