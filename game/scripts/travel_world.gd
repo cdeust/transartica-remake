@@ -172,6 +172,7 @@ func _draw() -> void:
 	_draw_rails()
 	map_entities.draw(self)
 	_draw_train()
+	map_entities.draw_player_heading(self)
 
 
 func _draw_rails() -> void:
@@ -289,7 +290,7 @@ func update_train() -> void:
 	var actual := _current_journey_position()
 	var arc: float = journey.distance_travelled() if journey != null else 0.0
 	var moved := not _visual_initialized or not is_equal_approx(_arc_to, arc)
-	var reset_or_jump := not _visual_initialized or arc < _arc_to or _visual_to.distance_to(actual) > 1.5
+	var reset_or_jump: bool = (journey != null and journey.reverse) or not _visual_initialized or arc < _arc_to or _visual_to.distance_to(actual) > 1.5
 	if reset_or_jump:
 		_snap_visual_position(actual)
 	elif moved:

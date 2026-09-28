@@ -90,3 +90,18 @@ func _draw_cities(view) -> void:
 			view._draw_selected_city(center, String(city.name))
 		elif Rect2(Vector2.ZERO, view.size).has_point(center):
 			view._draw_city_label(center, String(city.name), occupied)
+
+
+func draw_player_heading(view) -> void:
+	if view.journey == null:
+		return
+	# Owner correction27Sep: the detailed map must show the direction of travel.
+	var direction := Vector2(Rails.DELTAS.get(view.journey.heading, Vector2i.ZERO)).normalized()
+	if direction == Vector2.ZERO:
+		return
+	var center: Vector2 = view._world_to_screen(view._visual_position + Vector2(0.5, 0.5))
+	var tip := center + direction * 32.0 # Authored screen-space cue, invariant under map zoom.
+	var side := direction.orthogonal()
+	var points := PackedVector2Array([tip - direction * 12.0 + side * 7.0, tip, tip - direction * 12.0 - side * 7.0])
+	view.draw_polyline(points, Color("#17242b"), 7.0, true)
+	view.draw_polyline(points, Color("#ffe4a5"), 3.0, true)

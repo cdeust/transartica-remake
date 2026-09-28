@@ -93,3 +93,5 @@
 - Correction propriétaire sur le quota : prioriser les boucles de gameplay intégrées avant les itérations graphiques répétées ; conserver une réserve pour tests, push et reprise. Ne pas confondre volume de dessins, modules isolés et progression du portage complet.
 
 - Correction propriétaire : une règle isolée, un décor livré ou une simulation invisible ne constitue pas un élément porté. Vérifier dans le jeu le parcours complet et comparer ses états aux sources originales avant de cocher sa couverture. Les portages existants et les ressources déjà extraites doivent servir avant toute nouvelle recherche ou invention.
+
+- Une capture originale fournie pour les informations et commandes ne demande pas de grossir ses pixels. Garder la structure fonctionnelle, mais produire une qualité cohérente avec les intérieurs acceptés ; ne pas confondre référence fonctionnelle et direction graphique.

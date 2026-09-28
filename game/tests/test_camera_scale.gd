@@ -14,6 +14,8 @@ class CompleteRoute:
 	var direction := Vector2.RIGHT
 	var curved := false
 	var travel := 0.0
+	var heading := 6 # read by the travel-direction cue
+	var reverse := false # read by the reverser snap in update_train
 
 	func point_at(distance: float) -> Vector2:
 		if curved:

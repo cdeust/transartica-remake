@@ -1,3 +1,10 @@
+# Retours du test utilisateur,27septembre
+
+- [ ] Refaire le bandeau avec les mêmes informations, dans la qualité des scènes de wagons. Le grossissement des pixels originaux est rejeté.
+- [x] Ajouter un indicateur du sens de marche sur la carte détaillée.
+- [ ] Refaire le terrain cartographique et les éléments de décor : rendu courant rejeté.
+- [ ] Clarifier puis vérifier l’accès à la carte globale et ce qui doit être visible au départ.
+
 # Correction des villes et ennemis visibles
 
 Bandeau ECS privé et reprise : [validation](validation/map-places-20260927.md).

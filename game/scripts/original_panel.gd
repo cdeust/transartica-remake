@@ -7,11 +7,11 @@ const STRIP := Rect2(0, 149, 320, 51)
 # source: measured authored-asset alignment. Remove the surplus separator
 # between wagon and map icons so each illustrated group meets the ECS hit boxes.
 const ART_SLICES := [
-	[Rect2(0, 190, 1030, 389), Rect2(0, 149, 160, 51)],
-	[Rect2(1100, 190, 450, 389), Rect2(160, 149, 70, 51)],
-	[Rect2(1550, 190, 464, 389), Rect2(230, 149, 90, 51)],
+	[Rect2(0, 184, 992, 402), Rect2(0, 149, 160, 51)],
+	[Rect2(1058, 184, 480, 402), Rect2(160, 149, 70, 51)],
+	[Rect2(1538, 184, 445, 402), Rect2(230, 149, 90, 51)],
 ]
-const ART_PATH := "res://assets/interface/original-panel.png"
+const ART_PATH := "res://assets/interface/original-panel-v2.png"
 const ICON_ATLAS_PATH := "res://assets/interface/panel-icons.png"
 const COMMON := {
 	2: Rect2(5, 164, 38, 29),
@@ -34,11 +34,12 @@ const READOUT_COLOR := Color("#ffe1a0")
 const ICON_INK := Color("#342317") # source: authored dark ink on the brass/white plate.
 # source: inner black-window bounds measured on original-panel.png and checked
 # in tasks/validation/boudoir-quarters.png; excludes icon, rounded edge and rivets.
-const READOUT_INNERS := [Rect2(1840, 298, 120, 55), Rect2(1840, 396, 120, 55), Rect2(1840, 492, 120, 57)]
+const READOUT_INNERS := [Rect2(1775, 299, 167, 54), Rect2(1775, 401, 167, 54), Rect2(1775, 505, 167, 54)]
 const CLOCK_CENTER := Vector2(24, 180)
 
 signal requested(code: int)
 
+var reference_pixels := OS.get_environment("TRANSARTICA_REFERENCE_UI") == "1"
 var ecs_art = preload("res://scripts/ecs_panel_art.gd").new()
 var map_context := false
 var overview_context := false
@@ -135,14 +136,14 @@ func refresh() -> void:
 	var state: Array = [map_context, overview_context]
 	if app != null:
 		state.append_array([app.engine.lignite, app.engine.anthracite, app.engine.speed,
-			app.calendar.hour, app.calendar.minute, app.calendar.factor, app.engine.brake, app.wagons.snapshot()])
+			app.calendar.hour, app.calendar.minute, app.calendar.factor, app.engine.brake, app.journey.reverse, app.wagons.snapshot()])
 	if state != _last_state:
 		_last_state = state
 		queue_redraw()
 
 
 func _draw() -> void:
-	if ecs_art.available:
+	if reference_pixels and ecs_art.available:
 		ecs_art.draw(self)
 		if app != null:
 			_draw_readouts()
@@ -154,13 +155,18 @@ func _draw() -> void:
 	var frame := frame_rect()
 	var scale_factor := frame.size.x / LOGICAL_SIZE.x
 	draw_set_transform(frame.position, 0.0, Vector2.ONE * scale_factor)
-	if map_context:
-		_draw_map_commands()
+	if not map_context:
+		# Cover controls inactive in wagon context with the authored blank plate.
+		for code in [1, 3, 5]:
+			draw_texture_rect_region(_texture, MAP_COMMANDS[code], Rect2(758, 434, 207, 120))
 	if app != null:
+		if map_context and app.journey.reverse:
+			draw_rect(MAP_COMMANDS[3].grow(-1), READOUT_COLOR, false, 1.0)
 		_draw_clock()
 	draw_set_transform(Vector2.ZERO)
 	if app != null:
 		_draw_readouts()
+		_draw_composition()
 
 
 func _draw_clock() -> void:
@@ -178,7 +184,7 @@ func _draw_readouts() -> void:
 
 
 func readout_window(index: int) -> Rect2:
-	if ecs_art.available:
+	if reference_pixels and ecs_art.available:
 		# Original YODA coal icons at z32/20/8, adjacent numeric wells.
 		return screen_rect(Rect2(278, 162 + 12 * index, 40, 11))
 	var source: Rect2 = READOUT_INNERS[index]
@@ -242,3 +248,25 @@ func _draw_command_icon(index: int, slot: Rect2) -> void:
 func _clock_hand(turn: float, length: float) -> void:
 	var direction := Vector2.UP.rotated(turn * TAU)
 	draw_line(CLOCK_CENTER, CLOCK_CENTER + direction * length, ICON_INK, 1.0, true)
+
+
+func _draw_composition() -> void:
+	# Authored high-resolution miniatures reuse the train's own vehicle atlas.
+	var renderer = app.world_view.train_renderer
+	var right := 300
+	var factor := frame_rect().size.x / LOGICAL_SIZE.x
+	for index in range(ecs_art.first_wagon, app.wagons.count()):
+		var wagon: Array = app.wagons.wagons[index]
+		var kind: String = preload("res://scripts/train_consist.gd").TYPE_TO_KIND[int(wagon[0])]
+		var vehicle: Dictionary = renderer.frame_for(kind)
+		var width: int = ecs_art.wagon_width(wagon)
+		if not vehicle.is_empty():
+			var extent: Vector2 = vehicle.bounds.size
+			var scale := minf((width - 2.0) / extent.y, 5.0 / extent.x) * factor
+			var center := screen_rect(Rect2(right - width / 2.0, 153.5, 0, 0)).position
+			draw_set_transform_matrix(renderer.registration(vehicle, center, -PI / 2, scale))
+			draw_texture(vehicle.texture, Vector2.ZERO, Color("#7d6551") if int(wagon[1]) == 3 else Color.WHITE)
+		right -= width
+		if right < 14:
+			break
+	draw_set_transform_matrix(Transform2D.IDENTITY)
