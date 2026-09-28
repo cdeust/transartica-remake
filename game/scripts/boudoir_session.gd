@@ -152,7 +152,8 @@ func _panel_action(code: int) -> void:
 			app._open_panel("room")
 		7: app._open_panel("quarters")
 		8: app._open_panel("boudoir")
-		3, 9: _unavailable()
+		3: _reverse_train()
+		9: _unavailable()
 	refresh()
 
 
@@ -247,3 +248,15 @@ func _inspect_map(cell: Vector2i) -> void:
 	app.world_view.camera_world = Vector2(cell) + Vector2.ONE * 0.5
 	app.world_view.offset = Vector2.ZERO
 	app.world_view.queue_redraw()
+
+
+func _reverse_train() -> void:
+	if city_suspended:
+		return
+	if app.journey.reverse_direction():
+		# YODA0x18e3 stops effective speed;0x18d8 releases the brake.
+		app.engine.speed = 0
+		app.engine.brake = false
+		app.world_view._snap_visual_position(app.journey.fractional_position())
+		app.world_view.queue_redraw()
+		panel.refresh()

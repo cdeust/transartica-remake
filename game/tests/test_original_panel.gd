@@ -56,13 +56,13 @@ func _run() -> void:
 func _test_readouts(panel: Control) -> void:
 	# Independent sampled black interiors exclude rounded frame/rivets. The source
 	# rightmost slice is 464x389 displayed in logical90x51 at (230,149).
-	var samples := [Rect2(1840, 298, 120, 55), Rect2(1840, 396, 120, 55), Rect2(1840, 492, 120, 57)]
+	var samples := [Rect2(1775, 299, 167, 54), Rect2(1775, 401, 167, 54), Rect2(1775, 505, 167, 54)]
 	# EngineState restore accepts fuel through32767; test initial amounts and max.
 	for value in ["0", "500", "2000", "32767"]:
 		for index in range(samples.size()):
 			var sample: Rect2 = samples[index]
-			var logical := Rect2(Vector2(230, 149) + (sample.position - Vector2(1550, 190)) * Vector2(90.0 / 464, 51.0 / 389), sample.size * Vector2(90.0 / 464, 51.0 / 389))
-			if panel.ecs_art.available:
+			var logical := Rect2(Vector2(230, 149) + (sample.position - Vector2(1538, 184)) * Vector2(90.0 / 445, 51.0 / 402), sample.size * Vector2(90.0 / 445, 51.0 / 402))
+			if panel.reference_pixels and panel.ecs_art.available:
 				logical = Rect2(278, 162 + 12 * index, 40, 11)
 			var safe_window: Rect2 = panel.screen_rect(logical).grow(-1.0)
 			var layout: Dictionary = panel.readout_layout(value, index)

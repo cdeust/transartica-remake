@@ -32,6 +32,14 @@ func _run() -> void:
 	_check(not app.world_view.discovery_enabled, "fixed towns and track are not hidden by preview fog")
 	for city in app.world_data.cities:
 		_check(app.world_view._city_is_visible(city), "fixed city visible before visit")
+	app.engine.speed = 100
+	var initial_heading: int = app.journey.heading
+	var initial_front: Vector2 = app.journey.fractional_position()
+	panel.activate(3)
+	_check(app.journey.reverse and app.journey.heading == 10 - initial_heading and app.engine.speed == 0 and not app.engine.brake, "HUD wheel reverses traction and stops speed")
+	_check(app.journey.fractional_position().distance_to(initial_front) < 0.001, "HUD reverse does not teleport locomotive")
+	panel.activate(3)
+	_check(not app.journey.reverse, "HUD wheel restores forward traction")
 	var saves = preload("res://scripts/session_saves.gd")
 	var saved_path: String = app.save_path_override
 	_check(saves.save(app, saved_path).ok, "save travel before city inspection")
