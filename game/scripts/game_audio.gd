@@ -17,6 +17,7 @@ var _elapsed := 0.0
 var _fade_remaining := 0.0
 var _fade_duration := 0.0
 var _fade_gain := 1.0
+var _effect_generation := 0
 
 
 func attach(app: Node) -> void:
@@ -132,6 +133,7 @@ func play_reception() -> void:
 
 
 func stop_effects() -> void:
+	_effect_generation += 1
 	samples.stop_all() # Original cdelsound is separate from cdelmusic.
 
 
@@ -230,3 +232,26 @@ func toggle_original_music() -> bool:
 	# OPTION action3 writes25912 only; currently playing score is left intact.
 	music_enabled = not music_enabled
 	return music_enabled
+
+
+func son(selector: int, pitch := 0, long_ambient := true) -> int:
+	# SON0x18 cswitch base0; ECS MAIN25918=4 chooses ambient10000 branch.
+	var offsets := {0: 0x34, 1: 0x48, 3: 0x9b, 4: 0xaf, 5: 0xc3, 7: 0xdf}
+	if selector == 2:
+		return effect("son", 0x72 if long_ambient else 0x87, {"14": pitch})
+	if selector == 8:
+		return effect("son", 0x109 if long_ambient else 0x11e, {"14": pitch})
+	if selector == 6:
+		var channel := effect("son", 0x12f)
+		_son_sequence(_effect_generation)
+		return channel
+	return effect("son", offsets[selector], {"14": pitch}) if offsets.has(selector) else -1
+
+
+func _son_sequence(generation: int) -> void:
+	# SON0x13a/14f each waits three source cycles before next pitch.
+	for offset in [0x144, 0x159]:
+		await get_tree().create_timer(3.0 / 50).timeout
+		if generation != _effect_generation:
+			return
+		effect("son", offset)
