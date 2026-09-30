@@ -48,3 +48,15 @@ window action transcript, no aesthetic acceptance is claimed. Root must
 review the integrated scene in its isolated native test window. This is not
 an emulator equivalence benchmark of the full ECS script: mounted groups,
 AI random-stream equivalence and edge cases need original comparative review.
+
+## Material presentation follow-up
+
+Each surviving damaged wagon receives its own ImageTexture and byte occupancy
+mask keyed by train/index/health. Authored fracture stencil pixels remove actual
+hull texels; health1 removes more than health2, and adjacent intact wagons retain
+the original texture. Sampled hull colours become falling pixel fragments.
+Authored explosion footprint also creates a PointLight2D fading with the visual
+keyposes. These effects do not alter weapons, collision, resources or health.
+The additional native Godot assertions verify removed texels, increasing damage
+occupancy and intact neighbouring texture. Presentation cadence/trajectory is an
+authored adaptation; no claim of original debris physics is made.

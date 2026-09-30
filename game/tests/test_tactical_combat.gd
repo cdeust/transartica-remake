@@ -25,8 +25,9 @@ func run() -> void:
 	_results()
 	_resume()
 	_scene()
+	_materials()
 	if failures.is_empty():
-		print("PASS: tactical combat weapons, actors, dynamite, defeat/victory, exactly-once result, JSON resume,30/60/144 cadence, native scene inputs")
+		print("PASS: tactical combat weapons, actors, dynamite, defeat/victory, exactly-once result, JSON resume,30/60/144 cadence, scene inputs, per-instance material occupancy")
 		quit(0)
 	else:
 		for failure in failures: push_error(failure)
@@ -135,3 +136,14 @@ func _scene() -> void:
 	scene.handle_key(key)
 	check(state.actors[-1].direction==4,"native scene arrow sets original grid direction")
 	scene.free()
+
+func _materials() -> void:
+	var material=load("res://scripts/tactical_materials.gd").new()
+	var texture=load("res://assets/combat/wagon-23.png")
+	var damaged: Texture2D=material.texture_for(texture,0,3,2)
+	check(damaged!=texture,"damage state2 produces an instance texture")
+	var first: Dictionary=material.instances["0/3/2"]
+	check(first.removed.size()>0 and first.occupancy.count(0)>0,"impact actually removes authored hull pixels from material occupancy")
+	material.texture_for(texture,0,3,1)
+	check(material.instances["0/3/1"].removed.size()>first.removed.size(),"second hit enlarges the same instance damage mask")
+	check(material.texture_for(texture,0,4,3)==texture,"neighbour hull retains intact authored pixels")

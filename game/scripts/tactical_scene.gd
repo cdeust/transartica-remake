@@ -12,6 +12,9 @@ var paused := false
 var textures := {}
 var effects: Array = []
 var edge_scroll := 0
+var materials = preload("res://scripts/tactical_materials.gd").new()
+var wagon_bounds := {}
+var lights: Array = []
 
 func _ready() -> void:
 	super._ready()
@@ -36,7 +39,12 @@ func _physics_process(delta: float) -> void:
 	if state.ticks != before:
 		for event in state.events:
 			effects.append({"event":event.duplicate(), "born":state.ticks})
+			_impact_light(event)
 		effects = effects.filter(func(effect): return state.ticks - effect.born < 23)
+	for entry in lights:
+		entry.node.energy = maxf(0.0,1.0-float(state.ticks-entry.born)/23.0)
+		if entry.node.energy <= 0: entry.node.queue_free()
+	lights = lights.filter(func(entry): return state.ticks-entry.born < 23)
 	if state.outcome != 0:
 		hide()
 		completed.emit()
@@ -81,10 +89,12 @@ func _train(side: int, baseline: float) -> void:
 		var extent := texture.get_size()*factor
 		var x: float = 320 + state.offsets[side] - index*64 - camera
 		var rect := Rect2(x-width,baseline-extent.y,extent.x,extent.y)
+		var original_texture: Texture2D = texture
+		texture = materials.texture_for(texture,side,index,car.health)
+		wagon_bounds["%d/%d" % [side,index]] = rect
 		draw_texture_rect(texture,rect,false,Color(1,0.77,0.66) if side == 1 else Color.WHITE)
-		if car.health in [1,2]:
-			var scar: Texture2D = textures["effects-kit-08"]
-			draw_texture_rect(scar,Rect2(rect.position+rect.size*0.35,Vector2(10,10)),false,Color(1,1,1,0.8))
+		if car.health <= 0:
+			materials.texture_for(original_texture,side,index,1)
 		if side == 0:
 			text_at(Vector2(rect.position.x+2,32),"%d:%d" % [source_index,car.health],4)
 
@@ -121,6 +131,10 @@ func _effect(effect: Dictionary) -> void:
 	var texture: Texture2D = textures["effects-kit-%02d" % frame_index]
 	var extent := Vector2(40,40) if event.kind=="destroy" else Vector2(18,18)
 	draw_texture_rect(texture,Rect2(point-extent/2,extent),false,Color(1,1,1,1.0-float(age)/23))
+	if event.has("wagon"):
+		var prefix := "%d/%d" % [event.side,event.wagon]
+		var health: int = maxi(1,state.trains[event.side][event.wagon].health)
+		if wagon_bounds.has(prefix): materials.draw_debris(self,prefix+"/%d" % health,wagon_bounds[prefix],age)
 
 func _gui_input(event: InputEvent) -> void:
 	if state != null and event is InputEventMouseMotion:
@@ -200,3 +214,18 @@ func _direction(key: int, diagonal: bool) -> void:
 	if diagonal:
 		direction=(direction+1)%8
 	state.command(selected_actor,direction)
+
+func _impact_light(event: Dictionary) -> void:
+	if event.kind not in ["impact","destroy","shot"]:
+		return
+	var point: Vector2 = _field_point(event.x,event.y) if event.has("x") else _roof_point(event.side,event.wagon*4+2)
+	var light := PointLight2D.new()
+	# Pixel silhouette of the authored explosion supplies the light footprint.
+	light.texture = textures["effects-kit-04"]
+	light.color = Color("#ffbc66")
+	var bounds := canvas_rect()
+	var scale := bounds.size.x/CANVAS.x
+	light.position = bounds.position+point*scale
+	light.texture_scale = 40.0*scale/light.texture.get_width()
+	add_child(light)
+	lights.append({"node":light,"born":state.ticks})
