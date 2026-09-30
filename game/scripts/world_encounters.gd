@@ -2,6 +2,9 @@ extends RefCounted
 
 # source: enemy-trains.md §6, combat.md §9 and manual.txt lines264–266.
 const Enemies = preload("res://scripts/enemy_trains.gd")
+const Tactical = preload("res://scripts/tactical_combat.gd")
+const Scene = preload("res://scripts/tactical_scene.gd")
+const Result = preload("res://scripts/tactical_result.gd")
 const Report = preload("res://scripts/combat_report.gd")
 var enemies = Enemies.new()
 var rng := RandomNumberGenerator.new()
@@ -10,6 +13,8 @@ var automatic := false # source: TABLE0x255 combat enabled by default.
 var pending := -1
 var app
 var report
+var manual
+var manual_scene
 
 
 func attach(owner_app) -> void:
@@ -24,12 +29,21 @@ func attach(owner_app) -> void:
 	report.options_requested.connect(func(): report.hide(); app._open_panel("options"))
 	app._boudoir_session.reception.combat_requested.connect(toggle_automatic)
 	app._boudoir_session.reception.level_requested.connect(cycle_difficulty)
+	manual_scene = Scene.new()
+	manual_scene.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	app.add_child(manual_scene)
+	manual_scene.completed.connect(_finish_manual)
+	manual_scene.save_requested.connect(func(): app.save_view())
+	manual_scene.options_requested.connect(func(): manual_scene.hide(); app._open_panel("options"))
 	_sync_options()
 
 
 func reset() -> void:
 	enemies.reset()
 	pending = -1
+	manual = null
+	if manual_scene != null:
+		manual_scene.hide()
 	if report != null:
 		report.hide()
 
@@ -65,12 +79,38 @@ func advance(old_cell: Vector2i) -> bool:
 	if automatic:
 		resolve_pending()
 	else:
-		report.open_report({"manual": true})
+		resume_pending()
 	return true
 
 
+func resume_pending() -> void:
+	if pending < 0:
+		return
+	if manual == null:
+		manual = Tactical.new()
+		manual.begin(app.wagons, enemies.slots[pending][Enemies.STRENGTH], rng)
+	manual_scene.paused = false
+	manual_scene.open_battle(manual)
+
+
+func _finish_manual() -> void:
+	if pending < 0 or manual == null or manual.outcome == 0:
+		return
+	var result: Dictionary = Result.commit(manual, app.wagons, app.engine, app.trade.spy_slots)
+	if result.is_empty():
+		return
+	rng.state = manual.rng.state
+	if result.won:
+		enemies.remove(pending)
+	pending = -1
+	manual = null
+	app._on_cargo_changed()
+	app.session.paused = true
+	report.open_report(result)
+
+
 func resolve_pending() -> void:
-	if pending < 0 or not automatic:
+	if pending < 0 or not automatic or manual != null:
 		return
 	var result: Dictionary = load("res://scripts/automatic_combat.gd").resolve(app.wagons, app.engine, enemies.slots[pending][Enemies.STRENGTH], rng)
 	if result.won:
@@ -93,7 +133,7 @@ func _continue() -> void:
 func toggle_automatic() -> void:
 	automatic = not automatic
 	_sync_options()
-	if automatic and pending >= 0:
+	if automatic and pending >= 0 and manual == null:
 		app._open_panel("room")
 		resolve_pending()
 
@@ -113,7 +153,7 @@ func _sync_options() -> void:
 func snapshot() -> Dictionary:
 	# Decimal strings avoid JSON float rounding of PCG's64-bit state.
 	return {"version": 1, "enemies": enemies.snapshot(), "difficulty": difficulty,
-		"automatic": automatic, "pending": pending, "seed": str(rng.seed), "state": str(rng.state)}
+		"automatic": automatic, "pending": pending, "seed": str(rng.seed), "state": str(rng.state), "manual": manual.snapshot() if manual != null else null}
 
 
 func restore(data: Variant) -> bool:
@@ -132,6 +172,12 @@ func restore(data: Variant) -> bool:
 	var candidate = Enemies.new()
 	if not candidate.restore(data.get("enemies")) or (data.pending >= 0 and not candidate.is_active(int(data.pending))):
 		return false
+	var restored_manual
+	if data.get("manual") != null:
+		restored_manual = Tactical.new()
+		if data.pending < 0 or not restored_manual.restore(data.manual) or restored_manual.settled:
+			return false
+	manual = restored_manual
 	enemies = candidate
 	difficulty = int(data.difficulty)
 	automatic = data.automatic

@@ -26,15 +26,27 @@ func _run() -> void:
 	app._advance_calendar()
 	_check(app.encounters.enemies.is_active(0), "day4 spawns default-difficulty enemy")
 	_test_save(app)
+	_test_manual(app)
+	_test_automatic(app)
+	app.queue_free()
+	await process_frame
+	for failure in failures:
+		push_error(failure)
+	if failures.is_empty():
+		print("PASS: calendar enemies, persistent RNG/history, pending encounter, original auto option, victory/defeat, no duplicate loot")
+	quit(0 if failures.is_empty() else 1)
+
+
+func _test_manual(app) -> void:
 	app._restart_engine()
 	var slot := _place_enemy(app)
 	app.session.advance(app.session.seconds_per_cycle * 3)
-	_check(app.encounters.pending == slot and app.encounters.report.visible and app.session.paused, "manual encounter waits without inventing tactical combat")
+	_check(app.encounters.pending == slot and app.encounters.manual_scene.visible and app.encounters.manual != null and app.session.paused, "manual encounter opens actual tactical scene")
 	_check(app.calendar.minute == 3, "encounter stops catch-up cycles immediately")
 	var file_path := ProjectSettings.globalize_path("res://../.cache/world-loop-pending.SAV")
 	_check(Saves.save(app, file_path).ok, "pending encounter saved")
 	app.encounters.reset()
-	_check(Saves.restore(app, file_path).ok and app.encounters.pending == slot and app.encounters.report.visible, "pending encounter restored once")
+	_check(Saves.restore(app, file_path).ok and app.encounters.pending == slot and app.encounters.manual != null, "pending tactical state restored once")
 	var valid: Dictionary = Saves.snapshot(app)
 	var invalid := valid.duplicate(true)
 	invalid.encounters.enemies.slots[slot][World.Enemies.STRENGTH] = -1
@@ -42,9 +54,17 @@ func _run() -> void:
 	file.store_string(JSON.stringify(invalid))
 	file.close()
 	_check(not Saves.restore(app, file_path).ok and Saves.snapshot(app) == valid, "negative enemy strength rejected before mutation")
+	DirAccess.remove_absolute(file_path)
+
+
+func _test_automatic(app) -> void:
+	# Future automatic encounters remain separate from an already-running battle.
+	app._restart_engine()
+	var slot := _place_enemy(app)
 	# Arm enough existing cannon wagons for a positive automatic margin.
 	app.wagons.wagons.append([11, 0, 0, 0])
 	app.wagons.wagons.append([11, 0, 0, 0])
+	app.encounters.pending = slot
 	app._open_panel("options")
 	app.encounters.report.hide()
 	var event := InputEventMouseButton.new()
@@ -70,14 +90,6 @@ func _run() -> void:
 	_check(not app.encounters.report.result.get("won", true) and app.session.paused, "defeat stops game")
 	app._unhandled_key_input(key)
 	_check(app._boudoir_session.reception.visible and app.session.paused, "defeat returns to options")
-	DirAccess.remove_absolute(file_path)
-	app.queue_free()
-	await process_frame
-	for failure in failures:
-		push_error(failure)
-	if failures.is_empty():
-		print("PASS: calendar enemies, persistent RNG/history, pending encounter, original auto option, victory/defeat, no duplicate loot")
-	quit(0 if failures.is_empty() else 1)
 
 
 func _place_enemy(app, strength := 0) -> int:
