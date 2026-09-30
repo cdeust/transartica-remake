@@ -82,7 +82,9 @@ func _draw_wagon(kind: String, center: Vector2, extent: Vector2) -> void:
 		return
 	var texture: Texture2D = wagon.texture
 	var factor := minf(extent.x / texture.get_height(), extent.y / texture.get_width())
-	draw_set_transform(center, -PI / 2, Vector2.ONE * factor)
+	var canvas := canvas_rect()
+	var canvas_scale := canvas.size.x / CANVAS.x
+	draw_set_transform(canvas.position + center * canvas_scale, -PI / 2, Vector2.ONE * factor * canvas_scale)
 	draw_texture(texture, -texture.get_size() / 2)
 	begin_canvas()
 
