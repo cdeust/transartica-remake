@@ -5,6 +5,7 @@ extends RefCounted
 const RailNetworkScript = preload("res://scripts/rail_network.gd")
 const TrainWagonsScript = preload("res://scripts/train_wagons.gd")
 const CityTradeScript = preload("res://scripts/city_trade.gd")
+const Extensions = preload("res://scripts/session_save_extensions.gd")
 
 
 static func snapshot(app) -> Dictionary:
@@ -20,6 +21,7 @@ static func snapshot(app) -> Dictionary:
 	}
 	if _has_stoup(app):
 		state.stoup = app.stoup.snapshot()
+	Extensions.append_snapshot(app, state)
 	return state
 
 
@@ -58,78 +60,69 @@ static func restore(app, path: String) -> Dictionary:
 
 
 static func _restore_parsed(app, parsed: Dictionary) -> Dictionary:
-	var restored_encounters = preload("res://scripts/world_encounters.gd").new()
-	if parsed.has("encounters") and not restored_encounters.restore(parsed.encounters):
-		return {"ok": false, "notice": "Encounter save is invalid; current session kept"}
-	var restored_discovery = preload("res://scripts/map_discovery.gd").new()
-	if parsed.has("discovery") and not restored_discovery.restore(parsed.discovery):
-		return {"ok": false, "notice": "Discovery save is invalid; current session kept"}
-	var restored_network = RailNetworkScript.new()
-	restored_network.load_bytes(app.world_data.map_bytes)
-	if parsed.has("network") and not restored_network.restore(parsed.network):
-		return {"ok": false, "notice": "Switch save is invalid; current session kept"}
-	var restored_journey = preload("res://scripts/train_journey.gd").new()
-	restored_journey.network = restored_network
-	if parsed.has("journey") and not restored_journey.restore(parsed.journey):
-		return {"ok": false, "notice": "Journey save is invalid; current session kept"}
-	# "consist" (v7 saves before this composition-derivation change) is
-	# accepted and ignored: composition is derived from "wagons" below, never
-	# read back as its own list, so an old save cannot diverge from its wagons.
-	var restored_wagons = TrainWagonsScript.new()
-	if parsed.has("wagons") and not restored_wagons.restore(parsed.wagons):
-		return {"ok": false, "notice": "Cargo save is invalid; current session kept"}
-	var restored_consist = preload("res://scripts/train_consist.gd").new()
-	restored_consist.derive_from_wagons(restored_wagons)
-	# Require locomotive history only: test_playable_trip.gd legacy restore regression.
-	if not restored_journey.sample_behind(restored_consist.LENGTHS.locomotive).ok and not restored_journey.history_starts_in_station():
-		return {"ok": false, "notice": "This save cannot recover wagon positions. Current journey kept; saved file unchanged."}
-	var restored_trade = CityTradeScript.new()
-	if parsed.has("trade") and not restored_trade.restore(parsed.trade):
-		return {"ok": false, "notice": "City stock save is invalid; current session kept"}
-	var candidate_session = preload("res://scripts/engine_session.gd").new(preload("res://scripts/engine_state.gd").new(), app.session.seconds_per_cycle)
-	if parsed.has("session") and not candidate_session.restore(parsed.session):
-		return {"ok": false, "notice": "Save state is invalid; current session kept"}
+	var base := _stage_base(app, parsed)
+	if not base.ok:
+		return base
 	var notice := _validate_chart(parsed)
 	if not notice.is_empty():
 		return {"ok": false, "notice": notice}
-	if parsed.has("stoup"):
-		var candidate_stoup = preload("res://scripts/stoup_messages.gd").new()
-		if not candidate_stoup.restore(parsed.stoup):
-			return {"ok": false, "notice": "Stoup save is invalid; current session kept"}
-	return _commit(app, parsed, restored_journey, restored_wagons, restored_trade, restored_encounters)
+	for key in ["discovery", "stoup"]:
+		var candidate = preload("res://scripts/map_discovery.gd").new() if key == "discovery" else preload("res://scripts/stoup_messages.gd").new()
+		if parsed.has(key) and not candidate.restore(parsed[key]):
+			return Extensions.failure(key.capitalize() + " save is invalid")
+	var extra := Extensions.stage(app, parsed, base)
+	if not extra.ok:
+		return extra
+	return _commit(app, parsed, base, extra.value)
 
 
-static func _commit(app, parsed: Dictionary, restored_journey, restored_wagons, restored_trade, restored_encounters) -> Dictionary:
+static func _stage_base(app, parsed: Dictionary) -> Dictionary:
+	var base := {"ok": true, "network": RailNetworkScript.new(), "wagons": TrainWagonsScript.new(), "trade": CityTradeScript.new(), "encounters": preload("res://scripts/world_encounters.gd").new()}
+	base.network.load_bytes(app.world_data.map_bytes)
+	base.journey = preload("res://scripts/train_journey.gd").new()
+	base.journey.network = base.network
+	base.session = preload("res://scripts/engine_session.gd").new(preload("res://scripts/engine_state.gd").new(), app.session.seconds_per_cycle)
+	for key in ["network", "journey", "wagons", "trade", "encounters", "session"]:
+		if parsed.has(key) and not base[key].restore(parsed[key]):
+			return Extensions.failure(key.capitalize() + " save is invalid")
+	# Composition derives from cargo, including old v7 saves carrying "consist".
+	var consist = preload("res://scripts/train_consist.gd").new()
+	consist.derive_from_wagons(base.wagons)
+	if not base.journey.sample_behind(consist.LENGTHS.locomotive).ok and not base.journey.history_starts_in_station():
+		return Extensions.failure("This save cannot recover wagon positions")
+	return base
+
+
+static func _commit(app, parsed: Dictionary, base: Dictionary, extra: Dictionary) -> Dictionary:
 	app._boudoir_session.city_suspended = false
 	if parsed.has("session"):
-		app.session.restore(parsed.session)
+		app.session.restore(base.session.snapshot())
 	if _has_stoup(app):
 		app.stoup.restore(parsed.get("stoup", []))
-	if parsed.has("network"):
-		app.network.restore(parsed.network)
-	else:
-		app.network.reset()
-	app.journey.restore(restored_journey.snapshot())
-	app.encounters.restore(restored_encounters.snapshot())
+	app.network.restore(base.network.snapshot())
+	app.journey.restore(base.journey.snapshot())
+	app.encounters.restore(base.encounters.snapshot())
 	app.encounters.report.hide()
-	# Saves before version 7 carry no cargo: they resume with the TABLE train and fresh stocks.
-	app.wagons.restore(restored_wagons.snapshot())
+	app.encounters.manual_scene.hide()
+	app.wagons.restore(base.wagons.snapshot())
 	if parsed.has("trade"):
-		app.trade.restore(restored_trade.snapshot())
+		app.trade.restore(base.trade.snapshot())
 	else:
 		app.trade.reset(app._trade_rng)
 	app.engine.train_mass = app.wagons.mass()
 	app.world_view.consist.derive_from_wagons(app.wagons)
 	app.world_view._visual_initialized = false
 	restore_chart(app, parsed)
+	Extensions.commit(app, extra)
 	app.world_view.visit_cell(app.journey.position)
 	app._city_panel.hide()
-	if app.journey.station_result() >= 0:
+	if Extensions.blocks(app):
+		app.session.paused = true
+	elif app.journey.station_result() >= 0:
 		app._open_city(app.journey.station_result())
-
 	if app.encounters.pending >= 0:
 		app.session.paused = true
-		app.encounters.report.open_report({"manual": true})
+		app.encounters.resume_pending()
 	return {"ok": true, "notice": "Journey and engine restored" if parsed.has("journey") else "Previous engine restored · first journey starts at departure"}
 
 
