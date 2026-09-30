@@ -30,6 +30,9 @@ static func ports_for_code(code: int) -> Array[Vector2]:
 		code -= 256
 	if code < 0:
 		match code:
+			# TIME0x1ccd/1cfe writes the E-W Oasis corridor at29/30,67.
+			# abs113/114 has no turn case; neighboring disclosed tiles are2/54.
+			-114, -113: return ports_for_code(2)
 			-121, -120: return ports_for_code(2)
 			-117: return ports_for_code(3)
 		if code > -105:

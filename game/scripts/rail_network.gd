@@ -41,6 +41,8 @@ const OBSTACLE_REASON := "obstacle" # crevasse, lake or destroyed track: YODA 0x
 # Not in the TIME 0x243a switch, so TIME lets the train pass; YODA writes them as the
 # repaired lake bridges (tasks/evidence/obstacles.md). Other codes <= -105 stay a frontier.
 const INTACT_LAKE_BRIDGES := [-121, -117]
+# TIME0x1ccd/1cfe: disclosed ice corridor, no turn at abs113/114 (0x14c9).
+const OASIS_CORRIDOR := {Vector2i(29,67): -114, Vector2i(30,67): -113}
 const TIMED_BRIDGE := Vector2i(110, 33) # CARTE.FIC -120; YODA toggles it by the hour.
 const TIMED_BRIDGE_OPEN := -121
 const TIMED_BRIDGE_CLOSED := -120
@@ -153,7 +155,8 @@ func entry_boundary(candidate: Vector2i) -> String:
 		return OBSTACLE_REASON
 	if code in EVENT_TILES:
 		return "station" if code >= 34 and code <= 37 else "event site"
-	if code <= SPECIAL_TILE_LIMIT and not code in INTACT_LAKE_BRIDGES:
+	if code <= SPECIAL_TILE_LIMIT and not code in INTACT_LAKE_BRIDGES \
+		and not (campaign_entry_enabled and OASIS_CORRIDOR.get(candidate) == code):
 		return "special site"
 	if candidate in STORY_CELLS and not campaign_entry_enabled:
 		return "story trigger"
