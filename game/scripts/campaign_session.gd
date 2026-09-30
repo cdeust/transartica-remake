@@ -13,6 +13,7 @@ func attach(owner_app) -> void:
 	screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	app.add_child(screen)
 	screen.continued.connect(_continue)
+	screen.movie_finished.connect(_continue)
 	screen.code_submitted.connect(_submit_code)
 	screen.answered.connect(_answer)
 	screen.menu_selected.connect(_menu_choice)
@@ -85,7 +86,7 @@ func _continue() -> void:
 	var event: Dictionary = state.dismiss()
 	page = 0
 	if event.get("scene") == "sun":
-		screen.present("sun-restored", [])
+		screen.start_movie()
 		_messages = []
 		state.pending = {"scene": "sun_end", "messages": []}
 		return
@@ -172,6 +173,8 @@ func reset() -> void:
 	selection = ""
 	crew_menu = ""
 	if screen != null:
+		screen.stop_movie()
+		screen.finale.start(0)
 		screen.hide()
 
 
@@ -205,7 +208,8 @@ func snapshot() -> Dictionary:
 			presentation[key] = screen.get(key)
 	return {"version": 1, "state": state.snapshot(), "page": page,
 		"selection": selection, "crew_menu": crew_menu, "notice": _notice,
-		"return_room": _return_room, "car_missile": _car_missile, "presentation": presentation}
+		"return_room": _return_room, "car_missile": _car_missile, "presentation": presentation,
+		"finale": screen.finale.snapshot() if screen != null else preload("res://scripts/finale_sequence.gd").new().snapshot()}
 
 
 static func validate_snapshot(value: Variant) -> bool:
@@ -235,5 +239,6 @@ func restore(value: Variant) -> bool:
 				screen.set(key, strings)
 			else:
 				screen.set(key, value.presentation[key])
+		screen.restore_movie(value.get("finale", {"tick": 0, "remainder": 0.0, "seed": 0}))
 		screen.queue_redraw()
 	return true

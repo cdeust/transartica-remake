@@ -39,6 +39,18 @@ func _run() -> void:
 		var saved := capture.save_png(ProjectSettings.globalize_path("res://../.cache/campaign/" + scene + "-native.png"))
 		if saved != OK:
 			failures.append(scene + " native capture could not be saved")
+	screen.start_movie()
+	screen.set_process(false)
+	for tick in [0, 30, 50, 120, 156, 320, 361]:
+		screen.finale.tick = tick
+		screen.queue_redraw()
+		await process_frame
+		await RenderingServer.frame_post_draw
+		var capture: Image = root.get_texture().get_image()
+		var saved := capture.save_png(ProjectSettings.globalize_path("res://../.cache/campaign/finale-%03d-native.png" % tick))
+		if saved != OK:
+			failures.append("finale capture could not be saved at tick%d" % tick)
+	screen.stop_movie()
 	screen.queue_free()
 	await process_frame
 	for failure in failures:

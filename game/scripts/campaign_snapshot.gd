@@ -15,6 +15,8 @@ static func validate(value: Variant) -> bool:
 	var candidate = State.new()
 	if not candidate.restore(value.get("state")) or value.page > candidate.pending.get("messages", []).size():
 		return false
+	if value.has("finale") and not preload("res://scripts/finale_sequence.gd").valid(value.finale):
+		return false
 	var presentation: Variant = value.get("presentation")
 	if not presentation is Dictionary:
 		return false

@@ -13,16 +13,22 @@ var entering_code := false
 var question := false
 var menu: Array[String] = []
 var _art: Dictionary = {}
+var finale := preload("res://scripts/finale_sequence.gd").new()
+var _finale_art := preload("res://scripts/finale_art.gd").new()
+var _finale_audio: AudioStreamPlayer
+signal movie_finished
 
 
 func _ready() -> void:
 	super._ready()
 	for name in ["urga", "oslo", "mausoleum", "sun-overcast", "sun-restored", "whale", "slope"]:
 		_art[name] = load("res://assets/campaign/%s.png" % name)
+	_finale_art.load_art()
 	hide()
 
 
 func present(name: String, message: Array, code := false, ask := false) -> void:
+	stop_movie()
 	scene = name
 	lines.clear()
 	for line in message:
@@ -45,7 +51,47 @@ func open_menu(labels: Array[String]) -> void:
 	queue_redraw()
 
 
+func start_movie() -> void:
+	present("sun-restored", [])
+	finale.start(randi())
+	_resume_audio()
+	queue_redraw()
+
+
+func _process(delta: float) -> void:
+	if visible and scene == "sun-restored" and finale.tick < finale.LAST:
+		if finale.advance(delta):
+			stop_movie()
+			movie_finished.emit()
+		queue_redraw()
+
+
+func _resume_audio() -> void:
+	var path := "res://private-data/finale.wav"
+	if not FileAccess.file_exists(path):
+		return
+	if _finale_audio == null:
+		_finale_audio = AudioStreamPlayer.new()
+		add_child(_finale_audio)
+	_finale_audio.stream = AudioStreamWAV.load_from_file(path)
+	_finale_audio.play((finale.tick + finale.remainder) / finale.HZ)
+
+
+func stop_movie() -> void:
+	if _finale_audio != null:
+		_finale_audio.stop()
+
+
+func restore_movie(value: Dictionary) -> void:
+	finale.restore(value)
+	if visible and scene == "sun-restored" and finale.tick < finale.LAST:
+		_resume_audio()
+
+
 func _draw() -> void:
+	if scene == "sun-restored":
+		_finale_art.draw_on(self, finale)
+		return
 	draw_rect(Rect2(Vector2.ZERO, size), Color.BLACK)
 	var key := "whale" if scene.begins_with("whale") else scene
 	if key == "sun":
@@ -84,6 +130,8 @@ func _draw() -> void:
 
 
 func handle_key(event: InputEventKey) -> void:
+	if scene == "sun-restored" and finale.tick < finale.LAST:
+		return
 	if not menu.is_empty():
 		var choice := event.physical_keycode - KEY_1
 		if choice >= 0 and choice < menu.size():
@@ -111,6 +159,9 @@ func handle_key(event: InputEventKey) -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	if not event is InputEventMouseButton or not event.pressed:
+		return
+	if scene == "sun-restored" and finale.tick < finale.LAST:
+		accept_event()
 		return
 	var point := logical_point(event.position)
 	if not menu.is_empty() and event.button_index == MOUSE_BUTTON_LEFT:

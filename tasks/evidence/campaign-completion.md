@@ -135,3 +135,51 @@ uses phase1 only (TIME0x14bd); removed unsupported artificial coordinate wrap.
 BOPRES fully decodes: it is music setup, not a credits movie; cmusic0xc8 takes
 resource0,volume127,tempo32,attack20,duration10000,fall100. IFEBO contains the
 visual finale; decoded choreography remains to integrate with its audio.
+
+### Finale checkpoint — 2026-09-30
+
+IFEBO is the station explosion/cloud-clearing cinematic, not an Earth movie.
+This was verified by an isolated original ALIS preview using original MAIN
+screen definition at0x84 (screen25954), copensc/cscreen, and byte-identical
+IFEBO/BOPRES. Preview MAIN directly starts the cinematic; this is source visual
+verification, not legitimate campaign progression evidence. `prepare_finale_preview.py`
+reproduces the isolated fixture and exits with original opcode0x44 after wakeup.
+
+Default remake rendering uses the existing authored sun-overcast/restored station
+art and a new transparent four-cell cloud/explosion atlas. Historical frames
+never become public art or the default presentation. `finale_sequence.gd` follows
+IFEBO0x24d..346 sprite sequence36,37,38,39,38,37,38,39,40 and explicit waits
+30,5,5,5,5,3,2,20,5,20,20 (120 total stops); cloud loop0xa2..141 restores at
+counter200 and exits when>240, moves after35 with4/3/2/1 speeds, mirrors175-x,
+and preserves rnd4 palette no-repeat rule0xb4..d7. Private capture additionally
+verifies the otherwise undecoded presentation and mixed original sound.
+
+Source scheduling uses CTIMING1 and native ALIS sys_sdl2.c50Hz screen cadence.
+The remake advances the authored sequence at that cadence independently of
+render FPS. Original host VM preview elapsed timestamps differ because its
+multiple script scheduler and framebuffer capture run on the host; this is not
+proof of cycle-exact original Amiga wall timing or audio synchronization.
+Captured mixed BOPRES/IFEBO audio is available privately in finale.wav. Other
+recurring tracks and effects are still being inventoried separately; this track
+does not establish complete game audio fidelity.
+
+`capture_alis_frames.c` reads native SDL RGBA output at bounded50Hz. A first
+SDL dummy-renderer attempt was uniformly black and was rejected by pixel hashes;
+its raw output was overwritten by the corrected native capture. The successful
+capture has262 distinct frames. `package_finale_capture.py` rejects an unchanged
+capture and writes only changed compressed PNGs plus manifest to ignored
+private-data/finale (4.9MB), and source audio to ignored private-data/finale.wav
+(1.1MB). Frame timestamps begin at first render while audio begins at device
+open, so subframe sync is explicitly unverified. Original native preview is a
+separate private reference UI; default Godot cinematic always uses authored art.
+
+Verification on final authored implementation:
+- Native Godot test_finale.gd: PASS source choreography, frame-independent30/144Hz,
+  source cloud speeds, interrupted tick/RNG restoration, invalid cursor rejection,
+  genuine transparent atlas, input dismissal guard.
+- Native Godot test_campaign_visuals.gd: PASS all campaign scene bodies, plus
+  authored finale captures at0/30/50/120/156/320/361. Inspected station blast and
+  cloud screenshots; original pixels absent from default renderer.
+- test_campaign.gd: PASS campaign gates, code/spy interrupted saves, sabotage,
+  Sun, six death causes and inspection cars.
+- Python test_alis_disasm:12 tests pass, including six-operand original music.
