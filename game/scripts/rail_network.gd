@@ -44,7 +44,7 @@ const INTACT_LAKE_BRIDGES := [-121, -117]
 const TIMED_BRIDGE := Vector2i(110, 33) # CARTE.FIC -120; YODA toggles it by the hour.
 const TIMED_BRIDGE_OPEN := -121
 const TIMED_BRIDGE_CLOSED := -120
-const REVERSAL_EVENTS := [-120] # TIME 0x24d0 -> YODA 0x104: text 52, then reversal 0x975.
+const REVERSAL_EVENTS := [-120, 65, 78] # source: YODA scenes -5/-22 close through 0x864/0x9ee.
 const SPECIAL_TILE_LIMIT := -105 # source: TIME 0x2401 blocks only -105 < tile < 0.
 # TIME 0x26fb..0x27b0: fixed station results checked before the city search.
 # Negative results -2..-4 also write one map cell (TIME 0x270f, 0x273a, 0x2765).
@@ -59,6 +59,13 @@ const STATION_SEARCH_MAX_Y := 72 # source: TIME 0x27bb compares y + dy < 72, not
 const CITY_TILE_OFFSETS := {
 	71: Vector2i(2, 1), 72: Vector2i(1, 1), 73: Vector2i(0, 1),
 	74: Vector2i(2, 0), 75: Vector2i(1, 0), 76: Vector2i(0, 0),
+}
+
+# source: TIME 0x1c31..0x1d8a,0x270f..0x2765; YODA/CARTE campaign writes.
+const CAMPAIGN_WRITES := {
+	Vector2i(32, 67): [2], Vector2i(28, 67): [54], Vector2i(29, 67): [-114],
+	Vector2i(30, 67): [-113], Vector2i(39, 32): [2], Vector2i(157, 68): [3],
+	Vector2i(22, 67): [-122], Vector2i(34, 4): [80], Vector2i(52, 32): [-123],
 }
 
 var _initial := PackedInt32Array()
@@ -206,6 +213,49 @@ func repair(cell: Vector2i) -> bool:
 	return true
 
 
+# YODA 0x1e2a..0x2317,0x25e2: exact MineTable outputs; atomic validation.
+func apply_mine_writes(writes: Dictionary) -> bool:
+	for cell in writes:
+		if not cell is Vector2i or not in_bounds(cell) or not _mine_transition(tile(cell), int(writes[cell])):
+			return false
+	for cell in writes:
+		_tiles[cell.x * HEIGHT + cell.y] = int(writes[cell])
+	return true
+
+
+func _mine_transition(before: int, after: int) -> bool:
+	if before == 2:
+		return after in [18, 20, 22, 24]
+	if before == 3:
+		return after in [26, 28, 30, 32]
+	if before == 78:
+		return after == 79
+	return (before == 0 or before > 85 or before < -124) and after == 78
+
+
+# Verified campaign pre-entry effects and CARTE sabotage; caller owns flags.
+func set_campaign_tile(cell: Vector2i, code: int) -> bool:
+	if not in_bounds(cell) or not _campaign_transition(cell, tile(cell), code):
+		return false
+	_tiles[cell.x * HEIGHT + cell.y] = code
+	return true
+
+
+func _campaign_transition(cell: Vector2i, before: int, after: int) -> bool:
+	if CAMPAIGN_WRITES.has(cell) and after in CAMPAIGN_WRITES[cell]:
+		return true
+	# CARTE0x27a4: central target revealed by a spy in x64..66,y19..21.
+	if cell.x >= 63 and cell.x <= 66 and cell.y >= 19 and cell.y <= 21 and after == -124:
+		return true
+	# TIME0x1d15/MAIN0x7b3: private region records reveal concealed rails.
+	if before == -115 and after >= -128 and after <= 127:
+		return true
+	# CARTE0x27a4: dynamite destroys ordinary rail and constructed bridges.
+	if before >= 1 and before <= 58 and not before in [34, 35, 36, 37]:
+		return after == -before
+	return {63: 67, 64: 69, -117: 114, -121: -116}.get(before, 0) == after and after != 0
+
+
 func changed_cells() -> Dictionary:
 	var result := {}
 	for index in _tiles.size():
@@ -233,7 +283,7 @@ func restore(data: Variant) -> bool:
 		if not in_bounds(cell) or not (typeof(value) in [TYPE_INT, TYPE_FLOAT]):
 			return false
 		var original := _initial[cell.x * HEIGHT + cell.y]
-		if not _is_saved_change(original, int(value)):
+		if not is_finite(float(value)) or float(value) != floorf(float(value)) or not _is_saved_change(cell, original, int(value)):
 			return false
 		candidate[cell.x * HEIGHT + cell.y] = int(value)
 	_tiles = candidate
@@ -241,7 +291,15 @@ func restore(data: Variant) -> bool:
 
 
 # A saved map may differ from the initial map by a toggled switch or a repaired obstacle.
-func _is_saved_change(original: int, value: int) -> bool:
+func _is_saved_change(cell: Vector2i, original: int, value: int) -> bool:
+	if original == value or _campaign_transition(cell, original, value) or _mine_transition(original, value):
+		return true
+	if (original == 0 or original > 85 or original < -124) and value == 79:
+		return true # source: mine creation then depletion/prospecting.
+	# source: new mine switches may subsequently toggle or be dynamited.
+	if original in [2, 3] and absi(value) >= 18 and absi(value) <= 33:
+		var base := absi(value) - absi(value) % 2
+		return base in ([18, 20, 22, 24] if original == 2 else [26, 28, 30, 32])
 	if original == TIMED_BRIDGE_CLOSED and value == TIMED_BRIDGE_OPEN:
 		return true
 	if not TrackWorks.kind_for(original).is_empty():

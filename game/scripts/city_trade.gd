@@ -161,6 +161,9 @@ func capacity(o: Dictionary, wagons) -> Vector2i:
 		elif _accepts(o, wagon, o.wagon_b):
 			room += int(o.cap_b) - wagon[Wagons.QUANTITY]
 			loaded += wagon[Wagons.QUANTITY]
+	if o.get("spy", false):
+		# GLIEU0xa04 allocates one free file per recruit; never overrun20 slots.
+		room = mini(room, spy_slots.count(0))
 	return Vector2i(room, loaded)
 
 
@@ -333,7 +336,8 @@ func restore(value: Variant) -> bool:
 		parsed.append(cells)
 	var slots: Array = []
 	for slot in value.spy_slots:
-		if not (typeof(slot) == TYPE_INT or typeof(slot) == TYPE_FLOAT) or not int(slot) in [0, 1]:
+		# source: CARTE0x1dc9 deploys1->2; TIME0x0b43 arrival sets3.
+		if not (typeof(slot) == TYPE_INT or typeof(slot) == TYPE_FLOAT) or not is_finite(float(slot)) or float(slot) != floorf(float(slot)) or not int(slot) in [0, 1, 2, 3]:
 			return false
 		slots.append(int(slot))
 	stock = parsed

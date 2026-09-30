@@ -12,6 +12,7 @@ const CityTrade = preload("res://scripts/city_trade.gd")
 
 signal depart_requested
 signal cargo_changed
+signal town_message_requested(id: int)
 
 const REFUSALS := {
 	CityTrade.NO_ROOM: "No room left in suitable wagons.",
@@ -214,11 +215,19 @@ func _show_menu() -> void:
 				if trade.offers_spies(city):
 					_button(_menu, "Recruit spies", start.bind(CityTrade.SELL))
 			CityTrade.TOWN:
-				_notice.text = "Town information is not available yet."
+				# GLIEU0x20e: both locals have a city-specific TEXTE2K message.
+				_button(_menu, "INFORMATION", town_information.bind(50))
+				_button(_menu, "RUMOURS", town_information.bind(51))
 	_button(_menu, "Leave the city · Enter", func(): depart_requested.emit())
 	_menu.show()
 	_refresh()
 	_layout()
+
+
+func town_information(choice: int) -> void:
+	if kind != CityTrade.TOWN or not choice in [50, 51] or city < 17 or city > 23:
+		return
+	town_message_requested.emit((city - 17) * 2 + choice - 49)
 
 
 func start(mode: int) -> void:

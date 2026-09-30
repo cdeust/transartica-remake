@@ -39,9 +39,10 @@ func _run() -> void:
 	main.wagons.wagons.append([6, 0, 0, 20])
 	await _click(main.works_dialog._yes.get_global_rect().get_center())
 	var rails_left: int = main.wagons.wagons[-2][3]
-	_check(main.network.tile(crevasse) == 63 and rails_left >= 5 and rails_left <= 9, "OK builds the bridge with 16-20 rails")
+	_check(main.network.tile(crevasse) == 67 and rails_left >= 5 and rails_left <= 9, "OK spends 16-20 rails; map stays blocked during works")
 	await _capture("works-bridge-built.png")
 	await _click(main.works_dialog._ok.get_global_rect().get_center())
+	_check(main.network.tile(crevasse) == 63, "closing TEXTEK commits the bridge")
 	_check(main.engine.brake, "brake stays on after the works")
 	main.engine.brake = false
 	await _drive_until(main, func(): return main.journey.position.x > crevasse.x)

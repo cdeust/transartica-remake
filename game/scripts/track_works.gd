@@ -78,6 +78,29 @@ static func consume_rails(wagons, amount: int) -> int:
 		var taken := mini(left, wagon[Wagons.QUANTITY])
 		wagon[Wagons.QUANTITY] -= taken
 		left -= taken
-		if wagon[Wagons.QUANTITY] == 0:
+		# TEXTEK0x42bd: exact empty retains goods; only undershoot clears.
+		if wagon[Wagons.QUANTITY] == 0 and left > 0:
 			wagon[Wagons.GOODS] = 0
 	return amount - left
+
+
+# TEXTEK 0x4200..0x4406: counts all loaded labour, including damaged wagons;
+# any crane adds 150 once. Countdown ticks are TEXTEK ticks, not simulated minutes.
+static func work_report(kind: String, wagons) -> Dictionary:
+	var slaves := slaves_carried(wagons)
+	var mammoths := 0
+	var cranes := 0
+	for wagon in wagons.wagons:
+		if wagon[Wagons.TYPE] == 7:
+			mammoths += int(wagon[Wagons.QUANTITY])
+		elif wagon[Wagons.TYPE] == 16:
+			cranes += 1
+	var labour := slaves + mammoths * 30 + (150 if cranes > 0 else 0)
+	var remaining := maxi(0, (175 if kind == "destroyed" else 420) - labour)
+	var ticks: int = remaining / 3 + (12 if kind == "destroyed" else 144)
+	# ALIS slocb writes8bits and olocb reads signed8bits (storenames.c:42,
+	# opernames.c:114). TEXTEK0x43e7/43f8 assigns L0x16b, not a word.
+	ticks &= 255
+	if ticks > 127:
+		ticks -= 256
+	return {"slaves": slaves, "mammoths": mammoths, "cranes": cranes, "ticks": ticks}
