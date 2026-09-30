@@ -107,48 +107,11 @@ func _notification(what: int) -> void:
 
 
 func _build_interface() -> void:
-	theme = AtlasThemeScript.create_theme()
-	room_art = RoomArtScript.new()
-	room_art.engine = engine
-	room_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(room_art)
-	room_controls = RoomControlsScript.new()
-	room_controls.art = room_art
-	room_controls.session = session
-	room_controls.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	room_controls.requested.connect(_open_panel)
-	add_child(room_controls)
-	instruments = preload("res://scripts/engine_instruments.gd").new()
-	instruments.bind_session(session)
-	instruments.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	instruments.requested.connect(_open_panel)
-	add_child(instruments)
-	instruments.hide()
-	_build_modal()
-	_build_city_screen()
-	_build_works_dialog()
-	_boudoir_session.attach(self)
-	boudoir = _boudoir_session.view
+	preload("res://scripts/main_interface.gd")._build_interface(self)
 
 
 func _build_modal() -> void:
-	_modal = PanelContainer.new()
-	_modal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var screen_style := StyleBoxFlat.new()
-	screen_style.bg_color = Color("#0d1b23")
-	screen_style.content_margin_left = 0
-	screen_style.content_margin_right = 0
-	screen_style.content_margin_top = 0
-	screen_style.content_margin_bottom = 0
-	_modal.add_theme_stylebox_override("panel", screen_style)
-	add_child(_modal)
-	var body := VBoxContainer.new()
-	_modal.add_child(body)
-	_modal_title = Label.new()
-	body.add_child(_modal_title)
-	_modal_title.hide()
-	_build_map(body)
-	_modal.hide()
+	preload("res://scripts/main_interface.gd")._build_modal(self)
 
 
 func _build_map(body: VBoxContainer) -> void:
@@ -206,18 +169,9 @@ func _advance_calendar() -> void:
 	encounters.advance_calendar()
 
 func _build_works_dialog() -> void:
-	works_dialog = WorksDialogScript.new()
-	works_dialog.journey = journey
-	works_dialog.wagons = wagons
-	works_dialog.rng = _trade_rng
-	if not works_dialog.load_texts(ProjectSettings.globalize_path("res://")):
-		push_warning("TEXTEK texts unavailable (python3 tools/claude/export_textek.py); message ids shown instead.")
-	works_dialog.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	works_dialog.finished.connect(_on_works_finished)
-	add_child(works_dialog)
+	preload("res://scripts/main_interface.gd")._build_works_dialog(self)
 
 
-# YODA 0x2390: the train stays braked in front of the cell; a repair lets TIME retry the entry.
 func _on_works_finished(repaired: bool) -> void:
 	engine.train_mass = wagons.mass()
 	if works_dialog.kind.is_empty():
@@ -229,15 +183,7 @@ func _on_works_finished(repaired: bool) -> void:
 
 
 func _build_city_screen() -> void:
-	_city_panel = CityScreenScript.new()
-	_city_panel.trade = trade
-	_city_panel.wagons = wagons
-	_city_panel.engine = engine
-	_city_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	_city_panel.depart_requested.connect(depart_from_city)
-	_city_panel.cargo_changed.connect(_on_cargo_changed)
-	add_child(_city_panel)
-	_city_panel.hide()
+	preload("res://scripts/main_interface.gd")._build_city_screen(self)
 
 
 func _open_city(index: int) -> void:
@@ -454,46 +400,4 @@ func _save_path() -> String:
 
 
 func _advance_journey() -> void:
-	if engine.event_pending:
-		return
-	# TIME re-checks the cell once the brake is released (obstacles-unknowns.md §1).
-	if journey.at_obstacle() and not engine.brake and not works_dialog.visible:
-		journey.resume_after_works()
-	var was_blocked: bool = journey.blocked
-	_advance_calendar()
-	var old_cell: Vector2i = journey.position
-	journey.advance(engine.speed)
-	if encounters.advance(old_cell):
-		return
-	world_view.visit_cell(journey.position)
-	world_view.update_train()
-	_filter_cities(search_box.text)
-	_update_status()
-	if _map_panel.visible:
-		_modal_title.text = "   TRANSARCTICA · %s · (%d, %d) %s · %d km/h" % [calendar.display_text(), journey.position.x, journey.position.y, journey.heading_name(), engine.speed]
-	if journey.blocked:
-		var station := journey.station_result()
-		if station >= 0:
-			_open_city(station)
-			return
-		if journey.at_reversal_event():
-			if not was_blocked:
-				_reverse_at_event()
-			return
-		if journey.at_obstacle():
-			# YODA 0x2318: the question brakes the train; asked once per refused entry.
-			if not was_blocked:
-				engine.brake = true
-				engine.speed = 0
-				works_dialog.ask(network)
-			return
-		engine.brake = true
-		engine.speed = 0
-		session.paused = true
-		var ahead: Vector2i = journey.next_cell()
-		var reason: String = journey.stop_reason
-		if journey.at_station():
-			# TIME 0x2483..0x24c3: -1 sends message 34, -2..-5 send messages 22..25.
-			reason = "station without city (message 34)" if station == -1 else "story station (message %d)" % (absi(station) + 20)
-		room_controls.announce("Stopped before %s at (%d, %d) · not yet ported" % [reason, ahead.x, ahead.y])
-		status_label.text = "Stopped before %s at (%d, %d).\nR starts a new run." % [reason, ahead.x, ahead.y]
+	preload("res://scripts/journey_session.gd").advance(self)

@@ -1,0 +1,53 @@
+extends RefCounted
+
+# MIT. Behavior-preserving extraction of main.gd PR7 journey dispatch.
+# Sources: TIME0x2483..24c3, YODA0x2318 and evidence/station-arrival.md.
+
+static func advance(app) -> void:
+	if app.engine.event_pending:
+		return
+	# TIME re-checks the cell once the brake is released (obstacles-unknowns.md §1).
+	if app.journey.at_obstacle() and not app.engine.brake and not app.works_dialog.visible:
+		app.journey.resume_after_works()
+	var was_blocked: bool = app.journey.blocked
+	app._advance_calendar()
+	var old_cell: Vector2i = app.journey.position
+	app.journey.advance(app.engine.speed)
+	if app.encounters.advance(old_cell):
+		return
+	app.world_view.visit_cell(app.journey.position)
+	app.world_view.update_train()
+	app._filter_cities(app.search_box.text)
+	app._update_status()
+	if app._map_panel.visible:
+		app._modal_title.text = "   TRANSARCTICA · %s · (%d, %d) %s · %d km/h" % [app.calendar.display_text(), app.journey.position.x, app.journey.position.y, app.journey.heading_name(), app.engine.speed]
+	if app.journey.blocked:
+		_handle_boundary(app, was_blocked)
+
+
+static func _handle_boundary(app, was_blocked: bool) -> void:
+	var station: int = app.journey.station_result()
+	if station >= 0:
+		app._open_city(station)
+		return
+	if app.journey.at_reversal_event():
+		if not was_blocked:
+			app._reverse_at_event()
+		return
+	if app.journey.at_obstacle():
+		# YODA 0x2318: the question brakes the train; asked once per refused entry.
+		if not was_blocked:
+			app.engine.brake = true
+			app.engine.speed = 0
+			app.works_dialog.ask(app.network)
+		return
+	app.engine.brake = true
+	app.engine.speed = 0
+	app.session.paused = true
+	var ahead: Vector2i = app.journey.next_cell()
+	var reason: String = app.journey.stop_reason
+	if app.journey.at_station():
+		# TIME 0x2483..0x24c3: -1 sends message 34, -2..-5 send messages 22..25.
+		reason = "station without city (message 34)" if station == -1 else "story station (message %d)" % (absi(station) + 20)
+	app.room_controls.announce("Stopped before %s at (%d, %d) · not yet ported" % [reason, ahead.x, ahead.y])
+	app.status_label.text = "Stopped before %s at (%d, %d).\nR starts a new run." % [reason, ahead.x, ahead.y]
