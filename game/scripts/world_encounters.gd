@@ -69,7 +69,11 @@ func advance(old_cell: Vector2i) -> bool:
 	# TIME checks the player's entry against enemies before they can leave it.
 	var encountered: int = enemies.encounter_at(app.journey.position)
 	if encountered < 0:
+		var before: Array = []
+		for slot in Enemies.SLOT_COUNT:
+			before.append(enemies.cell(slot))
 		enemies.advance_cycle(app.network, rng, app.journey.heading)
+		_observe_enemy_moves(before)
 		encountered = enemies.encounter_at(app.journey.position)
 	if encountered < 0:
 		return false
@@ -106,7 +110,7 @@ func _finish_manual() -> void:
 	manual = null
 	app._on_cargo_changed()
 	app.session.paused = true
-	report.open_report(result)
+	_present_result(result)
 
 
 func resolve_pending() -> void:
@@ -118,7 +122,35 @@ func resolve_pending() -> void:
 	pending = -1
 	app._on_cargo_changed()
 	app.session.paused = true
-	report.open_report(result)
+	_present_result(result)
+
+
+func _campaign():
+	for property in app.get_property_list():
+		if property.name == "campaign":
+			return app.get("campaign")
+	return null
+
+
+func _observe_enemy_moves(before: Array) -> void:
+	var campaign = _campaign()
+	if campaign == null:
+		return
+	for slot in Enemies.SLOT_COUNT:
+		if enemies.is_active(slot) and enemies.cell(slot) != before[slot]:
+			# TIME0x20bb rotates the posted spy record after enemy movement.
+			campaign.state.observe_enemy(slot,enemies.cell(slot),app.calendar,app.stoup)
+
+
+func _present_result(result: Dictionary) -> void:
+	var campaign = _campaign()
+	if not result.won and campaign != null:
+		# Manual YODA0xabb and automatic TEXTEK0x5435 both send epitaph105.
+		manual_scene.hide()
+		report.hide()
+		campaign.die(105)
+	else:
+		report.open_report(result)
 
 
 func _continue() -> void:
