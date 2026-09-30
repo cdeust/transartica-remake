@@ -29,6 +29,11 @@ func _run() -> void:
 	campaign.station(-3)
 	_check(not campaign.screen.entering_code and not campaign.state.submit_code("58947").accepted, "real app Oslo without Urga key stays locked")
 	campaign.reset()
+	app.trade.spy_slots[0] = 1 # Source aboard-state fixture for isolated menu acceptance.
+	campaign.open_spy_menu()
+	_check(campaign.screen.visible and campaign.screen.menu.size() == 3, "native source spy menu accepts crew labels")
+	app.trade.spy_slots[0] = 0
+	campaign.reset()
 	_check(campaign.station(-2), "Urga station handled")
 	_check(campaign.screen.visible and app.engine.brake and app.session.paused, "original illustrated encounter stops train")
 	var key := InputEventKey.new()

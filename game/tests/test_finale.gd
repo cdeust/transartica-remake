@@ -58,6 +58,8 @@ func run() -> void:
 	screen.finale.restore(saved)
 	check(screen.finale.tick == saved.tick, "screen restores interrupted source scene")
 	screen.stop_movie()
+	screen.open_menu(["SEND SPY", "DYNAMITE", "EXIT"])
+	check(screen.menu == ["SEND SPY", "DYNAMITE", "EXIT"], "native untyped crew menu literals remain callable")
 	screen.queue_free()
 	await process_frame
 	if errors.is_empty():

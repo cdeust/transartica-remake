@@ -41,10 +41,12 @@ func present(name: String, message: Array, code := false, ask := false) -> void:
 	queue_redraw()
 
 
-func open_menu(labels: Array[String]) -> void:
+func open_menu(labels: Array) -> void:
 	scene = "crew"
 	lines = []
-	menu = labels
+	menu.clear()
+	for label in labels:
+		menu.append(str(label))
 	question = false
 	entering_code = false
 	show()
