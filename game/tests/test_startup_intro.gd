@@ -23,7 +23,7 @@ func run() -> void:
 	intro.completed.connect(func(): completed = true)
 	intro.start()
 	intro.set_process(false)
-	check(not intro.request_exit(), "source publisher animation cannot dismiss before title")
+	check(not intro.request_exit(), "source Earth-to-title animation cannot dismiss before title")
 	for index in Intro.TITLE_READY:
 		intro.advance_tick()
 	check(intro.visible and not completed, "title remains pending original input")

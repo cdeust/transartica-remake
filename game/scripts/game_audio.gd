@@ -14,6 +14,9 @@ var current_track := ""
 var effects_enabled := true
 var music_enabled := true
 var _elapsed := 0.0
+var _fade_remaining := 0.0
+var _fade_duration := 0.0
+var _fade_gain := 1.0
 
 
 func attach(app: Node) -> void:
@@ -51,8 +54,10 @@ func effect(script: String, source_offset: int, locals: Dictionary = {}) -> int:
 	return -1
 
 
-func play_track(key: String) -> bool:
-	if not music_enabled:
+func play_track(key: String, guard_preference := true) -> bool:
+	if guard_preference and not music_enabled:
+		music.stop()
+		current_track = ""
 		return false
 	var entry: Dictionary = music_manifest.get("tracks", {}).get(key, {})
 	if entry.is_empty():
@@ -67,7 +72,8 @@ func play_track(key: String) -> bool:
 		playback.loop_end = playback.data.size() / 2
 	music.stream = playback
 	_elapsed = 0.0
-	music.volume_linear = _gain(key) # MAIN0x424 Amiga volume83; captures use127.
+	_fade_remaining = 0
+	music.volume_linear = _gain(key) # MAIN0x4b0 ECS volume50; captures use127.
 	current_track = key
 	music.play()
 	return true
@@ -77,6 +83,13 @@ func _process(delta: float) -> void:
 	if current_track.is_empty():
 		return
 	_elapsed += delta
+	if _fade_remaining > 0:
+		_fade_remaining = maxf(0, _fade_remaining - delta)
+		music.volume_linear = _fade_gain * _fade_remaining / _fade_duration
+		if _fade_remaining == 0:
+			music.stop()
+			current_track = ""
+		return
 	var entry: Dictionary = music_manifest.get("tracks", {}).get(current_track, {})
 	if entry.get("cycle", false):
 		# cmusic type4 opcodes.c: attack+1, duration, fall+1; source ticks50Hz.
@@ -88,12 +101,20 @@ func _process(delta: float) -> void:
 				current_track = ""
 
 
-func play_journey() -> void:
+func play_journey(synthesized_music := true) -> void:
+	# YODA0xd04 requires capability25936==0; ECS skips Atari setter0x3b8.
+	if not synthesized_music or not music_enabled:
+		play_track("")
+		return
 	_alternate = not _alternate
 	play_track("bojeu2-0" if _alternate else "bojeu-%d" % randi_range(0, 1))
 
 
-func play_city(city_kind: int) -> void:
+func play_city(city_kind: int, city_index := -1) -> void:
+	if absi(city_kind) == 3 or city_index == 45:
+		music.stop()
+		current_track = ""
+		return # YODA0x1031..105a original exclusions.
 	# YODA mainTABLE24548 field2: 1→3,2→1,>3→0; fresh selector otherwise0.
 	play_track("bolieu-%d" % ({1: 3, 2: 1}.get(city_kind, 0)))
 
@@ -103,11 +124,11 @@ func play_worksite() -> void:
 
 
 func play_loss() -> void:
-	play_track("bolost-0") # YODA0x287d, BOLOST0x2d.
+	play_track("bolost-0") # ECS model3000→MAIN25915=0, YODA0x2870..28c2.
 
 
 func play_reception() -> void:
-	play_track("bopres-0") # MAIN0x593/5c0 and YODA0x288e.
+	play_track("bopres-0", false) # MAIN0x593/5c0 title is unconditional.
 
 
 func stop_effects() -> void:
@@ -129,10 +150,7 @@ func toggle_music() -> bool:
 	if not music_enabled:
 		music.stop()
 	elif not current_track.is_empty():
-		var selected := current_track
-		var elapsed := _elapsed
-		play_track(selected)
-		_elapsed = elapsed
+		play_track(current_track) # Fresh PCM and source envelope clock restart together.
 	return music_enabled
 
 
@@ -163,8 +181,8 @@ func restore(data: Dictionary) -> bool:
 	effects_enabled = data.effects_enabled
 	_alternate = data.alternate
 	current_track = data.track
-	if music_enabled and not current_track.is_empty():
-		play_track(current_track)
+	if not current_track.is_empty():
+		play_track(current_track, false)
 		var entry: Dictionary = music_manifest.tracks[current_track]
 		var stream: AudioStreamWAV = music.stream
 		var length: float = float(stream.data.size()) / (stream.mix_rate * 2)
@@ -181,7 +199,34 @@ func reset() -> void:
 	_alternate = false
 	current_track = ""
 	_elapsed = 0
+	_fade_remaining = 0
 
 
 func _gain(key: String) -> float:
-	return 83.0 / 127 if key.begins_with("bojeu") else 1.0
+	return 50.0 / 127 if key.begins_with("bojeu") else 1.0
+
+
+func fade_music(ticks: int) -> void:
+	# Original cdelmusic→music_v2.c:mv2_offmusic, requested source tick fall.
+	if ticks <= 0:
+		music.stop()
+		current_track = ""
+		return
+	_fade_duration = float(ticks) / 50
+	_fade_remaining = _fade_duration
+	_fade_gain = music.volume_linear
+
+
+func new_game_reset() -> void:
+	# OPTION25912 survives original START; only the runtime selector resets.
+	var enabled := music_enabled
+	var effects := effects_enabled
+	reset()
+	music_enabled = enabled
+	effects_enabled = effects
+
+
+func toggle_original_music() -> bool:
+	# OPTION action3 writes25912 only; currently playing score is left intact.
+	music_enabled = not music_enabled
+	return music_enabled

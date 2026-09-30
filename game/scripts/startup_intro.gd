@@ -48,8 +48,8 @@ func advance_tick() -> void:
 	tick += 1
 	if tick == 99 and _audio != null:
 		_audio.effect("present", 0x3c)
-	if tick == TITLE_READY and _audio != null:
-		_audio.play_reception() # MAIN0x5b0..5c0 Amiga BOPRES after title ready.
+	if tick == PUBLISHER_END and _audio != null:
+		_audio.play_reception() # MAIN0x593 ECS BOPRES before PRESENT2.
 	if _exit_tick < 0 and tick >= TITLE_READY + TITLE_TIMEOUT:
 		request_exit()
 	if _exit_tick >= 0 and tick - _exit_tick >= EXIT_FADE:
@@ -62,6 +62,8 @@ func request_exit() -> bool:
 	if tick < TITLE_READY or _exit_tick >= 0:
 		return false
 	_exit_tick = tick
+	if _audio != null:
+		_audio.fade_music(50) # MAIN0x608, original mv2_offmusic.
 	return true
 
 
@@ -87,10 +89,16 @@ func _draw() -> void:
 		var lift := clampi((tick - 207) * 2, 0, 70) if tick < PUBLISHER_END else 0
 		var image_rect := Rect2(bounds.position + Vector2(0, 60 - lift if tick < PUBLISHER_END else 0) * factor,
 			Vector2(320, 80) * factor)
-		draw_texture_rect_region(_art, image_rect, region)
+		var pose := clampi((tick - 99) / 9, 0, 8) if tick < PUBLISHER_END else 0
+		var alpha := 1.0 - float(pose) / 8 if tick < PUBLISHER_END else 1.0
+		draw_texture_rect_region(_art, image_rect, region, Color(1, 1, 1, alpha))
 	begin_canvas()
 	if tick < PUBLISHER_END:
-		centered(160 - clampi((tick - 207) * 2, 0, 70), str(_data.get("publisher", "")), 18)
+		if tick >= 99:
+			var letters := clampi((tick - 99) / 9 + 1, 0, 8)
+			var title: String = _data.get("title", "")
+			# Eight authored reveal poses follow source sprite30..37; no historical pixels.
+			centered(140 - clampi((tick - 207) * 2, 0, 70), title.left(ceili(title.length() * float(letters) / 8)), 18)
 	elif tick >= TITLE_READY - 4:
 		centered(30, str(_data.get("title", "")), 23)
 		var y := 100
