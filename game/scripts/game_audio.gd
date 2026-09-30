@@ -124,6 +124,7 @@ func _wave(filename: String) -> AudioStreamWAV:
 
 
 func toggle_music() -> bool:
+	# OPTION0xf3/0xfb/0x108 MAIN25912; enabled means original flag0.
 	music_enabled = not music_enabled
 	if not music_enabled:
 		music.stop()
