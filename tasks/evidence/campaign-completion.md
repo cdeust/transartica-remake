@@ -116,3 +116,22 @@ to the central runner; build_preview must include generated campaign.json.
 - Still required: real-app integrated tests after root cherry-pick, legitimate
   start-to-Sun route, original quizzes, IFEBO/BOPRES timing/audio, mine/mole car
   cases, non-enemy spy reports and exact observation hooks. These remain open.
+
+## Third checkpoint: preserved original controls and car hazards
+
+SOLEIL and VIKING are preserved privately, not omitted. YODA0xe80 runsSOLEIL
+once for cities5..9; YODA0xec8 runsVIKING once for city12. SCENE4d5→3b5
+runsVIKING before every Oslo CODE entry. Root must call campaign.before_city
+before opening a city; true means the quiz now owns presentation. Both scripts
+choose rnd8 and exit after three failed attempts. Private original records and
+case conversion are extracted from executable stores; quizzes save current
+record, attempts and continuation. Third-failure process exit is original.
+
+Car mine traps TABLE0x282..39e and TIME0xdb0..e11 clear once and negate the
+rail. Mole cells TABLE0x463..4b7 and TIME0xf12..f76 use rnd6; a plain hit stores
+-1 while missile/no-hit stores day*50+hour. Persist both tables. Car turning now
+uses phase1 only (TIME0x14bd); removed unsupported artificial coordinate wrap.
+
+BOPRES fully decodes: it is music setup, not a credits movie; cmusic0xc8 takes
+resource0,volume127,tempo32,attack20,duration10000,fall100. IFEBO contains the
+visual finale; decoded choreography remains to integrate with its audio.

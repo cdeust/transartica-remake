@@ -160,3 +160,14 @@ def test_campaign_sound_and_effect_paths_are_reachable():
     result = module.disassemble(ending, 0x18, 1000, reachable=True)
     assert result['errors'] == []
     assert any(i['offset'] == 0x127 and i['name'] == 'cerasen' for i in result['instructions'])
+
+
+def test_bopres_music_operands_and_termination():
+    # opcodes.c music type4 (<v30 ECS) reads index and five envelope fields.
+    data = (ROOT / 'reference-private/unpacked/bopres.alis').read_bytes()
+    result = module.disassemble(data, 0x18, 1000, reachable=True)
+    assert result['errors'] == []
+    by_offset = {item['offset']: item for item in result['instructions']}
+    assert [item['args'][0] for item in by_offset[0xc8]['args']] == [0, 127, 32, 20, 10000, 100]
+    assert by_offset[0xc8]['end'] == 0xd6
+    assert by_offset[0xd6]['name'] == 'csleep'

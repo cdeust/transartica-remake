@@ -1,4 +1,4 @@
-extends "res://scripts/campaign_crew.gd"
+extends "res://scripts/campaign_protection.gd"
 
 # MIT. UI owner; source-supported state changes are isolated in CampaignState.
 const Screen = preload("res://scripts/campaign_screen.gd")
@@ -53,6 +53,12 @@ func present(event: Dictionary) -> void:
 
 func _show_page() -> void:
 	var event: Dictionary = state.pending
+	if event.get("scene") == "oslo" and event.get("code_input", false) and page == _messages.size() - 1 and not event.get("quiz_done", false):
+		begin_quiz("viking", {"scene": "oslo", "messages": [90], "code_input": true, "quiz_done": true})
+		return
+	if event.get("scene") == "manual_quiz":
+		screen.present("manual_quiz", Quiz.lines(event, state.data), true)
+		return
 	var lines: Array[String] = []
 	if event.has("epitaph") and event.scene == "death":
 		lines = state.message(int(event.epitaph), true)
@@ -100,6 +106,9 @@ func _continue() -> void:
 
 
 func _submit_code(value: String) -> void:
+	if state.pending.get("scene") == "manual_quiz":
+		submit_quiz(value)
+		return
 	var result: Dictionary = state.submit_code(value, app.stoup)
 	if result.accepted:
 		_messages = [91]

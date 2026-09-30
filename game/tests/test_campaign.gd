@@ -41,6 +41,7 @@ func _init() -> void:
 	_check(state.station(-4, network).messages == [51], "mausoleum supplies delivery number")
 	state.dismiss()
 	state.station(-3, network)
+	state.pending.quiz_done = true
 	_check(not state.submit_code("59847", stoup).accepted, "wrong delivery code has no effect")
 	var checkpoint: Dictionary = JSON.parse_string(JSON.stringify(state.snapshot()))
 	var resumed = Campaign.new()
@@ -49,6 +50,7 @@ func _init() -> void:
 	_check(resumed.submit_code("58947", stoup).accepted and resumed.delivery_open and stoup.pop().message_id == 126, "ECS code opens delivery and SOS")
 	resumed.dismiss()
 	resumed.station(-3, network)
+	resumed.pending.quiz_done = true
 	_check(resumed.submit_code("58947", stoup).accepted and not stoup.has_pending(), "repeat code does not duplicate SOS")
 	resumed.dismiss()
 	_check(not resumed.prepare_entry(Vector2i(11, 10), 6, wagons, network).is_empty(), "whale without intact harpoon asks before death")
@@ -115,12 +117,42 @@ func _init() -> void:
 	session_data = session.snapshot()
 	session_data.state.pending = {"scene": "urga", "messages": [86]}
 	_check(not Session.validate_snapshot(session_data), "invisible active campaign gate rejected")
+	session.page = 1
+	session.reset()
+	_check(Session.validate_snapshot(session.snapshot()) and session.page == 0, "new game clears restored page and presentation state")
+	_test_quiz(state.data)
+	_test_hazards(network)
 	_test_car(network)
 	for failure in failures:
 		push_error(failure)
 	if failures.is_empty():
 		print("PASS: ECS campaign gate sequence, interrupted code/spy save-resume, central sabotage, Sun and six death causes, inspection cars")
 	quit(0 if failures.is_empty() else 1)
+
+
+func _test_quiz(data: Dictionary) -> void:
+	var quiz = preload("res://scripts/manual_quiz.gd")
+	var rng = RandomNumberGenerator.new()
+	rng.seed = 7 # Deterministic test input, not a gameplay constant.
+	var event: Dictionary = quiz.create("viking", rng, {"city": 12})
+	_check(quiz.valid(event) and quiz.lines(event, data).size() == 4, "original manual prompt contains page/line/word")
+	var interrupted: Dictionary = JSON.parse_string(JSON.stringify(event))
+	_check(quiz.valid(interrupted), "interrupted manual challenge validates")
+	_check(not quiz.submit(event, "ZZZZZZZZ", data, rng).accepted and event.attempt == 1, "wrong manual answer uses original retry")
+	var answer: String = data.quizzes.viking[event.index].answer
+	_check(quiz.submit(event, answer.to_lower(), data, rng).accepted, "source byte answer accepts uppercase conversion")
+	quiz.submit(event, "ZZZZZZZZ", data, rng)
+	_check(quiz.submit(event, "ZZZZZZZZ", data, rng).get("exit", false), "third failed original manual attempt exits")
+
+
+func _test_hazards(network) -> void:
+	var hazards = preload("res://scripts/campaign_hazards.gd").new()
+	var wagons = Wagons.new()
+	wagons.wagons.append([17, 0, 3, 1])
+	var result: Dictionary = Car.launch(Vector2i(23, 4), 6, 0, 6, false, wagons, network, null, {"hazards": hazards})
+	_check(result.cell == [24, 4] and network.tile(Vector2i(24, 4)) == -2 and hazards.traps[0] == 0, "inspection car consumes trap and destroys rail")
+	var resumed = preload("res://scripts/campaign_hazards.gd").new()
+	_check(resumed.restore(JSON.parse_string(JSON.stringify(hazards.snapshot()))) and not resumed.intercept_trap(Vector2i(24, 4), network), "cleared trap survives interruption without repeat")
 
 
 func _test_car(network) -> void:

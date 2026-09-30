@@ -50,7 +50,31 @@ def build(source):
         'ore_anthracite': phrases[0x492f][0], 'ore_lignite': phrases[0x4951][0],
         'coordinates': phrases[0x496c][0] + '%s' + phrases[0x499d][0] + '%s',
         'date': phrases[0x49cc][0] + '%s' + phrases[0x49cc][1]}
+    data['quizzes'] = {name: quiz_records(source, name) for name in ['soleil', 'viking']}
     return data
+
+
+def quiz_records(source, name):
+    listing = json.loads((source / 'observations/listings-20260927' / (name + '.json')).read_text())
+    row, table, words = 0, {}, {}
+    row_address, grid, letters, shift = (212, 164, 22, 87) if name == 'soleil' else (224, 168, 24, 64)
+    for item in sorted(listing['instructions'], key=lambda item: item['offset']):
+        if item['name'] != 'cstore' or item['args'][0]['name'] != 'oimmb':
+            continue
+        value, destination = item['args'][0]['args'][0], item['args'][1]
+        if destination['name'] == 'sdirw' and destination['args'] == [row_address]:
+            row = value
+        elif destination['name'] == 'seval':
+            sequence = destination['args']
+            if sequence[-1]['name'] != 'sdirtc':
+                continue
+            field, address = sequence[2]['args'][0], sequence[-1]['args'][0]
+            target = table if address == grid else words if address == letters else None
+            if target is not None:
+                target.setdefault(row, {})[field] = value
+    return [{'page': table[index][0], 'line': table[index][1], 'word': table[index][2],
+             'answer': ''.join(chr(value + shift) for _, value in sorted(words[index].items()))}
+            for index in range(8)]
 
 
 def report_phrases(instructions):

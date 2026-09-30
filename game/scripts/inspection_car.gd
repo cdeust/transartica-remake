@@ -8,7 +8,7 @@ const OBSTACLES := [34, 35, 36, 37, 65, 67, 69, 78, 79, 114, -116, -120]
 
 
 static func launch(player: Vector2i, player_heading: int, phase: int, heading: int,
-		missile: bool, wagons, network, enemies = null) -> Dictionary:
+		missile: bool, wagons, network, enemies = null, context: Dictionary = {}) -> Dictionary:
 	if heading not in [2, 4, 6, 8]:
 		return {}
 	var cell := player
@@ -26,10 +26,11 @@ static func launch(player: Vector2i, player_heading: int, phase: int, heading: i
 		if moving_phase == 3:
 			moving_phase = 0
 			cell += Network.DELTAS[moving_heading]
-			# TIME0x1a25 movement shared by car and train; dimensions in FORMAT-CARTE.
-			cell.x = posmod(cell.x, Network.WIDTH)
-			cell.y = posmod(cell.y, Network.HEIGHT)
+			# TIME0x1a25 updates coordinates directly; no artificial map wrapping.
 			path.append([cell.x, cell.y])
+			if context.has("hazards") and context.hazards.intercept_trap(cell, network):
+				met = true
+				break
 			if cell == player:
 				met = true
 				break
@@ -46,7 +47,11 @@ static func launch(player: Vector2i, player_heading: int, phase: int, heading: i
 			if code in OBSTACLES or (code < 0 and code > -108):
 				met = true
 				break
-		moving_heading = network.turn(cell, moving_heading)
+			if context.has("hazards") and context.hazards.intercept_mole(cell, missile, context):
+				met = true
+				break
+		if moving_phase == 1:
+			moving_heading = network.turn(cell, moving_heading) # TIME0x14bd.
 	_consume(wagons, 3)
 	if missile:
 		_consume(wagons, 2)

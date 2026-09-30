@@ -57,13 +57,15 @@ func _draw() -> void:
 	if scene == "earth":
 		draw_texture_rect(load("res://assets/interface/mort-earth.png"), canvas_rect(), false)
 		return
-	if scene in ["death", "report"]:
+	if scene in ["death", "report", "manual_quiz"]:
 		frame()
 		begin_canvas()
 		# TEXTE2K0x2cd9 vertical anchors, boudoir-layout.md exact display.
 		var anchors := [17, 34, 49, 64, 79, 94, 109, 124, 139, 154]
 		for index in mini(lines.size(), anchors.size()):
 			centered(anchors[index], lines[index])
+		if entering_code:
+			centered(137, input_code + "_")
 		draw_set_transform(Vector2.ZERO)
 		return
 	begin_canvas()
@@ -93,7 +95,9 @@ func handle_key(event: InputEventKey) -> void:
 			input_code = input_code.left(maxi(0, input_code.length() - 1))
 		elif event.physical_keycode == KEY_ENTER:
 			code_submitted.emit(input_code)
-		elif event.unicode >= 48 and event.unicode <= 57 and input_code.length() < 5:
+		elif scene == "manual_quiz" and event.unicode >= 65 and event.unicode <= 122 and char(event.unicode).to_upper() >= "A" and char(event.unicode).to_upper() <= "Z" and input_code.length() < 8:
+			input_code += char(event.unicode).to_upper()
+		elif scene != "manual_quiz" and event.unicode >= 48 and event.unicode <= 57 and input_code.length() < 5:
 			input_code += char(event.unicode) # SCENE4 0x17e..206 digits limit5.
 		queue_redraw()
 	elif question:

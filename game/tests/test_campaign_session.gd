@@ -43,6 +43,16 @@ func _run() -> void:
 	app._unhandled_key_input(key)
 	campaign.station(-3)
 	app._unhandled_key_input(key)
+	_check(campaign.screen.scene == "manual_quiz", "Oslo runs original Viking manual control before CODE")
+	var answer: String = campaign.state.data.quizzes.viking[campaign.state.pending.index].answer
+	for letter in answer:
+		key.physical_keycode = KEY_A + letter.unicode_at(0) - 65
+		key.unicode = letter.unicode_at(0)
+		app._unhandled_key_input(key)
+	key.physical_keycode = KEY_ENTER
+	key.unicode = 0
+	app._unhandled_key_input(key)
+	_check(campaign.screen.scene == "oslo" and campaign.screen.entering_code, "manual word answer resumes story CODE")
 	for digit in "589":
 		key.physical_keycode = KEY_0 + int(digit)
 		key.unicode = digit.unicode_at(0)

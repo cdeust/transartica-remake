@@ -21,12 +21,12 @@ static func validate(value: Variant) -> bool:
 	for key in ["visible", "entering_code", "question"]:
 		if not presentation.get(key) is bool:
 			return false
-	if not presentation.get("scene") in ["", "crew", "urga", "oslo", "mausoleum", "sun", "sun-restored", "slope", "whale_question", "whale_harpoon", "spy_pickup", "sabotage_confirm", "death", "earth", "report"] or not presentation.get("input_code") is String:
+	if not presentation.get("scene") in ["", "crew", "urga", "oslo", "mausoleum", "sun", "sun-restored", "slope", "whale_question", "whale_harpoon", "spy_pickup", "sabotage_confirm", "death", "earth", "report", "manual_quiz"] or not presentation.get("input_code") is String:
 		return false
-	if presentation.input_code.length() > 5:
+	if presentation.input_code.length() > (8 if presentation.scene == "manual_quiz" else 5):
 		return false
 	for digit in presentation.input_code:
-		if digit.unicode_at(0) < 48 or digit.unicode_at(0) > 57:
+		if (digit.unicode_at(0) < 65 or digit.unicode_at(0) > 90) if presentation.scene == "manual_quiz" else (digit.unicode_at(0) < 48 or digit.unicode_at(0) > 57):
 			return false
 	if not candidate.pending.is_empty():
 		var expected: String = candidate.pending.scene
@@ -36,7 +36,7 @@ static func validate(value: Variant) -> bool:
 			return false
 	if not presentation.input_code.is_empty() and not presentation.entering_code:
 		return false
-	if presentation.entering_code and (candidate.pending.get("scene") != "oslo" or not candidate.pending.get("code_input", false)):
+	if presentation.entering_code and candidate.pending.get("scene") != "manual_quiz" and (candidate.pending.get("scene") != "oslo" or not candidate.pending.get("code_input", false)):
 		return false
 	if presentation.question != (candidate.pending.get("scene") in ["whale_question", "spy_pickup", "sabotage_confirm"]):
 		return false

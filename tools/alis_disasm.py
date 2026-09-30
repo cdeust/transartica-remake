@@ -164,6 +164,9 @@ class Reader:
             self.switch2(args, targets)
         elif code == 0x2e:
             self.switch1(args, targets)
+        elif code in (0x95, 0x97):
+            # opcodes.c music(): resource index plus volume/tempo/attack/duration/fall.
+            args.extend(self.nested('oper') for _ in range(6))
 
     def map_args(self, code, args):
         offset = self.number(2, signed=True)
@@ -225,7 +228,7 @@ class Reader:
         args, targets, flow = [], [], 'next'
         if 0x05 <= code <= 0x1d and code not in range(0x0b, 0x11):
             flow = self.relative(code, args, targets)
-        elif code in (0x25, 0x29, 0x2e, 0x2f, 0x45, 0x61):
+        elif code in (0x25, 0x29, 0x2e, 0x2f, 0x45, 0x61, 0x95, 0x97):
             self.variable(code, args, targets)
             flow = 'switch' if code in (0x2e, 0x2f) else 'next'
         elif code in (0x1e, 0x20, 0x21):

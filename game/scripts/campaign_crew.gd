@@ -73,7 +73,7 @@ func _menu_choice(index: int) -> void:
 		app.engine.speed = 0
 		app.engine.brake = true
 		var result: Dictionary = preload("res://scripts/inspection_car.gd").launch(app.journey.position, app.journey.heading,
-			app.journey.phase, heading, _car_missile, app.wagons, app.network, app.encounters.enemies)
+			app.journey.phase, heading, _car_missile, app.wagons, app.network, app.encounters.enemies, {"hazards": state.hazards, "rng": app._trade_rng, "calendar": app.calendar})
 		app._on_cargo_changed()
 		_notice = true
 		crew_menu = ""

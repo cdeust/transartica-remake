@@ -9,6 +9,8 @@ var sos_sent := false # SCENE4 0x345 main6536.
 var pending: Dictionary = {}
 var ending := ""
 var data: Dictionary = {}
+var hazards = preload("res://scripts/campaign_hazards.gd").new()
+var protection_seen := {"soleil": false, "viking": false}
 
 
 func _init() -> void:
@@ -23,6 +25,8 @@ func reset() -> void:
 	sos_sent = false
 	pending = {}
 	ending = ""
+	hazards = preload("res://scripts/campaign_hazards.gd").new()
+	protection_seen = {"soleil": false, "viking": false}
 	spies.clear()
 	for index in SPY_COUNT:
 		var record: Array = []
@@ -110,7 +114,7 @@ func station(index: int, network) -> Dictionary:
 			return _event("urga", [86, 87])
 		-3:
 			network.set_campaign_tile(Vector2i(34, 4), 80)
-			return _event("oslo", [89, 90], {"code_input": urga_key})
+			return _event("oslo", [89, 90], {"code_input": urga_key, "quiz_done": false})
 		-4:
 			network.set_campaign_tile(Vector2i(52, 32), -123)
 			return _event("mausoleum", [51])
@@ -127,7 +131,7 @@ func _event(scene: String, messages: Array, extra: Dictionary = {}) -> Dictionar
 
 
 func submit_code(text: String, stoup = null) -> Dictionary:
-	if not urga_key or pending.get("scene") != "oslo" or not pending.get("code_input", false) or text != DELIVERY_CODE:
+	if not urga_key or pending.get("scene") != "oslo" or not pending.get("code_input", false) or not pending.get("quiz_done", false) or text != DELIVERY_CODE:
 		return {"accepted": false, "messages": [63]}
 	var first := not delivery_open
 	delivery_open = true
@@ -165,7 +169,7 @@ func snapshot() -> Dictionary:
 	return {"version": 1, "urga_key": urga_key, "delivery_open": delivery_open,
 		"central_destroyed": central_destroyed, "whale_present": whale_present,
 		"sos_sent": sos_sent, "pending": pending.duplicate(true), "ending": ending,
-		"spies": spies.duplicate(true)}
+		"spies": spies.duplicate(true), "protection_seen": protection_seen.duplicate(), "hazards": hazards.snapshot()}
 
 
 func restore(value: Variant) -> bool:
@@ -176,7 +180,12 @@ func restore(value: Variant) -> bool:
 			return false
 	if not value.get("ending") in ["", "sun", "death"] or not value.get("pending") is Dictionary:
 		return false
+	if not value.get("protection_seen") is Dictionary or not value.protection_seen.get("soleil") is bool or not value.protection_seen.get("viking") is bool:
+		return false
 	if not value.get("spies") is Array or value.spies.size() != SPY_COUNT:
+		return false
+	var candidate_hazards = preload("res://scripts/campaign_hazards.gd").new()
+	if not candidate_hazards.restore(value.get("hazards")):
 		return false
 	var parsed: Array = []
 	for record in value.spies:
@@ -194,7 +203,9 @@ func restore(value: Variant) -> bool:
 		parsed.append(row)
 	var event: Dictionary = value.pending
 	if not event.is_empty():
-		if not event.get("scene") in ["slope", "whale_harpoon", "whale_question", "urga", "oslo", "mausoleum", "sun", "sun_end", "earth", "spy_pickup", "sabotage_confirm", "death"] or not event.get("messages") is Array:
+		if not event.get("scene") in ["slope", "whale_harpoon", "whale_question", "urga", "oslo", "mausoleum", "sun", "sun_end", "earth", "spy_pickup", "sabotage_confirm", "manual_quiz", "death"] or not event.get("messages") is Array:
+			return false
+		if event.scene == "manual_quiz" and not preload("res://scripts/manual_quiz.gd").valid(event):
 			return false
 		if event.scene in ["spy_pickup", "sabotage_confirm"] and (not _integer(event.get("spy")) or event.spy < 0 or event.spy >= SPY_COUNT):
 			return false
@@ -221,6 +232,8 @@ func restore(value: Variant) -> bool:
 			pending.epitaph = int(pending.epitaph)
 	ending = value.ending
 	spies = parsed
+	hazards = candidate_hazards
+	protection_seen = value.protection_seen.duplicate()
 	return true
 
 
