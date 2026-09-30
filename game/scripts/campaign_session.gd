@@ -46,6 +46,7 @@ func present(event: Dictionary) -> void:
 	app._boudoir_session.leave()
 	app._modal.hide()
 	app.instruments.hide()
+	_play_scene_audio(event.get("scene", ""))
 	_messages = event.get("messages", []).duplicate()
 	page = 0
 	_notice = false
@@ -112,6 +113,9 @@ func _submit_code(value: String) -> void:
 		return
 	var result: Dictionary = state.submit_code(value, app.stoup)
 	if result.accepted:
+		var audio = app.get("game_audio")
+		if audio != null:
+			audio.effect("scene4", 0x13e) # Source successful Oslo code.
 		_messages = [91]
 		page = 0
 		_show_page()
@@ -242,3 +246,15 @@ func restore(value: Variant) -> bool:
 		screen.restore_movie(value.get("finale", {"tick": 0, "remainder": 0.0, "seed": 0}))
 		screen.queue_redraw()
 	return true
+
+
+func _play_scene_audio(scene: String) -> void:
+	var audio = app.get("game_audio")
+	if audio == null:
+		return
+	# SCENE3 selector1..4 follows its matching original image27..31.
+	var offsets := {"urga": 0xea, "mausoleum": 0x16b, "whale_question": 0x17a, "whale_harpoon": 0x189}
+	if offsets.has(scene):
+		audio.effect("scene3", offsets[scene])
+	elif scene == "death":
+		audio.play_loss() # YODA0x287d.
