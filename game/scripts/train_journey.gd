@@ -93,7 +93,10 @@ func reverse_direction() -> bool:
 func _advance_render(fraction: float) -> void:
 	if _render_path.points.is_empty():
 		return
-	var tile_length := (Vector2(RailNetworkScript.DELTAS[incoming_heading]).length() + Vector2(RailNetworkScript.DELTAS[heading]).length()) * 0.5
+	# A center-seeded trailing switch has no known incoming half (see
+	# _entry_position/_logical_fractional_position); retain only its outgoing half.
+	var incoming_length := 0.0 if incoming_heading == 0 else Vector2(RailNetworkScript.DELTAS[incoming_heading]).length()
+	var tile_length := (incoming_length + Vector2(RailNetworkScript.DELTAS[heading]).length()) * 0.5
 	_render_cursor += fraction * tile_length * (-1.0 if reverse else 1.0)
 	while _render_cursor > _render_path.length:
 		var next: Vector2i = _render_end_cell + RailNetworkScript.DELTAS[_render_end_heading]
