@@ -27,6 +27,12 @@ func _run() -> void:
 		return
 	var network = Network.new()
 	network.load_bytes(data.map_bytes)
+	_check(network.entry_boundary(Vector2i(11, 10)) == "story trigger", "standalone network retains uninstalled whale boundary")
+	network.campaign_entry_enabled = true
+	_check(network.entry_boundary(Vector2i(11, 10)).is_empty(), "campaign pre-entry capability permits resolved whale step")
+	_check(network.entry_boundary(Vector2i(152, 48)) == "special site", "campaign capability retains unrevealed slope tile boundary")
+	_check(network.entry_boundary(Vector2i(32, 67)) == "station", "capability preserves unresolved drill station dispatch")
+	network.campaign_entry_enabled = false
 	var journey = Journey.new()
 	journey.network = network
 	var wagons = Wagons.new()
@@ -47,13 +53,18 @@ func _run() -> void:
 
 
 func _test_mines(world, network) -> void:
-	_check(world.tick_mines(3), "day3 tick applies to actual map")
+	var stoup = preload("res://scripts/stoup_messages.gd").new()
+	_check(world.tick_mines(3, stoup), "day3 tick applies to actual map")
+	_check(stoup.pop().message_id == 1, "source discovery queues one-based mine slot")
+	var phrases := {"title_closed": "CLOSED", "title_open": "OPEN", "ore_anthracite": " ANTHRACITE", "ore_lignite": " LIGNITE", "coordinates": "X:%s Y:%s", "date": "DAY:%s"}
+	var report: Array[String] = world.mines.report(0, phrases)
+	_check(report.size() == 3 and report[1] == "X:%s Y:%s" % [world.mines.records[0][0] + 40, world.mines.records[0][1]] and report[2] == "DAY:3", "mine report uses source coordinates and absolute creation day")
 	var cell: Vector2i = world.mines.mine_cell(world.mines.records[0])
 	_check(network.tile(cell) == 78, "actual mine cell enters map")
 	var saved_network: Dictionary = network.snapshot()
 	var saved_world: Dictionary = world.snapshot()
 	var random_state: int = world.rng.state
-	_check(not world.tick_mines(3) and world.rng.state == random_state, "same-day replay cannot re-deplete/create or consume randomness")
+	_check(not world.tick_mines(3, stoup) and world.rng.state == random_state and not stoup.has_pending(), "same-day replay cannot re-deplete/create, enqueue, or consume randomness")
 	_check(not world.ask_mine(cell).is_empty() and world.engine.brake, "mine approach brakes and presents source question")
 	_check(world.answer_mine(false) and network.tile(cell) == 78, "NO leaves mine record/map unchanged")
 	world.ask_mine(cell)

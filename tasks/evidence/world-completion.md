@@ -66,3 +66,9 @@ uses no source assets. WorldEventScreen preserves scene39..148 and shared HUD
 painting and all25 authored train textures, preserving their aspect ratio.
 These scenes require root's integrated native visual review before artistic
 coverage is marked complete.
+
+## Campaign boundary and bulletin followup
+
+Runtime `network.campaign_entry_enabled=true` removes legacy `STORY_CELLS` stops only after host installs campaign pre-entry evaluation. It is not save data; staged/restored networks need the capability reapplied. All station, works, mine, concealed-region and timed-bridge boundaries remain. Tile79 source TIME0x2565→YODA0x23a uses TEXTEK17; tile65 TIME0x24d0 dispatch retains the workshop reversal flow.
+
+`world.tick_mines(day,stoup)` atomically queues source one-based mine slot IDs after map commit, ordered depletion then discovery (YODA0x1e71/1e7b and0x230a/2314). Replayed ticks emit no bulletin. `world.mines.report(slot,private_phrases)` formats closure/discovery, ore, actual coordinates and signed creation-day magnitude (TEXTEK0x48cc..49fb); campaign owns private phrase extraction and bulletin display. Native Godot `test_world_actions.gd` passes cleanly, including capability defaults, concealed slope refusal, one-based discovery ID, formatter, and no replay notification.

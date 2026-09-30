@@ -71,6 +71,9 @@ const CAMPAIGN_WRITES := {
 var _initial := PackedInt32Array()
 var _tiles := PackedInt32Array()
 var _city_anchors: Array[Vector2i] = [] # VILLE.FIC order; anchor_x = signed(field0) + 40.
+# Runtime capability, never save data: the host must call campaign.before_entry
+# before each imminent entry (TIME 0x1b9d precedes 0x243a dispatch).
+var campaign_entry_enabled := false
 
 
 func load_bytes(map_bytes: PackedByteArray) -> bool:
@@ -152,7 +155,7 @@ func entry_boundary(candidate: Vector2i) -> String:
 		return "station" if code >= 34 and code <= 37 else "event site"
 	if code <= SPECIAL_TILE_LIMIT and not code in INTACT_LAKE_BRIDGES:
 		return "special site"
-	if candidate in STORY_CELLS:
+	if candidate in STORY_CELLS and not campaign_entry_enabled:
 		return "story trigger"
 	if code == 0:
 		return "no track"

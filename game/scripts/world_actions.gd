@@ -28,7 +28,7 @@ func attach(active_journey, active_wagons, active_engine, active_trade, active_r
 
 
 # Replay-safe host calendar hook; YODA0x3446 fires only day%3==0.
-func tick_mines(day: int) -> bool:
+func tick_mines(day: int, stoup = null) -> bool:
 	if day < 1 or day % 3 != 0 or day <= last_mine_day:
 		return false
 	var before := mines.snapshot()
@@ -40,6 +40,15 @@ func tick_mines(day: int) -> bool:
 		push_error("MineTable produced invalid map writes on day %d" % day)
 		return false
 	last_mine_day = day
+	# YODA 0x1e86 depletion callbacks precede 0x2310 discovery; enqueue only
+	# after the complete map mutation commits, so failed/replayed ticks emit none.
+	if stoup != null:
+		for slot in mines.records.size():
+			if before[slot][MineTable.FIELD_WEALTH] > 0 and mines.records[slot][MineTable.FIELD_WEALTH] < 1:
+				stoup.push(slot + 1)
+		for slot in mines.records.size():
+			if before[slot][MineTable.FIELD_SIGNED_DAY] == 0 and mines.records[slot][MineTable.FIELD_SIGNED_DAY] != 0:
+				stoup.push(slot + 1)
 	return true
 
 

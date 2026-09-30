@@ -99,6 +99,20 @@ func find_free_slot() -> int:
 	return -1
 
 
+# TEXTEK 0x48cc..0x49fb. Historical phrases are supplied from private data.
+func report(slot: int, phrases: Dictionary) -> Array[String]:
+	if slot < 0 or slot >= records.size() or not is_used(records[slot]):
+		return []
+	for key in ["title_closed", "title_open", "ore_anthracite", "ore_lignite", "coordinates", "date"]:
+		if not phrases.get(key) is String:
+			return []
+	var record: Array = records[slot]
+	var title: String = phrases.title_closed if record[FIELD_WEALTH] < 1 else phrases.title_open
+	var ore: String = phrases.ore_anthracite if is_anthracite(record) else phrases.ore_lignite
+	return [title + ore, phrases.coordinates % [record[FIELD_X] + 40, record[FIELD_Y]],
+		phrases.date % absi(record[FIELD_SIGNED_DAY])]
+
+
 # TIME 0x2509: full 50-row scan by cell, independent of the 0..35 slots this table manages.
 func slot_for_cell(cell: Vector2i) -> int:
 	for index in mini(records.size(), TABLE_ROWS):
