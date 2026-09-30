@@ -74,6 +74,8 @@ func _test_mines(world, network) -> void:
 	_check(network.tile(cell) == 79 and world.mines.records[0][3] == -1, "close writes depleted mine and wealth sentinel")
 	_check(not world.close_mine(), "close cannot repeat reversal")
 	_check(network.restore(saved_network) and world.restore(saved_world), "map and mine table restore together")
+	var serialized: Variant = JSON.parse_string(JSON.stringify(saved_world))
+	_check(world.restore(serialized) and world.snapshot() == saved_world, "JSON roundtrip restores integral mine day without float modulo")
 	var bad: Dictionary = saved_world.duplicate(true)
 	bad.last_mine_day = 3.5
 	_check(not world.restore(bad) and world.snapshot() == saved_world, "fractional snapshot rejected atomically")

@@ -51,6 +51,15 @@ func _run() -> void:
 		push_error("YODA 0x25ce: close commits repair and retry")
 		quit(1)
 		return
+	network.load_bytes(bytes)
+	dialog.restore(saved)
+	dialog.reset()
+	dialog._close(true)
+	var cleared: Dictionary = dialog.snapshot()
+	if cleared.visible or cleared.accepted or cleared.countdown != 0 or cleared.cell != [-1,-1] or network.tile(Vector2i(83,67)) != 67:
+		push_error("New-game reset must discard accepted repair and closing callbacks")
+		quit(1)
+		return
 	wagons.wagons = [[18,0,1,2],[5,0,0,15],[7,0,0,2],[16,3,0,0]]
 	var report: Dictionary = TrackWorks.work_report("crevasse", wagons)
 	if report.ticks != -47 or report.mammoths != 2 or report.cranes != 1:

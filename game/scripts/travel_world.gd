@@ -1,7 +1,7 @@
 extends "res://scripts/world_view.gd"
 class_name TravelWorldView
 
-const ICE_FIELD_PATH := "res://assets/travel/ice-field.png"
+const ICE_FIELD_PATH := "res://assets/travel/terrain/snow-material.png" # source: authored wind-polished snow material.
 const GROUND_SHADER_PATH := "res://shaders/travel_ground.gdshader"
 const RailNetworkScript = preload("res://scripts/rail_network.gd")
 const TRAVEL_MIN_ZOOM := 0.001 # source: authored inspection floor permits complete long consists in a 320px viewport.
@@ -19,9 +19,11 @@ const TRAIN_NOSE_SCREEN := Vector2(0.72, 0.65) # source: authored framing keeps 
 const SWITCH_ACTIVE := Color("#e8c46a") # source: authored: branch currently selected by a switch.
 const SWITCH_IDLE := Color("#4a5a60") # source: authored: unused branch.
 
+var rail_art = preload("res://scripts/rail_art.gd").new()
 var encounters
 var wagons
-var map_entities = preload("res://scripts/map_entities.gd").new()
+var map_entities = preload("res://scripts/travel_map_entities.gd").new()
+var terrain = preload("res://scripts/travel_terrain.gd").new()
 var inspecting_map := false
 var camera_world := Vector2(12.5, 62.5)
 var session
@@ -45,6 +47,8 @@ var _discovery_mask: ImageTexture
 
 
 func _ready() -> void:
+	rail_art.load_art()
+	terrain.load_art()
 	# CARTE draws fixed terrain and towns independently of mobile perception.
 	discovery_enabled = false
 	super._ready()
@@ -169,6 +173,7 @@ func focus_city(index: int) -> void:
 
 func _draw() -> void:
 	_update_ground_shader()
+	terrain.draw(self)
 	_draw_rails()
 	map_entities.draw(self)
 	_draw_train()
@@ -224,6 +229,8 @@ func _draw_switch_state(x: int, y: int, code: int, ports: Array[Vector2], center
 
 
 func _draw_rail_segment(start: Vector2, finish: Vector2) -> void:
+	if rail_art.draw_segment(self, start, finish, _effective_zoom()):
+		return
 	var delta := finish - start
 	var distance := delta.length()
 	if distance <= 1.0:

@@ -121,7 +121,7 @@ func restore(value: Variant) -> bool:
 	for field in ["last_mine_day", "pending_mine"]:
 		if not typeof(value.get(field)) in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value[field])) or float(value[field]) != floorf(float(value[field])):
 			return false
-	if value.last_mine_day < 0 or value.last_mine_day % 3 != 0 or value.pending_mine < -1 or value.pending_mine >= MineTable.SLOT_COUNT:
+	if value.last_mine_day < 0 or int(value.last_mine_day) % 3 != 0 or value.pending_mine < -1 or value.pending_mine >= MineTable.SLOT_COUNT:
 		return false
 	if value.mine_accepted and value.pending_mine < 0:
 		return false

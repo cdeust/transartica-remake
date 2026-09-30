@@ -237,7 +237,10 @@ func restore(value: Variant) -> bool:
 	for entry in value:
 		if not _valid_record(entry):
 			return false
-		parsed.append((entry as Array).duplicate())
+		var record: Array[int] = []
+		for field in entry:
+			record.append(int(field))
+		parsed.append(record)
 	if not _is_contiguous(parsed):
 		return false
 	records = parsed

@@ -55,6 +55,27 @@ func load_texts(project_root: String) -> bool:
 	return true
 
 
+# A new game/legacy-save restore must discard an old accepted closing action.
+func reset() -> void:
+	kind = ""
+	_ok_result = false
+	_pending_cell = Vector2i(-1, -1)
+	_pending_code = 0
+	countdown = 0
+	_result_lines = []
+	question = false
+	lines = []
+	mode = "mine"
+	report = {}
+	_scene = null
+	for button in [_yes, _no, _ok]:
+		if button != null:
+			button.hide()
+	if _lines != null:
+		_lines.text = ""
+	hide()
+
+
 func ask(network) -> bool:
 	kind = TrackWorks.kind_for(network.tile(journey.next_cell()))
 	if kind.is_empty():
