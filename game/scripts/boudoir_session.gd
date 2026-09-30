@@ -128,7 +128,7 @@ func _action(code: int) -> void:
 		"inventory": view.inventory.show_report(Inventory.build(app.calendar.day, app.engine, app.wagons, app.trade))
 		"save_prompt": view.book.open_book(app._save_path().get_base_dir())
 		"revolver_prompt": event.prompt_revolver()
-		"stoup": _unavailable()
+		"stoup": app.campaign.read_stoup()
 	refresh()
 
 
@@ -158,18 +158,14 @@ func _panel_action(code: int) -> void:
 
 
 func _quarters_action(code: int) -> void:
-	# Spy deployment/car menus are not yet integrated; never fabricate an effect.
 	if code == 12:
 		app._open_panel("overview")
 	elif code == 11:
-		event.inform(["SPY OPERATIONS ARE NOT YET AVAILABLE"])
+		app.campaign.open_spy_menu()
 	elif code == 13:
-		if preload("res://scripts/quarters_actions.gd").cars_count(app.wagons) == 0:
-			event.inform(["YOU HAVE NO LINE INSPECTION CARS", "AND YOU CANNOT ACCESS THIS MENU"])
-		else:
-			_unavailable()
+		app.campaign.open_car_menu()
 	elif code == 10 and app.stoup.has_pending():
-		_unavailable()
+		app.campaign.read_stoup()
 	refresh()
 
 
@@ -240,6 +236,8 @@ func _refresh_overview() -> void:
 
 
 func _inspect_map(cell: Vector2i) -> void:
+	if app.campaign.select_map_cell(cell):
+		return
 	# Original overview message3 selects a detailed-map window, not a train route.
 	app._open_panel("map")
 	await app.get_tree().process_frame

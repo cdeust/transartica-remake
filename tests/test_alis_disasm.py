@@ -141,3 +141,22 @@ def test_file_opcodes_from_main():
     assert names == ['cfopen', 'cfreadb', 'cfclose']
     assert result['instructions'][0]['args'] == ['ville.fic', 2]
     assert result['instructions'][1]['args'] == [0x5fe4, 0x8a]
+
+
+def test_campaign_sound_and_effect_paths_are_reachable():
+    # opcodes.c3340 sound consumes five expressions; ccancall4430 consumes none.
+    data = bytes.fromhex('9d 00 00 00 64 00 7f 00 02 00 08 dc 42')
+    result = module.disassemble(data, 0, 3)
+    assert result['errors'] == []
+    assert [i['end'] for i in result['instructions']] == [11, 12, 13]
+    scene = (ROOT / 'reference-private/unpacked/scene3.alis').read_bytes()
+    result = module.disassemble(scene, 0x18, 1000, reachable=True)
+    by_offset = {i['offset']: i for i in result['instructions']}
+    assert result['errors'] == []
+    assert by_offset[0x102]['args'][1]['args'] == [0x64f5]
+    assert by_offset[0x10d]['args'][0]['args'] == [86]
+    assert by_offset[0x131]['args'][0]['args'] == [87]
+    ending = (ROOT / 'reference-private/unpacked/ifebo.alis').read_bytes()
+    result = module.disassemble(ending, 0x18, 1000, reachable=True)
+    assert result['errors'] == []
+    assert any(i['offset'] == 0x127 and i['name'] == 'cerasen' for i in result['instructions'])

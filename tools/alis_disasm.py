@@ -233,15 +233,15 @@ class Reader:
             args.append(self.nested('store' if code == 0x1e else 'add'))
         elif code in (0x27, 0xbe, 0xd8, 0xc0):
             args.extend((self.nested('oper'), self.nested('oper')))
-        elif code in (0x4c, 0x4d):
+        elif code in (0x4c, 0x4d, 0xcd):
             args.extend(self.nested('oper') for _ in range(3))
         elif code == 0xbf:
             args.extend(self.nested('oper') for _ in range(4))
-        elif code in (0x49, 0xa7, 0xba):
+        elif code in (0x49, 0xa7, 0xba, 0x9d, 0x9e):
             args.extend(self.nested('oper') for _ in range(5))
         elif code in (0x1f, 0x24, 0x26, 0x28, 0x2a, 0x34, 0x35, 0x36,
                       0x3e, 0x41, 0x48, 0x4b, 0x51, 0x6a, 0x7d,
-                      0x96, 0xb8, 0xb9, 0xbc, 0xd7, 0xde):
+                      0x68, 0x96, 0xb8, 0xb9, 0xbc, 0xd7, 0xde):
             args.append(self.nested('oper'))
         elif code in (0x30, 0x31, 0x32):
             flow = self.start(code, args, targets)
@@ -259,7 +259,7 @@ class Reader:
         elif code in (0x3f, 0x42):
             flow = 'suspend'  # cstop stops this VM tick; next PC remains reachable.
         elif code in (0x3b, 0x50, 0x52, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67,
-                      0x84, 0x85, 0xa1):
+                      0x84, 0x85, 0xa1, 0xdc):
             pass
         else:
             raise DecodeError(f'unsupported opcode {name} at {offset:#x}')
