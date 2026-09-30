@@ -92,3 +92,27 @@ session snapshot; validate it before any app state mutation. After loading netwo
 and trade, apply campaign.restore so presentation/code/pages resume. Connect
 CityScreen.town_message_requested to campaign.show_town. Add both campaign tests
 to the central runner; build_preview must include generated campaign.json.
+
+## Independent review corrections, second checkpoint
+
+- SCENE4 0xbc..111 requires Urga flag64f5 before CODE; a fresh Oslo visit
+  now cannot accept58947. Native negative gate added.
+- CARTE0x27f9..2821 requires confirmation33 before field13/tile mutation;
+  dynamite map selection now presents a resumable confirmation.
+- YODA0x1487 reverses while harpoon text53 is displayed; heading now changes
+  before presentation, preserving an interrupted save.
+- Original death TEXTE2K0x26e6..2d41 is separate from earlier inventory IDs100+;
+  private builder extracts exact ten-line epitaphs and MORT Earth follows.
+- TIME0x11a maps boiler explosion to102; TIME0x180 maps coal exhaustion to101.
+  CampaignSession.present_engine_event is guarded against duplicate endings.
+- Snapshot validation rejects unknown scenes, hidden active gates, invalid
+  spy slots, negative code prefixes and code entry without Urga.
+- Native model gate clean PASS in .cache/campaign/review-tests.log. Native
+  rendered eleven scene states clean PASS in .cache/campaign/visual-tests.log;
+  captures retained there including whale, slope, epitaph, Earth and crew.
+- Mine bulletins TEXTEK0x48cc..49fb now use World MineTable.report with exact
+  privately extracted phrases; IDs<51 are not discarded. Dynamic enemy spy
+  report text TEXTEK0x27f4..2bf0 is private, report formatting in spy_report.gd.
+- Still required: real-app integrated tests after root cherry-pick, legitimate
+  start-to-Sun route, original quizzes, IFEBO/BOPRES timing/audio, mine/mole car
+  cases, non-enemy spy reports and exact observation hooks. These remain open.

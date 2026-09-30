@@ -29,6 +29,10 @@ func _init() -> void:
 	var wagons = Wagons.new()
 	var stoup = Stoup.new()
 	_check(state.load_data(), "private campaign source data loaded")
+	_check(state.message(100, true).size() == 10 and state.message(104, true)[0].contains("MONSTER"), "death dispatch excludes empty inventory IDs")
+	state.station(-3, network)
+	_check(not state.pending.code_input and not state.submit_code("58947").accepted and not state.delivery_open, "Oslo without Urga key cannot open delivery")
+	state.dismiss()
 	_check(not state.submit_code("58947").accepted, "delivery number accepted only at Oslo")
 	_check(state.station(-2, network).messages == [86, 87] and state.urga_key, "first Urga meeting gives key")
 	state.dismiss()
@@ -75,6 +79,11 @@ func _init() -> void:
 	_check(travel_resume.spies[0][0] == 3 and network.tile(Vector2i(65, 20)) == -124 and stoup.pop().message_id == 127, "arrival discovers central and announces127")
 	_check(travel_resume.sabotage(0, network, stoup).central and stoup.pop().message_id == 125, "posted spy destroys central and announces125")
 	_check(travel_resume.sabotage(0, network, stoup).is_empty(), "same spy cannot duplicate dynamite")
+	_check(travel_resume.prepare_entry(Vector2i(65, 20), 6, wagons, network).scene == "spy_pickup", "posted spy pickup asked on entry")
+	travel_resume.retrieve_spy(0, false, trade)
+	travel_resume.dismiss()
+	_check(travel_resume.spies[0][13] == 0, "pickup decline re-enables dynamite per source")
+	_check(travel_resume.retrieve_spy(0, true, trade) and trade.spy_slots[0] == 1 and travel_resume.spies[0][7] == 0, "pickup resets report and returns spy aboard")
 	network.cells[Vector2i(157, 68)] = 36
 	travel_resume.prepare_entry(Vector2i(157, 68), 6, wagons, network)
 	_check(network.tile(Vector2i(157, 68)) == 3, "central flag opens Gycode on entry")
@@ -91,8 +100,21 @@ func _init() -> void:
 	var session = Session.new()
 	var session_data: Dictionary = session.snapshot()
 	_check(Session.validate_snapshot(session_data), "session staged validation pure")
+	session_data.state.urga_key = true
+	session_data.state.pending = {"scene": "oslo", "messages": [89, 90], "code_input": true}
+	session_data.presentation.visible = true
+	session_data.presentation.scene = "oslo"
+	session_data.presentation.entering_code = true
 	session_data.presentation.input_code = "589"
-	_check(session.restore(session_data), "partial delivery code accepted in snapshot")
+	_check(session.restore(session_data), "partial delivery code accepted in active Oslo snapshot")
+	session_data.presentation.input_code = "-1"
+	_check(not Session.validate_snapshot(session_data), "negative number is not keyboard delivery prefix")
+	session_data = session.snapshot()
+	session_data.presentation.scene = "invented"
+	_check(not Session.validate_snapshot(session_data), "unknown presentation rejected")
+	session_data = session.snapshot()
+	session_data.state.pending = {"scene": "urga", "messages": [86]}
+	_check(not Session.validate_snapshot(session_data), "invisible active campaign gate rejected")
 	_test_car(network)
 	for failure in failures:
 		push_error(failure)

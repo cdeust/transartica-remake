@@ -18,6 +18,17 @@ func _run() -> void:
 	app._restart_engine()
 	var campaign = app.campaign
 	_check(campaign.state.data.has("regions"), "private ECS campaign data available in real app")
+	app.journey.position = Vector2i(10, 10)
+	app.journey.heading = 6
+	app.journey.phase = 2
+	app.journey.distance_ticks = 23
+	app.engine.speed = 0
+	app._advance_journey()
+	_check(not campaign.screen.visible and campaign.state.pending.is_empty(), "parked adjacent whale does not trigger entry event")
+	app._restart_engine()
+	campaign.station(-3)
+	_check(not campaign.screen.entering_code and not campaign.state.submit_code("58947").accepted, "real app Oslo without Urga key stays locked")
+	campaign.reset()
 	_check(campaign.station(-2), "Urga station handled")
 	_check(campaign.screen.visible and app.engine.brake and app.session.paused, "original illustrated encounter stops train")
 	var key := InputEventKey.new()
@@ -59,6 +70,8 @@ func _run() -> void:
 	campaign.reset()
 	campaign.die(104)
 	_check(campaign.screen.visible and campaign.screen.lines == campaign.state.message(104, true), "death cause gets correct epitaph")
+	app._unhandled_key_input(key)
+	_check(campaign.screen.scene == "earth", "death first presents original Earth scene")
 	app._unhandled_key_input(key)
 	_check(app._boudoir_session.reception.visible, "death returns to reception")
 	DirAccess.remove_absolute(path)

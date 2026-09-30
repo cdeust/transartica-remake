@@ -17,14 +17,16 @@ var _art: Dictionary = {}
 
 func _ready() -> void:
 	super._ready()
-	for name in ["urga", "oslo", "mausoleum", "sun-overcast", "sun-restored"]:
+	for name in ["urga", "oslo", "mausoleum", "sun-overcast", "sun-restored", "whale", "slope"]:
 		_art[name] = load("res://assets/campaign/%s.png" % name)
 	hide()
 
 
-func present(name: String, message: Array[String], code := false, ask := false) -> void:
+func present(name: String, message: Array, code := false, ask := false) -> void:
 	scene = name
-	lines = message
+	lines.clear()
+	for line in message:
+		lines.append(str(line))
 	entering_code = code
 	question = ask
 	menu = []
@@ -45,13 +47,25 @@ func open_menu(labels: Array[String]) -> void:
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color.BLACK)
-	var key := scene
+	var key := "whale" if scene.begins_with("whale") else scene
 	if key == "sun":
 		key = "sun-overcast"
 	if _art.has(key):
 		draw_texture_rect(_art[key], canvas_rect(), false)
-	elif scene == "crew":
+	elif scene in ["crew", "", "spy_pickup", "sabotage_confirm"]:
 		draw_texture_rect(load("res://assets/boudoir/general-quarters.png"), canvas_rect(), false)
+	if scene == "earth":
+		draw_texture_rect(load("res://assets/interface/mort-earth.png"), canvas_rect(), false)
+		return
+	if scene in ["death", "report"]:
+		frame()
+		begin_canvas()
+		# TEXTE2K0x2cd9 vertical anchors, boudoir-layout.md exact display.
+		var anchors := [17, 34, 49, 64, 79, 94, 109, 124, 139, 154]
+		for index in mini(lines.size(), anchors.size()):
+			centered(anchors[index], lines[index])
+		draw_set_transform(Vector2.ZERO)
+		return
 	begin_canvas()
 	if not menu.is_empty():
 		for index in menu.size():

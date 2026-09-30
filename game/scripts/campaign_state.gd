@@ -43,7 +43,8 @@ func load_data(path: String = "res://private-data/campaign.json") -> bool:
 
 func message(id: int, epitaph := false) -> Array[String]:
 	var result: Array[String] = []
-	for line in data.get("epitaphs" if epitaph else "messages", {}).get(str(id), []):
+	var section := "epitaphs" if epitaph and id >= 100 and id <= 105 else "documents" if epitaph else "messages"
+	for line in data.get(section, {}).get(str(id), []):
 		result.append(str(line))
 	return result
 
@@ -52,6 +53,9 @@ func message(id: int, epitaph := false) -> Array[String]:
 func prepare_entry(cell: Vector2i, heading: int, wagons, network) -> Dictionary:
 	if not pending.is_empty() or not ending.is_empty():
 		return pending
+	var spy := posted_at(cell)
+	if spy >= 0:
+		return _event("spy_pickup", [21], {"spy": spy})
 	var code: int = network.tile(cell)
 	if cell.x > 38 and cell.x < 59 and cell.y > 19 and cell.y < 34:
 		if cell == Vector2i(39, 32) and code == 34:
@@ -106,7 +110,7 @@ func station(index: int, network) -> Dictionary:
 			return _event("urga", [86, 87])
 		-3:
 			network.set_campaign_tile(Vector2i(34, 4), 80)
-			return _event("oslo", [89, 90], {"code_input": true})
+			return _event("oslo", [89, 90], {"code_input": urga_key})
 		-4:
 			network.set_campaign_tile(Vector2i(52, 32), -123)
 			return _event("mausoleum", [51])
@@ -123,7 +127,7 @@ func _event(scene: String, messages: Array, extra: Dictionary = {}) -> Dictionar
 
 
 func submit_code(text: String, stoup = null) -> Dictionary:
-	if pending.get("scene") != "oslo" or not pending.get("code_input", false) or text != DELIVERY_CODE:
+	if not urga_key or pending.get("scene") != "oslo" or not pending.get("code_input", false) or text != DELIVERY_CODE:
 		return {"accepted": false, "messages": [63]}
 	var first := not delivery_open
 	delivery_open = true
@@ -190,7 +194,11 @@ func restore(value: Variant) -> bool:
 		parsed.append(row)
 	var event: Dictionary = value.pending
 	if not event.is_empty():
-		if not event.get("scene") in ["slope", "whale_harpoon", "whale_question", "urga", "oslo", "mausoleum", "sun", "sun_end", "death"] or not event.get("messages") is Array:
+		if not event.get("scene") in ["slope", "whale_harpoon", "whale_question", "urga", "oslo", "mausoleum", "sun", "sun_end", "earth", "spy_pickup", "sabotage_confirm", "death"] or not event.get("messages") is Array:
+			return false
+		if event.scene in ["spy_pickup", "sabotage_confirm"] and (not _integer(event.get("spy")) or event.spy < 0 or event.spy >= SPY_COUNT):
+			return false
+		if event.get("code_input", false) and (event.scene != "oslo" or not value.urga_key):
 			return false
 		for key in ["code_input", "reverse"]:
 			if event.has(key) and not event[key] is bool:

@@ -67,6 +67,42 @@ func advance_spies(network, trade, stoup) -> Array:
 
 # CARTE0x27ae refuses travelling or already-used spy; confirmed action33 adds100
 # to field13 before tile dispatch. Central sabotage never requires Urga's key.
+func posted_at(cell: Vector2i) -> int:
+	for index in SPY_COUNT:
+		var record: Array = spies[index]
+		if record[0] == 3 and Vector2i(record[1] + 40, record[2]) == cell:
+			return index
+	return -1
+
+
+func retrieve_spy(index: int, accept: bool, trade) -> bool:
+	if index < 0 or index >= SPY_COUNT or spies[index][0] != 3:
+		return false
+	if accept:
+		spies[index].fill(0)
+		spies[index][0] = 1 # YODA0x26e1..270d resets fields1..14, no load increment.
+		trade.spy_slots[index] = 1
+	else:
+		spies[index][13] %= 100 # YODA0x2713.
+	return true
+
+
+func observe_enemy(slot: int, cell: Vector2i, calendar, stoup) -> void:
+	var index := posted_at(cell)
+	if index < 0:
+		return
+	var record: Array = spies[index]
+	stoup.push(index + 101) # TIME0x20bb.
+	record[8] = record[7]
+	record[7] = slot + 1
+	record[12] = record[9]
+	record[9] = calendar.day
+	record[13] = record[10]
+	record[10] = calendar.hour
+	record[14] = record[11]
+	record[11] = calendar.minute
+
+
 func sabotage(index: int, network, stoup) -> Dictionary:
 	if index < 0 or index >= SPY_COUNT:
 		return {}
