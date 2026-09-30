@@ -155,6 +155,11 @@ func present_engine_event() -> bool:
 
 func reset() -> void:
 	state.reset()
+	page = 0
+	_messages = []
+	_notice = false
+	_return_room = "quarters"
+	_car_missile = false
 	selection = ""
 	crew_menu = ""
 	if screen != null:

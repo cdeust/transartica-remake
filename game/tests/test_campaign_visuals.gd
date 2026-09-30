@@ -1,5 +1,6 @@
 extends SceneTree
 
+# requires-native-renderer
 # Native rendering gate: no blank scene body in campaign encounters or crew UI.
 const Screen = preload("res://scripts/campaign_screen.gd")
 const State = preload("res://scripts/campaign_state.gd")
@@ -10,6 +11,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://../.cache/campaign"))
 	root.size = Vector2i(1280, 800)
 	var state = State.new()
 	state.load_data()
@@ -34,7 +36,9 @@ func _run() -> void:
 					detail += 1
 		if detail == 0:
 			failures.append(scene + " has no rendered scene body")
-		capture.save_png(ProjectSettings.globalize_path("res://../.cache/campaign/" + scene + "-native.png"))
+		var saved := capture.save_png(ProjectSettings.globalize_path("res://../.cache/campaign/" + scene + "-native.png"))
+		if saved != OK:
+			failures.append(scene + " native capture could not be saved")
 	screen.queue_free()
 	await process_frame
 	for failure in failures:
