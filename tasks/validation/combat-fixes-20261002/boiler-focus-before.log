@@ -1,0 +1,9 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4
+
+BOILER before: paused=true heat=5000 rate=2 cycles=0 boudoir=true
+BOILER after: paused=true heat=5000 cycles=0 pending=false boudoir=true
+ERROR: boiler overload returns to visible engine event
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _run (/Users/cdeust/Developments/Transartica/.worktrees/combat-regressions/.cache/boiler-regression/test_boudoir-before.gd:54)

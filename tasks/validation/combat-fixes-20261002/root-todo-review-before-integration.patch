@@ -1,0 +1,25 @@
+diff --git a/tasks/todo.md b/tasks/todo.md
+index 4c7423b..d5353f2 100644
+--- a/tasks/todo.md
++++ b/tasks/todo.md
+@@ -260,3 +260,20 @@ Windows execution remains unverified because no Windows host was available.
+ Cleanup removed453 822 049bytes of obsolete app/import caches and disposed the
+ registered artifact-test temp after preserving evidence. Unpublished commits
+ and other sessions’ work remain protected. No remote publication performed.
++
++## Updated main verification, 1 October 2026
++
++- [x] Fetch and pin merged main6dca252, preserving the local checkout and active worktrees.
++- [x] Run all63 current Godot suites and33 Python tests on an isolated committed source snapshot.
++- [x] Verify complete campaign plus deterministic Mausoleum save/reload.
++- [x] Verify native ignition pause, save/restore and new-game cleanup:55 assertions.
++- [x] Independently review the changed scripts and reproduce combat defects.
++- [ ] Correct moving-wagon selection and destroyed-wagon cache/crop mismatch.
++- [ ] Correct the shake transform reset and validate its input registration.
++- [ ] Resolve the intermittent native boiler assertion before claiming a fully clean suite.
++
++[Review and evidence](validation/main-regression-20261001.md):62/63 Godot suites
++passed initially; the failed boudoir fixture passed on three repeats and on the
++previous baseline. Two combat defects reproduce natively; a third is confirmed
++by static transform review. The destruction-cache path originated in my earlier
++ca1ece1 commit. No production code change or new publication in this review.

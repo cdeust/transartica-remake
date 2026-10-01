@@ -1,0 +1,15 @@
+{
+  "base": "6dca2521c360a3bc63a9bc4b1b1eed5e9f54908a",
+  "paths": [
+    "game/assets",
+    "game/shaders",
+    "game/scripts/tactical_weapon_motion.gd",
+    "game/scripts/living_effects.gd",
+    "game/scripts/living_particles.gd",
+    "game/scripts/blast_pixel_volume.gd",
+    "game/scripts/launcher_scene.gd",
+    "game/scripts/launcher_session.gd",
+    "game/scripts/rocket_living_effects.gd"
+  ],
+  "unchanged": true
+}

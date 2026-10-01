@@ -1,0 +1,317 @@
+[
+  {
+    "suite": "run_tests.gd",
+    "pass": true,
+    "log": "run_tests.log"
+  },
+  {
+    "suite": "test_ambience.gd",
+    "pass": true,
+    "log": "test_ambience.log"
+  },
+  {
+    "suite": "test_application_cadence.gd",
+    "pass": true,
+    "log": "test_application_cadence.log"
+  },
+  {
+    "suite": "test_audio_routes.gd",
+    "pass": true,
+    "log": "test_audio_routes.log"
+  },
+  {
+    "suite": "test_audio_session.gd",
+    "pass": true,
+    "log": "test_audio_session.log"
+  },
+  {
+    "suite": "test_authored_overview.gd",
+    "pass": true,
+    "log": "test_authored_overview.log"
+  },
+  {
+    "suite": "test_automatic_combat.gd",
+    "pass": true,
+    "log": "test_automatic_combat.log"
+  },
+  {
+    "suite": "test_blast_detail.gd",
+    "pass": true,
+    "log": "test_blast_detail.log"
+  },
+  {
+    "suite": "test_boudoir.gd",
+    "pass": false,
+    "log": "test_boudoir.log"
+  },
+  {
+    "suite": "test_camera_scale.gd",
+    "pass": true,
+    "log": "test_camera_scale.log"
+  },
+  {
+    "suite": "test_campaign.gd",
+    "pass": true,
+    "log": "test_campaign.log"
+  },
+  {
+    "suite": "test_campaign_corridor.gd",
+    "pass": true,
+    "log": "test_campaign_corridor.log"
+  },
+  {
+    "suite": "test_campaign_encounters.gd",
+    "pass": true,
+    "log": "test_campaign_encounters.log"
+  },
+  {
+    "suite": "test_campaign_fauna.gd",
+    "pass": true,
+    "log": "test_campaign_fauna.log"
+  },
+  {
+    "suite": "test_campaign_route.gd",
+    "pass": true,
+    "log": "test_campaign_route.log"
+  },
+  {
+    "suite": "test_campaign_session.gd",
+    "pass": true,
+    "log": "test_campaign_session.log"
+  },
+  {
+    "suite": "test_campaign_visuals.gd",
+    "pass": true,
+    "log": "test_campaign_visuals.log"
+  },
+  {
+    "suite": "test_city_list_icons.gd",
+    "pass": true,
+    "log": "test_city_list_icons.log"
+  },
+  {
+    "suite": "test_city_presentation.gd",
+    "pass": true,
+    "log": "test_city_presentation.log"
+  },
+  {
+    "suite": "test_city_trade.gd",
+    "pass": true,
+    "log": "test_city_trade.log"
+  },
+  {
+    "suite": "test_combat.gd",
+    "pass": true,
+    "log": "test_combat.log"
+  },
+  {
+    "suite": "test_ecs_overview.gd",
+    "pass": true,
+    "log": "test_ecs_overview.log"
+  },
+  {
+    "suite": "test_ecs_panel.gd",
+    "pass": true,
+    "log": "test_ecs_panel.log"
+  },
+  {
+    "suite": "test_enemy_trains.gd",
+    "pass": true,
+    "log": "test_enemy_trains.log"
+  },
+  {
+    "suite": "test_engine_instruments.gd",
+    "pass": true,
+    "log": "test_engine_instruments.log"
+  },
+  {
+    "suite": "test_engine_travel_effects.gd",
+    "pass": true,
+    "log": "test_engine_travel_effects.log"
+  },
+  {
+    "suite": "test_finale.gd",
+    "pass": true,
+    "log": "test_finale.log"
+  },
+  {
+    "suite": "test_game_audio.gd",
+    "pass": true,
+    "log": "test_game_audio.log"
+  },
+  {
+    "suite": "test_game_boot.gd",
+    "pass": true,
+    "log": "test_game_boot.log"
+  },
+  {
+    "suite": "test_key_bindings.gd",
+    "pass": true,
+    "log": "test_key_bindings.log"
+  },
+  {
+    "suite": "test_launcher.gd",
+    "pass": true,
+    "log": "test_launcher.log"
+  },
+  {
+    "suite": "test_launcher_model.gd",
+    "pass": true,
+    "log": "test_launcher_model.log"
+  },
+  {
+    "suite": "test_living_effects.gd",
+    "pass": true,
+    "log": "test_living_effects.log"
+  },
+  {
+    "suite": "test_map_discovery.gd",
+    "pass": true,
+    "log": "test_map_discovery.log"
+  },
+  {
+    "suite": "test_map_entities.gd",
+    "pass": true,
+    "log": "test_map_entities.log"
+  },
+  {
+    "suite": "test_mines.gd",
+    "pass": true,
+    "log": "test_mines.log"
+  },
+  {
+    "suite": "test_original_panel.gd",
+    "pass": true,
+    "log": "test_original_panel.log"
+  },
+  {
+    "suite": "test_pixel_field.gd",
+    "pass": true,
+    "log": "test_pixel_field.log"
+  },
+  {
+    "suite": "test_playable_trip.gd",
+    "pass": true,
+    "log": "test_playable_trip.log"
+  },
+  {
+    "suite": "test_quarters.gd",
+    "pass": true,
+    "log": "test_quarters.log"
+  },
+  {
+    "suite": "test_renderer_precision.gd",
+    "pass": true,
+    "log": "test_renderer_precision.log"
+  },
+  {
+    "suite": "test_restore_city.gd",
+    "pass": true,
+    "log": "test_restore_city.log"
+  },
+  {
+    "suite": "test_reverser.gd",
+    "pass": true,
+    "log": "test_reverser.log"
+  },
+  {
+    "suite": "test_reverser_center.gd",
+    "pass": true,
+    "log": "test_reverser_center.log"
+  },
+  {
+    "suite": "test_rocket_ignition.gd",
+    "pass": true,
+    "log": "test_rocket_ignition.log"
+  },
+  {
+    "suite": "test_save_extensions.gd",
+    "pass": true,
+    "log": "test_save_extensions.log"
+  },
+  {
+    "suite": "test_session_saves.gd",
+    "pass": true,
+    "log": "test_session_saves.log"
+  },
+  {
+    "suite": "test_source_audio_events.gd",
+    "pass": true,
+    "log": "test_source_audio_events.log"
+  },
+  {
+    "suite": "test_startup_intro.gd",
+    "pass": true,
+    "log": "test_startup_intro.log"
+  },
+  {
+    "suite": "test_tactical_art_cache.gd",
+    "pass": true,
+    "log": "test_tactical_art_cache.log"
+  },
+  {
+    "suite": "test_tactical_combat.gd",
+    "pass": true,
+    "log": "test_tactical_combat.log"
+  },
+  {
+    "suite": "test_terrain_water_art.gd",
+    "pass": true,
+    "log": "test_terrain_water_art.log"
+  },
+  {
+    "suite": "test_train_journey.gd",
+    "pass": true,
+    "log": "test_train_journey.log"
+  },
+  {
+    "suite": "test_train_renderer.gd",
+    "pass": true,
+    "log": "test_train_renderer.log"
+  },
+  {
+    "suite": "test_travel_terrain.gd",
+    "pass": true,
+    "log": "test_travel_terrain.log"
+  },
+  {
+    "suite": "test_travel_world.gd",
+    "pass": true,
+    "log": "test_travel_world.log"
+  },
+  {
+    "suite": "test_works_commit.gd",
+    "pass": true,
+    "log": "test_works_commit.log"
+  },
+  {
+    "suite": "test_world_actions.gd",
+    "pass": true,
+    "log": "test_world_actions.log"
+  },
+  {
+    "suite": "test_world_encounters.gd",
+    "pass": true,
+    "log": "test_world_encounters.log"
+  },
+  {
+    "suite": "test_world_interaction.gd",
+    "pass": true,
+    "log": "test_world_interaction.log"
+  },
+  {
+    "suite": "test_world_roamers.gd",
+    "pass": true,
+    "log": "test_world_roamers.log"
+  },
+  {
+    "suite": "test_world_session.gd",
+    "pass": true,
+    "log": "test_world_session.log"
+  },
+  {
+    "suite": "tests_engine_session.gd",
+    "pass": true,
+    "log": "tests_engine_session.log"
+  }
+]

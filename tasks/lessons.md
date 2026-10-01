@@ -106,6 +106,18 @@ including distant background trains. A new sprite override alone does not correc
 the source sheet. Check the saved files and native scenes before claiming completion.
 The Urga engine needs a readable twin-stack/beak/plow silhouette at its distant scale.
 
+## Correction du propriétaire pendant les fixes, 2 octobre 2026
+
+« Tu dois garder ceci etant les animations de motion design d'opus » : corriger
+les coordonnées, caches et transformations sans remplacer les animations,
+assets, shaders, recettes d'effets ou cadences d'Opus. Vérifier leur identité
+avec le main de référence après les corrections.
+
+Les fixtures natives qui avancent manuellement la simulation doivent maîtriser
+la pause provoquée par la perte de focus. Vérifier cette pause puis reprendre
+par la commande existante, sans await entre reprise et callback contrôlé.
+Ne pas désactiver la pause de production pour faire passer un test.
+
 ## Living effects acceptance, 1 October 2026
 
 Anchor flashes and smoke through the same current sprite registration used for drawing. Emit after movement interpolation; source actor-grid roof heights do not necessarily match an authored sprite roof.

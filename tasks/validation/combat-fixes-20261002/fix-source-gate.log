@@ -1,0 +1,5 @@
+
+Profile: standard  (staged mode)
+Errors:   0  (blocking)
+Warnings: 0  (informational — promoted to errors when profile=strict)
+PASSED: no blocking violations.

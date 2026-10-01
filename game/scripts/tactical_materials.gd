@@ -8,7 +8,10 @@ func texture_for(source: Texture2D, side: int, wagon: int, health: int) -> Textu
 	if health >= 3:
 		return source
 	var key := "%d/%d/%d" % [side,wagon,health]
-	if instances.has(key):
+	# Regression evidence: main-regression-20261001.md, real charge destruction.
+	# A slot/health can use the original hull for fragments and the authored wreck
+	# for drawing. Only reuse material data for the same source texture.
+	if instances.has(key) and instances[key].source == source:
 		return instances[key].texture
 	var image := source.get_image().duplicate() as Image
 	if image.is_compressed(): image.decompress()
@@ -98,7 +101,7 @@ func texture_for(source: Texture2D, side: int, wagon: int, health: int) -> Textu
 				top = float(y*step)
 				break
 		support.append(top)
-	instances[key] = {"texture":texture,"occupancy":occupancy,"removed":removed,"size":Vector2i(width,height),"support":support,"step":step,"front":ImageTexture.create_from_image(front)}
+	instances[key] = {"source":source,"texture":texture,"occupancy":occupancy,"removed":removed,"size":Vector2i(width,height),"support":support,"step":step,"front":ImageTexture.create_from_image(front)}
 	return texture
 
 
@@ -111,12 +114,13 @@ func front_for(side: int, wagon: int, health: int) -> Texture2D:
 func support_profile(source: Texture2D, side: int, wagon: int, health: int, used: Rect2) -> PackedFloat32Array:
 	texture_for(source,side,wagon,health)
 	var instance: Dictionary = instances["%d/%d/%d" % [side,wagon,health]]
-	if instance.has("profile"): return instance.profile
+	if not instance.has("profiles"): instance.profiles = {}
+	if instance.profiles.has(used): return instance.profiles[used]
 	var profile := PackedFloat32Array()
 	var support: PackedFloat32Array = instance.support
 	for x in range(int(used.position.x),int(used.end.x)):
 		profile.append(maxf(support[mini(support.size()-1,x/instance.step)],used.position.y))
-	instance.profile = profile
+	instance.profiles[used] = profile
 	return profile
 
 
