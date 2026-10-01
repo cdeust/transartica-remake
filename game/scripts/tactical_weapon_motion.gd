@@ -25,6 +25,8 @@ const BASE_TOP := 310.0 # trunnion/yoke start, cell-relative
 const HUB := Vector2(208,480) # trunnion hub, cell-relative
 const ENEMY_TINT := Color(1,0.77,0.66) # same modulate as the side1 wagon sprite
 var rigs := {}
+var resting := {} # side/wagon → fall state of the gun on the (damaged) hull
+const GRAVITY := 0.12 # source: authored logical px per50Hz step², ≈300px/s².
 
 
 func fire(side: int, wagon: int, kind: String) -> void:
@@ -73,9 +75,41 @@ func reach(side: int, machine_gun: bool) -> float:
 	return -2.5 if side == 0 else 8.5
 
 
+# Guns obey gravity: when the roof under them is torn away they drop onto
+# whatever hull remains, with a small bounce. Presentation only (50Hz step).
+func settle(scene) -> Array:
+	var landings := []
+	for side in 2:
+		for wagon in scene.state.trains[side].size():
+			var car: Dictionary = scene.state.trains[side][wagon]
+			if not car.class in [scene.state.Setup.CANNON,scene.state.Setup.MACHINE_GUN]: continue
+			var key := "%d/%d" % [side,wagon]
+			var target: float = Geometry.mount(scene,side,wagon).base.y
+			if not resting.has(key):
+				resting[key] = {"y":target,"v":0.0}
+				continue
+			var fall: Dictionary = resting[key]
+			if target < fall.y:
+				fall.y = target
+				fall.v = 0.0
+			elif target > fall.y+0.01 or fall.v != 0.0:
+				fall.v += GRAVITY
+				fall.y += fall.v
+				if fall.y >= target:
+					fall.y = target
+					if fall.v > 0.8:
+						landings.append({"side":side,"wagon":wagon,"speed":fall.v})
+						fall.v = -fall.v*0.25
+					else:
+						fall.v = 0.0
+	return landings
+
+
 func mount(scene, side: int, wagon: int, machine_gun: bool) -> Dictionary:
 	var rig := state_for(side,wagon)
-	var result: Dictionary = Geometry.mount(scene,side,wagon,rig.recoil,reach(side,machine_gun))
+	var key := "%d/%d" % [side,wagon]
+	var rest: float = resting[key].y if resting.has(key) else INF
+	var result: Dictionary = Geometry.mount(scene,side,wagon,rig.recoil,reach(side,machine_gun),rest)
 	# Spent brass leaves the receiver's right side.
 	result.breech = result.body+Vector2(2.5,-(3.5 if side == 0 else 2.0))
 	return result
@@ -86,6 +120,7 @@ func draw(canvas: CanvasItem, scene, side: int, wagon: int, machine_gun: bool) -
 	var rig := state_for(side,wagon)
 	var at := mount(scene,side,wagon,machine_gun)
 	var tint := ENEMY_TINT if side == 1 else Color.WHITE
+	if scene.state.trains[side][wagon].health <= 0: tint = tint*Color(0.45,0.4,0.38) # burnt in the wreck
 	if machine_gun:
 		if side == 0: _gatling_front(canvas,at,rig,tint)
 		else: _gatling_rear(canvas,at,rig,tint)
@@ -199,3 +234,4 @@ func _box(canvas: CanvasItem, rect: Rect2, fill: Color) -> void:
 
 func clear() -> void:
 	rigs.clear()
+	resting.clear()

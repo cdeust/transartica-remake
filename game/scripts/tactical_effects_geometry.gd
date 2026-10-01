@@ -49,7 +49,11 @@ static func surface_y(scene, side: int, index: int, x: float) -> float:
 	var geometry := wagon(scene,side,index)
 	var rect: Rect2 = geometry.rect
 	var factor: float = geometry.factor
-	var tops := _profile(geometry.texture,geometry.used)
+	# The damaged hull is what bears weight: holes and torn roofs lower the surface.
+	var car: Dictionary = scene.state.trains[side][index]
+	var tops: PackedFloat32Array
+	if car.health >= 3: tops = _profile(geometry.texture,geometry.used)
+	else: tops = scene.materials.support_profile(geometry.texture,side,index,car.health,geometry.used)
 	var samples: Array[float] = []
 	var first := int((clampf(x-SURFACE_WINDOW,rect.position.x,rect.end.x)-rect.position.x)/factor)
 	var last := int((clampf(x+SURFACE_WINDOW,rect.position.x,rect.end.x)-rect.position.x)/factor)
@@ -82,11 +86,11 @@ static func roof_point(scene, side: int, slot: int) -> Vector2:
 
 # One mount for drawing, flash and tracer origin. Oblique projection authored:
 # side0 aims toward the viewer (muzzle face), side1 away (breech visible).
-static func mount(scene, side: int, index: int, recoil := 0.0, reach := 0.0) -> Dictionary:
+static func mount(scene, side: int, index: int, recoil := 0.0, reach := 0.0, resting := INF) -> Dictionary:
 	var rect: Rect2 = wagon(scene,side,index).rect
 	var x := rect.position.x+rect.size.x/2
 	# source: authored ring depth, measured kind11/12 ring rim→centre ≈1.8 logical px.
-	var base := Vector2(x,surface_y(scene,side,index,x)+1.8)
+	var base := Vector2(x,resting if is_finite(resting) else surface_y(scene,side,index,x)+1.8)
 	var direction := Vector2(0,1 if side == 0 else -1)
 	var body := base-direction*recoil
 	return {"base":base,"body":body,"muzzle":body+direction*reach,"direction":direction}

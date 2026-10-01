@@ -114,6 +114,10 @@ func _visual_step() -> void:
 	# Fraction from the50Hz visual clock, so emitters never see display-rate remainders.
 	_steps_since_tick += 1
 	_clock_fraction = clampf(_steps_since_tick*living.STEP*pace/state.STEP_SECONDS,0.0,1.0)
+	for landing in weapon_motion.settle(self): # dust and grit where a fallen gun lands
+		var base: Vector2 = weapon_motion.mount(self,landing.side,landing.wagon,true).base
+		living.add("dust",base+Vector2(camera,0),Vector2.UP,clampf(landing.speed/3.0,0.4,1.0))
+		living.add("sparks",base+Vector2(camera,0),Vector2.UP,0.5)
 	for shot in weapon_motion.step():
 		var mount: Dictionary = weapon_motion.mount(self,shot.side,shot.wagon,true)
 		var muzzle: Vector2 = mount.muzzle
@@ -247,7 +251,7 @@ func _train(side: int, _baseline: float) -> void:
 		# Debris uses the same isolated sprite coordinates as material occupancy.
 		wagon_bounds["%d/%d" % [side,index]] = Rect2(rect.position-used.position*factor,texture.get_size()*factor)
 		draw_texture_rect_region(texture,rect,used,Color(1,0.77,0.66) if side == 1 else Color.WHITE)
-		if car.health > 0 and car.class in [state.Setup.CANNON,state.Setup.MACHINE_GUN]:
+		if car.class in [state.Setup.CANNON,state.Setup.MACHINE_GUN]:
 			weapon_motion.draw(self,self,side,index,car.class == state.Setup.MACHINE_GUN)
 		if side == 0:
 			_label(Vector2(rect.position.x+2,32),"%d:%d" % [source_index,car.health],4)
