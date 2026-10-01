@@ -108,7 +108,7 @@ static func curve() -> PackedFloat32Array:
 
 
 # Cubic Hermite between curve points: continuous velocity at50Hz and above.
-func _present(model, _delta := 0.0) -> void:
+func _present(model) -> void:
 	if not model.phase in ["launch","ascent"]:
 		_shown = _source_offset(model)
 		return

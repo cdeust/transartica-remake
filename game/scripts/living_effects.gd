@@ -150,16 +150,13 @@ func _ricochet(point: Vector2, material: String) -> void:
 
 
 func _plume(emitter: Dictionary) -> void:
+	# Explosions, guns and impacts draw their gas in BlastPixelVolume instead.
 	if emitter.explosive or emitter.gun or emitter.kind == "impact": return
 	var rocket: bool = emitter.kind in ["rocket","rocket-exhaust"]
-	var smoke: bool = emitter.explosive or emitter.gun or rocket or emitter.kind in ["impact","smoke","steam","dust"]
 	var scale: float = emitter.scale
-	if smoke:
+	if rocket or emitter.kind in ["smoke","steam","dust"]:
 		var name: String = emitter.kind if emitter.kind in ["steam","dust"] else "smoke"
-		var extent := Vector2(18,18) if emitter.explosive else Vector2(10,10)
-		particles.launch(name,emitter.point+Vector2(rng.randf_range(-4,4),-2)*scale,Vector2(rng.randf_range(-6,6),rng.randf_range(-16,-8))*scale,100,extent*scale,Color.WHITE,scale)
-	if emitter.explosive and emitter.age < 30:
-		particles.launch("flame",emitter.point+Vector2(rng.randf_range(-7,7),-3)*scale,Vector2(rng.randf_range(-4,4),-8)*scale,30,Vector2(40,40)*scale,Color.WHITE,scale)
+		particles.launch(name,emitter.point+Vector2(rng.randf_range(-4,4),-2)*scale,Vector2(rng.randf_range(-6,6),rng.randf_range(-16,-8))*scale,100,Vector2(10,10)*scale,Color.WHITE,scale)
 	if rocket:
 		particles.launch("rocket",emitter.point,emitter.direction*20*scale,12,Vector2(9,22)*scale,Color.WHITE,scale,emitter.direction.angle()-PI/2)
 

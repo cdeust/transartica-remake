@@ -2,9 +2,7 @@ extends RefCounted
 # MIT. Presentation only: material occupancy from authored sprite alpha, fractures
 # from authored effects-kit08. Original WDECOR health3/2/1/0 remains authoritative.
 # Owner FIDELITE.md permits Noita-inspired debris/smoke/light, not new damage rules.
-const SCORCH := Color("#574632") # Authored existing workshop/steel palette; presentation only.
 var instances := {}
-var stencil: Image
 
 func texture_for(source: Texture2D, side: int, wagon: int, health: int) -> Texture2D:
 	if health >= 3:
