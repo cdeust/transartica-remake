@@ -160,10 +160,13 @@ func step() -> void:
 			actor.processed = sweep
 			Actors.update(self, actor)
 		scan += 1
+		#0x1713: cswitch2 base-6 (ALIS opcodes.c) sweeps roof1 entering row6, roof0 at wrap.
+		if scan == columns * 6:
+			Actors.roof_sweep(self, 1)
 		if scan >= columns * 7:
 			scan = 0
-			Actors.roof_sweep(self)
-			scan_side = 1 - scan_side
+			Actors.roof_sweep(self, 0)
+			scan_side = 1 - scan_side # byte8375 pass parity, kept for saves.
 			sweep += 1
 	actors = actors.filter(func(actor): return actor.count > 0)
 	# Emit each completed tick before the next step clears its event array.
