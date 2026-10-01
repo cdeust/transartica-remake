@@ -55,7 +55,7 @@ func _run_route(with_reload: bool) -> bool:
 				stations[network.station_lookup(cell)] = cell
 	for cell in Rails.STATION_SPECIALS:
 		stations[Rails.STATION_SPECIALS[cell]] = cell
-	
+
 	var driver = preload("res://tests/campaign_route_driver.gd").new()
 	if not driver.attach({"network":network,"journey":journey,"campaign":campaign,"wagons":wagons},self):
 		push_error("Commerce data failed")
@@ -96,7 +96,7 @@ func _shopping_route(driver) -> bool:
 	if not driver.trade_goods(10,38,driver.trade.SELL):return false
 	if not driver.travel(stations[11],11):return false
 	if not driver.buy_wagon(18):return false
-	
+
 	if not driver.travel(stations[10],10):return false
 	if not driver.buy_wagon(5):return false
 	if not driver.travel(stations[4],4):return false
