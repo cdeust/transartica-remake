@@ -23,6 +23,7 @@ func run() -> void:
 	_weapons()
 	_actors()
 	_results()
+	_cadence()
 	_resume()
 	_scene()
 	_materials()
@@ -98,6 +99,17 @@ func _results() -> void:
 	var after: Array=wagons.wagons.duplicate(true)
 	var coal: int=engine.lignite
 	check(Result.commit(win,wagons,engine).is_empty() and wagons.wagons==after and engine.lignite==coal,"second commit cannot repeat booty")
+func _cadence() -> void:
+	var state=fresh()
+	state.actors.clear()
+	state.aggressiveness=0
+	var mammoth=state.add_actor(0,30,5,1,true,-1,0)
+	var infantry=state.add_actor(0,40,6,5,false,-1,0)
+	var enemy=state.add_actor(1,50,0,5,false,-1,4)
+	while state.sweep<8: state.step() #0x1748..1773: eight complete field passes.
+	check(mammoth.y==0,"player mammoth moves on every pass (0x20e3)")
+	check(infantry.y==2,"player infantry moves on alternate passes (8548)")
+	check(enemy.y==2,"enemy infantry moves every fourth pass (8549)")
 func _resume() -> void:
 	var state=fresh()
 	state.deploy(0,6,5)

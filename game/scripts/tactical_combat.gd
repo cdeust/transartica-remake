@@ -152,9 +152,11 @@ func step() -> void:
 	Weapons.enemy_ai(self)
 	Weapons.run(self)
 	#0x0244,1389: scan max(columns/4,40) cells each tick, not all actors each frame.
+	#0x13a1/173e: byte8375 is the pass parity carried by the cell sign (processed
+	# marker), not a side; both sides are updated on every pass.
 	for cell in maxi(columns / 4, 40):
 		var actor = actor_at(scan % columns, scan / columns)
-		if actor != null and actor.side == scan_side and actor.processed != sweep:
+		if actor != null and actor.processed != sweep:
 			actor.processed = sweep
 			Actors.update(self, actor)
 		scan += 1
