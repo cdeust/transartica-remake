@@ -36,6 +36,12 @@ New changes remain local; no publication or merge is authorized.
 - [x] Complete final exact-tree test inventory, independent review and code gates.
 - [x] Execute rebuilt macOS application and retain evidence.
 - [ ] Execute Windows package on Windows; export alone is insufficient.
+- [x] Tactical cadence: byte8375 is pass parity, not side (0x13a1/173e); player
+  infantry was frozen, mammoths half speed. Both roofs swept per pass (0x1713,
+  ALIS cswitch2 index=value+base); roof steps on 8548, fuses five passes.
+- [ ] Reported "commanded player mammoth did not move": not reproduced; the
+  native scene path (livestock deploy, Down) moves it 5→0 in10s before and
+  after the fix. Needs the owner's exact steps.
 - [x] Finish owner-scoped cleanup, preserving unpublished/concurrent work.
 
 Current proof: campaign-route-cleanup-native-after-20261001.log, source route
