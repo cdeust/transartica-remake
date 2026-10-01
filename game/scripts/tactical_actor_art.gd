@@ -40,6 +40,6 @@ func draw_pose(canvas: CanvasItem, pose: int, point: Vector2, facing := 1.0, col
 	var origin := point-Vector2(bounds.size.x*factor/2,bounds.size.y*factor)
 	for region in regions_for(pose):
 		var target := Rect2(origin+(region.position-bounds.position)*factor,region.size*factor)
-		if facing < 0: # negative width draws the region mirrored
-			target = Rect2(2*point.x-target.position.x,target.position.y,-target.size.x,target.size.y)
+		if facing < 0: # negative width flips in place, so start at the mirrored left edge
+			target = Rect2(2*point.x-target.end.x,target.position.y,-target.size.x,target.size.y)
 		canvas.draw_texture_rect_region(MASTER,target,region,colour)

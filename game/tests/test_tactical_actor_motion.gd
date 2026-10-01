@@ -66,6 +66,15 @@ func run() -> void:
 	check(melee_seen and hit_seen,"melee shows a lunge and a hit flash")
 	# Presentation never writes the model.
 	check(JSON.stringify(model.snapshot()) == JSON.stringify(bare.snapshot()),"scene-driven model equals bare model")
+	# A stopped group finishes its stride and stands within half a second.
+	var stopper: Dictionary = model.actors[1]
+	stopper.direction = 8
+	for frame in 50*3: scene._physics_process(0.02) # finish the current glide
+	check(not scene.actor_motion.moving(scene.actor_motion.tracks[stopper.id]),"stopped group stands")
+	# A restore-like jump snaps instead of sliding across the field.
+	stopper.x += 10
+	scene._physics_process(0.02)
+	check(scene.actor_motion.shown_cell(scene.actor_motion.tracks[stopper.id]).x == stopper.x,"discontinuity snaps")
 	# Removal fades over FADE then the track is released.
 	var gone: Dictionary = model.actors[0]
 	gone.count = 0

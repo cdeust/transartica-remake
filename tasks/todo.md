@@ -349,3 +349,16 @@ Preuves : `validation/opus-combat-motion-20261001.mp4` (×2), `validation/opus-r
 
 Reproductions natives rouges avant et vertes après. [Rapport des corrections](combat-regression-fixes-20261001.md).
 Branche locale fix/combat-regressions basée sur main6dca252 ; aucun push dans cette tâche.
+
+### Mouvement de présentation des acteurs, 2 octobre 2026 — non accepté artistiquement
+
+- [x] Glissement continu entre cases à la période source mesurée (passe = 7×colonnes / max(colonnes/4,40) ticks ; 1, 2 ou 4 passes par case selon camp et type). Avant : saut de 16 px toutes les 1,1–4,5 s.
+- [x] Foulée (rebond), arrêt sur appui, orientation selon le déplacement (miroir), accroupissement à la pose de dynamite (poses 2/6 mesurées), fente et éclair en mêlée, fondu de disparition sans retarder la perte d'effectif ; saut sans glissade aux discontinuités (embarquement, restauration, fusion).
+- [x] Miroir : un rectangle à largeur négative ne déplace pas sa position ; corrigé et vérifié par capture native (`test_tactical_actor_mirror`), clic et sélection sur le corps affiché.
+- [x] Modèle intact : modèle piloté par la scène identique au modèle nu (`test_tactical_actor_motion`). Suite complète 68 PASS.
+- [ ] Orientation : l'original dessine les acteurs au sol en tuiles (cputmap98) et ceux des toits en sprites 10+case ; son orientation n'est pas décodée. Le miroir est une présentation provisoire, pas une preuve des huit caps.
+- [ ] Intégrer la planche fantassins de Codex (`output/imagegen/actors-20261002`) : cycle de course, accroupi ; polissage au réseau de pixels, vues avant/arrière et revue du propriétaire en attente.
+- [ ] Mammouths, loups, espions : hors de cette étape (planche mammouth à simplifier ; loups et espions hors effectif tactique).
+
+Preuve : `validation/actor-motion-glide-20261002.mp4` (lecture native pas à pas, avant correction du miroir).
+

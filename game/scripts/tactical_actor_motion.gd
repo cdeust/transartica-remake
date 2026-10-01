@@ -48,7 +48,8 @@ func step(scene) -> void:
 		seen[actor.id] = true
 		var cell := Vector2(actor.x,actor.y)
 		var track := _track(actor)
-		if actor.roof != track.roof: # field→roof boarding: different frames, start in place
+		# Boarding, restore, split/merge: unrelated positions snap instead of sliding.
+		if actor.roof != track.roof or track.to.distance_to(cell) > 1.5:
 			track.from = cell
 			track.to = cell
 			track.t = 1.0
@@ -65,8 +66,9 @@ func step(scene) -> void:
 			var before := shown_cell(track)
 			track.t = minf(1.0,track.t+STEP/track.span)
 			track.phase += before.distance_to(shown_cell(track))*STRIDES*PI
-		elif not is_zero_approx(fmod(track.phase,PI)): # finish the stride on a foot plant
-			track.phase = minf(ceilf(track.phase/PI)*PI,track.phase+STEP*TAU)
+		elif _mid_stride(track): # finish the stride on a foot plant
+			var plant := ceilf(track.phase/PI-0.001)*PI
+			track.phase = plant if plant-track.phase <= STEP*TAU else track.phase+STEP*TAU
 		if actor.count < track.count and hit_this_step:
 			track.hit = HIT
 		track.count = actor.count
@@ -149,8 +151,13 @@ static func shown_cell(track: Dictionary) -> Vector2:
 	return track.from.lerp(track.to,track.t)
 
 
+static func _mid_stride(track: Dictionary) -> bool:
+	var rest := fposmod(track.phase,PI)
+	return rest > 0.001 and rest < PI-0.001
+
+
 func moving(track: Dictionary) -> bool:
-	return track.t < 1.0 or not is_zero_approx(fmod(track.phase,PI))
+	return track.t < 1.0 or _mid_stride(track)
 
 
 # Logical foot point of an actor as currently shown (drawing and clicks).
