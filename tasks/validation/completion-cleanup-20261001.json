@@ -20,5 +20,61 @@
     ".claude/worktrees/hook-cleanup-20260926",
     ".claude/worktrees/map-places-01a0e27d"
   ],
-  "reason": "Unpublished commits and concurrent/uncommitted work retained; no forced checkout disposal."
+  "reason": "Unpublished commits and concurrent/uncommitted work retained; no forced checkout disposal.",
+  "removed_owned_fixture_duplicates": [
+    {
+      "path": ".cache/campaign",
+      "bytes": 23195649
+    },
+    {
+      "path": ".cache/keyboard-59294",
+      "bytes": 702538
+    },
+    {
+      "path": ".cache/keyboard-65787",
+      "bytes": 702538
+    },
+    {
+      "path": ".cache/keyboard-19931",
+      "bytes": 702364
+    },
+    {
+      "path": ".cache/keyboard-72054",
+      "bytes": 702538
+    },
+    {
+      "path": ".cache/keyboard-2914",
+      "bytes": 702538
+    },
+    {
+      "path": ".cache/keyboard-5787",
+      "bytes": 702538
+    },
+    {
+      "path": ".cache/keyboard-32032",
+      "bytes": 702538
+    },
+    {
+      "path": ".cache/keyboard-61887",
+      "bytes": 702538
+    }
+  ],
+  "retained_distinct_campaign_captures": [
+    "crew-native.png",
+    "death-native.png",
+    "earth-native.png",
+    "mausoleum-native.png",
+    "oslo-native.png",
+    "startup-native.png",
+    "finale-000-native.png",
+    "finale-030-native.png",
+    "finale-156-native.png",
+    "finale-361-native.png"
+  ],
+  "retained_dependency_cache": ".cache/uv",
+  "unclaimed_temp_paths_preserved": [
+    ".cache/disk-hygiene-hycqs6uv",
+    ".cache/disk-hygiene-vgi9px88",
+    ".cache/disk-hygiene-kbh44315"
+  ]
 }
