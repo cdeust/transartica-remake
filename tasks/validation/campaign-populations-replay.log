@@ -1,0 +1,139 @@
+MANUAL REVERSE (20, 58)
+MANUAL REVERSE (8, 49)
+MANUAL REVERSE (19, 48)
+ARRIVE city=38 ahead=(15, 48) from=(16, 48) day=1 fuel=2000/422
+TRANSACT city38 goods10 quantity20 mode50 unit2 fuel1960
+MANUAL REVERSE (41, 41)
+INTERMEDIATE STATION (37, 41) index=21
+MANUAL REVERSE (41, 39)
+INTERMEDIATE STATION (23, 29) index=34
+MANUAL REVERSE (18, 24)
+ARRIVE city=31 ahead=(22, 22) from=(21, 22) day=2 fuel=1960/285
+TRANSACT city31 goods10 quantity20 mode51 unit60 fuel3160
+MANUAL REVERSE (29, 17)
+ARRIVE city=11 ahead=(30, 21) from=(30, 22) day=3 fuel=3160/285
+BUY WAGON type18 city11 price400 fuel2760
+MANUAL REVERSE (29, 17)
+MANUAL REVERSE (19, 48)
+ARRIVE city=38 ahead=(15, 48) from=(16, 48) day=4 fuel=2760/18
+TRANSACT city38 goods10 quantity38 mode50 unit2 fuel2684
+MANUAL REVERSE (41, 41)
+INTERMEDIATE STATION (37, 41) index=21
+MANUAL REVERSE (41, 39)
+INTERMEDIATE STATION (23, 29) index=34
+MANUAL REVERSE (18, 24)
+ARRIVE city=31 ahead=(22, 22) from=(21, 22) day=5 fuel=2684/0
+TRANSACT city31 goods10 quantity38 mode51 unit60 fuel4964
+MANUAL REVERSE (29, 17)
+ARRIVE city=11 ahead=(30, 21) from=(30, 22) day=5 fuel=4964/0
+BUY WAGON type18 city11 price400 fuel4564
+SOURCE ROAMER NO herd_question at(27, 22)
+MANUAL REVERSE (29, 17)
+INTERMEDIATE STATION (5, 58) index=41
+INTERMEDIATE STATION (9, 66) index=42
+ARRIVE city=10 ahead=(23, 61) from=(22, 61) day=6 fuel=4273/0
+BUY WAGON type5 city10 price150 fuel4123
+MANUAL REVERSE (20, 62)
+ARRIVE city=4 ahead=(67, 65) from=(66, 65) day=7 fuel=4042/0
+TRANSACT city4 goods0 quantity15 mode50 unit12 fuel3862
+INTERMEDIATE STATION (37, 41) index=21
+MANUAL REVERSE (41, 39)
+ARRIVE city=35 ahead=(31, 37) from=(32, 37) day=8 fuel=3623/0
+TRANSACT city35 goods1 quantity29 mode50 unit4 fuel3507
+REPAIR (25, 24) kind=crevasse rails-left=12
+MANUAL REVERSE (10, 14)
+MANUAL REVERSE (12, 1)
+REPAIR (6, 9) kind=crevasse rails-left=0
+ARRIVE city=15 ahead=(6, 10) from=(6, 9) day=9 fuel=3298/0
+BUY WAGON type8 city15 price800 fuel2498
+MANUAL REVERSE (12, 1)
+MANUAL REVERSE (7, 14)
+ARRIVE city=41 ahead=(5, 58) from=(5, 59) day=10 fuel=2217/0
+INTERMEDIATE STATION (9, 66) index=42
+ARRIVE city=4 ahead=(67, 65) from=(66, 65) day=11 fuel=2130/0
+MANUAL REVERSE (31, 55)
+MANUAL REVERSE (34, 52)
+ARRIVE city=-2 ahead=(23, 67) from=(24, 67) day=12 fuel=1918/0
+MANUAL REVERSE (41, 41)
+SOURCE ROAMER NO herd_question at(40, 41)
+INTERMEDIATE STATION (37, 41) index=21
+INTERMEDIATE STATION (63, 25) index=32
+ARRIVE city=13 ahead=(49, 16) from=(50, 16) day=13 fuel=1789/0
+BUY WAGON type22 city13 price500 fuel1289
+BUY WAGON type11 city13 price450 fuel839
+EARNED CANNON + SOURCE AUTOMATIC COMBAT BEFORE CENTRAL SPY
+MANUAL REVERSE (53, 16)
+SOURCE ROAMER NO herd_question at(32, 23)
+MANUAL REVERSE (29, 24)
+INTERMEDIATE STATION (35, 25) index=17
+ARRIVE city=8 ahead=(36, 21) from=(35, 21) day=13 fuel=659/0
+INPUT SOURCE SOLEIL MANUAL answer accepted
+SOURCE CITY MANUAL QUIZ ACCEPTED city8
+TRANSACT city8 goods0 quantity1 mode50 unit0 fuel659
+SEND SPY from(35, 21) to(65,20) slot0
+INTERMEDIATE STATION (35, 25) index=17
+MANUAL REVERSE (28, 24)
+ACTUAL AUTO BATTLE slot0 result{ "won": true, "margin": 1, "potential": 1, "enemy": { "wagons": 12, "trading": 11, "gun_groups": [0, 0], "soldiers": 143, "mammoths": 7 }, "soldiers_lost": 5, "mammoths_lost": 0, "coal_gained": 420, "slaves_gained": 45, "wagons_captured": 1, "scrapped_indices": [11, 7, 9], "captured": [[17, 0, 1, 19]] }
+INTERMEDIATE STATION (49, 33) index=-1
+END OF TRACK: PLAYER REVERSE
+ARRIVE city=-4 ahead=(53, 32) from=(54, 32) day=14 fuel=862/0
+INTERMEDIATE STATION (49, 33) index=-1
+END OF TRACK: PLAYER REVERSE
+MANUAL REVERSE (25, 24)
+MANUAL REVERSE (29, 23)
+MANUAL REVERSE (29, 17)
+MANUAL REVERSE (25, 17)
+ARRIVE city=27 ahead=(34, 12) from=(34, 11) day=16 fuel=715/0
+TRANSACT city27 goods1 quantity50 mode50 unit3 fuel565
+TRANSACT city27 goods11 quantity30 mode50 unit10 fuel265
+INTERMEDIATE STATION (49, 16) index=13
+ARRIVE city=32 ahead=(63, 25) from=(62, 25) day=16 fuel=196/0
+TRANSACT city32 goods11 quantity30 mode51 unit50 fuel1696
+MANUAL REVERSE (58, 35)
+MANUAL REVERSE (70, 29)
+INTERMEDIATE STATION (70, 33) index=36
+ARRIVE city=16 ahead=(91, 43) from=(90, 43) day=17 fuel=1608/0
+BUY WAGON type9 city16 price600 fuel1008
+BUY WAGON type15 city16 price300 fuel708
+INTERMEDIATE STATION (70, 33) index=36
+MANUAL REVERSE (70, 29)
+MANUAL REVERSE (58, 35)
+ARRIVE city=32 ahead=(63, 25) from=(62, 25) day=18 fuel=554/0
+TRANSACT city32 goods8 quantity20 mode50 unit12 fuel314
+ARRIVE city=35 ahead=(31, 37) from=(32, 37) day=18 fuel=206/0
+TRANSACT city35 goods8 quantity20 mode51 unit80 fuel1806
+MANUAL REVERSE (28, 24)
+MANUAL REVERSE (53, 16)
+ARRIVE city=13 ahead=(49, 16) from=(50, 16) day=19 fuel=1709/0
+BUY WAGON type11 city13 price450 fuel1259
+INTERMEDIATE STATION (34, 12) index=27
+HARPOON WHALE then SOURCE REVERSE at(11, 11)
+MANUAL REVERSE (11, 11)
+SOURCE ROAMER NO herd_question at(13, 5)
+ARRIVE city=-3 ahead=(35, 4) from=(36, 4) day=20 fuel=1068/0
+INPUT SOURCE VIKING MANUAL answer accepted
+CONFIRM CENTRAL SABOTAGE slot0 day20
+MANUAL REVERSE (13, 14)
+ARRIVE city=-1 ahead=(12, 17) from=(11, 17) day=20 fuel=900/0
+WORKSHOP REMOVE type15
+WORKSHOP REMOVE type9
+WORKSHOP REMOVE type17
+WORKSHOP REMOVE type11
+WORKSHOP REMOVE type22
+WORKSHOP REMOVE type8
+WORKSHOP REMOVE type5
+WORKSHOP REMOVE type18
+WORKSHOP REMOVE type18
+WORKSHOP REMOVE type23
+WORKSHOP REMOVE type17
+SELECT SOURCE AUTOMATIC COMBAT
+MANUAL REVERSE (9, 18)
+INTERMEDIATE STATION (31, 37) index=35
+INTERMEDIATE STATION (134, 60) index=22
+SOURCE GATE ENTER (157, 68) heading8 wagons5 fuel591 slot29state0
+SOURCE GATE ENTER (152, 48) heading1 wagons5 fuel591 slot29state0
+SOURCE GATE ENTER (151, 66) heading6 wagons5 fuel456 slot29state0
+SOURCE GATE ENTER (152, 66) heading6 wagons5 fuel451 slot29state-1
+ACTUAL AUTO BATTLE slot29 result{ "won": true, "margin": 1, "potential": 1, "enemy": { "wagons": 12, "trading": 11, "gun_groups": [0, 0], "soldiers": 89, "mammoths": 5 }, "soldiers_lost": 0, "mammoths_lost": 0, "coal_gained": 680, "slaves_gained": 0, "wagons_captured": 1, "scrapped_indices": [4], "captured": [[18, 0, 13, 40]] }
+ARRIVE city=-5 ahead=(148, 60) from=(148, 61) day=23 fuel=1067/0
+SUN ENDING + SOURCE FINALE completed to OPTIONS

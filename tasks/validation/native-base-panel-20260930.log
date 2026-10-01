@@ -1,0 +1,9 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4
+
+ERROR: Error calling deferred method: 'Window::Viewport::_drop_mouse_over': Cannot convert argument 1 from Object to Object.
+   at: _call_function (core/object/message_queue.cpp:222)
+ERROR: HUD wheel reverses traction and stops speed
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ecs_panel.gd:63)

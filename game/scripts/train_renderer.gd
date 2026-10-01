@@ -60,6 +60,17 @@ func load_assets() -> bool:
 	if reference.is_empty():
 		return false
 	texels_per_cell = reference.front.distance_to(reference.rear) / Consist.LENGTHS.locomotive
+	# Owner's shared box-art direction; unchanged rigid registration/rail contacts.
+	# Source: measured alpha bounds in tasks/validation/locomotive-consistency.md.
+	var hero := AtlasTexture.new()
+	hero.atlas = load("res://assets/travel/locomotive-hero.png")
+	hero.region = Rect2(178,48,438,1886)
+	var height: float = reference.front.distance_to(reference.rear)
+	var width: float = hero.region.size.x * height / hero.region.size.y
+	var center: Vector2 = (reference.front+reference.rear)*0.5
+	reference.texture = hero
+	reference.draw_rect = Rect2(center-Vector2(width,height)*0.5,Vector2(width,height))
+	reference.bounds = reference.draw_rect
 	return true
 
 
@@ -176,8 +187,16 @@ func draw(view, journey, consist, lag: float) -> void:
 		var rear: Vector2 = view._world_to_screen(vehicle.rear + Vector2(0.5, 0.5))
 		var rotation := (front - rear).angle() - PI * 0.5 if not (front - rear).is_zero_approx() else 0.0
 		view.draw_set_transform_matrix(registration(frame, (front + rear) * 0.5, rotation, scale))
-		view.draw_texture(frame.texture, Vector2.ZERO)
+		draw_frame(view,frame)
 	view.draw_set_transform_matrix(Transform2D.IDENTITY)
+
+
+func draw_frame(view, frame: Dictionary, color := Color.WHITE) -> void:
+	# Share identical hero crop/registration in travel and composition miniatures.
+	if frame.has("draw_rect"):
+		view.draw_texture_rect(frame.texture,frame.draw_rect,false,color)
+	else:
+		view.draw_texture(frame.texture,Vector2.ZERO,color)
 
 
 func screen_bounds(view, journey, consist, lag: float) -> Rect2:

@@ -1,0 +1,33 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: original locomotive rule vectors, world data, city selection, pan/zoom, and render-independent clock
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: actual engine/journey/calendar/world/campaign/encounters state at30/60/144Hz
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: automatic combat loss, original debit bugs, phase RNG order, capacity and seeded replay
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: boudoir native input, inventory, pause, original panel, save/load and revolver end-game
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: fixed zoom, complete consist initial framing, stable movement and manual zoom
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: ECS campaign gate sequence, interrupted code/spy save-resume, central sabotage, Sun and six death causes, inspection cars
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: exact disclosed Oasis corridor traversal, heading, ports and retained concealment
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: moved live enemies notify campaign spies; defeat105 and victory reports
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+ERROR: ending returns to reception
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_campaign_session.gd:91)
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+   at: cleanup (core/object/object.cpp:2514)
+)

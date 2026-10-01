@@ -22,7 +22,7 @@ func read_stoup() -> void:
 	if id < 51:
 		screen.present("report", app.world.mines.report(id - 1, state.data.get("mine_bulletin", {})))
 	elif id <= 120 and id >= 101:
-		screen.present("report", preload("res://scripts/spy_report.gd").format(id - 101, state.spies, app.encounters.enemies, state.data))
+		screen.present("report", preload("res://scripts/spy_report.gd").format(id - 101, state.spies, app.encounters.enemies, state.data, call("_mover_report_context")))
 	else:
 		screen.present("", state.message(id))
 

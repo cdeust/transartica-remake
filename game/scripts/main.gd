@@ -32,6 +32,13 @@ var room_art
 var room_controls
 var instruments
 var encounters = preload("res://scripts/world_encounters.gd").new()
+var campaign = preload("res://scripts/campaign_session.gd").new()
+var game_audio = preload("res://scripts/game_audio.gd").new()
+@export var play_startup_intro := false
+var _boot = preload("res://scripts/game_boot.gd").new()
+var world = preload("res://scripts/world_actions.gd").new()
+var roamers = preload("res://scripts/world_roamers.gd").new()
+var _world_session = preload("res://scripts/world_session.gd").new()
 var world_data
 var world_view
 var city_list: ItemList
@@ -73,6 +80,13 @@ func _ready() -> void:
 	engine.train_mass = wagons.mass()
 	journey.network = network
 	_build_interface()
+	game_audio.attach(self)
+	world.attach(journey, wagons, engine, trade, _trade_rng)
+	_world_session.attach(self)
+	campaign.attach(self)
+	roamers.initialize(_trade_rng, campaign.state.fauna)
+	network.campaign_entry_enabled = true
+	_city_panel.town_message_requested.connect(campaign.show_town)
 	encounters.attach(self)
 	session.cycle_completed.connect(_advance_journey)
 	world_view.journey = journey
@@ -85,10 +99,12 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if session == null or room_controls == null:
 		return
-	var blocked: bool = encounters.report.visible or _boudoir_session.blocks_simulation() or room_controls.show_help or _city_panel.visible \
+	var blocked: bool = encounters.report.visible or encounters.manual_scene.visible or campaign.blocks_simulation() or _world_session.blocks_simulation() or _boudoir_session.blocks_simulation() or room_controls.show_help or _city_panel.visible \
 			or (works_dialog != null and works_dialog.visible)
+	_world_session.advance_text(delta)
 	if not blocked:
 		session.advance(delta * calendar.factor)
+	campaign.present_engine_event()
 	_boudoir_session.present_pending_event()
 	clock.paused = session.paused or blocked or engine.event_pending
 	clock.advance(delta)
@@ -114,49 +130,6 @@ func _build_modal() -> void:
 	preload("res://scripts/main_interface.gd")._build_modal(self)
 
 
-func _build_map(body: VBoxContainer) -> void:
-	_map_panel = VBoxContainer.new()
-	_map_panel.add_theme_constant_override("separation", 0)
-	_map_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_child(_map_panel)
-	world_view = WorldViewScript.new()
-	world_view.world_data = world_data
-	world_view.session = session
-	world_view.network = network
-	world_view.switch_toggled.connect(_on_switch_toggled)
-	world_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	world_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	world_view.city_picked.connect(_on_chart_city_picked)
-	_map_panel.add_child(world_view)
-	travel_controls = preload("res://scripts/travel_hud.gd").new()
-	travel_controls.bind_session(session)
-	travel_controls.journey = journey
-	travel_controls.requested.connect(_open_panel)
-	travel_controls.follow_requested.connect(world_view.follow_train)
-	_map_panel.add_child(travel_controls)
-	travel_controls.hide()
-	_build_hidden_city_index()
-
-
-func _build_hidden_city_index() -> void:
-	# Keep the city selection model available without a dashboard beside the world.
-	var index_container := VBoxContainer.new()
-	_map_panel.add_child(index_container)
-	search_box = LineEdit.new()
-	search_box.text_changed.connect(_filter_cities)
-	index_container.add_child(search_box)
-	city_list = ItemList.new()
-	city_list.item_selected.connect(_on_city_selected)
-	index_container.add_child(city_list)
-	status_label = Label.new()
-	index_container.add_child(status_label)
-	index_container.hide()
-	_filter_cities("")
-
-
-# Arrival scene for TIME message 76 (tasks/evidence/station-arrival.md): the
-# glieu menu and its transactions (tasks/evidence/city-scripts.md), in city_screen.gd.
-# YODA 0x104 (-120): brake, TEXTEK 52, then the 0x18e3 reversal with speed 0.
 func _reverse_at_event() -> void:
 	engine.brake = true
 	engine.speed = 0
@@ -167,6 +140,8 @@ func _reverse_at_event() -> void:
 
 func _advance_calendar() -> void:
 	encounters.advance_calendar()
+	world.tick_mines(calendar.day, stoup)
+	campaign.advance_spies()
 
 func _build_works_dialog() -> void:
 	preload("res://scripts/main_interface.gd")._build_works_dialog(self)
@@ -187,15 +162,16 @@ func _build_city_screen() -> void:
 
 
 func _open_city(index: int) -> void:
-	var city: Dictionary = world_data.cities[index]
+	if campaign.before_city(index):
+		return
+	preload("res://scripts/game_audio_routes.gd").city(self, index)
+	world.visit_city(index)
 	trade.visit(index, _trade_rng)
-	# Adaptation: the travel clock pauses while the city is open; whether time
-	# runs during the original city scene is not established.
-	session.paused = true
-	_city_panel.open(index, String(city.name), int(city.kind), String(city.type))
-	_city_panel.position = (size - _city_panel.size) * 0.5
-	world_view.selected_city = index
-	room_controls.announce("Arrived at %s" % String(city.name))
+	_show_city(index)
+
+
+func _show_city(index: int) -> void:
+	preload("res://scripts/main_interface.gd").show_city(self, index)
 
 
 # TIME 0x2a77/0x2b4a weigh the cargo: trading changes the train mass. Buying
@@ -209,8 +185,9 @@ func _on_cargo_changed() -> void:
 
 
 func depart_from_city() -> void:
-	if not journey.depart_from_station():
+	if not _world_session.depart_nomads() and not journey.depart_from_station():
 		return
+	preload("res://scripts/game_audio_routes.gd").departure(self)
 	engine.speed = 0 # yoda 0x18e3 writes 0 to main+0x2fb4, the effective speed.
 	_city_panel.hide()
 	session.paused = false
@@ -235,6 +212,8 @@ func _open_panel(panel: String) -> void:
 		room_controls.show_instruments = instruments.visible
 		_modal.hide()
 		_boudoir_session.refresh()
+		if panel == "room" and encounters.pending >= 0 and encounters.manual != null:
+			encounters.manual_scene.open_battle(encounters.manual)
 		return
 	instruments.hide()
 	room_controls.show_instruments = false
@@ -252,80 +231,19 @@ func _open_panel(panel: String) -> void:
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	if not event is InputEventKey or not event.pressed or event.echo:
-		return
-	if encounters.report.visible:
-		encounters.report.handle_key(event)
-		return
-	# LineEdit handles Unicode in unhandled_key_input too (Godot 4.5 line_edit.cpp).
-	if get_viewport().gui_get_focus_owner() is LineEdit and event.physical_keycode not in [KEY_ESCAPE, KEY_F1]:
-		return
-	if _boudoir_session.handle_key(event):
-		get_viewport().set_input_as_handled()
-		return
-	if event.physical_keycode == KEY_ESCAPE:
-		_modal.hide()
-		room_controls.show_help = false
-		room_controls.show_instruments = false
-		instruments.hide()
-		get_viewport().set_input_as_handled()
-		return
-	if _city_panel.visible:
-		# Layout keycode: the - and + keys differ between QWERTY and AZERTY.
-		if _city_panel.handle_key(event.keycode):
-			get_viewport().set_input_as_handled()
-		return
-	match event.physical_keycode:
-		KEY_L: room_controls.activate("lignite")
-		KEY_A: room_controls.activate("anthracite")
-		KEY_B: room_controls.activate("brake")
-		KEY_SPACE: room_controls.activate("pause")
-		KEY_H: room_controls.activate("help")
-		KEY_M: _open_panel("map")
-		KEY_J: _open_panel("journal")
-		KEY_LEFT: engine.set_regulator(engine.regulator - (1 if event.shift_pressed else 15))
-		KEY_RIGHT: engine.set_regulator(engine.regulator + (1 if event.shift_pressed else 15))
-		KEY_F5: _save_view()
-		KEY_F6: _open_panel("options")
-		KEY_R: _restart_engine()
-		_: return
-	get_viewport().set_input_as_handled()
+	preload("res://scripts/gameplay_input.gd")._unhandled_key_input(self, event)
 
 
 func _restart_engine() -> void:
-	encounters.reset()
-	_boudoir_session.reset()
-	session.reset()
-	journey.reset()
-	network.reset()
-	wagons.reset()
-	trade.reset(_trade_rng)
-	engine.train_mass = wagons.mass()
-	world_view.consist.derive_from_wagons(wagons)
-	_city_panel.hide()
-	world_view.selected_city = -1
-	_map_opened = false
-	world_view.following_train = false
-	world_view.discovery = preload("res://scripts/map_discovery.gd").new()
-	_filter_cities("")
-	world_view.fit_discovered()
-	clock.set_elapsed(0)
-	calendar = GameCalendarScript.new()
-	_modal.hide()
-	instruments.hide()
-	room_controls.announce("New engine session · coal stocks restored")
+	preload("res://scripts/game_reset.gd").restart(self)
 
 
 func _restore_after_layout() -> void:
-	await get_tree().process_frame
-	world_view.fit_discovered()
-	_restore_view()
-	_update_status()
+	_boot.restore_after_layout(self)
 
 
 func focus_city(index: int) -> void:
-	world_view.focus_city(index)
-	_update_status()
+	preload("res://scripts/city_index.gd").focus_city(self, index)
 
 
 func save_view() -> bool:
@@ -343,35 +261,19 @@ func _restore_view() -> void:
 
 
 func _filter_cities(query: String) -> void:
-	city_list.clear()
-	city_indices.clear()
-	for index in world_data.cities.size():
-		if not _city_discovered(index):
-			continue
-		var city_name := String(world_data.cities[index].name)
-		if query.is_empty() or city_name.to_lower().contains(query.to_lower()):
-			city_indices.append(index)
-			city_list.add_item(city_name)
+	preload("res://scripts/city_index.gd")._filter_cities(self, query)
 
 
 func _on_chart_city_picked(_index: int) -> void:
-	_update_status()
-	city_list.deselect_all()
-	_select_visible_city()
+	preload("res://scripts/city_index.gd")._on_chart_city_picked(self, _index)
 
 
 func _on_city_selected(list_index: int) -> void:
-	if list_index < city_indices.size():
-		focus_city(city_indices[list_index])
+	preload("res://scripts/city_index.gd")._on_city_selected(self, list_index)
 
 
 func _select_visible_city() -> void:
-	if city_list == null or world_view.selected_city < 0:
-		return
-	for index in city_indices.size():
-		if city_indices[index] == world_view.selected_city:
-			city_list.select(index)
-			return
+	preload("res://scripts/city_index.gd")._select_visible_city(self)
 
 
 func _on_switch_toggled(cell: Vector2i) -> void:
@@ -380,17 +282,11 @@ func _on_switch_toggled(cell: Vector2i) -> void:
 
 
 func _update_status() -> void:
-	if status_label == null:
-		return
-	var selected := "No city selected"
-	if world_view.selected_city >= 0:
-		selected = String(world_data.cities[world_view.selected_city].name)
-	status_label.text = "Position (%d, %d) · %s\n%s\n%d discovered cities" % [journey.position.x, journey.position.y, journey.heading_name(), selected, city_indices.size()]
+	preload("res://scripts/city_index.gd")._update_status(self)
 
 
 func _city_discovered(index: int) -> bool:
-	var city: Dictionary = world_data.cities[index]
-	return world_view._city_is_visible(city)
+	return preload("res://scripts/city_index.gd")._city_discovered(self, index)
 
 
 func _save_path() -> String:

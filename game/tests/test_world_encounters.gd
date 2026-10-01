@@ -1,4 +1,6 @@
 extends SceneTree
+# requires-native-renderer
+# Source: native AudioStreamWAV playback; Dummy mixer leaks measured in cadence review.
 
 const Saves = preload("res://scripts/session_saves.gd")
 const World = preload("res://scripts/world_encounters.gd")
@@ -87,7 +89,9 @@ func _test_automatic(app) -> void:
 	app._restart_engine()
 	_place_enemy(app, 32700)
 	app.session.advance(app.session.seconds_per_cycle)
-	_check(not app.encounters.report.result.get("won", true) and app.session.paused, "defeat stops game")
+	_check(app.session.paused and app.campaign.screen.visible and app.campaign.state.pending.get("epitaph") == 105, "defeat opens source epitaph105 and stops game")
+	app._unhandled_key_input(key)
+	_check(app.campaign.screen.visible and app.campaign.screen.scene == "earth", "defeat proceeds through Earth scene")
 	app._unhandled_key_input(key)
 	_check(app._boudoir_session.reception.visible and app.session.paused, "defeat returns to options")
 

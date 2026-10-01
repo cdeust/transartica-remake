@@ -7,7 +7,8 @@ static func value(operand: Dictionary, locals: Dictionary) -> int:
 		"oimmb", "oimmw":
 			return int(operand.args[0])
 		"odirb":
-			return int(locals.get(str(operand.args[0]), 0))
+			# Source offsets are integer bytes; Godot JSON numbers arrive as floats.
+			return int(locals.get(str(int(operand.args[0])), 0))
 		"oeval":
 			var accumulator := 0
 			var stack: Array[int] = []

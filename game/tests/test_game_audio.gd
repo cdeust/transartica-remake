@@ -21,6 +21,16 @@ func run() -> void:
 	audio.attach(root)
 	await process_frame
 	check(audio.music_manifest.get("tracks", {}).size() == 9, "all source music selections packaged")
+	for key in ["bojeu-0","bojeu-1","bojeu2-0","bopres-0"]:
+		var entry: Dictionary = audio.music_manifest.tracks[key]
+		check(entry.loop_begin > 0 and entry.loop_end > entry.loop_begin,"initial source attack is outside repeating region")
+		audio.play_track(key)
+		check(audio.music.stream.loop_begin == entry.loop_begin and audio.music.stream.loop_end == entry.loop_end,"native WAV player uses captured source boundaries")
+		var rate: float = audio.music.stream.mix_rate
+		var begin: float = entry.loop_begin/rate
+		var end: float = entry.loop_end/rate
+		check(is_equal_approx(Audio._score_position(entry,end+(end-begin)/2,end,rate),begin+(end-begin)/2),"saved elapsed clock wraps inside second source cycle")
+	audio.reset()
 	var capture := AudioEffectCapture.new()
 	AudioServer.add_bus_effect(0, capture)
 	var channel: int = audio.effect("berta", 0x568) # Original decoded csound, no synthetic fallback.
@@ -45,9 +55,13 @@ func run() -> void:
 	audio.stop_effects()
 	check(audio.son(8) == 0 and audio.samples.loops[0] == 10000, "source SONselector8 ECS longambient")
 	audio.stop_effects()
+	var pitched_channel: int = audio.son(8,2)
+	var expected_pitch: float = 6.0/float(audio.manifest.scripts.son.samples["6"].frequency_khz)
+	check(pitched_channel == 0 and is_equal_approx(audio.samples.players[0].pitch_scale,expected_pitch),"SON local12 pitch %.6f equals %.6f on native channel%d" % [audio.samples.players[0].pitch_scale,expected_pitch,pitched_channel])
+	audio.stop_effects()
 	check(audio.son(6) == 0 and audio.samples.loops[0] == 4, "source SONselector6 starts threepitchsequence")
 	audio.stop_effects()
-	await create_timer(0.15).timeout
+	await audio.source_sequence_finished
 	check(audio.samples.priorities == [-128, -128, -128, -128], "cdelsound cancels pending original sequence")
 	check(audio.play_track("bojeu-0") and audio.music.playing, "source gameplay track native playback")
 	audio.play_city(1)

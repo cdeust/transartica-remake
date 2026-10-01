@@ -1,0 +1,11 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4
+
+ERROR: corrupt save preserves session and prompt
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_boudoir.gd:50)
+ERROR: original full plan loaded
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_boudoir.gd:50)

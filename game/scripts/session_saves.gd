@@ -79,6 +79,8 @@ static func _restore_parsed(app, parsed: Dictionary) -> Dictionary:
 static func _stage_base(app, parsed: Dictionary) -> Dictionary:
 	var base := {"ok": true, "network": RailNetworkScript.new(), "wagons": TrainWagonsScript.new(), "trade": CityTradeScript.new(), "encounters": preload("res://scripts/world_encounters.gd").new()}
 	base.network.load_bytes(app.world_data.map_bytes)
+	base.network.set_city_anchors(app.world_data.city_anchors())
+	base.network.campaign_entry_enabled = app.network.campaign_entry_enabled
 	base.journey = preload("res://scripts/train_journey.gd").new()
 	base.journey.network = base.network
 	base.session = preload("res://scripts/engine_session.gd").new(preload("res://scripts/engine_state.gd").new(), app.session.seconds_per_cycle)
@@ -88,8 +90,11 @@ static func _stage_base(app, parsed: Dictionary) -> Dictionary:
 	# Composition derives from cargo, including old v7 saves carrying "consist".
 	var consist = preload("res://scripts/train_consist.gd").new()
 	consist.derive_from_wagons(base.wagons)
+	# PR7 deliberately requires locomotive history: the initial source position
+	# can have an incomplete trailing branch; rejecting it would reject new games.
+	# Full-route rendering still refuses to invent missing wagon geometry.
 	if not base.journey.sample_behind(consist.LENGTHS.locomotive).ok and not base.journey.history_starts_in_station():
-		return Extensions.failure("This save cannot recover wagon positions")
+		return {"ok": false, "notice": "This save cannot recover wagon positions. Current journey kept; saved file unchanged."}
 	return base
 
 
@@ -113,16 +118,21 @@ static func _commit(app, parsed: Dictionary, base: Dictionary, extra: Dictionary
 	app.world_view.consist.derive_from_wagons(app.wagons)
 	app.world_view._visual_initialized = false
 	restore_chart(app, parsed)
+	app._city_panel.hide()
 	Extensions.commit(app, extra)
 	app.world_view.visit_cell(app.journey.position)
-	app._city_panel.hide()
 	if Extensions.blocks(app):
 		app.session.paused = true
 	elif app.journey.station_result() >= 0:
-		app._open_city(app.journey.station_result())
+		# Loading restores the saved visit; it must not reroll nomad stock.
+		if app.has_method("_show_city"):
+			app._show_city(app.journey.station_result())
+		else:
+			app._open_city(app.journey.station_result())
 	if app.encounters.pending >= 0:
 		app.session.paused = true
 		app.encounters.resume_pending()
+	Extensions.commit_audio(app, extra)
 	return {"ok": true, "notice": "Journey and engine restored" if parsed.has("journey") else "Previous engine restored · first journey starts at departure"}
 
 

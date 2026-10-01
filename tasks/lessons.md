@@ -95,3 +95,13 @@
 - Correction propriétaire : une règle isolée, un décor livré ou une simulation invisible ne constitue pas un élément porté. Vérifier dans le jeu le parcours complet et comparer ses états aux sources originales avant de cocher sa couverture. Les portages existants et les ressources déjà extraites doivent servir avant toute nouvelle recherche ou invention.
 
 - Une capture originale fournie pour les informations et commandes ne demande pas de grossir ses pixels. Garder la structure fonctionnelle, mais produire une qualité cohérente avec les intérieurs acceptés ; ne pas confondre référence fonctionnelle et direction graphique.
+
+- Owner direction, 1 October 2026: use the massive futuristic locomotive from the original box art as one shared design across travel, combat and illustration screens. Independent scene generation must not replace it with an ordinary steam locomotive. Keep the accepted travel size and original gameplay; compare the final representations against the same design sheet.
+## 1 October: verify canonical source artwork after a shared design change
+
+Owner corrections: "These three images are not showing the correct locomotive",
+"same with the train in background", and "train master still shows the old locomotive".
+When unifying the locomotive, replace the actual scene PNGs and train-master.png,
+including distant background trains. A new sprite override alone does not correct
+the source sheet. Check the saved files and native scenes before claiming completion.
+The Urga engine needs a readable twin-stack/beak/plow silhouette at its distant scale.

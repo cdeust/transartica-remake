@@ -1,4 +1,4 @@
-extends "res://scripts/campaign_crew.gd"
+extends "res://scripts/campaign_fauna_session.gd"
 
 # MIT. YODA0xe80/ec8 city controls; SCENE4d5→3b5 control before CODE.
 const Quiz = preload("res://scripts/manual_quiz.gd")

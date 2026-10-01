@@ -83,6 +83,10 @@ func ask(network) -> bool:
 	_pending_cell = Vector2i(-1, -1)
 	_ok_result = false
 	_show(_message(TrackWorks.WORKS[kind].question), true)
+	var audio = get_parent().get("game_audio")
+	if audio != null:
+		# YODA1721: question24..26 maps to SCENE2 selectors2..4, shared0xb5.
+		audio.effect("scene2",0xb5)
 	countdown = 0
 	return true
 
@@ -92,6 +96,10 @@ func inform(id: int) -> void:
 	kind = ""
 	_ok_result = false
 	_show(_message(id), false)
+	if id == 52:
+		var audio = get_parent().get("game_audio")
+		if audio != null:
+			audio.effect("sbal",0x18) # YODA1323/134b; SCENE2 selector1 bridge.
 
 
 func _accept() -> void:

@@ -10,6 +10,7 @@ var pending: Dictionary = {}
 var ending := ""
 var data: Dictionary = {}
 var hazards = preload("res://scripts/campaign_hazards.gd").new()
+var fauna = preload("res://scripts/campaign_fauna.gd").new()
 var protection_seen := {"soleil": false, "viking": false}
 
 
@@ -26,6 +27,7 @@ func reset() -> void:
 	pending = {}
 	ending = ""
 	hazards = preload("res://scripts/campaign_hazards.gd").new()
+	fauna = preload("res://scripts/campaign_fauna.gd").new()
 	protection_seen = {"soleil": false, "viking": false}
 	spies.clear()
 	for index in SPY_COUNT:
@@ -135,11 +137,14 @@ func submit_code(text: String, stoup = null) -> Dictionary:
 		return {"accepted": false, "messages": [63]}
 	var first := not delivery_open
 	delivery_open = true
+	if first:
+		fauna.oslo()
 	if first and not sos_sent:
 		sos_sent = true
 		if stoup != null:
 			stoup.push(126)
-	pending = {"scene": "oslo", "messages": [91]}
+	# YODA151c keeps prior25910; c70/c8e chimes only after first delivery exits.
+	pending = {"scene": "oslo", "messages": [91], "departure_chime": first}
 	return {"accepted": true, "first": first, "messages": [91]}
 
 
@@ -169,7 +174,7 @@ func snapshot() -> Dictionary:
 	return {"version": 1, "urga_key": urga_key, "delivery_open": delivery_open,
 		"central_destroyed": central_destroyed, "whale_present": whale_present,
 		"sos_sent": sos_sent, "pending": pending.duplicate(true), "ending": ending,
-		"spies": spies.duplicate(true), "protection_seen": protection_seen.duplicate(), "hazards": hazards.snapshot()}
+		"spies": spies.duplicate(true), "protection_seen": protection_seen.duplicate(), "hazards": hazards.snapshot(), "fauna": fauna.snapshot()}
 
 
 func restore(value: Variant) -> bool:
@@ -187,6 +192,12 @@ func restore(value: Variant) -> bool:
 	var candidate_hazards = preload("res://scripts/campaign_hazards.gd").new()
 	if not candidate_hazards.restore(value.get("hazards")):
 		return false
+	var candidate_fauna = preload("res://scripts/campaign_fauna.gd").new()
+	if value.has("fauna"):
+		if not candidate_fauna.restore(value.fauna):
+			return false
+	elif value.delivery_open:
+		candidate_fauna.oslo() # Legacy saves lacked roaming state; known Oslo state.
 	var parsed: Array = []
 	for record in value.spies:
 		if not record is Array or record.size() != SPY_FIELDS:
@@ -203,7 +214,9 @@ func restore(value: Variant) -> bool:
 		parsed.append(row)
 	var event: Dictionary = value.pending
 	if not event.is_empty():
-		if not event.get("scene") in ["slope", "whale_harpoon", "whale_question", "urga", "oslo", "mausoleum", "sun", "sun_end", "earth", "spy_pickup", "sabotage_confirm", "manual_quiz", "death"] or not event.get("messages") is Array:
+		if not event.get("scene") in ["wolf", "mole", "slope", "whale_harpoon", "whale_question", "urga", "oslo", "mausoleum", "sun", "sun_end", "earth", "spy_pickup", "sabotage_confirm", "manual_quiz", "death"] or not event.get("messages") is Array:
+			return false
+		if event.scene in ["wolf", "mole"] and not preload("res://scripts/campaign_ambush_snapshot.gd").valid(event):
 			return false
 		if event.scene == "manual_quiz" and not preload("res://scripts/manual_quiz.gd").valid(event):
 			return false
@@ -211,7 +224,9 @@ func restore(value: Variant) -> bool:
 			return false
 		if event.get("code_input", false) and (event.scene != "oslo" or not value.urga_key):
 			return false
-		for key in ["code_input", "reverse"]:
+		if event.has("departure_chime") and (event.scene != "oslo" or not value.delivery_open or event.messages.size() != 1 or not _integer(event.messages[0]) or int(event.messages[0]) != 91):
+			return false
+		for key in ["code_input", "reverse", "departure_chime"]:
 			if event.has(key) and not event[key] is bool:
 				return false
 		for id in event.messages:
@@ -233,6 +248,7 @@ func restore(value: Variant) -> bool:
 	ending = value.ending
 	spies = parsed
 	hazards = candidate_hazards
+	fauna = candidate_fauna
 	protection_seen = value.protection_seen.duplicate()
 	return true
 

@@ -22,7 +22,7 @@ func attach(owner_app) -> void:
 func before_entry(cell: Vector2i) -> bool:
 	var event: Dictionary = state.prepare_entry(cell, app.journey.heading, app.wagons, app.network)
 	if event.is_empty():
-		return false
+		return state.ending.is_empty() and before_fauna(cell)
 	if event.get("reverse", false):
 		app.journey.reverse_direction()
 		app.world_view.update_train()
@@ -62,7 +62,10 @@ func _show_page() -> void:
 		screen.present("manual_quiz", Quiz.lines(event, state.data), true)
 		return
 	var lines: Array[String] = []
-	if event.has("epitaph") and event.scene == "death":
+	if event.get("scene") in ["wolf", "mole"]:
+		for line in _ambush_page():
+			lines.append(str(line))
+	elif event.has("epitaph") and event.scene == "death":
 		lines = state.message(int(event.epitaph), true)
 	elif page < _messages.size():
 		lines = state.message(int(_messages[page]))
@@ -85,6 +88,9 @@ func _continue() -> void:
 		_show_page()
 		return
 	var event: Dictionary = state.dismiss()
+	_finish_fauna(event)
+	if event.get("departure_chime",false) and app.get("game_audio") != null:
+		app.game_audio.son(3) # YODAc70..c93; first successful Oslo return only.
 	page = 0
 	if event.get("scene") == "sun":
 		screen.start_movie()
@@ -256,5 +262,9 @@ func _play_scene_audio(scene: String) -> void:
 	var offsets := {"urga": 0xea, "mausoleum": 0x16b, "whale_question": 0x17a, "whale_harpoon": 0x189}
 	if offsets.has(scene):
 		audio.effect("scene3", offsets[scene])
+	elif scene == "wolf":
+		audio.effect("scene1",0xa1) # SCENE1 selector2, YODA119b/11a0.
+	elif scene == "slope":
+		audio.effect("scene1",0xb0) # SCENE1 selector3, YODA12c5/12ca.
 	elif scene == "death":
 		audio.play_loss() # YODA0x287d.

@@ -1,0 +1,129 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:991)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-01.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 1 SIZE (795, 237) BANDS [{ "top": 0, "bottom": 237, "weight": 153426 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-02.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 2 SIZE (734, 230) BANDS [{ "top": 0, "bottom": 230, "weight": 139352 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-03.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 3 SIZE (708, 340) BANDS [{ "top": 58, "bottom": 294, "weight": 127821 }, { "top": 0, "bottom": 3, "weight": 329 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-04.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 4 SIZE (728, 271) BANDS [{ "top": 0, "bottom": 271, "weight": 101469 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-05.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 5 SIZE (722, 198) BANDS [{ "top": 0, "bottom": 198, "weight": 117361 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-06.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 6 SIZE (753, 341) BANDS [{ "top": 96, "bottom": 341, "weight": 146238 }, { "top": 0, "bottom": 35, "weight": 13723 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-07.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 7 SIZE (752, 341) BANDS [{ "top": 96, "bottom": 341, "weight": 143212 }, { "top": 0, "bottom": 35, "weight": 14248 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-08.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 8 SIZE (755, 326) BANDS [{ "top": 59, "bottom": 290, "weight": 116077 }, { "top": 0, "bottom": 5, "weight": 398 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-09.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 9 SIZE (752, 325) BANDS [{ "top": 77, "bottom": 290, "weight": 104258 }, { "top": 0, "bottom": 5, "weight": 487 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-10.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 10 SIZE (743, 268) BANDS [{ "top": 0, "bottom": 264, "weight": 144765 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-11.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 11 SIZE (704, 344) BANDS [{ "top": 119, "bottom": 294, "weight": 84392 }, { "top": 0, "bottom": 3, "weight": 211 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-12.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 12 SIZE (748, 207) BANDS [{ "top": 0, "bottom": 201, "weight": 111834 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-13.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 13 SIZE (749, 211) BANDS [{ "top": 0, "bottom": 198, "weight": 103750 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-14.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 14 SIZE (746, 277) BANDS [{ "top": 0, "bottom": 250, "weight": 143775 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-15.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 15 SIZE (742, 239) BANDS [{ "top": 0, "bottom": 234, "weight": 136982 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-16.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 16 SIZE (745, 275) BANDS [{ "top": 0, "bottom": 231, "weight": 112899 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-17.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 17 SIZE (737, 193) BANDS [{ "top": 0, "bottom": 192, "weight": 105517 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-18.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 18 SIZE (756, 194) BANDS [{ "top": 0, "bottom": 193, "weight": 128662 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-19.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 19 SIZE (749, 200) BANDS [{ "top": 0, "bottom": 191, "weight": 111247 }, { "top": 198, "bottom": 200, "weight": 10 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-20.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 20 SIZE (753, 206) BANDS [{ "top": 0, "bottom": 197, "weight": 125488 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-21.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 21 SIZE (586, 198) BANDS [{ "top": 0, "bottom": 198, "weight": 81476 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-22.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 22 SIZE (747, 246) BANDS [{ "top": 0, "bottom": 229, "weight": 109941 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-23.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 23 SIZE (724, 362) BANDS [{ "top": 64, "bottom": 294, "weight": 126799 }, { "top": 0, "bottom": 5, "weight": 407 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-24.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 24 SIZE (753, 200) BANDS [{ "top": 0, "bottom": 195, "weight": 121815 }]
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/combat/wagon-25.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2541)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/review_tactical_wagon_art.gd:5)
+WAGON 25 SIZE (673, 222) BANDS [{ "top": 0, "bottom": 217, "weight": 104028 }]

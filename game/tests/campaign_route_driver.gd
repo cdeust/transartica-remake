@@ -12,6 +12,7 @@ var engine = preload("res://scripts/engine_state.gd").new()
 var trade = preload("res://scripts/city_trade.gd").new()
 var calendar = preload("res://scripts/game_calendar.gd").new()
 var stoup = preload("res://scripts/stoup_messages.gd").new()
+var roamers = preload("res://scripts/world_roamers.gd").new()
 var world = preload("res://scripts/world_actions.gd").new()
 var planner = preload("res://tests/campaign_route_planner.gd").new()
 var rng := RandomNumberGenerator.new()
@@ -39,6 +40,7 @@ func attach(context: Dictionary, tree: SceneTree) -> bool:
 	if not trade.load_from_project(ProjectSettings.globalize_path("res://").trim_suffix("/")):
 		return false
 	trade.reset(rng)
+	roamers.initialize(rng,campaign.fauna)
 	world.attach(journey,wagons,engine,trade,rng)
 	planner.network = network
 	planner.campaign = campaign
@@ -139,11 +141,20 @@ func _cycle() -> bool:
 	if calendar.hour != prior_hour:enemies.maybe_spawn_on_hour(calendar.hour,0,encounter_rng)
 	world.tick_mines(calendar.day,stoup)
 	campaign.advance_spies(network,trade,stoup)
+	for observation in roamers.advance(network,rng,campaign.hazards.traps):
+		campaign.observe_enemy(observation.code-1,observation.cell,calendar,stoup)
+	if story_ui.roamer_encounter(journey.position):
+		return true
+	if story_ui.advance_fauna():
+		return true
 	var progress: int = mini(network.progress_speed(journey.position,journey.heading,engine.speed),journey.MAX_PROGRESS_SPEED)
 	if not journey.blocked and engine.speed > 0 and journey.phase + 1 >= journey.PHASES_PER_TILE and journey.distance_ticks + int(progress/20) > journey.MAX_DISTANCE_REMAINDER:
+		if story_ui.roamer_encounter(journey.next_cell()):return true
 		world.before_entry(journey.next_cell())
 		var event: Dictionary = story_ui.before_entry(journey.next_cell())
 		if not event.is_empty():
+			if event.scene in ["wolf","mole"]:
+				return true
 			if event.scene == "whale_harpoon":
 				replan = true
 				trace.append("HARPOON WHALE then SOURCE REVERSE at%s" % journey.position)
@@ -177,7 +188,7 @@ func _cycle() -> bool:
 			var result: Dictionary = story_ui.resolve_battle(encountered)
 			trace.append("ACTUAL AUTO BATTLE slot%d result%s" % [encountered,result])
 			if not result.won:return _fail("Source automatic battle lost")
-			if enemies.slots[encountered][0] != enemies.REMOVED_STATE:return _fail("Source combat did not remove actual encountered slot")
+			if enemies.slots[encountered][0] != enemies.REMOVED_STATE:return _fail("Source combat did not remove actual encountered slot: driverstate%d actualstate%d driverid%d actualid%d" % [enemies.slots[encountered][0],story_ui.encounters.enemies.slots[encountered][0],enemies.get_instance_id(),story_ui.encounters.enemies.get_instance_id()])
 			return true
 		return _fail("Actual enemy encounter slot%d strength%d at%s" % [encountered,enemies.slots[encountered][7],journey.position])
 	return true

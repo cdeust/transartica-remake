@@ -24,6 +24,19 @@ func intercept_mole(cell: Vector2i, missile: bool, context: Dictionary) -> bool:
 	return hit
 
 
+# TIME0x2687 raw stack operands; opile restores the left comparison operand.
+func player_mole(cell: Vector2i, calendar, rng: RandomNumberGenerator) -> bool:
+	if cell not in MOLES:
+		return false
+	var stamp: int = mole_times[cell.x % 10]
+	var ready: bool = calendar.day - 1 > stamp / 50 or (calendar.day > stamp / 50 and calendar.hour >= stamp % 50)
+	var roll := rng.randi_range(0, 5) # Evaluated even with stamp==-1, no short circuit.
+	if stamp != -1 and (not ready or roll != 0):
+		return false
+	mole_times[cell.x % 10] = calendar.day * 50 + calendar.hour
+	return true
+
+
 func snapshot() -> Dictionary:
 	return {"traps": traps.duplicate(), "mole_times": mole_times.duplicate()}
 

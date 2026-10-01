@@ -18,12 +18,17 @@ var _fade_remaining := 0.0
 var _fade_duration := 0.0
 var _fade_gain := 1.0
 var _effect_generation := 0
+var _engine_audio = preload("res://scripts/engine_audio.gd").new()
+var _scene_audio = preload("res://scripts/scene_audio.gd").new()
+signal source_sequence_finished
 
 
 func attach(app: Node) -> void:
 	app.add_child(self)
 	add_child(samples)
 	add_child(music)
+	_engine_audio.attach(app,self)
+	_scene_audio.attach(app,self)
 	for pair in [["manifest", "manifest.json"], ["music_manifest", "music.json"]]:
 		var path: String = "res://private-data/audio/" + pair[1]
 		if FileAccess.file_exists(path):
@@ -70,7 +75,8 @@ func play_track(key: String, guard_preference := true) -> bool:
 	var playback: AudioStreamWAV = stream.duplicate()
 	if entry.get("cycle", false):
 		playback.loop_mode = AudioStreamWAV.LOOP_FORWARD
-		playback.loop_end = playback.data.size() / 2
+		playback.loop_begin = int(entry.get("loop_begin", 0))
+		playback.loop_end = int(entry.get("loop_end", playback.data.size() / 2))
 	music.stream = playback
 	_elapsed = 0.0
 	_fade_remaining = 0
@@ -81,6 +87,8 @@ func play_track(key: String, guard_preference := true) -> bool:
 
 
 func _process(delta: float) -> void:
+	_engine_audio.advance(delta)
+	_scene_audio.advance(delta)
 	if current_track.is_empty():
 		return
 	_elapsed += delta
@@ -188,12 +196,14 @@ func restore(data: Dictionary) -> bool:
 		var entry: Dictionary = music_manifest.tracks[current_track]
 		var stream: AudioStreamWAV = music.stream
 		var length: float = float(stream.data.size()) / (stream.mix_rate * 2)
-		music.seek(fmod(float(data.elapsed), length) if entry.get("cycle", false) else minf(float(data.elapsed), length))
+		music.seek(_score_position(entry, float(data.elapsed), length,stream.mix_rate))
 	_elapsed = float(data.elapsed)
 	return true
 
 
 func reset() -> void:
+	_engine_audio.reset()
+	_scene_audio.reset()
 	stop_effects()
 	music.stop()
 	music_enabled = true
@@ -202,6 +212,16 @@ func reset() -> void:
 	current_track = ""
 	_elapsed = 0
 	_fade_remaining = 0
+
+
+static func _score_position(entry: Dictionary, elapsed: float, length: float, rate: float) -> float:
+	# Source: capture_alis_music_loop.c records source sample boundaries. The
+	# initial attack occurs once; subsequent elapsed time wraps inside the loop.
+	var begin: float = float(entry.get("loop_begin",0)) / rate
+	var end: float = float(entry.get("loop_end",int(length*rate))) / rate
+	if entry.get("cycle",false) and end > begin and elapsed >= end:
+		return begin + fposmod(elapsed-begin,end-begin)
+	return minf(elapsed,length)
 
 
 func _gain(key: String) -> float:
@@ -238,14 +258,14 @@ func son(selector: int, pitch := 0, long_ambient := true) -> int:
 	# SON0x18 cswitch base0; ECS MAIN25918=4 chooses ambient10000 branch.
 	var offsets := {0: 0x34, 1: 0x48, 3: 0x9b, 4: 0xaf, 5: 0xc3, 7: 0xdf}
 	if selector == 2:
-		return effect("son", 0x72 if long_ambient else 0x87, {"14": pitch})
+		return effect("son", 0x72 if long_ambient else 0x87, {"12": pitch})
 	if selector == 8:
-		return effect("son", 0x109 if long_ambient else 0x11e, {"14": pitch})
+		return effect("son", 0x109 if long_ambient else 0x11e, {"12": pitch})
 	if selector == 6:
 		var channel := effect("son", 0x12f)
 		_son_sequence(_effect_generation)
 		return channel
-	return effect("son", offsets[selector], {"14": pitch}) if offsets.has(selector) else -1
+	return effect("son", offsets[selector], {"12": pitch}) if offsets.has(selector) else -1
 
 
 func _son_sequence(generation: int) -> void:
@@ -253,5 +273,7 @@ func _son_sequence(generation: int) -> void:
 	for offset in [0x144, 0x159]:
 		await get_tree().create_timer(3.0 / 50).timeout
 		if generation != _effect_generation:
+			source_sequence_finished.emit()
 			return
 		effect("son", offset)
+	source_sequence_finished.emit()

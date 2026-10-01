@@ -171,3 +171,23 @@ def test_bopres_music_operands_and_termination():
     assert [item['args'][0] for item in by_offset[0xc8]['args']] == [0, 127, 32, 20, 10000, 100]
     assert by_offset[0xc8]['end'] == 0xd6
     assert by_offset[0xd6]['name'] == 'csleep'
+
+
+def test_audio_scene_linking_and_machine_information():
+    # Primary source opcodes.c2879 clinking reads exactly one expression;
+    # opernames.c854 omip reads no operand and returns host MIPS information.
+    instruction = module.disassemble(bytes.fromhex('83 00 01 42'), 0, 2)
+    assert instruction['errors'] == []
+    assert instruction['instructions'][0]['name'] == 'clinking'
+    assert instruction['instructions'][0]['end'] == 3
+    assert instruction['instructions'][1]['name'] == 'cstop'
+    value = module.disassemble(bytes.fromhex('1f a4 42'), 0, 2)
+    assert value['errors'] == []
+    assert value['instructions'][0]['args'][0]['name'] == 'omip'
+    assert value['instructions'][0]['end'] == 2
+    for script in ('train', 'wdecor'):
+        data = (ROOT / f'reference-private/unpacked/{script}.alis').read_bytes()
+        reader = module.Reader(data, module.source_tables())
+        for entry in module.header_entries(data)['entries']:
+            decoded = module.walk(reader, entry, 20000, True)
+            assert decoded['errors'] == [] and not decoded['truncated']

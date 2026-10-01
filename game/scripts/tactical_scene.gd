@@ -10,11 +10,15 @@ var group_size := 1
 var camera := 0.0
 var paused := false
 var textures := {}
+var texture_bounds := {}
+var actor_art = preload("res://scripts/tactical_actor_art.gd").new()
+var wagon_art = preload("res://scripts/tactical_wagon_art.gd").new()
 var effects: Array = []
 var edge_scroll := 0
 var materials = preload("res://scripts/tactical_materials.gd").new()
 var wagon_bounds := {}
 var lights: Array = []
+var audio
 
 func _ready() -> void:
 	super._ready()
@@ -23,12 +27,31 @@ func _ready() -> void:
 	for name in ["background", "actors-kit-00", "actors-kit-01", "actors-kit-04", "actors-kit-05", "actors-kit-08", "actors-kit-09", "effects-kit-04", "effects-kit-05", "effects-kit-06", "effects-kit-07", "effects-kit-08"]:
 		textures[name] = load("res://assets/combat/" + name + ".png")
 	for kind in range(1,26):
-		textures["wagon-%02d" % kind] = load("res://assets/combat/wagon-%02d.png" % kind)
+		var name := "wagon-%02d" % kind
+		textures[name] = wagon_art.texture_for(kind)
+		texture_bounds[name] = Rect2(textures[name].get_image().get_used_rect())
 
 func open_battle(value) -> void:
+	if state != value:
+		if state != null and state.audio_cue_requested.is_connected(_source_audio):
+			state.audio_cue_requested.disconnect(_source_audio)
+		value.audio_cue_requested.connect(_source_audio)
+		if audio != null:
+			audio.stop_effects()
+			audio.effect("wdecor",0x6121) # WDECOR127→6114, ECS25918>1 ambient.
+		materials.instances.clear()
+		effects.clear()
+		wagon_bounds.clear()
+		for entry in lights:entry.node.queue_free()
+		lights.clear()
 	state = value
 	show()
 	queue_redraw()
+
+
+func _source_audio(offset: int) -> void:
+	if audio != null:
+		audio.effect("wdecor",offset)
 
 func _physics_process(delta: float) -> void:
 	if not visible or state == null or paused:
@@ -55,24 +78,49 @@ func _draw() -> void:
 		return
 	frame()
 	begin_canvas()
-	draw_texture_rect(textures.background,Rect2(0,14,320,164),false)
+	_draw_ground()
 	_train(0, 63)
 	_train(1, 192)
 	for actor in state.actors:
 		_actor(actor)
 	for charge in state.charges:
 		var point := _roof_point(charge.side,charge.slot)
-		text_at(point,"●%d" % charge.fuse,5)
+		_label(point,"●%d" % charge.fuse,5)
 	for effect in effects:
 		_effect(effect)
 	centered(9,"TRAIN COMBAT" + (" · PAUSED" if paused else ""),6)
-	text_at(Vector2(3,197),"← → CONVOY  ·  P PAUSE  ·  F5 SAVE  ·  F6 OPTIONS",5)
+	text_at(Vector2(3,18),"← → CONVOY  ·  P PAUSE  ·  F5 SAVE  ·  F6 OPTIONS",5)
 	if selected_actor >= 0:
-		text_at(Vector2(3,183),"ARROWS: MOVE  SPACE: STOP  +/-: %d  S: SPLIT  Q/E: DYNAMITE" % group_size,5)
+		_status("ARROWS: MOVE  SPACE: STOP  +/-: %d  S: SPLIT  Q/E: DYNAMITE" % group_size)
 	elif selected_wagon >= 0:
 		var car: Dictionary = state.trains[0][selected_wagon]
-		text_at(Vector2(3,183),"WAGON %d · HULL %d/3 · %d ABOARD · GROUP %d · ENTER DEPLOY/FIRE" % [selected_wagon + 1,car.health,car.quantity,group_size],5)
+		_status("WAGON %d · HULL %d/3 · %d ABOARD · GROUP %d · ENTER DEPLOY/FIRE" % [selected_wagon + 1,car.health,car.quantity,group_size])
 	draw_set_transform(Vector2.ZERO)
+
+func _draw_ground() -> void:
+	# Source: measured authored background.png snow band170..650, track40..170.
+	# Place rails beneath source wagon wheel baselines63/192, not above the roofs.
+	var background: Texture2D = textures.background
+	var width := float(background.get_width())
+	# Fit the snow crop at its authored aspect ratio instead of stretching pixels.
+	var snow_width := 480.0 * 320.0 / 186.0
+	draw_texture_rect_region(background, Rect2(0,14,320,186), Rect2((width-snow_width)/2,170,snow_width,480))
+	for baseline in [63,192]:
+		draw_texture_rect_region(background, Rect2(0,baseline-9,320,16), Rect2(0,40,width,130))
+	draw_rect(Rect2(0,14,320,8), Color(0.03,0.06,0.08,0.85))
+
+func _status(value: String) -> void:
+	# Authored translucent central banner leaves both roof/wagon bands unobscured.
+	draw_rect(Rect2(0,94,320,10), Color(0.03,0.06,0.08,0.8))
+	text_at(Vector2(3,101), value, 5)
+
+func _label(point: Vector2, value: String, font_size: int) -> void:
+	# Authored dark backing keeps health/count readouts legible on snow and smoke.
+	var factor := canvas_rect().size.x / CANVAS.x
+	var pixels := maxi(1, roundi(font_size * factor))
+	var width := ThemeDB.fallback_font.get_string_size(value,HORIZONTAL_ALIGNMENT_LEFT,-1,pixels).x / factor
+	draw_rect(Rect2(point-Vector2(1,font_size+1),Vector2(width+2,font_size+3)),Color(0.03,0.06,0.08,0.9))
+	text_at(point,value,font_size)
 
 func _train(side: int, baseline: float) -> void:
 	var source_index := 0
@@ -83,20 +131,21 @@ func _train(side: int, baseline: float) -> void:
 		var kind: int = state.original[source_index][0] if side == 0 else _enemy_type(car.class)
 		if side == 0:
 			source_index += 1
-		var texture: Texture2D = textures["wagon-%02d" % (kind if car.health > 0 else 25)]
+		var name := "wagon-%02d" % (kind if car.health > 0 else 25)
+		var texture: Texture2D = textures[name]
+		var used: Rect2 = texture_bounds[name]
 		var width := 128.0 if car.class == state.Setup.LOCOMOTIVE else 64.0
-		var factor := minf(width/texture.get_width(),26.0/texture.get_height())
-		var extent := texture.get_size()*factor
+		# Crop transparent atlas padding; preserve authored body aspect ratio.
+		var factor := minf(width/used.size.x,26.0/used.size.y)
+		var extent := used.size*factor
 		var x: float = 320 + state.offsets[side] - index*64 - camera
 		var rect := Rect2(x-width,baseline-extent.y,extent.x,extent.y)
-		var original_texture: Texture2D = texture
 		texture = materials.texture_for(texture,side,index,car.health)
-		wagon_bounds["%d/%d" % [side,index]] = rect
-		draw_texture_rect(texture,rect,false,Color(1,0.77,0.66) if side == 1 else Color.WHITE)
-		if car.health <= 0:
-			materials.texture_for(original_texture,side,index,1)
+		# Debris uses the same isolated sprite coordinates as material occupancy.
+		wagon_bounds["%d/%d" % [side,index]] = Rect2(rect.position-used.position*factor,texture.get_size()*factor)
+		draw_texture_rect_region(texture,rect,used,Color(1,0.77,0.66) if side == 1 else Color.WHITE)
 		if side == 0:
-			text_at(Vector2(rect.position.x+2,32),"%d:%d" % [source_index,car.health],4)
+			_label(Vector2(rect.position.x+2,32),"%d:%d" % [source_index,car.health],4)
 
 func _enemy_type(kind: int) -> int:
 	var classes := {1:23,2:11,3:12,4:7,5:1,6:17,7:25,8:21}
@@ -104,15 +153,8 @@ func _enemy_type(kind: int) -> int:
 
 func _actor(actor: Dictionary) -> void:
 	var point := _roof_point(actor.roof,actor.x) if actor.roof >= 0 else _field_point(actor.x,actor.y)
-	var name := ("actors-kit-09" if actor.count > 1 else "actors-kit-08") if actor.mammoth else ("actors-kit-00" if actor.side == 0 else "actors-kit-04")
-	if actor.direction != 8 and not actor.mammoth:
-		name = "actors-kit-01" if actor.side == 0 else "actors-kit-05"
-	var texture: Texture2D = textures[name]
-	var extent := Vector2(28,28) if actor.mammoth else Vector2(12,17)
-	var factor := minf(extent.x/texture.get_width(),extent.y/texture.get_height())
-	extent = texture.get_size()*factor
-	draw_texture_rect(texture,Rect2(point-Vector2(extent.x/2,extent.y),extent),false)
-	text_at(point+Vector2(-4,4),str(actor.count),4)
+	actor_art.draw_actor(self,actor,point)
+	_label(point+Vector2(-4,4),str(actor.count),4)
 	if actor.id == selected_actor:
 		draw_line(point+Vector2(-6,6),point+Vector2(6,6),GOLD,1)
 
@@ -130,10 +172,10 @@ func _effect(effect: Dictionary) -> void:
 	var frame_index := mini(age/5,3)+4
 	var texture: Texture2D = textures["effects-kit-%02d" % frame_index]
 	var extent := Vector2(40,40) if event.kind=="destroy" else Vector2(18,18)
-	draw_texture_rect(texture,Rect2(point-extent/2,extent),false,Color(1,1,1,1.0-float(age)/23))
+	draw_texture_rect(texture,Rect2(point-extent/2,extent),false,Color(1,0.9,0.7,1.0-float(age)/23))
 	if event.has("wagon"):
 		var prefix := "%d/%d" % [event.side,event.wagon]
-		var health: int = maxi(1,state.trains[event.side][event.wagon].health)
+		var health: int = maxi(0,state.trains[event.side][event.wagon].health)
 		if wagon_bounds.has(prefix): materials.draw_debris(self,prefix+"/%d" % health,wagon_bounds[prefix],age)
 
 func _gui_input(event: InputEvent) -> void:

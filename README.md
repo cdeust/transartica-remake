@@ -1,79 +1,73 @@
-# Transartica : remake en construction
+# Transartica
 
-Référence : Amiga 500 ECS anglais. Objectif : remake fidèle à la carte et à toute l'histoire, pixel art moderne, commandes clavier/souris actuelles, multiplateforme avec priorité Windows. Le code créé sera sous MIT ; les ressources historiques restent des références documentaires.
+Remake personnel de l’édition anglaise Amiga 500 ECS : carte, histoire, commerce,
+conduite et combats fondés sur les scripts originaux décodés. Les illustrations
+et sprites sont redessinés ; Noita guide la lisibilité des pixels, les matières,
+les éclairages et les effets. La locomotive massive du dessin de couverture
+sert de modèle commun aux scènes, au voyage et aux combats.
 
-- [Décisions et critères de fidélité](FIDELITE.md)
-- [Recherche générale](DOSSIER.md)
-- [Inventaire mécanique](INVENTAIRE.md)
-- [Villes et parcours documentaire](data/README.md)
-- [Sources de campagne](CAMPAGNE-SOURCES.md)
-- [Inspection des disquettes ECS](OBSERVATION-ECS.md)
-- [Carte décodée : preuves et limites](FORMAT-CARTE.md)
-- [Villes décodées : preuves et limites](FORMAT-VILLES.md)
-- [Centrale et fin de campagne](FIN-CAMPAGNE.md)
-- [Travail restant](tasks/todo.md)
+La campagne intégrée va du départ original jusqu’au rétablissement du Soleil.
+Le parcours de validation utilise les ressources gagnées, les ennemis par défaut,
+les événements de faune et les commandes du jeu. Une sauvegarde au Mausolée
+retrouve exactement le résultat du parcours continu : 10 657 cycles source,
+1 713 cases parcourues, jour23, lignite1 067.
+Voir [les preuves de campagne](tasks/validation/campaign-route-cleanup-20261001.md)
+et [la couverture actuelle](tasks/validation/completion-matrix-20261001.md).
 
-## Essayer la préversion
+## Jouer localement
 
-- macOS : ouvrir `builds/macos/Transarctica — Northern Survey.app`.
-- Windows : décompresser `builds/Transartica-Windows.zip`, puis lancer
-  `Transartica.exe` en conservant `Transartica.pck` à côté.
-- Depuis les sources sur ce Mac : `game/run_local.sh`.
+Depuis les sources sur ce Mac : `game/run_local.sh`.
+L’introduction mène aux options ; START commence la partie. Les cinq plaques
+permettent de choisir difficulté, combat manuel ou automatique, musique,
+démarrage et chargement. F6 revient aux options pendant la partie.
 
-Cette préversion ouvre une chaufferie illustrée et animée. Cliquer les chauffeurs
-règle les deux alimentations en charbon. Cliquer les cadrans ouvre un écran
-d'instruments distinct, avec mesures vivantes, régulateur et retour à la chambre.
-L/A commandent les chauffeurs, B le frein, Espace la pause, F5 la sauvegarde rapide
-complète de cette session, R son redémarrage. M ouvre la carte et J le boudoir. Le bandeau inférieur permet de passer entre
-locomotive, boudoir et quartier général. Dans le boudoir, cliquer Kolotov ouvre
-l’inventaire ; le livre enregistre une sauvegarde nommée. F1 annule la saisie.
-F6 ouvre les options, dont la disquette recharge une sauvegarde nommée.
-Le revolver demande confirmation : clic gauche pour terminer la partie,
-clic droit pour revenir au boudoir.
-La cadence est indépendante du rendu, mais la seconde réelle par cycle reste
-une calibration de préversion. Les événements non portés arrêtent la simulation.
+Le bandeau illustré ouvre locomotive, instruments, boudoir, quartier général et
+cartes. Cliquer les chauffeurs règle les deux alimentations en charbon ; les
+instruments donnent accès au régulateur. Aiguillages et marche arrière suivent
+le réseau original. Les villes proposent marchandises, personnel et ateliers ;
+la composition du train permet réparations, réorganisation et armements.
+Le boudoir donne accès au journal, inventaire, sauvegardes nommées et commandes
+du capitaine. Les rencontres conduisent aux choix du récit ou au combat.
 
-Le brouillard de découverte est une évolution autorisée par le propriétaire ;
-sa portée actuelle est provisoire. Un premier parcours de conduite suit la ligne
-de départ vers l'est, de (12,62) à (33,62), puis s'arrête avant le croisement non
-porté. Ouvrir M, alimenter les chauffeurs, régler le régulateur et relâcher le
-frein. La carte reste active pendant le trajet ; la sauvegarde inclut sa progression.
-Les branches des aiguillages et la marche arrière ne sont pas encore disponibles.
-Une ancienne sauvegarde de chaufferie conserve son moteur et commence son premier
-trajet au départ : aucune position de voyage n'existait dans cette version.
-La scène de voyage utilise maintenant une projection 2D oblique avec train,
-terrain glaciaire et brouillard. Les combats, la composition modifiable du train, les
-villes, le commerce et la campagne complète restent à construire. Le niveau
-graphique de Noita est l'objectif, pas une qualité certifiée de cette préversion.
+Les raccourcis sont configurables dans les options. Par défaut : L/A pour les
+chauffeurs, B pour le frein, Espace pour la pause, M pour la carte, J pour le
+boudoir, H pour l’aide, flèches pour la navigation, F5 pour sauvegarder, F6 pour
+les options et R pour recommencer. Les commandes contextuelles affichées dans
+les scènes conservent leur priorité. Les sauvegardes comprennent moteur, voyage,
+commerce, hasard, campagne, dialogues, faune, combat, lance-missiles et audio.
 
-Le [registre de couverture](tasks/original-game-coverage.md) distingue chaque
-système de l'original, les évolutions autorisées et les parties manquantes.
-Les [preuves de conduite](tasks/evidence/locomotive-rules.md) et
-[d'instruments](tasks/evidence/boiler-instruments.md) décrivent les règles
-vérifiées et leurs limites. Validation : `game/test.sh` et
-[témoin d'export](tasks/validation/engine-room-export.txt).
+## Distributions privées
 
-Le code nouveau est sous MIT. Les paquets locaux contiennent des données
-historiques privées ; ils ne sont pas des releases publiques sous MIT.
+`python3 tools/build_preview.py all` prépare les données locales et exporte :
 
-## Reproduire les contrôles
+- macOS : `builds/macos/Transartica.app` et `builds/Transartica-macOS.zip`.
+- Windows : `builds/Transartica-Windows.zip` ; conserver EXE et PCK ensemble.
+
+Les preuves d’exécution des artefacts sont consignées dans
+[tasks/validation/desktop-artifact.md](tasks/validation/desktop-artifact.md).
+Un export Windows réalisé sur macOS ne prouve pas son exécution sur Windows.
+La concordance avec le matériel sonore Amiga et l’inventaire exhaustif des
+variantes visuelles historiques restent des limites de vérification explicites.
+
+Le nouveau code est sous MIT. Les données et sons historiques restent privés
+dans `reference-private/`, `game/private-data/` et les builds ignorés.
+Ces paquets ne sont pas des distributions publiques sous MIT.
+
+## Vérifier
 
 ```sh
-TMPDIR="$PWD/.cache" python3 -m unittest discover -s tests -v
+UV_CACHE_DIR="$PWD/.cache/uv" uv run --with pillow --with numpy --with scipy python -m unittest discover -s tests -v
 game/test.sh
 python3 tools/build_preview.py all
 ```
 
-Le moteur Godot 4.5 et ses modèles sont dans `.toolchain/`. Le script de build
-utilise ces fichiers locaux, copie les données privées et produit les archives.
-Les sorties de validation et limites sont dans `tasks/validation/`.
+Les tests vérifient les règles documentées, les entrées natives, les sauvegardes
+atomiques et une simulation identique à30/60/144Hz. Les captures utilisent le
+vrai moteur de rendu. Le toolchain Godot4.5 local est dans `.toolchain/`.
+L’acceptation esthétique appartient au propriétaire.
 
-Le protocole prd-gen a été tenté ; son étape d'analyse du code exige un connecteur
-absent. Son arrêt est consigné dans `tasks/spec-pipeline.json`. Aucun PRD généré
-n'est déclaré terminé. Le contrat de fidélité et le contrat d'exécution guident
-le jalon testable et la suite de la reconstruction.
-
-Le plan général historique est disponible localement après
-`python3 tools/export_general_plan.py`, avec les données originales dans
-`reference-private/`. Ce plan et ses captures restent privés et ne sont pas inclus
-dans un paquet public. Son absence affiche un message explicite dans cette préversion.
+- [Contrat de fidélité](FIDELITE.md)
+- [Sources de campagne](CAMPAGNE-SOURCES.md)
+- [Carte originale](FORMAT-CARTE.md)
+- [Villes et commerce](FORMAT-VILLES.md)
+- [Suivi et limites](tasks/todo.md)

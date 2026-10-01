@@ -25,6 +25,7 @@ static func _build_interface(app) -> void:
 	app._build_city_screen()
 	app._build_works_dialog()
 	app._boudoir_session.attach(app)
+	preload("res://scripts/keyboard_settings.gd").attach(app)
 	app.boudoir = app._boudoir_session.view
 
 
@@ -46,7 +47,7 @@ static func _build_modal(app) -> void:
 	app._modal_title = Label.new()
 	body.add_child(app._modal_title)
 	app._modal_title.hide()
-	app._build_map(body)
+	_build_map(app, body)
 	app._modal.hide()
 
 
@@ -77,3 +78,59 @@ static func _build_city_screen(app) -> void:
 	app._city_panel.cargo_changed.connect(app._on_cargo_changed)
 	app.add_child(app._city_panel)
 	app._city_panel.hide()
+
+
+static func _build_map(app, body: VBoxContainer) -> void:
+	app._map_panel = VBoxContainer.new()
+	app._map_panel.add_theme_constant_override("separation", 0)
+	app._map_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(app._map_panel)
+	app.world_view = app.WorldViewScript.new()
+	app.world_view.world_data = app.world_data
+	app.world_view.session = app.session
+	app.world_view.network = app.network
+	app.world_view.switch_toggled.connect(app._on_switch_toggled)
+	app.world_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	app.world_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	app.world_view.city_picked.connect(app._on_chart_city_picked)
+	app._map_panel.add_child(app.world_view)
+	app.travel_controls = preload("res://scripts/travel_hud.gd").new()
+	app.travel_controls.bind_session(app.session)
+	app.travel_controls.journey = app.journey
+	app.travel_controls.requested.connect(app._open_panel)
+	app.travel_controls.follow_requested.connect(app.world_view.follow_train)
+	app._map_panel.add_child(app.travel_controls)
+	app.travel_controls.hide()
+	_build_hidden_city_index(app)
+
+
+static func _build_hidden_city_index(app) -> void:
+	# Keep the city selection model available without a dashboard beside the app.world.
+	var index_container := VBoxContainer.new()
+	app._map_panel.add_child(index_container)
+	app.search_box = LineEdit.new()
+	app.search_box.text_changed.connect(app._filter_cities)
+	index_container.add_child(app.search_box)
+	app.city_list = ItemList.new()
+	app.city_list.item_selected.connect(app._on_city_selected)
+	index_container.add_child(app.city_list)
+	app.status_label = Label.new()
+	index_container.add_child(app.status_label)
+	index_container.hide()
+	app._filter_cities("")
+
+
+# Arrival scene for TIME message 76 (tasks/evidence/station-arrival.md): the
+# glieu menu and its transactions (tasks/evidence/city-scripts.md), in city_screen.gd.
+# YODA 0x104 (-120): brake, TEXTEK 52, then the 0x18e3 reversal with speed 0.
+
+
+static func show_city(app, index: int) -> void:
+	# Presentation-only reopening: visits mutate nomad stock and source flags.
+	var city: Dictionary = app.world_data.cities[index]
+	# Adaptation: the remake clock pauses during the city scene.
+	app.session.paused = true
+	app._city_panel.open(index,String(city.name),int(city.kind),String(city.type))
+	app._city_panel.position = (app.size-app._city_panel.size)*0.5
+	app.world_view.selected_city = index
+	app.room_controls.announce("Arrived at %s" % String(city.name))

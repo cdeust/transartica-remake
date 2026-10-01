@@ -11,3 +11,23 @@ TravelMapEntities inherits source city labels and enemy perception. Its override
 Native Godot review captures actual start, mountain(8,8), lake(54,48), forest(80,11), town(63,42) views in tasks/validation/terrain-*.png. review_travel_terrain asserts all79 mapped scenery textures load, signed resource association and an unchanged full network snapshot. test_travel_world passes fixed-camera, train registration, switch input, geometry and interpolation checks. These are renderer and source-map checks, not a claim that the owner has approved the new artistic direction.
 
 Save/reset integration corrections: WorldActions validates JSON numeric domains before converting day to int for modulo; MineTable normalizes validated rows to integer arrays, preserving deterministic snapshots after JSON. WorksDialog.reset clears accepted/pending close state and hides controls; a stale close cannot repair the new game's map. test_world_actions includes JSON roundtrip and rejected fractional snapshot; test_works_commit includes accepted-dialog reset then stale-close refusal.
+
+##30 September authored master integration
+
+TravelTerrain now samples newly generated six-variant forest and mountain
+atlases. Asset hashes and prompts are in `output/imagegen/terrain-20260930`.
+These replace flat repeated procedural silhouettes, retaining the same resource
+associations and map coordinates. Native capture and unchanged-map proof:
+`landmarks-native-final-20260930.log` and `terrain-*.png`.
+
+`world-landmarks-kit.png` is the previously supplied authored atlas, copied
+byte-for-byte to `game/assets/travel/terrain/landmarks-master.png`. Individual
+measured rectangles avoid cropping chimney smoke or adjacent landmarks.
+City service type is the decoded `kind`, independently shared with CityBackdrop;
+`type` is a descriptive label and must not be converted to an integer.
+Original town composition is3x2 cells: upper71/72/73, lower74/75/76. Verified
+CARTE at Istanbul x62..64,y41..42 and record anchor(64,42), plus inspected
+private CARTE atlas. Draw the complete authored settlement once, not six clones.
+Only its lower-right source record selects the service art. Workshop65,
+industrial133 and mines78/79 use the corresponding supplied authored landmarks.
+Depleted79 is dimmed presentation; its gameplay remains in MineTable.

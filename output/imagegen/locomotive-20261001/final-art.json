@@ -1,0 +1,62 @@
+[
+  {
+    "target": "game/assets/cities/city-mammoth-fair.png",
+    "prompt": "Replace ONLY the ordinary locomotive on the upper right elevated railway with the exact massive futuristic gothic locomotive in the second reference. It faces RIGHT, huge sweeping beak armored prow, two flared trumpet chimneys, ribbed armor, warm amber cab and furnace, no conventional cylindrical boiler. Preserve all mammoths, people, wagons, snowy town, fences and composition exactly. Match original high quality clustered pixel textures, Noita material readability, NO smooth repaint. Output edited first image only.",
+    "generated": "/Users/cdeust/.codex/generated_images/01a0f3c0-39e2-75c2-94fc-769131055d4f/exec-a004e7ad-4208-47ce-93b8-d4ff2d13b92e.png",
+    "sha256": "4a314c6553bf418ff4e3ccd69020222123e2b28f283507f55cadb8c4111a7fc0",
+    "size": [
+      1825,
+      862
+    ]
+  },
+  {
+    "target": "game/assets/interface/reception.png",
+    "prompt": "Replace ONLY the small ordinary steam locomotive at bottom right inside the TOP RIGHT combat plaque with the massive futuristic gothic locomotive from second reference, facing RIGHT: long steel beak, two trumpet stacks, horn plow, ribbed armor. Render as crisp tiny blue monochrome pixel art matching plaque. Keep all five plaques, text LEVEL/START/music/disk, snow, transparency and dimensions EXACTLY unchanged. Match original high quality clustered pixel textures, Noita material readability, NO smooth repaint. Output edited first image only.",
+    "generated": "/Users/cdeust/.codex/generated_images/01a0f3c0-39e2-75c2-94fc-769131055d4f/exec-1ebc362a-8ff6-4d70-8a19-b37098090a9a.png",
+    "sha256": "32e306a4369edd40c7919c23978d32f83eb4517389a75432e358cfa7dfec8cc6",
+    "size": [
+      1586,
+      992
+    ]
+  },
+  {
+    "target": "game/assets/boudoir/captain-boudoir.png",
+    "prompt": "Edit ONLY locomotive photographs within the four existing framed pictures (two behind captain at left, small center rear frame, rightmost frame). Depict same massive futuristic gothic locomotive from second reference, long beak nose, twin trumpet stacks, horned snowplow, ribbed armor; retain black and white snowy photographs. Preserve captain face/pose, room, book, revolver, furniture and every other pixel composition. No new frames or text. Match original high quality clustered pixel textures, Noita material readability, NO smooth repaint. Output edited first image only.",
+    "generated": "/Users/cdeust/.codex/generated_images/01a0f3c0-39e2-75c2-94fc-769131055d4f/exec-9217c56c-9aa5-4e45-9a80-0ea6d14ba96f.png",
+    "sha256": "59ce602841c297c87c9b989ba86e00d3c1508b4c1324c2f52e5e7a2256ff738f",
+    "size": [
+      1828,
+      860
+    ]
+  },
+  {
+    "target": "game/assets/cities/goods-icons.png",
+    "prompt": "Create an original game inventory sprite atlas, transparent RGBA background, 4 columns \u00d74 rows, exactly16 icons, each centered with wide empty margins in its own equal cell. No labels, numbers, frames, shadows on background, text or extra icons. Read left to right top to bottom: 1 two stacked steel railway rails, 2 silver guided missile with fins, 3 small four-wheel railway inspection trolley, 4 antique bronze vase and pocket watch, 5 green potted plant, 6 dark alcohol bottle and cork, 7 bundle of chopped wood logs, 8 red gasoline can, 9 black oil can with spout, 10 folded brown fur pelts, 11 wolf meat red butcher cut, 12 white salt sack and spilling crystals, 13 two whole silver fish, 14 mammoth dung dark brown rounded pile, 15 small opened tin of black caviar with gold rim, 16 paired fishing rods and reels. Noita inspired carefully clustered crisp pixel art, limited rich muted cold-world material palettes, warm brass highlights, deep readable silhouettes, each icon professionally distinct even viewed small. Square2048\u00d72048 atlas with four512\u00d7512 cells across and down, center each sprite inside middle320\u00d7320 of cell, no content crossing cells. True transparent background.",
+    "generated": "/Users/cdeust/.codex/generated_images/01a0f3c0-39e2-75c2-94fc-769131055d4f/exec-ebf6b47f-add7-4afe-a57c-0b3023417d54.png",
+    "sha256": "65d99811c0f8d5f7bd1271b6b0b75652e68e51d662126f3db737eb50b86a9774",
+    "size": [
+      1254,
+      1254
+    ]
+  },
+  {
+    "target": "game/assets/world-events/mine.png",
+    "prompt": "Create a wide 2.9:1 pixel-art scene for Transartica, detailed Noita-like deliberate fine pixel clusters and material light. Preserve reference scene geometry: snowy quarry at night, mine entrance in rocky hillside on LEFT, narrow railway entering foreground with a switch, corrugated mining shack on RIGHT lit by warm amber window, two warm lanterns, drifting snow, exposed cold slate rock/coal and timber supports. No train/people/text/UI, richly rendered plausible frozen industrial mine, clearly readable path and doorway, muted blue-black snow/cold rock with selective amber lighting, proper high-quality artwork not geometric placeholder. Entire scene painting fills wide canvas.",
+    "generated": "/Users/cdeust/.codex/generated_images/01a0f3c0-39e2-75c2-94fc-769131055d4f/exec-c3212ba8-5ab9-4e17-a7d3-912433e4575e.png",
+    "sha256": "2013e08c36d7b3afb8f74ca4aab4fba65a3986f0a9478eafab02a0158f18bcc8",
+    "size": [
+      2135,
+      737
+    ]
+  },
+  {
+    "target": "game/assets/world-events/track-works.png",
+    "prompt": "Create a wide 2.9:1 pixel-art scene for Transartica, detailed Noita-like deliberate fine pixel clusters, winter industrial materials and warm lantern lighting. Preserve reference layout: snowy railway across middle and foreground, a significant section of sleepers/rails missing over a dark crevasse at CENTER, wooden gantry framing damaged track, two brass lanterns near either side of the gap, cold snowy rocky plains at dusk. No train/people/text/UI. Clear bridge/rail worksite where the player faces an obstruction, dense crafted snow/wood/rust metal detail, deep cold blue shadows and restrained warm highlights, painted whole wide scene instead of geometric placeholder.",
+    "generated": "/Users/cdeust/.codex/generated_images/01a0f3c0-39e2-75c2-94fc-769131055d4f/exec-80f6d82e-2cab-4067-b319-c1fb2b91c5e1.png",
+    "sha256": "23d6e6c4ba48d848f7e1441cd336a3ba64d8a5dfef47019b62fb12fff736b076",
+    "size": [
+      2138,
+      735
+    ]
+  }
+]

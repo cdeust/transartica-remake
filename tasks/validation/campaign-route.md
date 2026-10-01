@@ -84,3 +84,44 @@ Commit9c9c1c6 fixes center-seeded reversal rendering: the actual Gdansk/Berlin l
 Actual source spy-menu inputs exposed CampaignScreen.open_menu's typed Array argument mismatch, hidden by isolated model calls. Campaign owner's931ffef fixes it and supplies its own regression. The final route requires that fix and the source finale commit.
 
 Both source and craftsmanship checkers report zero errors and warnings for the route test/helpers. Borrowed campaign/combat modules and authored assets used to validate the isolated worktree are verification dependencies only and are excluded from this commit. No remote publication or Windows runtime claim is made.
+
+## Earned midpoint disk reload (2026-10-01)
+
+`test_campaign_route.gd` now runs the original complete route twice. The second
+run calls production `SessionSaves.save` and `SessionSaves.restore` at the earned,
+stopped Mausoleum visit after its actual code-document input flow. No position,
+cargo, quest or enemy state is inserted. The save host supplies presentation
+callbacks and references the route's real source models. Restore stages fresh
+production models; the test rebinds its references to the replacements.
+
+Both runs pass with **10,565 actual advance calls, 1,713 entered cells, day 23,
+1,207 lignite**, normal enemy scheduling and the actual Minotaur automatic
+result, followed by Sun's source movie signal to OPTIONS. The midpoint and final
+engine, train, trade, journey/path, map mutations, calendar, campaign/spies,
+mines, enemy scheduler/RNG, commerce RNG, stoup, gates and traversal counters
+match at the durable JSON representation's precision. Path lengths are computed
+again by production restore; comparing the wire representation avoids treating
+sub-JSON floating-point recomputation as a gameplay divergence.
+
+The commerce RNG control starts with a newly randomized process RNG after save.
+The test never assigns the old RNG's seed/state. A legacy copy omitting only
+`trade_rng` retains the fresh RNG after real restore, reproducing the omission;
+the complete current save restores the earned RNG through production code.
+No earned gameplay fields are changed in the legacy control. Root's new
+`SessionSaveExtensions` persists canonical decimal seed/state strings; missing
+legacy RNG state cannot be reconstructed.
+
+Native headless verification exited 0. The latest verbose log has no script
+errors or object-leak warning. Owned processes exited. Minimal evidence: actual
+midpoint `MIDPOINT.SAV`, legacy omission control and resumed action log remain
+in `.cache/campaign-route`; the source test and this report are durable.
+
+## Source populations and earned replacement, 2026-10-01
+
+The route now initializes ten source herds, then the wolf, then the distinct nomad spawn using the actual commerce RNG. Every callback advances the populations, dispatches spy observations, evaluates the real mole cooldown/RNG and wolf encounter gates through CampaignSession, and responds to herd questions through WorldSession's original NO control. No population is disabled or teleported for this proof.
+
+The initial cannon is purchased for450 in city13 before the central spy mission. The default enemy slot0 strength21 is encountered at(31,26); actual automatic combat wins but scraps that cannon and other wagons. A second cannon is purchased for450 during the later city13 visit. Source workshop controls remove the destroyed cannon before the five-wagon slope approach. The Minotaur then resolves through the actual combat model and the Sun movie returns to OPTIONS.
+
+Continuous and actual earned Mausoleum disk-resumed runs both PASS:10657 journey advances,1713 entered cells,day23,remaining lignite1067, and equal meaningful final states including roaming populations and their RNG. Exact route actions are retained in `tasks/validation/campaign-populations-replay.log`. This replaces earlier route counts from the run before roaming populations were implemented.
+
+Native GUI `test_restore_city.gd` also PASS for isolated source-valid encounter fixtures: viewport Return accepts nomads; actual trade45 stock3 and commerce RNG survive disk load without visit reroll; departure reverses without a static station. Herd acceptance shows commissioned means, source capture updates cargo, an interrupted report preserves its fractional text cadence and population/cargo, and closing cannot duplicate rewards. These fixture regressions are separate from the earned route proof. Actual same-input Main simulation remains identical at30/60/144Hz with roaming snapshots included.

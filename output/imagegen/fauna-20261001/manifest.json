@@ -1,0 +1,22 @@
+[
+  {
+    "file": "game/assets/campaign/wolf-ambush.png",
+    "sha256": "052a7e6458521d240ba993b6c85a5f35d675b06117cdb3cb4248b8bffaddfb36",
+    "dimensions": [
+      1836,
+      857
+    ],
+    "tool_job": "exec-5d0ab084-267e-4eba-9993-f35e392980ab",
+    "status": "integrated shared locomotive; native scene and exportedMac verified"
+  },
+  {
+    "file": "game/assets/campaign/mole-ambush.png",
+    "sha256": "cf4bee4a472dcea3daa54fa93e41c2a53756af0ae02c8dab7b626c74d9916142",
+    "dimensions": [
+      1836,
+      857
+    ],
+    "tool_job": "exec-31351e4d-ca2e-4b13-9b3b-e32fc1156785",
+    "status": "integrated shared locomotive; native scene and exportedMac verified"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "phase": "ready_before_measured_push",
+  "at": 1790432739.437587,
+  "session": "01a0ddb5-9cc1-7230-8a94-91b2b0ba7fd2",
+  "worktree": "/Users/cdeust/Developments/Transartica/.claude/worktrees/hook-cleanup-20260926",
+  "branch": "test/hook-cleanup-20260926",
+  "pr": "https://github.com/cdeust/transartica-remake/pull/1",
+  "expected_remote_head": "aa9deb0c70e33cc743c51e16bca01e608723c312",
+  "clean_including_ignored": true,
+  "acceptance": "Only native automatic hook may remove worktree and local branch. After measured push agent runs read-only checks; no dispose, worktree remove or branch deletion calls."
+}

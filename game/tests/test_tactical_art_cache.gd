@@ -1,0 +1,32 @@
+extends SceneTree
+# MIT. A different battle must not retain a previous wagon's presentation.
+const Scene=preload("res://scripts/tactical_scene.gd")
+const Art=preload("res://scripts/tactical_wagon_art.gd")
+func _initialize() -> void:call_deferred("run")
+func run() -> void:
+	var scene=Scene.new()
+	var art=Art.new()
+	# Source: open_battle consumes the actual model's audio_cue_requested signal.
+	var first=preload("res://scripts/tactical_combat.gd").new()
+	var second=preload("res://scripts/tactical_combat.gd").new()
+	scene.open_battle(first)
+	var previous=scene.materials.texture_for(art.texture_for(23),0,0,1)
+	scene.effects.append({"born":1,"event":{"kind":"impact","side":0,"wagon":0}})
+	scene.wagon_bounds["0/0"]=Rect2(0,0,64,26)
+	var light=PointLight2D.new()
+	scene.add_child(light)
+	scene.lights.append({"node":light,"born":1})
+	scene.open_battle(first)
+	assert(scene.materials.texture_for(art.texture_for(23),0,0,1)==previous)
+	assert(scene.effects.size()==1 and scene.wagon_bounds.size()==1 and scene.lights.size()==1)
+	assert(not light.is_queued_for_deletion())
+	scene.open_battle(second)
+	assert(scene.materials.instances.is_empty() and scene.effects.is_empty() and scene.wagon_bounds.is_empty() and scene.lights.is_empty())
+	assert(light.is_queued_for_deletion())
+	var current=scene.materials.texture_for(art.texture_for(4),0,0,1)
+	assert(current!=previous and current.get_size()==art.texture_for(4).get_size())
+	assert(current.get_size()!=previous.get_size())
+	scene.free()
+	await process_frame
+	print("PASS: new battle changes authored wagon at same slot/health; options reopening retains effects/material/light instances")
+	quit()

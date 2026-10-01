@@ -18,16 +18,16 @@ static func snapshot(coordinator) -> Dictionary:
 	if not value.workshop.visible:
 		value.workshop.confirmation = false
 		value.workshop.moving = -1
-	value.text_accumulator = coordinator.text_accumulator if coordinator.app.works_dialog.visible else 0.0
+	value.text_accumulator = coordinator.text_accumulator if (coordinator.app.works_dialog.visible or (coordinator.app.get("roamers") != null and coordinator.app.roamers.pending == "hunt_result")) else 0.0
 	return value.duplicate(true)
 
-static func validate(value: Variant, world, works: Dictionary, seconds_per_cycle: float) -> bool:
+static func validate(value: Variant, world, works: Dictionary, seconds_per_cycle: float, roamers = null) -> bool:
 	if not value is Dictionary or value.get("version") != 1:
 		return false
 	var accumulator: Variant = value.get("text_accumulator")
 	if not number(accumulator) or accumulator < 0 or accumulator >= seconds_per_cycle/TEXT_TICKS_PER_CYCLE:
 		return false
-	if not works.visible and accumulator != 0:
+	if not works.visible and (roamers == null or roamers.pending != "hunt_result") and accumulator != 0:
 		return false
 	return _mine(value.get("mine"),world) and _workshop(value.get("workshop"),world.management)
 

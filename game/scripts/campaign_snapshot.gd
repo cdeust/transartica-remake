@@ -23,7 +23,7 @@ static func validate(value: Variant) -> bool:
 	for key in ["visible", "entering_code", "question"]:
 		if not presentation.get(key) is bool:
 			return false
-	if not presentation.get("scene") in ["", "crew", "urga", "oslo", "mausoleum", "sun", "sun-restored", "slope", "whale_question", "whale_harpoon", "spy_pickup", "sabotage_confirm", "death", "earth", "report", "manual_quiz"] or not presentation.get("input_code") is String:
+	if not presentation.get("scene") in ["wolf", "mole", "", "crew", "urga", "oslo", "mausoleum", "sun", "sun-restored", "slope", "whale_question", "whale_harpoon", "spy_pickup", "sabotage_confirm", "death", "earth", "report", "manual_quiz"] or not presentation.get("input_code") is String:
 		return false
 	if presentation.input_code.length() > (8 if presentation.scene == "manual_quiz" else 5):
 		return false
@@ -35,6 +35,8 @@ static func validate(value: Variant) -> bool:
 		if expected == "sun_end":
 			expected = "sun-restored"
 		if not presentation.visible or presentation.scene != expected or value.notice:
+			return false
+		if expected in ["wolf", "mole"] and value.page != candidate.pending.applied:
 			return false
 	if not presentation.input_code.is_empty() and not presentation.entering_code:
 		return false

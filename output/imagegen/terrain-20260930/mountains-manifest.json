@@ -1,0 +1,11 @@
+{
+  "asset": "game/assets/travel/terrain/mountains-master.png",
+  "sha256": "b9ce185bbd549a95239dd007be95e94d193e3cfdb54bd5f7419e0b9a694fca30",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "original_game_pixels": false,
+  "presentation_only": true,
+  "status": "integrated; native review pending"
+}

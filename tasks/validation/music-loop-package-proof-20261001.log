@@ -1,0 +1,5 @@
+bojeu-0 PASS 3019968 6053166 1a68327f30e9956c839e2cd8d39bcd3c312946f623aa0fc303f7e84d34ccae28
+bojeu-1 PASS 2370816 4741632 ccf8fe9730aff769765a37ef12bd77534da80a5529f7e6ac629869de33f65235
+bojeu2-0 PASS 4017510 7686630 e57e097c81b7dc90e8866aa80e18b273e368f2daeb1cd15a9cbf7644dc34a33a
+bopres-0 PASS 4157748 8327844 b207eb87f9c969bdd618530c6c98a0320b28a89b53e83cc3a31ab2a2ca30faef
+PASS: four source-boundary WAVs exactly match native captured PCM; all nine selections and private mirrors retained.

@@ -1,7 +1,7 @@
 extends Control
 
 # MIT. Exact private plan layout: CARTE resource192, palette196.
-# source: tasks/evidence/map-orientation-audit.md. Historical data is never bundled.
+# source: tasks/evidence/map-orientation-audit.md. Historical pixels are never bundled.
 const CANVAS := Vector2(320, 149)
 const PLAN_PATH := "res://../reference-private/general-plan.json"
 const RailNetwork = preload("res://scripts/rail_network.gd")
@@ -11,6 +11,9 @@ var lens_point := Vector2.ZERO
 var lens_visible := false
 var journey
 var engine
+var chart = preload("res://scripts/overview_chart_art.gd").new()
+var reference_pixels := OS.get_environment("TRANSARTICA_REFERENCE_UI") == "1"
+var authored_available := false
 var plan_texture: ImageTexture
 var unavailable_reason := "GENERAL MAP DATA UNAVAILABLE"
 
@@ -21,7 +24,10 @@ func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	resized.connect(queue_redraw)
 	mouse_exited.connect(func(): lens_visible = false; queue_redraw())
-	load_plan(PLAN_PATH)
+	if reference_pixels:
+		load_plan(PLAN_PATH)
+	else:
+		chart.load_art()
 
 
 func load_plan(path: String) -> bool:
@@ -82,11 +88,18 @@ func map_point(cell: Vector2) -> Vector2:
 
 
 func _draw() -> void:
-	if plan_texture == null:
+	if not reference_pixels:
+		authored_available = chart.available()
+	if (reference_pixels and plan_texture == null) or (not reference_pixels and not authored_available):
 		draw_rect(Rect2(Vector2.ZERO, size), Color.BLACK)
 		draw_string(ThemeDB.fallback_font, size * 0.5, unavailable_reason)
 		return
-	draw_texture_rect(plan_texture, Rect2(Vector2.ZERO, size), false)
+	if reference_pixels:
+		draw_texture_rect(plan_texture, Rect2(Vector2.ZERO, size), false)
+	else:
+		draw_set_transform(Vector2.ZERO,0,size/CANVAS)
+		chart.draw(self)
+		draw_set_transform(Vector2.ZERO)
 	if journey == null:
 		return
 	draw_set_transform(Vector2.ZERO, 0, size / CANVAS)
@@ -105,7 +118,7 @@ func _draw() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if plan_texture == null:
+	if (reference_pixels and plan_texture == null) or (not reference_pixels and not authored_available):
 		return
 	if event is InputEventMouse:
 		# source: CARTE0x1f21..0x1f87 x19..300,z59..187; screen y=199-z.

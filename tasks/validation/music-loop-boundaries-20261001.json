@@ -1,0 +1,38 @@
+{
+  "bojeu-0": {
+    "loop_begin": 3019968,
+    "loop_end": 6053166,
+    "raw_loop_begin": 3025260,
+    "raw_loop_end": 6058458,
+    "raw_sha256": "481290934031075c665332dcb04add7f3928673edf566792a7b4f8ae1ceb9554",
+    "sha256": "1a68327f30e9956c839e2cd8d39bcd3c312946f623aa0fc303f7e84d34ccae28",
+    "completion": "Two original order-zero wraps, sample-boundary observer, attack_remaining=0."
+  },
+  "bojeu-1": {
+    "loop_begin": 2370816,
+    "loop_end": 4741632,
+    "raw_loop_begin": 2370816,
+    "raw_loop_end": 4741632,
+    "raw_sha256": "ad1d2e712ca591cf1e222d6373d98aed2d260aefa1dfd3ab308cb7a234995b66",
+    "sha256": "ccf8fe9730aff769765a37ef12bd77534da80a5529f7e6ac629869de33f65235",
+    "completion": "Two original order-zero wraps, sample-boundary observer, attack_remaining=0."
+  },
+  "bojeu2-0": {
+    "loop_begin": 4017510,
+    "loop_end": 7686630,
+    "raw_loop_begin": 4017510,
+    "raw_loop_end": 7686630,
+    "raw_sha256": "9ed22bda3bf08512f696e8d3a4bd6232122ae1246f3176f0ebaec53cc10af257",
+    "sha256": "e57e097c81b7dc90e8866aa80e18b273e368f2daeb1cd15a9cbf7644dc34a33a",
+    "completion": "Two original order-zero wraps, sample-boundary observer, attack_remaining=0."
+  },
+  "bopres-0": {
+    "loop_begin": 4157748,
+    "loop_end": 8327844,
+    "raw_loop_begin": 4170096,
+    "raw_loop_end": 8340192,
+    "raw_sha256": "5480f2a5b77f8c9b94758089b483a507c896a4b10d210f29a8999365310a6eb3",
+    "sha256": "b207eb87f9c969bdd618530c6c98a0320b28a89b53e83cc3a31ab2a2ca30faef",
+    "completion": "Two original order-zero wraps, sample-boundary observer, attack_remaining=0."
+  }
+}

@@ -1,0 +1,42 @@
+alis ver. 0.1.039
+#############################
+# System initialization...
+#############################
+  SDL initialization...
+  Joystick: Swiftpoint Z3 Receiver
+  Video initialization...
+  Audio initialization...
+  Opened audio device id 2 successfully:
+    Frequency:  44100
+    Format:     0x8010 => 16 bits per sample
+    Channels:   1
+    Samples:    882
+    Silence:    0
+    Padding:    0
+    Size:       1764
+#############################
+# ALIS VM initialization...
+#############################
+Starting Transarctica Amiga (ALIS ver. 2.2)
+         Host:  LE,  Platform:  BE,  Artificial version: 22
+         Platform UID: Specs+0x08 x Specs+0x0c = Vmaxvram x Vmaxsprite
+                   =>  0x00009c40 x 0x000001f4 = 0x01312d00
+SOURCE_WRAP: cycle=1 pcm_frame=4170096 attack_remaining=0 orders=7
+SOURCE_WRAP: cycle=2 pcm_frame=8340192 attack_remaining=0 orders=7
+CAPTURE_COMPLETE: two original cycles, native sample boundaries and attack completed.
+#############################
+# Starting ALIS VM...
+#############################
+
+[33m[1m[SYSTEM] SDL2: Quit.
+[0m[33m[1m[SYSTEM] A STOP signal has been sent to the VM queue...
+[0m
+[33m[1m[SYSTEM] The ALIS VM has been stopped.
+[0m
+#############################
+# System deinitialization...
+#############################
+
+#############################
+# Releasing ALIS VM memory...
+#############################

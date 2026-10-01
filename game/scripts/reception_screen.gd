@@ -6,6 +6,8 @@ signal start_requested
 signal load_requested(slot_name: String)
 signal combat_requested
 signal level_requested
+signal music_requested
+var music_enabled := true
 var automatic_combat := false
 var difficulty := 0
 signal unavailable_requested
@@ -42,6 +44,7 @@ func _draw() -> void:
 	begin_canvas()
 	text_at(Vector2(204, 61), "AUTO" if automatic_combat else "MANUAL")
 	text_at(Vector2(40, 61), "LEVEL %d" % difficulty)
+	text_at(Vector2(40, 184), "ON" if music_enabled else "OFF") # authored baseline inside source music plaque126..194.
 	draw_set_transform(Vector2.ZERO)
 
 
@@ -68,6 +71,8 @@ func _gui_input(event: InputEvent) -> void:
 					combat_requested.emit()
 				elif action == "level":
 					level_requested.emit()
+				elif action == "music":
+					music_requested.emit()
 				else:
 					unavailable_requested.emit()
 				accept_event()

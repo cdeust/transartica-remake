@@ -1,4 +1,5 @@
 extends RefCounted
+signal audio_cue_requested(source_offset: int)
 
 # MIT. Domain state for WDECOR33. Offsets refer to the private ECS ALIS listing.
 const Setup = preload("res://scripts/combat_setup.gd")

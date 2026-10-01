@@ -1,0 +1,66 @@
+[
+  {
+    "name": "startup",
+    "target": "game/assets/campaign/startup.png",
+    "prompt": "Edit target image1; reference image2 is the canonical shared locomotive design sheet. Replace ONLY the locomotive in the bottom snowy train panel. Preserve top Earth-and-stars panel exactly, train orientation facing right, other wagons, bridge, snow, mountains and overall two-panel layout. The same massive futuristic gothic armored engine must be recognizable in every screen: pointed bird-beak nose and amber eye-shaped lamps, twin tall flared trumpet chimneys side-by-side, ribbed dorsal armor and sweeping blade snowplow with upturned horns, weathered gunmetal/bronze and rear amber furnace cab. Scale and perspective consistent with target rails. Preserve deliberate Noita-like pixel clusters, existing palette and all non-locomotive subject matter. No text or added overlays.",
+    "sha256": "e4288f1459757e8582890f1b0abcb0f0e0024a6b3973cbf76010a0a4116c65b7",
+    "generation_file": "exec-e57066e7-6b9f-4bd0-9477-3d7510ae3d5f.png"
+  },
+  {
+    "name": "slope",
+    "target": "game/assets/campaign/slope.png",
+    "prompt": "Edit target image1; reference image2 is the canonical shared locomotive design sheet. Replace ONLY the locomotive climbing up-left on the bridge. Preserve slope, rails, carriages, mountain gorge, snow and bottom black narrative strip exactly. Engine still faces up-left and climbs the same rails. The same massive futuristic gothic armored engine must be recognizable in every screen: pointed bird-beak nose and amber eye-shaped lamps, twin tall flared trumpet chimneys side-by-side, ribbed dorsal armor and sweeping blade snowplow with upturned horns, weathered gunmetal/bronze and rear amber furnace cab. Scale and perspective consistent with target rails. Preserve deliberate Noita-like pixel clusters, existing palette and all non-locomotive subject matter. No text or added overlays.",
+    "sha256": "1cd28d5349995b05d91af0e11b8f4b91c63137e55d8b07231d530cd715ff2175",
+    "generation_file": "exec-15eae426-a0c3-48a3-ab53-0d89767ef242.png"
+  },
+  {
+    "name": "whale",
+    "target": "game/assets/campaign/whale.png",
+    "prompt": "Edit target image1; reference image2 is the canonical shared locomotive design sheet. Replace ONLY the ordinary locomotive on left with canonical futuristic engine facing right. Keep harpoon arm mounted on its front deck pointing toward whale, whale, bridge, city, snow, water and narrative black strip unchanged. The same massive futuristic gothic armored engine must be recognizable in every screen: pointed bird-beak nose and amber eye-shaped lamps, twin tall flared trumpet chimneys side-by-side, ribbed dorsal armor and sweeping blade snowplow with upturned horns, weathered gunmetal/bronze and rear amber furnace cab. Scale and perspective consistent with target rails. Preserve deliberate Noita-like pixel clusters, existing palette and all non-locomotive subject matter. No text or added overlays.",
+    "sha256": "3be9d5bf006cb929b3c3d0bc1a2a830ab99d3e5f27bbf93782ff1aa385702ba9",
+    "generation_file": "exec-5b905d92-982f-452e-8fa2-bc6a74e135ba.png"
+  },
+  {
+    "name": "urga",
+    "target": "game/assets/campaign/urga.png",
+    "prompt": "Edit target image1; reference image2 is the canonical shared locomotive design sheet. Replace ONLY the tiny distant locomotive on outdoor bridge with matching canonical engine at the same size, facing left. Keep elder, interior/key, snowy landscape and carriages unchanged. The same massive futuristic gothic armored engine must be recognizable in every screen: pointed bird-beak nose and amber eye-shaped lamps, twin tall flared trumpet chimneys side-by-side, ribbed dorsal armor and sweeping blade snowplow with upturned horns, weathered gunmetal/bronze and rear amber furnace cab. Scale and perspective consistent with target rails. Preserve deliberate Noita-like pixel clusters, existing palette and all non-locomotive subject matter. No text or added overlays.",
+    "sha256": "6303b9b17455cc2cfdc6528b20aff48280a6ea437ce09751174373792a3400b4",
+    "generation_file": "exec-b004a0e9-a493-4e29-808a-0009ebc8f4da.png",
+    "status": "refined after owner feedback"
+  },
+  {
+    "name": "sun-overcast",
+    "target": "game/assets/campaign/sun-overcast.png",
+    "prompt": "Edit target image1; reference image2 is the canonical shared locomotive design sheet. Replace ONLY the locomotive on bottom-left station track with canonical engine facing right, same footprint and snow lighting. Preserve gloomy clouded sky, station, radar dishes, every other area and composition. The same massive futuristic gothic armored engine must be recognizable in every screen: pointed bird-beak nose and amber eye-shaped lamps, twin tall flared trumpet chimneys side-by-side, ribbed dorsal armor and sweeping blade snowplow with upturned horns, weathered gunmetal/bronze and rear amber furnace cab. Scale and perspective consistent with target rails. Preserve deliberate Noita-like pixel clusters, existing palette and all non-locomotive subject matter. No text or added overlays.",
+    "sha256": "bb4fd9d89192f41509bae7a45394e1a817e85ddc65fc002f7415784787a0ad72",
+    "generation_file": "exec-a296d7bd-ae4d-493e-9b78-2117a16f60bf.png"
+  },
+  {
+    "name": "sun-restored",
+    "target": "game/assets/campaign/sun-restored.png",
+    "prompt": "Edit target image1; reference image2 is the canonical shared locomotive design sheet. Replace ONLY locomotive on bottom-left track with canonical engine facing right, same footprint and daylight lighting. Preserve bright sun, station, snowy mountains/radar dishes and composition. The same massive futuristic gothic armored engine must be recognizable in every screen: pointed bird-beak nose and amber eye-shaped lamps, twin tall flared trumpet chimneys side-by-side, ribbed dorsal armor and sweeping blade snowplow with upturned horns, weathered gunmetal/bronze and rear amber furnace cab. Scale and perspective consistent with target rails. Preserve deliberate Noita-like pixel clusters, existing palette and all non-locomotive subject matter. No text or added overlays.",
+    "sha256": "d6b85e806c83aee936d9ca8a94d37a584693eb27fee42f15ce712d1073521a25",
+    "generation_file": "exec-470002ce-6dea-489a-9f4c-aa4d9fa4e322.png"
+  },
+  {
+    "name": "nomads",
+    "target": "game/assets/world-events/nomads.png",
+    "prompt": "Edit target image1; reference image2 is the canonical shared locomotive design sheet. Modify ONLY visible foreground engine prow, the player's first-person view over its nose. Add the canonical swept horn-edged snowplow and pointed bird-beak plating with amber eye side lights; no round conventional boiler prow. Preserve all humans, tents, mammoth, cargo, rails and snow. Keep same panorama ratio. The same massive futuristic gothic armored engine must be recognizable in every screen: pointed bird-beak nose and amber eye-shaped lamps, twin tall flared trumpet chimneys side-by-side, ribbed dorsal armor and sweeping blade snowplow with upturned horns, weathered gunmetal/bronze and rear amber furnace cab. Scale and perspective consistent with target rails. Preserve deliberate Noita-like pixel clusters, existing palette and all non-locomotive subject matter. No text or added overlays.",
+    "sha256": "b60e8f7174dbf3c15fde6988af7140099d0f3e5699447aebe2e122b3066d2a6a",
+    "generation_file": "exec-c0417260-e32b-4f4c-a6cc-486ef22bd5f2.png"
+  },
+  {
+    "name": "wolf-ambush",
+    "target": "game/assets/campaign/wolf-ambush.png",
+    "prompt": "Edit target image1; reference image2 is the canonical shared locomotive design sheet. Modify ONLY the foreground player's locomotive nose into canonical pointed beak armor, swept horn-tipped snowplow and amber eye side lights, viewed over nose from cab. Preserve wolves, their positions, rails, background, sunset and pixel rendering. The same massive futuristic gothic armored engine must be recognizable in every screen: pointed bird-beak nose and amber eye-shaped lamps, twin tall flared trumpet chimneys side-by-side, ribbed dorsal armor and sweeping blade snowplow with upturned horns, weathered gunmetal/bronze and rear amber furnace cab. Scale and perspective consistent with target rails. Preserve deliberate Noita-like pixel clusters, existing palette and all non-locomotive subject matter. No text or added overlays.",
+    "sha256": "052a7e6458521d240ba993b6c85a5f35d675b06117cdb3cb4248b8bffaddfb36",
+    "generation_file": "exec-5d0ab084-267e-4eba-9993-f35e392980ab.png"
+  },
+  {
+    "name": "mole-ambush",
+    "target": "game/assets/campaign/mole-ambush.png",
+    "prompt": "Edit target image1; reference image2 is the canonical shared locomotive design sheet. Modify ONLY foreground player's locomotive nose into canonical pointed beak armor, swept horn-tipped snowplow and amber eye side lights, viewed over nose from cab. Preserve four human raiders, mine lights/tunnel, rails, narrative black strip and art exactly. The same massive futuristic gothic armored engine must be recognizable in every screen: pointed bird-beak nose and amber eye-shaped lamps, twin tall flared trumpet chimneys side-by-side, ribbed dorsal armor and sweeping blade snowplow with upturned horns, weathered gunmetal/bronze and rear amber furnace cab. Scale and perspective consistent with target rails. Preserve deliberate Noita-like pixel clusters, existing palette and all non-locomotive subject matter. No text or added overlays.",
+    "sha256": "cf4bee4a472dcea3daa54fa93e41c2a53756af0ae02c8dab7b626c74d9916142",
+    "generation_file": "exec-31351e4d-ca2e-4b13-9b3b-e32fc1156785.png"
+  }
+]

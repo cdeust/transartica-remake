@@ -7,6 +7,7 @@ consumes them. TEXTEK/TEXTE2K listings contain the exact dialogue strings.
 import argparse
 import json
 import re
+import shutil
 from pathlib import Path
 
 
@@ -43,6 +44,8 @@ def build(source):
             + strings_in(instructions, last[index], tail_end) + common)
     listing = json.loads((source / 'observations/listings-20260927/textek.json').read_text())
     data['report_phrases'] = report_phrases(listing['instructions'])
+    data['ambush_phrases'] = ambush_phrases(listing['instructions'])
+    data['wagon_names'] = wagon_names(listing['instructions'])
     phrases = {item['offset']: literals(item) for item in listing['instructions']
                if 0x48cc <= item['offset'] < 0x49fc and literals(item)}
     data['mine_bulletin'] = {
@@ -82,6 +85,26 @@ def report_phrases(instructions):
             if 0x27f4 <= item['offset'] < 0x2bf0 and literals(item)}
 
 
+def wagon_names(instructions):
+    switch = next(item for item in instructions if item['offset'] == 0x3172)
+    ordered = sorted(instructions, key=lambda item: item['offset'])
+    targets = switch['targets']
+    names = {}
+    for index, target in enumerate(targets):
+        end = targets[index + 1] if index + 1 < len(targets) else 0x33d3
+        names[str(index + 1)] = ' '.join(strings_in(ordered, target, end))
+    return names
+
+
+def ambush_phrases(instructions):
+    ranges = [(0x1875, 0x1e35), (0x449b, 0x451c)]
+    selected = []
+    for item in instructions:
+        if any(start <= item['offset'] < end for start, end in ranges):
+            selected.append(item)
+    return {str(item['offset']): literals(item) for item in selected if literals(item)}
+
+
 def literals(value):
     if isinstance(value, dict):
         if value.get('name') == 'oimmp':
@@ -110,6 +133,9 @@ def main():
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(build(args.source), separators=(',', ':')) + '\n')
+    startup = args.source / 'startup.json'
+    if startup.exists():
+        shutil.copyfile(startup, args.output.parent / 'startup.json')
 
 
 if __name__ == '__main__':

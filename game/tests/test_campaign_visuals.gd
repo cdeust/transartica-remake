@@ -50,9 +50,17 @@ func _run() -> void:
 		var saved := capture.save_png(ProjectSettings.globalize_path("res://../.cache/campaign/finale-%03d-native.png" % tick))
 		if saved != OK:
 			failures.append("finale capture could not be saved at tick%d" % tick)
+	var playback_ref: WeakRef = weakref(screen._finale_audio.get_stream_playback())
+	var stream_ref: WeakRef = weakref(screen._finale_audio.stream)
 	screen.stop_movie()
+	# Godot's mixer completes FADE_OUT_TO_DELETION asynchronously.
+	# Observe actual resource release before quitting, rather than a timed delay.
+	if screen._finale_audio != null:
+		screen._finale_audio.stream = null
 	screen.queue_free()
 	await process_frame
+	while playback_ref.get_ref() != null or stream_ref.get_ref() != null:
+		await process_frame
 	for failure in failures:
 		push_error(failure)
 	if failures.is_empty():

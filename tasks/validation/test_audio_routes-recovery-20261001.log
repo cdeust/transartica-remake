@@ -1,0 +1,52 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4
+
+SCRIPT ERROR: Parse Error: Preload file "res://assets/combat/locomotive-hero.png" has no resource loaders (unrecognized file extension).
+          at: GDScript::reload (res://scripts/tactical_wagon_art.gd:9)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "HERO" constant because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/tactical_wagon_art.gd:9)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/tactical_scene.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/world_encounters.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/main.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://tests/test_audio_routes.gd:0)
+ERROR: Failed to load script "res://tests/test_audio_routes.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript.cpp:3041)
+ERROR: No loader found for resource: res://assets/travel/locomotive-hero.png (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:358)
+   GDScript backtrace (most recent call first):
+       [0] load_assets (res://scripts/train_renderer.gd:66)
+       [1] _ready (res://scripts/travel_world.gd:57)
+       [2] _build_map (res://scripts/main_interface.gd:96)
+       [3] _build_modal (res://scripts/main_interface.gd:50)
+       [4] _build_modal (res://scripts/main.gd:130)
+       [5] _build_interface (res://scripts/main_interface.gd:24)
+       [6] _build_interface (res://scripts/main.gd:126)
+       [7] _ready (res://scripts/main.gd:82)
+       [8] run (res://tests/test_audio_routes.gd:11)
+ERROR: No loader found for resource: res://assets/travel/locomotive-hero.png (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:358)
+   GDScript backtrace (most recent call first):
+       [0] load_assets (res://scripts/train_renderer.gd:66)
+       [1] _ready (res://scripts/station_workshop.gd:33)
+       [2] attach (res://scripts/world_session.gd:21)
+       [3] _ready (res://scripts/main.gd:85)
+       [4] run (res://tests/test_audio_routes.gd:11)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+          at: @implicit_new (res://scripts/tactical_scene.gd:15)
+          GDScript backtrace (most recent call first):
+              [0] @implicit_new (res://scripts/tactical_scene.gd:15)
+              [1] attach (res://scripts/world_encounters.gd:33)
+              [2] _ready (res://scripts/main.gd:90)
+              [3] run (res://tests/test_audio_routes.gd:11)
+SCRIPT ERROR: Invalid call. Nonexistent function 'texture_for' in base 'Nil'.
+          at: _ready (res://scripts/tactical_scene.gd:31)
+          GDScript backtrace (most recent call first):
+              [0] _ready (res://scripts/tactical_scene.gd:31)
+              [1] attach (res://scripts/world_encounters.gd:37)
+              [2] _ready (res://scripts/main.gd:90)
+              [3] run (res://tests/test_audio_routes.gd:11)
+PASS: original music plaque preference, new game flags, signed city selectors, mine answer/close and guarded scene routes

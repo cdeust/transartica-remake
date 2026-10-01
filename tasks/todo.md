@@ -1,4 +1,4 @@
-# Retours du test utilisateur,27septembre
+# Historical user review — 27 September (see current completion run below)
 
 - [ ] Refaire le bandeau avec les mêmes informations, dans la qualité des scènes de wagons. Le grossissement des pixels originaux est rejeté.
 - [x] Ajouter un indicateur du sens de marche sur la carte détaillée.
@@ -16,6 +16,42 @@ Bandeau ECS privé et reprise : [validation](validation/map-places-20260927.md).
 - [ ] Vérifier les captures natives, relire, pousser et nettoyer.
 
 # État du projet et travail restant
+
+## Completion run — 1 October 2026
+
+Base verified remotely: merged PR7 `bf9f9501711a05a6d4a1b1eca318ac4d0263dcf6`.
+New changes remain local; no publication or merge is authorized.
+
+- [x] Recover prior work and preserve other sessions’ worktrees.
+- [x] Integrate source campaign, original quizzes, deaths and Sun ending.
+- [x] Integrate manual/automatic combat, weapons, effects and resumable battles.
+- [x] Complete mines, works, drill, commerce, crew and train-management actions.
+- [x] Integrate source fauna, nomads, launcher, startup and private source audio.
+- [x] Validate atomic full saves, legacy migration and configurable keyboard input.
+- [x] Prove original-start earned-cargo campaign with default enemies and actual UI.
+- [x] Prove Mausoleum disk resume yields the same ending and full state.
+- [x] Validate actual simulation at30/60/144Hz.
+- [x] Replace ordinary player engines in actual master sheet, illustrations, HUD, travel and combat with shared massive futuristic locomotive.
+- [x] Add authored16goods and25wagon icons; verify native selection and transactions.
+- [x] Complete final exact-tree test inventory, independent review and code gates.
+- [x] Execute rebuilt macOS application and retain evidence.
+- [ ] Execute Windows package on Windows; export alone is insufficient.
+- [x] Finish owner-scoped cleanup, preserving unpublished/concurrent work.
+
+Current proof: campaign-route-cleanup-native-after-20261001.log, source route
+10 657callbacks,1 713cells,day23,lignite1 067. Native input/save review and
+launcher65assertions pass. Source signed audio and nine scores are packaged;
+four recurring scores preserve the first attack and original subsequent cycles.
+Native goods/wagon icon review passes. Full integration rerun and artifact
+acceptance follow the final fixture/art changes. PhysicalAmiga audio timing and
+exhaustive historical visual variants are not certified.
+
+[Current coverage and evidence](validation/completion-matrix-20261001.md).
+
+## Historical checkpoints — superseded by current completion review
+
+The sections below retain earlier evidence and rejected presentations. Their
+unchecked publication tasks do not authorize publication of the current work.
 
 ## Priorité quota : boucle ennemis et combat automatique
 
@@ -199,3 +235,28 @@ une campagne complète ni le fonctionnement du binaire Windows.
 - [x] Retirer 12 PNG remplacés ou dupliqués et les trois fichiers d'import associés ; conserver leurs empreintes et le commit de récupération.
 - [x] Vérifier les références restantes, les galeries et les tests des outils graphiques.
 - [x] Mesurer le gain : 20 613 348 octets. Nettoyage commité, travaux concurrents préservés. [Rapport](asset-cleanup-20260927.md).
+
+## Locomotive consistency — owner direction, 1 October 2026
+
+- [ ] Inspect the original box art and define one massive futuristic locomotive design sheet.
+- [ ] Apply its silhouette and identifying details to the travel vehicle, tactical locomotive, startup and every illustrated scene showing our train.
+- [ ] Compare all depictions together and verify the integrated travel/combat sprites at game size, keeping the accepted invariant vehicle dimensions.
+
+This is a shared artistic pass after the remaining gameplay integration. Existing
+wolf/mole drafts are provisional until their locomotive foreground matches it.
+
+## Final review — 1 October
+
+All56test scripts plus core runner pass;33Python tests plus the independent
+static-plan pixel/vector roundtrip pass. Source/craft staged gates0errors/0warnings.
+One intermittent capture-fixture WAV teardown leak was diagnosed; actual
+resource release is awaited and three sequential native runs are clean. Runtime
+and exported PCK were unchanged. Independent integration review found no critical
+defect in inspected model/UI/save/art/export connections.
+
+Actual exported macOS application passes startup, viewport controls, map/HUD
+scroll, F5 and named LOAD with exact state restoration. Windows EXE/PCK exported;
+Windows execution remains unverified because no Windows host was available.
+Cleanup removed453 822 049bytes of obsolete app/import caches and disposed the
+registered artifact-test temp after preserving evidence. Unpublished commits
+and other sessions’ work remain protected. No remote publication performed.

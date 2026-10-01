@@ -6,6 +6,7 @@ const Actions = preload("res://scripts/boudoir_actions.gd")
 const Inventory = preload("res://scripts/inventory_report.gd")
 const Saves = preload("res://scripts/session_saves.gd")
 const Slots = preload("res://scripts/save_slots.gd")
+const AudioRoutes = preload("res://scripts/game_audio_routes.gd")
 var app
 var view
 var quarters
@@ -15,6 +16,7 @@ var reception
 var overview
 var last_room := "room"
 var city_suspended := false
+var launcher = preload("res://scripts/launcher_session.gd").new()
 
 
 func attach(owner_app) -> void:
@@ -41,10 +43,12 @@ func attach(owner_app) -> void:
 	reception.start_requested.connect(_new_journey)
 	reception.load_requested.connect(_load)
 	reception.unavailable_requested.connect(_unavailable)
+	reception.music_requested.connect(func(): AudioRoutes.toggle_music(app,reception))
 	app.move_child(event, app.get_child_count() - 1)
 	app.session.cycle_completed.connect(_refresh_overview)
 	app.resized.connect(_layout)
 	_layout()
+	launcher.attach(app)
 
 
 func _screen(script):
@@ -63,6 +67,10 @@ func _layout() -> void:
 
 
 func open_panel(name: String) -> bool:
+	if name == "room" and launcher.model != null:
+		leave()
+		launcher.resume_pending()
+		return true
 	if name not in ["boudoir", "journal", "quarters", "options", "overview"]:
 		return false
 	leave()
@@ -73,7 +81,9 @@ func open_panel(name: String) -> bool:
 		"quarters":
 			last_room = "quarters"
 			quarters.show()
-		"options": reception.open_options(app._save_path().get_base_dir())
+		"options":
+			AudioRoutes.sync_options(app,reception)
+			reception.open_options(app._save_path().get_base_dir())
 		"overview":
 			overview.show()
 			overview.queue_redraw()
@@ -82,6 +92,8 @@ func open_panel(name: String) -> bool:
 
 
 func leave() -> void:
+	if launcher.scene != null:
+		launcher.scene.hide()
 	view.close_sheet()
 	view.hide()
 	quarters.hide()
@@ -91,10 +103,16 @@ func leave() -> void:
 
 
 func blocks_simulation() -> bool:
-	return city_suspended or view.blocks_simulation() or event.visible or reception.visible
+	return launcher.blocks_simulation() or city_suspended or view.blocks_simulation() or event.visible or reception.visible
 
 
-func handle_key(input: InputEventKey) -> bool:
+func handle_key(input: InputEventKey, canonical: InputEventKey = null) -> bool:
+	var command: InputEventKey = input if canonical == null else canonical
+	var launcher_input: InputEventKey = input
+	if input.physical_keycode not in [KEY_P,KEY_ESCAPE,KEY_ENTER,KEY_SPACE] and (command.physical_keycode in [KEY_F5,KEY_F6] or input.physical_keycode in [KEY_F5,KEY_F6]):
+		launcher_input = command
+	if launcher.handle_key(launcher_input):
+		return true
 	if city_suspended and input.physical_keycode == KEY_ESCAPE:
 		leave()
 		app._modal.hide()
@@ -108,14 +126,21 @@ func handle_key(input: InputEventKey) -> bool:
 	elif reception.visible:
 		reception.handle_key(input)
 	elif view.visible:
-		view.handle_key(input)
+		if view.blocks_simulation() or input.physical_keycode in [KEY_ESCAPE,KEY_I,KEY_S]:
+			view.handle_key(input)
+		elif command.physical_keycode in [KEY_M,KEY_F5]:
+			view.handle_key(command)
+		else:
+			return false
 	elif quarters.visible or overview.visible:
-		if input.physical_keycode == KEY_ESCAPE:
+		if command.physical_keycode == KEY_ESCAPE:
 			app._open_panel("room")
-		elif input.physical_keycode == KEY_M:
+		elif command.physical_keycode == KEY_M:
 			app._open_panel("map")
-		elif input.physical_keycode == KEY_J:
+		elif command.physical_keycode == KEY_J:
 			app._open_panel("boudoir")
+		else:
+			return false
 	else:
 		return false
 	refresh()
@@ -133,6 +158,9 @@ func _action(code: int) -> void:
 
 
 func _panel_action(code: int) -> void:
+	# YODA0x1d64..1d71: footer click emits SON3 once, not during redraw.
+	if code >= 0 and AudioRoutes.available(app):
+		app.game_audio.son(3)
 	# Temporary inspection preserves the visit; Escape returns, EXIT departs.
 	if app._city_panel.visible and code in [1, 4, 6, 7, 8]:
 		app._city_panel.hide()
@@ -153,7 +181,7 @@ func _panel_action(code: int) -> void:
 		7: app._open_panel("quarters")
 		8: app._open_panel("boudoir")
 		3: _reverse_train()
-		9: _unavailable()
+		9: launcher.open()
 	refresh()
 
 
@@ -189,7 +217,9 @@ func _load(slot_name: String) -> void:
 		reception.loader.show_result(result.notice if not result.notice.is_empty() else "BACKUP NOT FOUND")
 		return
 	leave()
-	if not app._city_panel.visible:
+	if launcher.model != null:
+		app._open_panel("room")
+	elif not app._city_panel.visible:
 		app._open_panel("map")
 	refresh()
 
@@ -222,6 +252,7 @@ func present_pending_event() -> void:
 
 
 func reset() -> void:
+	launcher.reset()
 	city_suspended = false
 	app.world_view.inspecting_map = false
 	app.stoup.restore([])

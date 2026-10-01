@@ -1,0 +1,24 @@
+{
+  "removed_owned_obsolete_outputs": [
+    {
+      "path": "builds/macos/Transarctica \u2014 Northern Survey.app",
+      "bytes": 313995196
+    },
+    {
+      "path": ".worktrees/campaign-completion/game/.godot",
+      "bytes": 75879103
+    },
+    {
+      "path": ".worktrees/world-completion/game/.godot",
+      "bytes": 63947750
+    }
+  ],
+  "protected": [
+    ".worktrees/campaign-completion",
+    ".worktrees/tactical-combat",
+    ".worktrees/world-completion",
+    ".claude/worktrees/hook-cleanup-20260926",
+    ".claude/worktrees/map-places-01a0e27d"
+  ],
+  "reason": "Unpublished commits and concurrent/uncommitted work retained; no forced checkout disposal."
+}

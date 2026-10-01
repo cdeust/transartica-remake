@@ -1,0 +1,8 @@
+TODO_NO_REF  (warn)    game/scripts/main.gd:88: # independent list (tasks/todo.md, "Decision : train en vue de dessus").
+MAGIC_NUMBER (warn)    game/scripts/travel_terrain.gd:50: var offset := Vector2(posmod(cell.x,3)-1,posmod(cell.y,3)-1)*extent*0.025
+TODO_NO_REF  (warn)    tools/build_preview.py:57:         'Keep Transartica.pck beside it. Validation status is recorded in tasks/
+
+Profile: standard  (files mode)
+Errors:   0  (blocking)
+Warnings: 3  (informational — promoted to errors when profile=strict)
+PASSED: no blocking violations.

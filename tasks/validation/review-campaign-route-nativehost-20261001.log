@@ -1,0 +1,6 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+ACTUAL ADVANCE calls=10565 entered=1713
+PASS: TABLE-start earned campaign, source story/quiz/spy/workshop/reception inputs, default enemies, actual Minotaur result, Sun finale to OPTIONS; day23 fuel1207
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2514)

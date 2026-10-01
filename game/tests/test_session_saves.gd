@@ -1,4 +1,6 @@
 extends SceneTree
+# requires-native-renderer
+# Source: native AudioStreamWAV playback; Dummy mixer leaks measured in cadence review.
 
 const Saves = preload("res://scripts/session_saves.gd")
 const Slots = preload("res://scripts/save_slots.gd")

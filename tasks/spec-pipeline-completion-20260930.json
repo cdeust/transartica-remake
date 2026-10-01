@@ -1,0 +1,19 @@
+{
+  "run_id": "run_muoi0one_50sm6t",
+  "status": "clarification_compose_2",
+  "base": "bf9f9501711a05a6d4a1b1eca318ac4d0263dcf6",
+  "preflight": "Cortex and ai-architect reachable",
+  "recall_submission": "restricted to Transartica after automatic review rejected unrelated memories",
+  "index_graph_path": "/Users/cdeust/Developments/Transartica/.prd-gen/graphs/run_muoi0one_50sm6t/graph",
+  "failure": "prepare_prd_input is absent from active tool profile. The runner accepted explicit unavailable-tool result and actual git-history evidence, then entered clarification with an incorrect CI/CD role. No generated PRD claimed.",
+  "private_source_exclusions": [
+    "reference-private",
+    ".toolchain",
+    ".cache",
+    ".worktrees",
+    ".claude",
+    "builds",
+    "output",
+    "game/private-data"
+  ]
+}

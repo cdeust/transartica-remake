@@ -1,4 +1,6 @@
 extends SceneTree
+# requires-native-renderer
+# Source: native AudioStreamWAV playback; Dummy mixer leaks measured in cadence review.
 
 # Real app integration gate. Root wires CampaignSession at the composition root.
 const Saves = preload("res://scripts/session_saves.gd")

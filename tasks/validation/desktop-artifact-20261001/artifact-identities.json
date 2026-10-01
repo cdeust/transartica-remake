@@ -1,0 +1,23 @@
+{
+  "executable": "/Users/cdeust/Developments/Transartica/builds/macos/Transartica.app/Contents/MacOS/Transartica",
+  "executable_sha256": "10c9e1e9337de1d79e123cfbdc5958ef43e60518f55188d185691313c8194e56",
+  "pck": "/Users/cdeust/Developments/Transartica/builds/macos/Transartica.app/Contents/Resources/Transartica.pck",
+  "pck_sha256": "e4ff856b4fa281363d66a67cea5b2199d92a8047177e20f992e51a4cbe254853",
+  "acceptance_script_sha256": "23922efbad044fff8b0c167073c32cf10f89bc52a02a346a5358c2a0db8b40e9",
+  "args": [
+    "--script",
+    "/Users/cdeust/Developments/Transartica/game/tests/accept_desktop_artifact.gd"
+  ],
+  "environment": {
+    "TRANSARTICA_ARTIFACT_SOURCE_DEBUG": "0",
+    "TRANSARTICA_ARTIFACT_EVIDENCE_DIR": "/Users/cdeust/Developments/Transartica/.cache/disk-hygiene-eh9xxvpr"
+  },
+  "log": "tasks/validation/desktop-artifact-exported-20261001.log",
+  "evidence_sha256": {
+    "acceptance.json": "79d09e761940cc8d99d639ccd226ba149e1a4e30bd378dffba7156340af0e65e",
+    "boot-title.png": "2c18383313e168a074f81d1945e57a5ddd8e4ffa1e60fbdca721d8d5d4f73b70",
+    "map-scroll.png": "19e29cacaae2f43b9a6900016c0d07e858bbf7367bc27f0c8673880f8517f942",
+    "options.png": "a278b2f35015e551ddfc0e65c0d79e13280ffeb33058495b99d1ea80dd4b337b",
+    "resumed.png": "9d4e7104892e90a99d208a3458c0fd7ef2e6a03d20da67f9241e88e9c6aa7d8b"
+  }
+}

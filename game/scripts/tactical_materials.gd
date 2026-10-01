@@ -2,11 +2,12 @@ extends RefCounted
 # MIT. Presentation only: material occupancy from authored sprite alpha, fractures
 # from authored effects-kit08. Original WDECOR health3/2/1/0 remains authoritative.
 # Owner FIDELITE.md permits Noita-inspired debris/smoke/light, not new damage rules.
+const SCORCH := Color("#574632") # Authored existing workshop/steel palette; presentation only.
 var instances := {}
 var stencil: Image
 
 func texture_for(source: Texture2D, side: int, wagon: int, health: int) -> Texture2D:
-	if health >= 3 or health <= 0:
+	if health >= 3:
 		return source
 	var key := "%d/%d/%d" % [side,wagon,health]
 	if instances.has(key):
@@ -17,7 +18,8 @@ func texture_for(source: Texture2D, side: int, wagon: int, health: int) -> Textu
 	var occupancy := PackedByteArray()
 	occupancy.resize(image.get_width()*image.get_height())
 	var removed: Array = []
-	# Two authored fracture locations correspond to the two surviving damage states.
+	# Three authored fracture passes expose wreckage at original health0.
+	# Scorch changes presentation only; original hull state remains authoritative.
 	for y in image.get_height():
 		for x in image.get_width():
 			var color := image.get_pixel(x,y)
@@ -25,6 +27,8 @@ func texture_for(source: Texture2D, side: int, wagon: int, health: int) -> Textu
 				continue
 			var cut := _fractured(Vector2i(x,y),image.get_size(),health,side,wagon)
 			occupancy[y*image.get_width()+x] = 0 if cut else 1
+			if health == 0 and not cut:
+				image.set_pixel(x,y,color*SCORCH)
 			if cut:
 				removed.append({"point":Vector2i(x,y),"color":color})
 				image.set_pixel(x,y,Color.TRANSPARENT)

@@ -118,7 +118,7 @@ func _gui_input(event: InputEvent) -> void:
 		tooltip_text = LABELS.get(code, "")
 		mouse_default_cursor_shape = CURSOR_POINTING_HAND if code != 0 else CURSOR_ARROW
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		if ecs_art.available and ecs_art.scroll(self, logical_point(event.position)):
+		if ecs_art.scroll(self, logical_point(event.position)):
 			accept_event()
 			return
 		var code := hotspot_at(event.position)
@@ -167,6 +167,7 @@ func _draw() -> void:
 	if app != null:
 		_draw_readouts()
 		_draw_composition()
+		_draw_launcher()
 
 
 func _draw_clock() -> void:
@@ -265,8 +266,25 @@ func _draw_composition() -> void:
 			var scale := minf((width - 2.0) / extent.y, 5.0 / extent.x) * factor
 			var center := screen_rect(Rect2(right - width / 2.0, 153.5, 0, 0)).position
 			draw_set_transform_matrix(renderer.registration(vehicle, center, -PI / 2, scale))
-			draw_texture(vehicle.texture, Vector2.ZERO, Color("#7d6551") if int(wagon[1]) == 3 else Color.WHITE)
+			renderer.draw_frame(self,vehicle,Color("#7d6551") if int(wagon[1]) == 3 else Color.WHITE)
 		right -= width
 		if right < 14:
 			break
+	draw_set_transform_matrix(Transform2D.IDENTITY)
+
+
+func _draw_launcher() -> void:
+	# YODA0x7a4: authored launcher icon is exposed only after wagon13 is bought.
+	if not app.wagons.wagons.any(func(w): return int(w[0]) == 13):
+		return
+	var renderer = app.world_view.train_renderer
+	var kind: String = preload("res://scripts/train_consist.gd").TYPE_TO_KIND[13]
+	var vehicle: Dictionary = renderer.frame_for(kind)
+	if vehicle.is_empty():
+		return
+	var slot := screen_rect(COMMON[9].grow(-1))
+	var extent: Vector2 = vehicle.bounds.size
+	var scale := minf(slot.size.x/extent.y,slot.size.y/extent.x)
+	draw_set_transform_matrix(renderer.registration(vehicle,slot.get_center(),-PI/2,scale))
+	renderer.draw_frame(self,vehicle)
 	draw_set_transform_matrix(Transform2D.IDENTITY)

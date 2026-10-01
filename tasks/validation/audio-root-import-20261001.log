@@ -1,0 +1,323 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Initialisation du projet (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Analyse de la structure des fichiers…[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Chargement des noms des classes globales…[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Vérification des GDExtensions…[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Création des scripts de chargement automatique…[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initialisation des extensions…[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Démarrage du scan de fichiers…[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Enregistrement des classes globales… (8 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  11% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  22% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  33% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  44% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  55% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  66% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  77% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started Analyse des actions… (90 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | berta-0.wav[39m[0m
+[   1% ] [90m[1m_update_scan_actions[22m | berta-1.wav[39m[0m
+[   2% ] [90m[1m_update_scan_actions[22m | bojeu2-0.wav[39m[0m
+[   3% ] [90m[1m_update_scan_actions[22m | bojeu2-1.wav[39m[0m
+[   4% ] [90m[1m_update_scan_actions[22m | bojeu2-2.wav[39m[0m
+[   5% ] [90m[1m_update_scan_actions[22m | bojeu2-3.wav[39m[0m
+[   6% ] [90m[1m_update_scan_actions[22m | bojeu2-4.wav[39m[0m
+[   7% ] [90m[1m_update_scan_actions[22m | bojeu2-5.wav[39m[0m
+[   8% ] [90m[1m_update_scan_actions[22m | bojeu2-6.wav[39m[0m
+[   9% ] [90m[1m_update_scan_actions[22m | bojeu2-7.wav[39m[0m
+[  10% ] [90m[1m_update_scan_actions[22m | bojeu2-8.wav[39m[0m
+[  12% ] [90m[1m_update_scan_actions[22m | bojeu2-9.wav[39m[0m
+[  13% ] [90m[1m_update_scan_actions[22m | bojeu2-10.wav[39m[0m
+[  14% ] [90m[1m_update_scan_actions[22m | bojeu2-11.wav[39m[0m
+[  15% ] [90m[1m_update_scan_actions[22m | bojeu2-12.wav[39m[0m
+[  16% ] [90m[1m_update_scan_actions[22m | bojeu2-13.wav[39m[0m
+[  17% ] [90m[1m_update_scan_actions[22m | bojeu-0.wav[39m[0m
+[  18% ] [90m[1m_update_scan_actions[22m | bojeu-1.wav[39m[0m
+[  19% ] [90m[1m_update_scan_actions[22m | bojeu-2.wav[39m[0m
+[  20% ] [90m[1m_update_scan_actions[22m | bojeu-3.wav[39m[0m
+[  21% ] [90m[1m_update_scan_actions[22m | bojeu-4.wav[39m[0m
+[  23% ] [90m[1m_update_scan_actions[22m | bojeu-5.wav[39m[0m
+[  24% ] [90m[1m_update_scan_actions[22m | bojeu-6.wav[39m[0m
+[  25% ] [90m[1m_update_scan_actions[22m | bojeu-7.wav[39m[0m
+[  26% ] [90m[1m_update_scan_actions[22m | bojeu-8.wav[39m[0m
+[  27% ] [90m[1m_update_scan_actions[22m | bojeu-9.wav[39m[0m
+[  28% ] [90m[1m_update_scan_actions[22m | bojeu-10.wav[39m[0m
+[  29% ] [90m[1m_update_scan_actions[22m | bojeu-11.wav[39m[0m
+[  30% ] [90m[1m_update_scan_actions[22m | bojeu-12.wav[39m[0m
+[  31% ] [90m[1m_update_scan_actions[22m | bolieu-0.wav[39m[0m
+[  32% ] [90m[1m_update_scan_actions[22m | bolieu-1.wav[39m[0m
+[  34% ] [90m[1m_update_scan_actions[22m | bolieu-2.wav[39m[0m
+[  35% ] [90m[1m_update_scan_actions[22m | bolieu-3.wav[39m[0m
+[  36% ] [90m[1m_update_scan_actions[22m | bolieu-4.wav[39m[0m
+[  37% ] [90m[1m_update_scan_actions[22m | bolieu-5.wav[39m[0m
+[  38% ] [90m[1m_update_scan_actions[22m | bolieu-6.wav[39m[0m
+[  39% ] [90m[1m_update_scan_actions[22m | bolieu-7.wav[39m[0m
+[  40% ] [90m[1m_update_scan_actions[22m | bolieu-8.wav[39m[0m
+[  41% ] [90m[1m_update_scan_actions[22m | bolieu-9.wav[39m[0m
+[  42% ] [90m[1m_update_scan_actions[22m | bolost-1.wav[39m[0m
+[  43% ] [90m[1m_update_scan_actions[22m | bopres-1.wav[39m[0m
+[  45% ] [90m[1m_update_scan_actions[22m | bopres-2.wav[39m[0m
+[  46% ] [90m[1m_update_scan_actions[22m | bopres-3.wav[39m[0m
+[  47% ] [90m[1m_update_scan_actions[22m | bopres-4.wav[39m[0m
+[  48% ] [90m[1m_update_scan_actions[22m | bopres-5.wav[39m[0m
+[  49% ] [90m[1m_update_scan_actions[22m | bopres-6.wav[39m[0m
+[  50% ] [90m[1m_update_scan_actions[22m | bopres-7.wav[39m[0m
+[  51% ] [90m[1m_update_scan_actions[22m | bopres-8.wav[39m[0m
+[  52% ] [90m[1m_update_scan_actions[22m | bopres-9.wav[39m[0m
+[  53% ] [90m[1m_update_scan_actions[22m | bopres-10.wav[39m[0m
+[  54% ] [90m[1m_update_scan_actions[22m | bopres-11.wav[39m[0m
+[  56% ] [90m[1m_update_scan_actions[22m | bopres-12.wav[39m[0m
+[  57% ] [90m[1m_update_scan_actions[22m | ifebo-0.wav[39m[0m
+[  58% ] [90m[1m_update_scan_actions[22m | ifebo-1.wav[39m[0m
+[  59% ] [90m[1m_update_scan_actions[22m | ifebo-2.wav[39m[0m
+[  60% ] [90m[1m_update_scan_actions[22m | music-bojeu2-0.wav[39m[0m
+[  61% ] [90m[1m_update_scan_actions[22m | music-bojeu-0.wav[39m[0m
+[  62% ] [90m[1m_update_scan_actions[22m | music-bojeu-1.wav[39m[0m
+[  63% ] [90m[1m_update_scan_actions[22m | music-bolieu-0.wav[39m[0m
+[  64% ] [90m[1m_update_scan_actions[22m | music-bolieu-1.wav[39m[0m
+[  65% ] [90m[1m_update_scan_actions[22m | music-bolieu-2.wav[39m[0m
+[  67% ] [90m[1m_update_scan_actions[22m | music-bolieu-3.wav[39m[0m
+[  68% ] [90m[1m_update_scan_actions[22m | music-bolost-0.wav[39m[0m
+[  69% ] [90m[1m_update_scan_actions[22m | music-bopres-0.wav[39m[0m
+[  70% ] [90m[1m_update_scan_actions[22m | present-0.wav[39m[0m
+[  71% ] [90m[1m_update_scan_actions[22m | sbal-0.wav[39m[0m
+[  72% ] [90m[1m_update_scan_actions[22m | scene1-0.wav[39m[0m
+[  73% ] [90m[1m_update_scan_actions[22m | scene1-1.wav[39m[0m
+[  74% ] [90m[1m_update_scan_actions[22m | scene1-2.wav[39m[0m
+[  75% ] [90m[1m_update_scan_actions[22m | scene2-0.wav[39m[0m
+[  76% ] [90m[1m_update_scan_actions[22m | scene3-0.wav[39m[0m
+[  78% ] [90m[1m_update_scan_actions[22m | scene3-1.wav[39m[0m
+[  79% ] [90m[1m_update_scan_actions[22m | scene3-2.wav[39m[0m
+[  80% ] [90m[1m_update_scan_actions[22m | scene4-0.wav[39m[0m
+[  81% ] [90m[1m_update_scan_actions[22m | scene4-1.wav[39m[0m
+[  82% ] [90m[1m_update_scan_actions[22m | scene4-2.wav[39m[0m
+[  83% ] [90m[1m_update_scan_actions[22m | son-0.wav[39m[0m
+[  84% ] [90m[1m_update_scan_actions[22m | son-1.wav[39m[0m
+[  85% ] [90m[1m_update_scan_actions[22m | son-2.wav[39m[0m
+[  86% ] [90m[1m_update_scan_actions[22m | son-3.wav[39m[0m
+[  87% ] [90m[1m_update_scan_actions[22m | son-4.wav[39m[0m
+[  89% ] [90m[1m_update_scan_actions[22m | son-5.wav[39m[0m
+[  90% ] [90m[1m_update_scan_actions[22m | son-6.wav[39m[0m
+[  91% ] [90m[1m_update_scan_actions[22m | son-7.wav[39m[0m
+[  92% ] [90m[1m_update_scan_actions[22m | train-0.wav[39m[0m
+[  93% ] [90m[1m_update_scan_actions[22m | wdecor-0.wav[39m[0m
+[  94% ] [90m[1m_update_scan_actions[22m | wdecor-1.wav[39m[0m
+[  95% ] [90m[1m_update_scan_actions[22m | wdecor-2.wav[39m[0m
+[  96% ] [90m[1m_update_scan_actions[22m | wdecor-3.wav[39m[0m
+[  97% ] [90m[1m_update_scan_actions[22m | wdecor-4.wav[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started Ré-importation des assets (90 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[   1% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[   2% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[   3% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[   4% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[   5% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[   6% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[   7% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[   8% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[   9% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  10% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  12% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  13% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  14% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  15% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  16% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  17% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  18% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  19% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  20% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  21% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  23% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  24% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  25% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  26% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  27% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  28% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  29% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  30% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  31% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  32% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  34% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  35% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  36% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  37% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  38% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  39% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  40% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  41% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  42% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  43% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  45% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  46% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  47% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  48% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  49% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  50% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  51% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  52% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  53% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  54% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  56% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  57% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  58% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  59% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  60% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  61% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  62% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  63% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  64% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  65% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  67% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  68% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  69% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  70% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  71% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  72% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  73% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  74% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  75% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  76% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  78% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  79% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  80% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  81% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  82% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  83% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  84% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  85% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  86% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  87% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  89% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  90% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  91% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  92% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  93% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  94% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  95% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  96% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[  97% ] [90m[1mreimport[22m | Préparation des fichiers pour la réimportation…[39m[0m
+[   0% ] [90m[1mreimport[22m | Exécution des opérations de pré-réimportation…[39m[0m
+[   0% ] [90m[1mreimport[22m | scene1-0.wav[39m[0m
+[   1% ] [90m[1mreimport[22m | sbal-0.wav[39m[0m
+[   2% ] [90m[1mreimport[22m | present-0.wav[39m[0m
+[   3% ] [90m[1mreimport[22m | music-bopres-0.wav[39m[0m
+[   4% ] [90m[1mreimport[22m | music-bolost-0.wav[39m[0m
+[   5% ] [90m[1mreimport[22m | music-bolieu-3.wav[39m[0m
+[   6% ] [90m[1mreimport[22m | music-bolieu-2.wav[39m[0m
+[   7% ] [90m[1mreimport[22m | music-bolieu-1.wav[39m[0m
+[   8% ] [90m[1mreimport[22m | music-bolieu-0.wav[39m[0m
+[   9% ] [90m[1mreimport[22m | music-bojeu-1.wav[39m[0m
+[  10% ] [90m[1mreimport[22m | music-bojeu-0.wav[39m[0m
+[  12% ] [90m[1mreimport[22m | music-bojeu2-0.wav[39m[0m
+[  13% ] [90m[1mreimport[22m | ifebo-2.wav[39m[0m
+[  14% ] [90m[1mreimport[22m | ifebo-1.wav[39m[0m
+[  15% ] [90m[1mreimport[22m | ifebo-0.wav[39m[0m
+[  16% ] [90m[1mreimport[22m | bopres-12.wav[39m[0m
+[  17% ] [90m[1mreimport[22m | bopres-11.wav[39m[0m
+[  18% ] [90m[1mreimport[22m | bopres-10.wav[39m[0m
+[  19% ] [90m[1mreimport[22m | bopres-9.wav[39m[0m
+[  20% ] [90m[1mreimport[22m | bopres-8.wav[39m[0m
+[  21% ] [90m[1mreimport[22m | bopres-7.wav[39m[0m
+[  23% ] [90m[1mreimport[22m | bopres-6.wav[39m[0m
+[  24% ] [90m[1mreimport[22m | wdecor-4.wav[39m[0m
+[  25% ] [90m[1mreimport[22m | wdecor-3.wav[39m[0m
+[  26% ] [90m[1mreimport[22m | wdecor-2.wav[39m[0m
+[  27% ] [90m[1mreimport[22m | wdecor-1.wav[39m[0m
+[  28% ] [90m[1mreimport[22m | wdecor-0.wav[39m[0m
+[  29% ] [90m[1mreimport[22m | train-0.wav[39m[0m
+[  30% ] [90m[1mreimport[22m | son-7.wav[39m[0m
+[  31% ] [90m[1mreimport[22m | son-6.wav[39m[0m
+[  32% ] [90m[1mreimport[22m | son-5.wav[39m[0m
+[  34% ] [90m[1mreimport[22m | son-4.wav[39m[0m
+[  35% ] [90m[1mreimport[22m | son-3.wav[39m[0m
+[  36% ] [90m[1mreimport[22m | son-2.wav[39m[0m
+[  37% ] [90m[1mreimport[22m | son-1.wav[39m[0m
+[  38% ] [90m[1mreimport[22m | son-0.wav[39m[0m
+[  39% ] [90m[1mreimport[22m | scene4-2.wav[39m[0m
+[  40% ] [90m[1mreimport[22m | scene4-1.wav[39m[0m
+[  41% ] [90m[1mreimport[22m | scene4-0.wav[39m[0m
+[  42% ] [90m[1mreimport[22m | scene3-2.wav[39m[0m
+[  43% ] [90m[1mreimport[22m | scene3-1.wav[39m[0m
+[  45% ] [90m[1mreimport[22m | scene3-0.wav[39m[0m
+[  46% ] [90m[1mreimport[22m | scene2-0.wav[39m[0m
+[  47% ] [90m[1mreimport[22m | scene1-2.wav[39m[0m
+[  48% ] [90m[1mreimport[22m | scene1-1.wav[39m[0m
+[  49% ] [90m[1mreimport[22m | bojeu-5.wav[39m[0m
+[  50% ] [90m[1mreimport[22m | bojeu-4.wav[39m[0m
+[  51% ] [90m[1mreimport[22m | bojeu-3.wav[39m[0m
+[  52% ] [90m[1mreimport[22m | bojeu-2.wav[39m[0m
+[  53% ] [90m[1mreimport[22m | bojeu-1.wav[39m[0m
+[  54% ] [90m[1mreimport[22m | bojeu-0.wav[39m[0m
+[  56% ] [90m[1mreimport[22m | bojeu2-13.wav[39m[0m
+[  57% ] [90m[1mreimport[22m | bojeu2-12.wav[39m[0m
+[  58% ] [90m[1mreimport[22m | bojeu2-11.wav[39m[0m
+[  59% ] [90m[1mreimport[22m | bojeu2-10.wav[39m[0m
+[  60% ] [90m[1mreimport[22m | bojeu2-9.wav[39m[0m
+[  61% ] [90m[1mreimport[22m | bojeu2-8.wav[39m[0m
+[  62% ] [90m[1mreimport[22m | bojeu2-7.wav[39m[0m
+[  63% ] [90m[1mreimport[22m | bojeu2-6.wav[39m[0m
+[  64% ] [90m[1mreimport[22m | bojeu2-5.wav[39m[0m
+[  65% ] [90m[1mreimport[22m | bojeu2-4.wav[39m[0m
+[  67% ] [90m[1mreimport[22m | bojeu2-3.wav[39m[0m
+[  68% ] [90m[1mreimport[22m | bojeu2-2.wav[39m[0m
+[  69% ] [90m[1mreimport[22m | bojeu2-1.wav[39m[0m
+[  70% ] [90m[1mreimport[22m | bojeu2-0.wav[39m[0m
+[  71% ] [90m[1mreimport[22m | berta-1.wav[39m[0m
+[  72% ] [90m[1mreimport[22m | berta-0.wav[39m[0m
+[  73% ] [90m[1mreimport[22m | bopres-5.wav[39m[0m
+[  74% ] [90m[1mreimport[22m | bopres-4.wav[39m[0m
+[  75% ] [90m[1mreimport[22m | bopres-3.wav[39m[0m
+[  76% ] [90m[1mreimport[22m | bopres-2.wav[39m[0m
+[  78% ] [90m[1mreimport[22m | bopres-1.wav[39m[0m
+[  79% ] [90m[1mreimport[22m | bolost-1.wav[39m[0m
+[  80% ] [90m[1mreimport[22m | bolieu-9.wav[39m[0m
+[  81% ] [90m[1mreimport[22m | bolieu-8.wav[39m[0m
+[  82% ] [90m[1mreimport[22m | bolieu-7.wav[39m[0m
+[  83% ] [90m[1mreimport[22m | bolieu-6.wav[39m[0m
+[  84% ] [90m[1mreimport[22m | bolieu-5.wav[39m[0m
+[  85% ] [90m[1mreimport[22m | bolieu-4.wav[39m[0m
+[  86% ] [90m[1mreimport[22m | bolieu-3.wav[39m[0m
+[  87% ] [90m[1mreimport[22m | bolieu-2.wav[39m[0m
+[  89% ] [90m[1mreimport[22m | bolieu-1.wav[39m[0m
+[  90% ] [90m[1mreimport[22m | bolieu-0.wav[39m[0m
+[  91% ] [90m[1mreimport[22m | bojeu-12.wav[39m[0m
+[  92% ] [90m[1mreimport[22m | bojeu-11.wav[39m[0m
+[  93% ] [90m[1mreimport[22m | bojeu-10.wav[39m[0m
+[  94% ] [90m[1mreimport[22m | bojeu-9.wav[39m[0m
+[  95% ] [90m[1mreimport[22m | bojeu-8.wav[39m[0m
+[  96% ] [90m[1mreimport[22m | bojeu-7.wav[39m[0m
+[  97% ] [90m[1mreimport[22m | bojeu-6.wav[39m[0m
+[  98% ] [90m[1mreimport[22m | Finalisation des importations de ressources…[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started Ré-importation des assets (90 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Exécution des opérations post-réimportation…[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Chargement de l’éditeur (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Chargement de la disposition de l’éditeur…[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Chargement des docks…[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | Réouverture des scènes…[39m[0m
+SCRIPT ERROR: Parse Error: Could not preload resource script "res://scripts/session_saves.gd".
+          at: GDScript::reload (res://scripts/main.gd:250)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://scripts/session_saves.gd".
+          at: GDScript::reload (res://scripts/main.gd:250)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://scripts/session_saves.gd".
+          at: GDScript::reload (res://scripts/main.gd:258)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://scripts/session_saves.gd".
+          at: GDScript::reload (res://scripts/main.gd:295)
+ERROR: Failed to load script "res://scripts/main.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:3041)
+[  50% ] [90m[1mloading_editor_layout[22m | Chargement de la disposition de l’éditeur central…[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | Chargement de la disposition de la fenêtre des plugins…[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | Disposition de l’éditeur prête.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m

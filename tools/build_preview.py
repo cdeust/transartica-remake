@@ -22,8 +22,26 @@ def prepare_data():
     destination.mkdir(exist_ok=True)
     for source, output in [('CARTE.FIC', 'CARTE.FIC'),
                            ('villes-decoded.csv', 'villes-decoded.data'),
-                           ('commerce.json', 'commerce.json')]:
+                           ('commerce.json', 'commerce.json'),
+                           ('startup.json', 'startup.json')]:
         shutil.copyfile(ROOT / 'reference-private' / source, destination / output)
+    # Source: private ECS campaign decoder; exported scenes require its texts,
+    # map reveal tables and death pages as well as the base geography.
+    subprocess.run([
+        'python3', '-B', str(ROOT / 'tools/build_campaign_data.py'),
+        '--source', str(ROOT / 'reference-private'),
+        '--output', str(destination / 'campaign.json')], cwd=ROOT, check=True)
+    # The authored global chart uses source static vectors, never original RGB.
+    subprocess.run(['python3', '-B', str(ROOT / 'tools/export_overview_geometry.py')],
+                   cwd=ROOT, check=True)
+    shutil.copyfile(ROOT / 'reference-private/overview-geometry.json',
+                    destination / 'overview-geometry.json')
+    shutil.copytree(ROOT / 'reference-private/audio', destination / 'audio', dirs_exist_ok=True)
+    # Captured original audio stays private; default finale visuals are authored.
+    finale_audio = ROOT / 'reference-private/finale.wav'
+    if not finale_audio.is_file():
+        raise FileNotFoundError('Private finale audio has not been prepared')
+    shutil.copyfile(finale_audio, destination / 'finale.wav')
 
 
 def export(target):
@@ -42,9 +60,9 @@ def package_windows():
     destination = ROOT / 'builds/windows'
     shutil.copyfile(ROOT / 'LICENSE', destination / 'LICENSE.txt')
     (destination / 'README.txt').write_text(
-        'Transartica locomotive systems prototype. Unzip everything, then run Transartica.exe.\n'
-        'Keep Transartica.pck beside it. Manual engine cycles; travel and campaign not connected.\n'
-        'WASD/arrows: pan; wheel/+/-: zoom; Space: clock pause; F5/F6: save/restore.\n'
+        'Transartica private development build. Unzip everything, then run Transartica.exe.\n'
+        'Keep Transartica.pck beside it. See tasks/validation/completion-matrix-20261001.md for validation.\n'
+        'Use the illustrated control panel to navigate. F5 saves; F6 opens options.\n'
         'Contains private historical map data: do not publish this package as MIT.\n'
         'Windows binary exported on macOS; execution on Windows not yet verified.\n'
         'Godot Engine license: https://godotengine.org/license/\n')

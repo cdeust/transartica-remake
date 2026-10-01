@@ -1,0 +1,11 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:991)
+ISOLATED 0 [P: (75, 99), S: (272, 289)]
+ISOLATED 1 [P: (426, 109), S: (273, 282)]
+ISOLATED 4 [P: (69, 459), S: (278, 288)]
+ISOLATED 5 [P: (428, 464), S: (274, 285)]
+ISOLATED 8 [P: (12, 777), S: (408, 293)]
+ISOLATED 9 [P: (433, 747), S: (391, 323)]
+PASS: all six measured silhouette regions, complete mammoth trunk and isolated rider helmet

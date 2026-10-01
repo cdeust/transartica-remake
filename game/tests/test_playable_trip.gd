@@ -1,4 +1,6 @@
 extends SceneTree
+# requires-native-renderer
+# Source: native AudioStreamWAV playback; Dummy mixer leaks measured in cadence review.
 
 var failures: Array[String] = []
 
@@ -51,6 +53,7 @@ func _run() -> void:
 	var stopped: Dictionary = app.journey.snapshot()
 	app._process(1.0)
 	_check(app.journey.snapshot() == stopped, "braked map does not move once stopped")
+	_test_trip_event_responses(app)
 	_test_station_departure_restore(app)
 	_test_city_trade_screen(app)
 	_test_workshop_screen(app)
@@ -138,14 +141,18 @@ func _write_fixture(path: String, data: Dictionary) -> void:
 # A save taken just after leaving a city: the wagons are still inside the
 # station (no rail history yet) and the restore must keep the journey.
 func _test_station_departure_restore(app) -> void:
+	app._trade_rng.seed = 1 # Reproducible authored journey fixture, not a gameplay rule.
 	app._restart_engine()
 	app.network.repair(Vector2i(83, 67)) # bridge over the first-route crevasse, as built by a player
 	var cycles := 0
 	while not app._city_panel.visible and cycles < 20000:
+		if _respond_to_trip_event(app):
+			continue
 		app.engine.speed = 450
 		app._advance_journey()
 		cycles += 1
 	_check(app._city_panel.visible, "trip reaches the first city")
+	_check(not app.campaign.blocks_simulation() and not app._world_session.blocks_simulation(), "source encounter responses finish before station departure")
 	app.depart_from_city()
 	_check(not app.journey.sample_behind(app.world_view.consist.length_world()).ok, "wagons are still hidden in the station")
 	var departed: Dictionary = app.journey.snapshot()
@@ -159,14 +166,18 @@ func _test_station_departure_restore(app) -> void:
 # BHOPAL is a mammoth fair (glieu 0xcd1: 250 to buy, wagons of type 7 hold 3).
 func _test_city_trade_screen(app) -> void:
 	var trade_rules = preload("res://scripts/city_trade.gd")
+	app._trade_rng.seed = 1 # Reproducible authored journey fixture, not a gameplay rule.
 	app._restart_engine()
 	app.network.repair(Vector2i(83, 67)) # bridge over the first-route crevasse, as built by a player
 	var cycles := 0
 	while not app._city_panel.visible and cycles < 20000:
+		if _respond_to_trip_event(app):
+			continue
 		app.engine.speed = 450
 		app._advance_journey()
 		cycles += 1
 	_check(app._city_panel.visible and app._city_panel.kind == trade_rules.MAMMOTH_FAIR, "BHOPAL opens as a mammoth fair")
+	_check(not app.campaign.blocks_simulation() and not app._world_session.blocks_simulation(), "saved city has no older active source encounter")
 	app.engine.speed = 0 # the loop forces 450, beyond the 0..300 range a save accepts
 	app._city_panel.start(trade_rules.SELL)
 	_check(not app._city_panel.in_transaction() and app._city_panel._notice.text != "", "nothing to sell is refused on entry")
@@ -210,3 +221,31 @@ func _test_workshop_screen(app) -> void:
 	panel.handle_key(KEY_ESCAPE)
 	_check(panel.visible and not panel.in_transaction(), "exit returns to the workshop menu")
 	panel.hide()
+
+
+func _respond_to_trip_event(app) -> bool:
+	# Use source NO/continue controls before another travel callback. Production
+	# main._process blocks callbacks while these screens own the simulation.
+	var event := InputEventKey.new()
+	event.physical_keycode = KEY_ESCAPE
+	if app._world_session.blocks_simulation():
+		print("SOURCE TRIP world NO: ",app.roamers.pending)
+		if app._world_session.roamer_screen.visible and not app._world_session.roamer_screen.question:
+			event.physical_keycode = KEY_ENTER
+		app._world_session.handle_key(event)
+		return true
+	if app.campaign.blocks_simulation():
+		print("SOURCE TRIP campaign continue: ",app.campaign.state.pending.get("scene"))
+		event.physical_keycode = KEY_ENTER
+		app.campaign.handle_key(event)
+		return true
+	return false
+
+
+func _test_trip_event_responses(app) -> void:
+	# Authored source-valid ambush fixture; earned-route coverage is independent.
+	app._restart_engine()
+	app.campaign._present_ambush("wolf")
+	while app.campaign.blocks_simulation():
+		_respond_to_trip_event(app)
+	_check(app.campaign.state.pending.is_empty(), "trip responds through all source wolf report pages")

@@ -23,6 +23,8 @@ func _ready() -> void:
 	super._ready()
 	for name in ["urga", "oslo", "mausoleum", "sun-overcast", "sun-restored", "whale", "slope"]:
 		_art[name] = load("res://assets/campaign/%s.png" % name)
+	for name in ["wolf", "mole"]:
+		_art[name] = load("res://assets/campaign/%s-ambush.png" % name)
 	_finale_art.load_art()
 	hide()
 

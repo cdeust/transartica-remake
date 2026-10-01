@@ -1,7 +1,12 @@
 extends SceneTree
+# requires-native-renderer
+# Source: native AudioStreamWAV playback; Dummy mixer leaks measured in cadence review.
 var failures: Array[String] = []
 
 func _initialize() -> void:
+	# source: Godot OS.low_processor_usage_mode refreshes only changed frames.
+	# This native rendering test awaits frame_post_draw, so it needs continuous frames.
+	OS.low_processor_usage_mode = false
 	call_deferred("_run")
 
 func _run() -> void:
@@ -29,6 +34,16 @@ func _run() -> void:
 	_check(panel.ecs_art.scroll(panel, Vector2(6, 154)) and panel.ecs_art.first_wagon == 1, "composition left arrow scrolls long train")
 	_check(panel.ecs_art.scroll(panel, Vector2(310, 154)) and panel.ecs_art.first_wagon == 0, "composition right arrow returns")
 	_check(not panel.ecs_art.scroll(panel, Vector2(100, 154)), "strip body does not invent a wagon action")
+	# Export bundles omit private YODA rasters; authored composition still scrolls.
+	panel.ecs_art.available = false
+	var scroll_click := InputEventMouseButton.new()
+	scroll_click.button_index = MOUSE_BUTTON_LEFT
+	scroll_click.pressed = true
+	scroll_click.position = panel.screen_rect(Rect2(6,154,0,0)).position
+	panel._gui_input(scroll_click)
+	_check(panel.ecs_art.first_wagon == 1, "authored exported HUD scroll works without private rasters")
+	panel.ecs_art.first_wagon = 0
+	panel.ecs_art.available = true
 	_check(not app.world_view.discovery_enabled, "fixed towns and track are not hidden by preview fog")
 	for city in app.world_data.cities:
 		_check(app.world_view._city_is_visible(city), "fixed city visible before visit")
@@ -36,7 +51,7 @@ func _run() -> void:
 	var initial_heading: int = app.journey.heading
 	var initial_front: Vector2 = app.journey.fractional_position()
 	panel.activate(3)
-	_check(app.journey.reverse and app.journey.heading == 10 - initial_heading and app.engine.speed == 0 and not app.engine.brake, "HUD wheel reverses traction and stops speed")
+	_check(app.journey.reverse and app.journey.heading == 10 - initial_heading and app.engine.speed == 0 and not app.engine.brake, "HUD wheel reverses traction and stops speed: reverse=%s heading=%s initial=%s speed=%s brake=%s suspended=%s" % [app.journey.reverse, app.journey.heading, initial_heading, app.engine.speed, app.engine.brake, app._boudoir_session.city_suspended])
 	_check(app.journey.fractional_position().distance_to(initial_front) < 0.001, "HUD reverse does not teleport locomotive")
 	panel.activate(3)
 	_check(not app.journey.reverse, "HUD wheel restores forward traction")

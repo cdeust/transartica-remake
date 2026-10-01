@@ -9,6 +9,7 @@ extends Control
 # The wording of labels and refusals is the remake's own, not texte2k text.
 const Backdrop = preload("res://scripts/city_backdrop.gd")
 const CityTrade = preload("res://scripts/city_trade.gd")
+var list_icons = preload("res://scripts/city_list_icons.gd").new()
 
 signal depart_requested
 signal cargo_changed
@@ -66,6 +67,9 @@ func _init() -> void:
 	_trade_box = Control.new()
 	add_child(_trade_box)
 	_list = ItemList.new()
+	_list.icon_mode = ItemList.ICON_MODE_TOP
+	_list.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	list_icons.load_goods()
 	_list.max_columns = 5 # glieu comp26: five columns; workshop comp105 also five.
 	_list.same_column_width = true
 	_list.max_text_lines = 2
@@ -113,6 +117,8 @@ func _layout() -> void:
 	_list.position = Vector2(4, 3) * scale_factor
 	_list.size = Vector2(312, 72) * scale_factor
 	_list.fixed_column_width = maxi(1, roundi(_list.size.x / 5.0) - 2)
+	# Source-width icon footprint; list scrolling and detail placement are UI adaptation.
+	_list.fixed_icon_size = Vector2i(list_icons.FOOTPRINT * scale_factor)
 	_list.add_theme_font_size_override("font_size", maxi(7, roundi(5.0 * scale_factor)))
 	_detail.position = Vector2(4, 77) * scale_factor
 	_detail.size = Vector2(312, 29) * scale_factor
@@ -265,7 +271,7 @@ func start_workshop() -> void:
 	_rows = trade.workshop_list(city)
 	_list.clear()
 	for row in _rows:
-		_list.add_item("%s  %d" % [trade.wagon_name(row[0]), row[1]])
+		_list.add_item("%s  %d" % [trade.wagon_name(row[0]), row[1]],list_icons.wagon_for(row[0]))
 	_menu.hide()
 	_list.show()
 	_trade_box.show()
@@ -285,7 +291,7 @@ func _fill_list() -> void:
 	_rows = trade.goods_list(city, _mode, wagons)
 	_list.clear()
 	for row in _rows:
-		_list.add_item("%s  %d" % [trade.goods_name(row[0]), row[1]])
+		_list.add_item("%s  %d" % [trade.goods_name(row[0]), row[1]],list_icons.goods_for(row[0]))
 		if row[0] == previous:
 			_list.select(_list.item_count - 1)
 

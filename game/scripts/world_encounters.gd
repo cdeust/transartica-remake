@@ -15,6 +15,7 @@ var app
 var report
 var manual
 var manual_scene
+var manual_paused := false # source: authored scene pause state, independent of tactics.
 
 
 func attach(owner_app) -> void:
@@ -30,8 +31,12 @@ func attach(owner_app) -> void:
 	app._boudoir_session.reception.combat_requested.connect(toggle_automatic)
 	app._boudoir_session.reception.level_requested.connect(cycle_difficulty)
 	manual_scene = Scene.new()
+	if preload("res://scripts/game_audio_routes.gd").available(app):
+		manual_scene.audio = app.game_audio
 	manual_scene.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	app.add_child(manual_scene)
+	# Main owns configured keys; standalone tactical scenes keep their own router.
+	manual_scene.set_process_unhandled_key_input(false)
 	manual_scene.completed.connect(_finish_manual)
 	manual_scene.save_requested.connect(func(): app.save_view())
 	manual_scene.options_requested.connect(func(): manual_scene.hide(); app._open_panel("options"))
@@ -42,6 +47,7 @@ func reset() -> void:
 	enemies.reset()
 	pending = -1
 	manual = null
+	manual_paused = false
 	if manual_scene != null:
 		manual_scene.hide()
 	if report != null:
@@ -93,7 +99,8 @@ func resume_pending() -> void:
 	if manual == null:
 		manual = Tactical.new()
 		manual.begin(app.wagons, enemies.slots[pending][Enemies.STRENGTH], rng)
-	manual_scene.paused = false
+		manual_paused = false
+	manual_scene.paused = manual_paused
 	manual_scene.open_battle(manual)
 
 
@@ -184,8 +191,10 @@ func _sync_options() -> void:
 
 func snapshot() -> Dictionary:
 	# Decimal strings avoid JSON float rounding of PCG's64-bit state.
+	var paused: bool = manual_scene.paused if manual_scene != null else manual_paused
 	return {"version": 1, "enemies": enemies.snapshot(), "difficulty": difficulty,
-		"automatic": automatic, "pending": pending, "seed": str(rng.seed), "state": str(rng.state), "manual": manual.snapshot() if manual != null else null}
+		"automatic": automatic, "pending": pending, "seed": str(rng.seed), "state": str(rng.state), "manual": manual.snapshot() if manual != null else null,
+		"manual_paused": paused and manual != null}
 
 
 func restore(data: Variant) -> bool:
@@ -209,7 +218,12 @@ func restore(data: Variant) -> bool:
 		restored_manual = Tactical.new()
 		if data.pending < 0 or not restored_manual.restore(data.manual) or restored_manual.settled:
 			return false
+	if data.has("manual_paused") and not data.manual_paused is bool:
+		return false
+	if restored_manual == null and data.get("manual_paused", false):
+		return false
 	manual = restored_manual
+	manual_paused = data.get("manual_paused", true) if manual != null else false
 	enemies = candidate
 	difficulty = int(data.difficulty)
 	automatic = data.automatic

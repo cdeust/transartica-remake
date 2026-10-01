@@ -1,4 +1,6 @@
 extends SceneTree
+# requires-native-renderer
+# Source: native AudioStreamWAV playback; Dummy mixer leaks measured in cadence review.
 
 # Native input regression for authored room and decoded ROOM book/Kolotov actions.
 const Saves = preload("res://scripts/session_saves.gd")
@@ -22,6 +24,8 @@ func _run() -> void:
 	app.set_process(false)
 	await process_frame
 	await process_frame
+	# Atomic save comparisons exclude wall-clock audio advancement in this fixture.
+	app.game_audio.set_process(false)
 	app._restart_engine()
 	await _key(KEY_J)
 	_check(app.boudoir.visible and not app._modal.visible, "J opens boudoir from engine room")
@@ -135,7 +139,9 @@ func _navigation_and_revolver() -> void:
 	await _capture("map")
 	await _click_logical(Vector2(211, 168))
 	_check(app._boudoir_session.overview.visible, "detailed map opens overview")
-	_check(app._boudoir_session.overview.plan_texture != null, "original full plan loaded")
+	var overview = app._boudoir_session.overview
+	_check(overview.chart.available() and overview.chart.frame != null and overview.plan_texture == null, "authored chart loads without historical RGB")
+	_check(overview.chart.geometry.towns.size() == 45 and overview.chart.geometry.dots.size() == 206, "complete measured static chart geometry")
 	_check(app._boudoir_session.overview.map_point(Vector2(12, 62)) == Vector2(26, 127), "original whole-world marker coordinates")
 	await _capture("overview")
 	var discovery_before: Dictionary = app.world_view.discovery.snapshot()

@@ -55,7 +55,7 @@ func _draw() -> void:
 	begin_canvas()
 	draw_rect(Rect2(0,0,320,149), Color("#0c1d27"))
 	if _scene != null:
-		draw_texture_rect(_scene, Rect2(0,39,320,110), false)
+		_draw_scene(Rect2(0,39,320,110))
 	draw_style_box(Backdrop.border(Color("#142d39"), GOLD), Rect2(1,1,318,37))
 	var first_y: int = 11 if lines.size() > 2 else 15
 	for index in lines.size():
@@ -65,6 +65,10 @@ func _draw() -> void:
 	if question:
 		_draw_button(Rect2(120,124,32,14), "NO")
 	_draw_button(Rect2(170,124,32,14), "OK")
+
+
+func _draw_scene(box: Rect2) -> void:
+	draw_texture_rect(_scene, box, false)
 
 
 func _draw_button(box: Rect2, value: String) -> void:

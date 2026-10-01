@@ -1,0 +1,46 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+ERROR: works extension restores: Campaign save is invalid; current session kept
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:32)
+ERROR: pending text/countdown restored
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:32)
+ERROR: fractional text scheduler resumes
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:32)
+ERROR: mine question/accepted plaque resumes: Campaign save is invalid; current session kept
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:32)
+ERROR: mine question matches deferred prospect state
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:32)
+ERROR: mine question/accepted plaque resumes: Campaign save is invalid; current session kept
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:32)
+ERROR: mine question matches deferred prospect state
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:32)
+ERROR: world workshop extension restores: Campaign save is invalid; current session kept
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:32)
+ERROR: visited station and interrupted repair confirmation restored
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:32)
+ERROR: manual combat extension restores: Campaign save is invalid; current session kept
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:32)
+ERROR: manual actor/tick state reopens actual combat scene
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:32)

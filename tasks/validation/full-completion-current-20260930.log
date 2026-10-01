@@ -1,0 +1,127 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: original locomotive rule vectors, world data, city selection, pan/zoom, and render-independent clock
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: actual engine/journey/calendar/world/campaign/encounters state at30/60/144Hz
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: automatic combat loss, original debit bugs, phase RNG order, capacity and seeded replay
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: boudoir native input, inventory, pause, original panel, save/load and revolver end-game
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: fixed zoom, complete consist initial framing, stable movement and manual zoom
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: ECS campaign gate sequence, interrupted code/spy save-resume, central sabotage, Sun and six death causes, inspection cars
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: exact disclosed Oasis corridor traversal, heading, ports and retained concealment
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: moved live enemies notify campaign spies; defeat105 and victory reports
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: real app Urga/mausoleum/Oslo keyboard input, interrupted save-resume, visible Sun finale and correct death
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4
+
+PASS: native rendered Urga, Oslo, mausoleum, whale, slope, death, Earth, crew and both Sun states; captures retained
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: six visible city scenes, ECS regions, viewport resizing, native trade clicks, workshop and departure
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: glieu trade rules, wagon loading order, sale coal cap, money clamp, TIME wagon mass, persistence, workshop
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: combat setup and outcome rules (wdecor/textek)
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: original general-plan RGB hash, invalid schemas/runs, marker axes, explicit missing data
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: original private HUD resources, live composition scrolling and fixed-city visibility
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: enemy spawn, scheduling, movement, switches, obstacles, encounter, persistence
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: live instrument readouts, regulator, full-screen routing, and running session
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: source finale choreography, timing, save/resume, alpha and input guards
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+   at: cleanup (core/object/object.cpp:2514)
+)
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: persistent map discovery, bounded visits, camera invariance, and hidden-city filtering
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: map entities visibility, live slots, save removal and six city types
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: mine creation, depletion, prospecting, persistence
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: original ECS panel command coordinates, contextual input, fitted resizing and readout containment
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: pixel field determinism, gas rise, snow fall, conservation, fading and native render
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: playable map travel, coal use, fog, brake, pause and saved journey
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: stoup queue, inventory report, quarters/boudoir menus, panel hotspots
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: reverser phases, movement, convoy geometry, repeated toggle and persistence
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: center-seeded switch reversal advances and restores without invented incoming rail
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: campaign/world/works/manual extensions, atomic rejection, UI pending restore, legacy reset
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: transactional named saves, complete roundtrip, invalid paths and write failure
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: new battle changes authored wagon at same slot/health; options reopening retains effects/material/light instances
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: tactical combat weapons, actors, dynamite, defeat/victory, exactly-once result, JSON resume,30/60/144 cadence, scene inputs, per-instance material occupancy
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: decoded rail network, curves, switches, double-speed tiles, boundaries, stations, persistence
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: short route history cannot emit incomplete rigid vehicle poses
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: authored scenery coverage, signed resources, six distinct town parts and rail separation
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: fixed camera, rigid overhead rotation at any heading, constant-chord bent convoy, wagon-table composition, switch clicks, fog and arc interpolation
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: works close-time map commit, pending resume without recharge, signed-byte labour and exact-zero rails
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: real-map mines, close/resume, drill, management costs, native workshop actions and TOWN
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: calendar enemies, persistent RNG/history, pending encounter, original auto option, victory/defeat, no duplicate loot
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: map interaction, zoom bounds, evidenced rail glyph ports, and source-data preservation
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: live world mine boundary, NO/YES/dismiss ordering, exactly-once reversal and parked story guard
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: engine session frame independence, pause, residual time, restore, reset, and event stop

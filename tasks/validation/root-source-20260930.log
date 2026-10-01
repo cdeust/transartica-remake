@@ -1,0 +1,7 @@
+TODO_NO_REF  (warn)    game/scripts/main.gd:88: # independent list (tasks/todo.md, "Decision : train en vue de dessus").
+TODO_NO_REF  (warn)    tools/build_preview.py:52:         'Keep Transartica.pck beside it. Validation status is recorded in tasks/
+
+Profile: standard  (files mode)
+Errors:   0  (blocking)
+Warnings: 2  (informational — promoted to errors when profile=strict)
+PASSED: no blocking violations.

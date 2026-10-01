@@ -1,5 +1,9 @@
 extends SceneTree
 
+# requires-native-renderer
+# Source: this fixture starts the source WAV; native audio avoids Dummy backend
+# teardown retaining a WAV playback after the node has been freed.
+
 const Sequence = preload("res://scripts/finale_sequence.gd")
 const Screen = preload("res://scripts/campaign_screen.gd")
 var errors: Array[String] = []
@@ -58,6 +62,8 @@ func run() -> void:
 	screen.finale.restore(saved)
 	check(screen.finale.tick == saved.tick, "screen restores interrupted source scene")
 	screen.stop_movie()
+	if screen._finale_audio != null:
+		screen._finale_audio.stream = null
 	screen.open_menu(["SEND SPY", "DYNAMITE", "EXIT"])
 	check(screen.menu == ["SEND SPY", "DYNAMITE", "EXIT"], "native untyped crew menu literals remain callable")
 	screen.queue_free()

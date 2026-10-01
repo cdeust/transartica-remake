@@ -1,13 +1,16 @@
-extends Node
+extends Control
 
 # Test host for real campaign/reception/report controls. Presentation callbacks
 # are observed here; every gameplay object belongs to the actual route driver.
 class QuietView extends Control:
+	var world_data = preload("res://scripts/world_data.gd").new()
 	var encounters
 	var wagons
 	func update_train() -> void:queue_redraw()
 
 class BoudoirHost extends RefCounted:
+	var city_suspended := false
+	var launcher = preload("res://scripts/launcher_session.gd").new()
 	var view := Control.new()
 	var reception
 	func leave() -> void:view.hide()
@@ -18,6 +21,9 @@ var calendar
 var wagons
 var trade
 var world
+var roamers
+var _world_session = preload("res://scripts/world_session.gd").new()
+var campaign
 var journey
 var network
 var stoup
@@ -36,15 +42,19 @@ var workshop = preload("res://scripts/station_workshop.gd").new()
 
 func attach(source_driver) -> void:
 	driver = source_driver
-	for property in ["engine","calendar","wagons","trade","world","journey","network","stoup"]:
+	for property in ["engine","calendar","wagons","trade","world","roamers","journey","network","stoup"]:
 		set(property,driver.get(property))
 	_trade_rng = driver.rng
+	world_view.world_data.load_from_project(ProjectSettings.globalize_path("res://").trim_suffix("/"))
+	_boudoir_session.launcher.attach(self)
 	_boudoir_session.reception = preload("res://scripts/reception_screen.gd").new()
 	add_child(_boudoir_session.reception)
 	_boudoir_session.reception.size = Vector2(320,200)
 	for view in [_boudoir_session.view,_modal,instruments,_city_panel,world_view]:add_child(view)
 	campaign_session.attach(self)
 	campaign_session.state = driver.campaign
+	campaign = campaign_session
+	_world_session.attach(self)
 	campaign_session.screen.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	campaign_session.screen.size = Vector2(320,200)
 	campaign_session.screen.set_process(false)
@@ -119,7 +129,9 @@ func send_spy(cell: Vector2i) -> int:
 func before_entry(cell: Vector2i) -> Dictionary:
 	if not campaign_session.before_entry(cell):return {}
 	var event: Dictionary = driver.campaign.pending.duplicate(true)
-	if event.scene == "whale_harpoon":
+	if event.scene in ["wolf","mole"]:
+		finish_ambush()
+	elif event.scene == "whale_harpoon":
 		press(KEY_ENTER)
 		engine.brake = false # Player releases the scene-prelude brake.
 	return event
@@ -159,6 +171,7 @@ func click_workshop(point: Vector2) -> void:
 func resolve_battle(slot: int) -> Dictionary:
 	encounters.pending = slot
 	encounters.resolve_pending()
+	if driver.campaign.ending == "lost":return {"won":false,"epitaph":105}
 	var result: Dictionary = encounters.report.result.duplicate(true)
 	var event := InputEventKey.new()
 	event.physical_keycode = KEY_ENTER
@@ -182,3 +195,26 @@ func depart_from_city() -> void:
 func _open_panel(name: String) -> void:current_panel = name
 func _open_city(_index: int) -> void:_city_panel.show()
 func _on_cargo_changed() -> void:world_view.update_train()
+
+
+func roamer_encounter(cell: Vector2i) -> bool:
+	if not _world_session.encounter_roamers(cell):return false
+	var kind: String = roamers.pending
+	var event := InputEventKey.new()
+	event.physical_keycode = KEY_ESCAPE
+	_world_session.handle_key(event) # Actual NO control; retains earned cargo.
+	engine.brake = false
+	driver.trace.append("SOURCE ROAMER NO %s at%s" % [kind,cell])
+	return true
+
+func advance_fauna() -> bool:
+	if not campaign_session.advance_fauna():return false
+	finish_ambush()
+	return true
+
+func finish_ambush() -> void:
+	var kind: String = driver.campaign.pending.scene
+	while not driver.campaign.pending.is_empty():
+		press(KEY_ENTER)
+	engine.brake = false
+	driver.trace.append("SOURCE AMBUSH REPORTS %s cargo%s" % [kind,wagons.snapshot()])

@@ -1,0 +1,17 @@
+{
+	"bundled_dataset_sha256": {
+		"CARTE.FIC": "8e1067619b254d57717348fefedc1b5013eb1d7ba23200a815e36f9b856d811a",
+		"campaign.json": "49ceab06476dae0626f4be5454e5304541dfe2ad5c9a182dd4c4cb92e8ca26e4",
+		"commerce.json": "7af388740db5f4bb3d8740f89f91caded4d51f421d487320c413b79169e1eb48",
+		"villes-decoded.data": "874a4717840fffe2ae6573b268d765b2946d7ac6278fe198017c07b6bca7768d"
+	},
+	"executable": "/Users/cdeust/Developments/Transartica/.toolchain/Godot.app/Contents/MacOS/Godot",
+	"executable_sha256": "9c3df95b2d0c88dc6a91624933b0114d4af56318cdca4bf6c3a20d0e720cdbc4",
+	"failures": [],
+	"input_path": "Viewport.push_input: engine/map/options/START/F5/LOAD/name/Enter",
+	"mode": "SOURCE-DEBUG",
+	"passed": true,
+	"renderer": "macOS",
+	"save_path": "/Users/cdeust/Developments/Transartica/.cache/world-recovery-desktop/session-25761/ARTIFACT.SAV",
+	"save_sha256": "0bb50d3c8de3ff1a264c9ad31a122c2f75c5fe2d2c086cb4a3197c542712d25b"
+}

@@ -1,0 +1,12 @@
+{
+  "asset": "game/assets/travel/terrain/ice-master.png",
+  "sha256": "a4262c13404ec54e8f7fa5c1de60e8f557824a90e9d0d657dbf2594ce972c145",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "source": "imagegen original authored ice material 2026-09-30",
+  "status": "integration delegated; native review pending",
+  "original_game_pixels": false,
+  "presentation_only": true
+}

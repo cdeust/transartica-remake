@@ -1,0 +1,18 @@
+{
+  "asset": "game/assets/travel/terrain/forest-master.png",
+  "sha256": "66f06cbf8acdf01caf04f22dfd791d5bf6648e8f6e7a1776c5168e4a29f6af2e",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "alpha_range": [
+    0,
+    253
+  ],
+  "layout": "3columns2rows; equal512px cells",
+  "source": "imagegen original authored forest atlas,2026-09-30",
+  "status": "integrated and captured with native OpenGL; aesthetic acceptance remains with owner",
+  "original_game_pixels": false,
+  "presentation_only": true,
+  "evidence": "tasks/validation/terrain-forest.png"
+}

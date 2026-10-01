@@ -67,6 +67,11 @@ static func run(state) -> void:
 				if screen_x < -64 or screen_x > 320:
 					continue
 			var reload: int = car.reload
+			# WDECOR51eb/5640: machine-gun sound at12;52df/5715 cannon at23.
+			if car.class == Setup.MACHINE_GUN and reload == 12:
+				state.audio_cue_requested.emit(0x60ab if side == 0 else 0x60b7)
+			elif car.class == Setup.CANNON and reload == 23:
+				state.audio_cue_requested.emit(0x60c3 if side == 0 else 0x60cf)
 			car.reload -= 1
 			if car.class == Setup.CANNON and reload == 22:
 				_cannon(state, side, index)
@@ -81,6 +86,7 @@ static func _cannon(state, side: int, index: int) -> void:
 	var target := relative / 64
 	var car: Dictionary = state.trains[opposite][target]
 	if car.health > 0:
+		state.audio_cue_requested.emit(0x60db) # WDECOR5373/5791 cannon impact.
 		car.health -= 1
 		state.events.append({"kind": "impact", "side": opposite, "wagon": target})
 		#0x18f7–1959: locomotive companion mirrors the lower health.
@@ -109,6 +115,7 @@ static func _machine_gun(state, side: int, index: int) -> void:
 		return #0x5258/1843 first occupied cell, friendly fire preserved.
 
 static func destroy(state, side: int, index: int) -> void:
+	state.audio_cue_requested.emit(0x60f5) # WDECORccb→60e7 wagon destruction.
 	var car: Dictionary = state.trains[side][index]
 	#0x0ae4/0b25/0c10: destroying either engine half also clears its partner.
 	var linked := -1

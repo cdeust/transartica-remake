@@ -73,10 +73,13 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 
 
-func _unhandled_key_input(event: InputEvent) -> void:
-	if visible and event is InputEventKey and event.pressed and event.physical_keycode in [KEY_SPACE, KEY_ENTER]:
+func _input(event: InputEvent) -> void:
+	if not visible or not event is InputEventKey:
+		return
+	if event.pressed and not event.echo and event.physical_keycode in [KEY_SPACE, KEY_ENTER]:
 		request_exit()
-		get_viewport().set_input_as_handled()
+	# All keys (including release/echo) are shielded before host shortcuts and GUI.
+	get_viewport().set_input_as_handled()
 
 
 func _draw() -> void:

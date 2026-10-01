@@ -11,7 +11,21 @@ static func advance(app) -> void:
 		app.journey.resume_after_works()
 	var was_blocked: bool = app.journey.blocked
 	app._advance_calendar()
+	# Source TIME herd/nomad movement is independent of enemy-train records.
+	for observation in app.roamers.advance(app.network,app._trade_rng,app.campaign.state.hazards.traps):
+		app.campaign.state.observe_enemy(observation.code-1,observation.cell,app.calendar,app.stoup)
+	if app._world_session.encounter_roamers(app.journey.position):
+		return
+	# Source TIME0x85f..8ed: roaming wolves can reach a stationary player.
+	if app.campaign.advance_fauna():
+		return
 	var old_cell: Vector2i = app.journey.position
+	if _entry_due(app):
+		if app._world_session.encounter_roamers(app.journey.next_cell()):
+			return
+		app.world.before_entry(app.journey.next_cell())
+		if app.campaign.before_entry(app.journey.next_cell()):
+			return
 	app.journey.advance(app.engine.speed)
 	if app.encounters.advance(old_cell):
 		return
@@ -26,9 +40,15 @@ static func advance(app) -> void:
 
 
 static func _handle_boundary(app, was_blocked: bool) -> void:
+	if was_blocked:
+		return
+	if app._world_session.handle_boundary():
+		return
 	var station: int = app.journey.station_result()
 	if station >= 0:
 		app._open_city(station)
+		return
+	if app.journey.at_station() and app.campaign.station(station):
 		return
 	if app.journey.at_reversal_event():
 		if not was_blocked:
@@ -51,3 +71,12 @@ static func _handle_boundary(app, was_blocked: bool) -> void:
 		reason = "station without city (message 34)" if station == -1 else "story station (message %d)" % (absi(station) + 20)
 	app.room_controls.announce("Stopped before %s at (%d, %d) · not yet ported" % [reason, ahead.x, ahead.y])
 	app.status_label.text = "Stopped before %s at (%d, %d).\nR starts a new run." % [reason, ahead.x, ahead.y]
+
+
+# Same strict remainder/phase guard as TrainJourney.advance (TIME0x0567..063f).
+# Standing beside a story location must never trigger a pre-entry handler.
+static func _entry_due(app) -> bool:
+	if app.journey.blocked or app.engine.speed <= 0:
+		return false
+	var progress: int = mini(app.network.progress_speed(app.journey.position, app.journey.heading, app.engine.speed), app.journey.MAX_PROGRESS_SPEED)
+	return app.journey.phase + 1 >= app.journey.PHASES_PER_TILE and app.journey.distance_ticks + int(progress / 20) > app.journey.MAX_DISTANCE_REMAINDER

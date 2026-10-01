@@ -17,6 +17,7 @@ const HOTSPOTS := [
 ]
 
 var session
+var bindings
 var art
 var hover_id := ""
 var hover_hint := ""
@@ -117,7 +118,7 @@ func _needle(center: Vector2, ratio: float) -> void:
 
 
 func _draw_status() -> void:
-	var text := "L / A: STOKERS   ARROWS: REGULATOR   B: BRAKE   SPACE: PAUSE   F5 / F6: SAVE / LOAD   H: HELP"
+	var text := "%s / %s: STOKERS   %s: BRAKE   %s: PAUSE   %s: SAVE   %s: OPTIONS   %s: HELP" % [key_label("lignite"),key_label("anthracite"),key_label("brake"),key_label("pause"),key_label("save"),key_label("options"),key_label("help")]
 	if not hover_hint.is_empty():
 		text = hover_hint
 	if hover_id == "gauges":
@@ -125,10 +126,10 @@ func _draw_status() -> void:
 	if notice_seconds > 0:
 		text = notice
 	if session.paused:
-		text = "PAUSED · Space or click the clock to resume"
+		text = "PAUSED · %s to resume" % key_label("pause")
 	draw_rect(Rect2(260, 12, 1080, 34), Color(0.025, 0.04, 0.055, 0.90))
 	_text(Vector2(280, 36), text, 18)
-	_text(Vector2(585, 760), "ENGINE ROOM  ·  CALIBRATION PREVIEW", 15)
+	_text(Vector2(585, 760), "ENGINE ROOM", 15)
 
 
 func _draw_round_highlights() -> void:
@@ -146,7 +147,7 @@ func _draw_round_highlights() -> void:
 func _draw_help() -> void:
 	draw_rect(Rect2(370, 330, 860, 348), Color(0.035, 0.055, 0.07, 0.97))
 	draw_rect(Rect2(370, 330, 860, 348), GOLD, false, 2)
-	var lines := ["THE ENGINE ROOM", "1. Click each stoker to feed the fire: OFF / NORMAL / FAST.", "2. Drag the wheel above the furnace to set the regulator.", "3. Build steam; speed rises when the reserve is sufficient.", "4. Apply the brake with B or the lever in the lower panel.", "Space: pause · F5: save · F6: load · R: restart · Esc: close", "Lignite is also money. Leaving the stokers on spends your reserves.", "M: drive the eastbound trial route · real-time pace is provisional."]
+	var lines := ["THE ENGINE ROOM", "1. Click each stoker to feed the fire: OFF / NORMAL / FAST.", "2. Drag the wheel above the furnace to set the regulator.", "3. Build steam; speed rises when the reserve is sufficient.", "4. Apply the brake with %s or the lever in the lower panel." % key_label("brake"), "%s: pause · %s: save · %s: options · Esc: close" % [key_label("pause"),key_label("save"),key_label("options")], "Lignite is also money. Leaving the stokers on spends your reserves.", "%s: open the railway map · use the clock to accelerate time." % key_label("map")]
 	for index in lines.size():
 		_text(Vector2(394, 370 + index * 38), lines[index], 20 if index == 0 else 17)
 
@@ -155,8 +156,24 @@ func _draw_event() -> void:
 	draw_rect(Rect2(400, 375, 800, 190), Color(0.04, 0.055, 0.065, 0.97))
 	draw_rect(Rect2(400, 375, 800, 190), Color("#c8754d"), false, 2)
 	_text(Vector2(430, 425), session.engine.event_message.to_upper(), 26)
-	_text(Vector2(430, 468), "Original event reached. Its continuation is not implemented.", 18)
-	_text(Vector2(430, 510), "Simulation stopped. F6: load your save · R: restart.", 18)
+	_text(Vector2(430, 468), "The journey has stopped.", 18)
+	_text(Vector2(430, 510), "%s: open options to load a save or start a new journey." % key_label("options"), 18)
+
+
+func key_label(action: String) -> String:
+	var defaults = preload("res://scripts/key_bindings.gd").DEFAULTS
+	return OS.get_keycode_string(bindings.keys[action] if bindings != null else defaults[action])
+
+
+func hotspot_hint(hotspot: Array) -> String:
+	var hint: String = hotspot[2]
+	var action: String = hotspot[0]
+	if action == "gauges":
+		return hint
+	if action == "regulator":
+		return "REGULATOR · drag the engineer · %s / %s" % [key_label("regulator_down"),key_label("regulator_up")]
+	var command := "journal" if action == "journal" else action
+	return hint.get_slice(" · ",0)+" · "+key_label(command)
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -178,7 +195,7 @@ func _pointer_move(point: Vector2) -> void:
 	for hotspot in HOTSPOTS:
 		if _contains(hotspot, point):
 			hover_id = hotspot[0]
-			hover_hint = hotspot[2]
+			hover_hint = hotspot_hint(hotspot)
 			hover_rect = hotspot[1]
 			break
 	var actor_hover := -1

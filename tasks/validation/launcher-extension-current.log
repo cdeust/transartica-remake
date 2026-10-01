@@ -1,0 +1,91 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4
+
+SCRIPT ERROR: Parse Error: Function "_score_position()" not found in base self.
+          at: GDScript::reload (res://scripts/game_audio.gd:192)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/main.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://tests/test_save_extensions.gd:0)
+ERROR: Failed to load script "res://tests/test_save_extensions.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript.cpp:3041)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+          at: @implicit_new (res://scripts/main.gd:36)
+          GDScript backtrace (most recent call first):
+              [0] @implicit_new (res://scripts/main.gd:36)
+              [1] run (res://tests/test_save_extensions.gd:13)
+SCRIPT ERROR: Invalid call. Nonexistent function 'attach' in base 'Nil'.
+          at: _build_interface (res://scripts/main_interface.gd:27)
+          GDScript backtrace (most recent call first):
+              [0] _build_interface (res://scripts/main_interface.gd:27)
+              [1] _build_interface (res://scripts/main.gd:126)
+              [2] _ready (res://scripts/main.gd:82)
+              [3] run (res://tests/test_save_extensions.gd:16)
+SCRIPT ERROR: Invalid call. Nonexistent function 'attach' in base 'Nil'.
+          at: _ready (res://scripts/main.gd:83)
+          GDScript backtrace (most recent call first):
+              [0] _ready (res://scripts/main.gd:83)
+              [1] run (res://tests/test_save_extensions.gd:16)
+SCRIPT ERROR: Invalid call. Nonexistent function 'present' in base 'Nil'.
+          at: _test_campaign (res://tests/test_save_extensions.gd:42)
+          GDScript backtrace (most recent call first):
+              [0] _test_campaign (res://tests/test_save_extensions.gd:42)
+              [1] run (res://tests/test_save_extensions.gd:23)
+SCRIPT ERROR: Invalid assignment of property or key 'text_accumulator' with value of type 'float' on a base object of type 'Nil'.
+          at: _test_works (res://tests/test_save_extensions.gd:53)
+          GDScript backtrace (most recent call first):
+              [0] _test_works (res://tests/test_save_extensions.gd:53)
+              [1] run (res://tests/test_save_extensions.gd:24)
+SCRIPT ERROR: Invalid call. Nonexistent function 'tick_mines' in base 'Nil'.
+          at: _test_mine (res://tests/test_save_extensions.gd:64)
+          GDScript backtrace (most recent call first):
+              [0] _test_mine (res://tests/test_save_extensions.gd:64)
+              [1] run (res://tests/test_save_extensions.gd:25)
+SCRIPT ERROR: Invalid call. Nonexistent function 'visit_city' in base 'Nil'.
+          at: _test_world (res://tests/test_save_extensions.gd:83)
+          GDScript backtrace (most recent call first):
+              [0] _test_world (res://tests/test_save_extensions.gd:83)
+              [1] run (res://tests/test_save_extensions.gd:26)
+SCRIPT ERROR: Invalid access to property or key 'wagons' on a base object of type 'Nil'.
+          at: resume_pending (res://scripts/world_encounters.gd:97)
+          GDScript backtrace (most recent call first):
+              [0] resume_pending (res://scripts/world_encounters.gd:97)
+              [1] _test_manual (res://tests/test_save_extensions.gd:99)
+              [2] run (res://tests/test_save_extensions.gd:27)
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array'.
+          at: move_trains (res://scripts/tactical_weapons.gd:7)
+          GDScript backtrace (most recent call first):
+              [0] move_trains (res://scripts/tactical_weapons.gd:7)
+              [1] step (res://scripts/tactical_combat.gd:147)
+              [2] _test_manual (res://tests/test_save_extensions.gd:102)
+              [3] run (res://tests/test_save_extensions.gd:27)
+SCRIPT ERROR: Modulo by zero error in operator '%'.
+          at: enemy_ai (res://scripts/tactical_weapons.gd:32)
+          GDScript backtrace (most recent call first):
+              [0] enemy_ai (res://scripts/tactical_weapons.gd:32)
+              [1] step (res://scripts/tactical_combat.gd:148)
+              [2] _test_manual (res://tests/test_save_extensions.gd:102)
+              [3] run (res://tests/test_save_extensions.gd:27)
+SCRIPT ERROR: Invalid access to property or key 'visible' on a base object of type 'Nil'.
+          at: _test_manual (res://tests/test_save_extensions.gd:106)
+          GDScript backtrace (most recent call first):
+              [0] _test_manual (res://tests/test_save_extensions.gd:106)
+              [1] run (res://tests/test_save_extensions.gd:27)
+SCRIPT ERROR: Invalid access to property or key 'world' on a base object of type 'Dictionary'.
+          at: _test_atomic (res://tests/test_save_extensions.gd:152)
+          GDScript backtrace (most recent call first):
+              [0] _test_atomic (res://tests/test_save_extensions.gd:152)
+              [1] run (res://tests/test_save_extensions.gd:29)
+SCRIPT ERROR: Invalid call. Nonexistent function 'visit_city' in base 'Nil'.
+          at: _test_legacy (res://tests/test_save_extensions.gd:171)
+          GDScript backtrace (most recent call first):
+              [0] _test_legacy (res://tests/test_save_extensions.gd:171)
+              [1] run (res://tests/test_save_extensions.gd:30)
+ERROR: snapshot retains campaign/world/works/UI extensions
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:33)
+ERROR: manual combat extension restores: Encounters save is invalid; current session kept
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_save_extensions.gd:33)

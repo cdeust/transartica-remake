@@ -1,0 +1,106 @@
+{
+  "phase": "native_acceptance_passed",
+  "at": "2026-09-26T16:04:24.157429+00:00",
+  "host": "codex",
+  "session": "01a0de5b-0ec1-7fd0-b2ad-60d277cc13cd",
+  "worktree": "/Users/cdeust/Developments/Transartica/.Codex/worktrees/codex-hook-pr-20260926",
+  "branch": "test/codex-hook-pr-20260926",
+  "expected_remote_head": "ccdf0f9c7b623027d337ca6c094e785308572680",
+  "native_probe_session": "01a0de72-e266-7152-97fe-cf8f2a5e89cc",
+  "native_probe_exit": 0,
+  "native_probe_cortex_receipt": true,
+  "native_probe_rollout_after_exit": false,
+  "review": "independent review: doc-only, no assets/game changes, clean worktree",
+  "acceptance": "After measured push use read-only checks; no manual dispose counts as native automatic cleanup.",
+  "verified_at": "2026-09-26T16:08:02.454506+00:00",
+  "pr": "https://github.com/cdeust/transartica-remake/pull/2",
+  "is_draft": true,
+  "remote_head": "ccdf0f9c7b623027d337ca6c094e785308572680",
+  "automatic_worktree_removed": true,
+  "automatic_local_branch_removed": true,
+  "ownership_entry_removed": true,
+  "manual_dispose_called": false,
+  "existing_claude_worktree_retained": true,
+  "second_session": "01a0de77-57a4-72c3-a029-c898d3a0db0b",
+  "second_rollout_observed_before_end": true,
+  "second_cortex_receipt": true,
+  "second_rollout_after_end": false,
+  "startup_dispatch_direct_trace": "passed",
+  "native_events": [
+    {
+      "event": "SessionStart",
+      "session": "01a0de7a-b30d-7613-a4b8-9bd6cb535e62",
+      "cwd": "/Users/cdeust/Developments/Transartica",
+      "exit": 0,
+      "elapsed_seconds": 0.11424225009977818,
+      "result": {
+        "owner": "codex:01a0de7a-b30d-7613-a4b8-9bd6cb535e62",
+        "session": "01a0de7a-b30d-7613-a4b8-9bd6cb535e62",
+        "registered": [],
+        "instruction": "Register each newly created worktree with --host codex --session 01a0de7a-b30d-7613-a4b8-9bd6cb535e62; preserve evidence and dispose immediately after push.",
+        "purged": []
+      }
+    },
+    {
+      "event": "Stop",
+      "session": "01a0de7a-b30d-7613-a4b8-9bd6cb535e62",
+      "cwd": "/Users/cdeust/Developments/Transartica",
+      "exit": 0,
+      "elapsed_seconds": 0.08743229112587869,
+      "result": []
+    },
+    {
+      "event": "SessionEnd",
+      "session": "01a0de7a-b30d-7613-a4b8-9bd6cb535e62",
+      "cwd": "/Users/cdeust/Developments/Transartica",
+      "exit": 0,
+      "elapsed_seconds": 0.543156041065231,
+      "result": [
+        {
+          "path": "/Users/cdeust/.codex/thread-writer-locks/01a0de7a-b30d-7613-a4b8-9bd6cb535e62.lock",
+          "protected": "active process uses /Users/cdeust/.codex/thread-writer-locks/01a0de7a-b30d-7613-a4b8-9bd6cb535e62.lock"
+        }
+      ]
+    }
+  ],
+  "recorder": "temporary PATH python3 wrapper forwards original argv/stdin to real interpreter; original hook configuration and trust unchanged",
+  "recorder_source": "#!/opt/homebrew/opt/python@3.14/bin/python3.14\nimport json, os, subprocess, sys, time\nfrom pathlib import Path\nREAL = '/opt/homebrew/opt/python@3.14/bin/python3.14'\nAUDIT = '/Users/cdeust/Developments/Transartica/disk-hygiene-0p7anna8/native-hook-events.jsonl'\nif '/Users/cdeust/Developments/disk-hygiene/disk_hygiene.py' not in sys.argv:\n    os.execv(REAL, [REAL, *sys.argv[1:]])\npayload = sys.stdin.buffer.read()\nevent = json.loads(payload)\nstarted = time.monotonic()\nproc = subprocess.run([REAL, *sys.argv[1:]], input=payload, capture_output=True)\nrecord = {'event':event.get('hook_event_name'), 'session':event.get('session_id'), 'cwd':event.get('cwd'), 'exit':proc.returncode, 'elapsed_seconds':time.monotonic()-started}\ntry:\n    record['result'] = json.loads(proc.stdout)\nexcept ValueError:\n    record['result'] = 'non-JSON output'\nwith open(AUDIT, 'a') as stream:\n    stream.write(json.dumps(record)+'\\n')\nsys.stdout.buffer.write(proc.stdout)\nsys.stderr.buffer.write(proc.stderr)\nsys.exit(proc.returncode)\n",
+  "recorder_sha256": "2b396136b840fda2ad567d8c63d7a591a5096d8fd1d6568f2e56374f549669ef",
+  "cleanup_pending_at_session_end": "native writer lock held; automatically retried after exit",
+  "final_probe_rollout_absent": true,
+  "final_probe_cortex_receipt_present": true,
+  "ci": "no configured checks reported for test PR",
+  "native_cli": "codex-cli 0.157.1",
+  "native_test_processes": "all four exec probes exited 0",
+  "temporary_recorder_bytes": 2098,
+  "second_start_observation": {
+    "session": "01a0de77-57a4-72c3-a029-c898d3a0db0b",
+    "rollout_exists_while_running": true,
+    "observed": {
+      "session": "01a0de77-57a4-72c3-a029-c898d3a0db0b",
+      "file": "/Users/cdeust/.codex/sessions/2026/09/26/rollout-2026-09-26T18-05-58-01a0de77-57a4-72c3-a029-c898d3a0db0b.jsonl",
+      "native_hygiene_start_context": false,
+      "size": 125026,
+      "record_types": [
+        "session_meta",
+        "event_msg",
+        "response_item",
+        "world_state",
+        "turn_context"
+      ]
+    }
+  },
+  "scope": "documentation-only draft PR; no game code edited; concurrent main checkout changes preserved",
+  "cleanup_verified": {
+    "test_worktree_absent": true,
+    "test_local_branch_absent": true,
+    "recorder_directory_absent": true,
+    "test_processes_absent": true,
+    "empty_Codex_parents_removed": true,
+    "existing_claude_worktree_preserved": true,
+    "retained_artifacts": [
+      "draft PR #2 and remote branch",
+      "this evidence file"
+    ]
+  }
+}
