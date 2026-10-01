@@ -276,3 +276,43 @@ and other sessions’ work remain protected. No remote publication performed.
 - [x] Preserve evidence; dispose registered artifact scratch and410668647bytes of redundant builds. Unpublished worktree/app and Windows archive retained.
 
 Travel-renderer preference remains unanswered. This iteration improves effects shared by either presentation. It does not claim a new directional side-view map. New changes remain on feat/living-effects; the earlier approved push is complete.
+
+## Motion design : handoff Opus, 1 octobre 2026
+
+- [x] Consigner les corrections du propriétaire sur l'ignition et les effets Gatling.
+- [x] Figer les modifications de production ; conserver les changements non commitées sur feat/living-effects.
+- [x] Préparer [le handoff avec captures et défauts confirmés](handoff-motion-design-opus-20261001.md).
+- [x] Vérifier le cache graphique natif après correction du fichier canonique wagon-01.png.
+- [x] Corriger le montage Gatling et l'alignement des pieds des acteurs sur les toits (vérifié en capture native).
+- [x] Examiner la séquence complète d'ignition et corriger les défauts signalés (flamme coupée, fumée sans accumulation, tuyère en escalier).
+- [ ] Obtenir l'acceptation artistique sur les animations natives.
+
+Les fixtures combat préservent les états source avant/après. Les ancrages de
+présentation restent défectueux ; cette itération n'est pas déclarée terminée.
+Le fichier canonique de locomotive est corrigé localement, sans nouveau push.
+
+### Itération Opus, 1 octobre 2026 (soir) — non commitée, aucun push
+
+Décision du propriétaire, 1 octobre 2026 : les scènes dynamiques ne gardent pas
+le rythme temps réel ECS (« la pause active est déjà amplement suffisante ») ;
+la carte du monde conserve une vitesse jouable. Règles et RNG par tick inchangées.
+
+- [x] Combat ×2 (`tactical_scene.PACE`) : un tick source toutes les40ms au lieu de80. Glissement des trains entre ticks (vitesse courante, bornes source).
+- [x] Lanceur : lancement/montée ×1,5, vol/impact ×2 (`launcher_session.PACE`). Armement et carte du monde inchangés.
+- [x] Fusée : courbe présentée à vitesse non décroissante (PAV + moyenne5), écart max1,4px aux poses BERTA ; Hermite cubique à la cadence d'affichage.
+- [x] Jet : cœur dense, traînée qui s'estompe sans coupure, écrasement/évasement sur le plateau. Nuage au sol alimenté à la base, front qui roule, levée après décollage ; tramage Bayer.
+- [x] Vol sur carte : défilement continu des cellules CARTE, missile interpolé, traînée continue.
+- [x] Gatling : asset original `gatling.png` (cellules mesurées) ; vue de dos complète, vue de face = socle + coiffe six bouches. Rotation, échauffement, recul, flash, traceurs, ricochets.
+- [x] Douilles laiton dessinées, éjectées depuis la culasse, rebond et repos sur le toit.
+- [x] Canon : bouclier, frein de bouche, culasse ; flash, onde, fumée latérale.
+- [x] Ancrage unique arme/flash/traceur ; pieds des acteurs sur la surface réelle du sprite (affichage et clic).
+- [x] Explosions : flash blanc, halo additif, onde au sol, braises à traînée de suie, fumée tramée qui s'érode ; secousse limitée à l'affichage.
+- [x] Parité : combat à ×1 même hash `bae607f4…` ; fusée35/35 états BERTA identiques (fixtures épinglées à ×1).
+- [x] Tests : test_blast_detail, test_rocket_ignition, test_tactical_art_cache, test_living_effects, test_tactical_combat (headless), test_launcher (natif) : PASS.
+- [ ] Canon vu de dos encore trop trapu : asset dédié souhaitable (comme gatling.png).
+- [ ] Coût CPU au pic de charge : médiane3,7ms, mais p9510,1–10,5ms et max ~16ms (référence précédente7,0/7,2ms). À optimiser.
+- [ ] Soldats : déplacement encore case par case ; interpolation de présentation à faire.
+- [ ] Facteurs de cadence (×2, ×1,5) à valider par le propriétaire en jeu.
+- [ ] Export, lancement Windows, acceptation artistique : non faits.
+
+Preuves : `validation/opus-combat-motion-20261001.mp4` (×2), `validation/opus-rocket-motion-20261001.mp4` (cadencé, jusqu'à l'impact), `validation/opus-combat-model-20261001.json` (état source à ×1).

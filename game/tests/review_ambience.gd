@@ -57,6 +57,7 @@ func run() -> void:
 	app.encounters.enemies.slots[0] = [1,origin.x-40,origin.y-7,2,0,0,0,10]
 	check(launcher.open() and launcher.action(107),"production launcher and ARM")
 	for tick in 5: launcher.advance(3.0/50.0)
+	launcher.pace_enabled = false # source-parity capture: one BERTA step per60ms
 	check(launcher.action(108),"production FIRE")
 	var phases := {}
 	while launcher.model.phase != "report":

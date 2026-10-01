@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://sgc6lsgihhqu"
-path="res://.godot/imported/locomotive-hero.png-f9587515d7eea098fc18bb5585fbe391.ctex"
+uid="uid://d1uaowxf8c21t"
+path="res://.godot/imported/gatling.png-079e05bf9cd0504e0fba909cb99d5538.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/combat/locomotive-hero.png"
-dest_files=["res://.godot/imported/locomotive-hero.png-f9587515d7eea098fc18bb5585fbe391.ctex"]
+source_file="res://assets/weapons/gatling.png"
+dest_files=["res://.godot/imported/gatling.png-079e05bf9cd0504e0fba909cb99d5538.ctex"]
 
 [params]
 

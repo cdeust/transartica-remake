@@ -6,7 +6,7 @@ const MASTERS := [preload("res://assets/combat/train-master.png"),
 	preload("res://assets/combat/wagons-master-04-10.png"),
 	preload("res://assets/combat/wagons-master-10-17.png"),
 	preload("res://assets/combat/wagons-master-17-25.png")]
-const HERO := preload("res://assets/combat/locomotive-hero.png")
+const HERO := preload("res://assets/combat/wagon-01.png")
 const HERO_REGION := Rect2i(16,35,2002,673) # source: measured alpha>=128 bounds, locomotive-consistency.md.
 const REGIONS := {
 	1:[0,Rect2i(34,120,796,245)],

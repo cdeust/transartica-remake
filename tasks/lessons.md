@@ -113,3 +113,24 @@ Anchor flashes and smoke through the same current sprite registration used for d
 Successful save restore and New Game must clear transient visual caches, including a visible paused launcher. OPTIONS freezes the existing cache. Prove both paths through the actual application.
 
 Numerical renderer regressions need translated map coordinates and all vehicle types. Keep the best valid sampled chord during bisection; keep the full-length acceptance and missing-history rejection.
+
+## Owner effect-quality correction, 1 October 2026
+
+A small flame sprite plus enlarged smoke puffs does not satisfy rocket ignition or Noita effect detail. Evaluate the complete animated launch against primary visual references; passing state-isolation tests and isolated screenshots cannot establish artistic acceptance.
+
+Replacing a runtime override does not complete an asset correction while the
+canonical wagon-01.png still shows the rejected locomotive. Keep the numbered
+locomotive asset and its actual runtime consumer consistent.
+
+The owner rejects the current Gatling effects as visually poor. Verify an
+actual sustained firing sequence at game scale; a muzzle stamp and one tracer
+are insufficient evidence of a detailed weapon animation.
+
+Do not use Amiga technical limits as a ceiling for the new artistic direction.
+Combat effects need animation between original simulation ticks. Rocket ground
+smoke must accumulate against the wagon deck near ignition before spreading.
+
+The owner reports animation bugs and requests Opus motion-design help. Freeze
+production changes for the handoff. State-isolation tests cannot establish
+motion quality; inspect complete native firing and ignition sequences before
+claiming artistic acceptance.

@@ -1,0 +1,294 @@
+{
+	"actors": [
+		{
+			"count": 3,
+			"direction": 6,
+			"id": 0,
+			"mammoth": false,
+			"processed": -1,
+			"roof": 1,
+			"side": 1,
+			"x": 11,
+			"y": -1
+		},
+		{
+			"count": 8,
+			"direction": 6,
+			"id": 1,
+			"mammoth": false,
+			"processed": -1,
+			"roof": 1,
+			"side": 1,
+			"x": 18,
+			"y": -1
+		},
+		{
+			"count": 4,
+			"direction": 8,
+			"id": 2,
+			"mammoth": false,
+			"processed": -1,
+			"roof": 1,
+			"side": 1,
+			"x": 46,
+			"y": -1
+		},
+		{
+			"count": 9,
+			"direction": 3,
+			"id": 4,
+			"mammoth": false,
+			"processed": 7,
+			"roof": -1,
+			"side": 1,
+			"x": 70,
+			"y": 0
+		},
+		{
+			"count": 4,
+			"direction": 5,
+			"id": 5,
+			"mammoth": false,
+			"processed": 7,
+			"roof": -1,
+			"side": 1,
+			"x": 63,
+			"y": 0
+		},
+		{
+			"count": 15,
+			"direction": 5,
+			"id": 6,
+			"mammoth": false,
+			"processed": 7,
+			"roof": -1,
+			"side": 1,
+			"x": 72,
+			"y": 0
+		}
+	],
+	"aggressiveness": 41,
+	"ai_direction": 1,
+	"ai_wagon": 3,
+	"ai_wait": 76,
+	"charges": [],
+	"columns": 100,
+	"initial_pools": {
+		"guns": 2,
+		"mammoths": 0,
+		"soldiers": 10
+	},
+	"next_id": 7,
+	"offsets": [
+		448,
+		492
+	],
+	"original": [
+		[
+			1,
+			0,
+			0,
+			0
+		],
+		[
+			21,
+			0,
+			0,
+			0
+		],
+		[
+			2,
+			0,
+			0,
+			0
+		],
+		[
+			3,
+			0,
+			0,
+			0
+		],
+		[
+			17,
+			0,
+			0,
+			0
+		],
+		[
+			23,
+			0,
+			0,
+			10
+		],
+		[
+			11,
+			0,
+			0,
+			0
+		],
+		[
+			12,
+			0,
+			0,
+			0
+		]
+	],
+	"outcome": 0,
+	"remainder": 0.0,
+	"scan": 119,
+	"scan_side": 1,
+	"seed": "420",
+	"settled": false,
+	"state": "8520229686643053763",
+	"sweep": 7,
+	"ticks": 45,
+	"trains": [
+		[
+			{
+				"class": 5,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 25,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 8,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 22,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 23,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 6,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 1,
+				"health": 3,
+				"quantity": 10,
+				"reload": 0
+			},
+			{
+				"class": 2,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 3,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			}
+		],
+		[
+			{
+				"class": 5,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 8,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 6,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 6,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 1,
+				"health": 3,
+				"quantity": 9,
+				"reload": 0
+			},
+			{
+				"class": 6,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 1,
+				"health": 3,
+				"quantity": 21,
+				"reload": 0
+			},
+			{
+				"class": 6,
+				"health": 0,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 2,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 6,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 6,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 2,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 2,
+				"health": 3,
+				"quantity": 0,
+				"reload": 0
+			},
+			{
+				"class": 3,
+				"health": 3,
+				"quantity": 0,
+				"reload": 9
+			}
+		]
+	],
+	"velocities": [
+		0,
+		1
+	],
+	"version": 1
+}

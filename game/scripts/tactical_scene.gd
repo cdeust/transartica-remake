@@ -20,12 +20,31 @@ var wagon_bounds := {}
 var lights: Array = []
 var audio
 var living = preload("res://scripts/living_effects.gd").new()
+var weapon_motion = preload("res://scripts/tactical_weapon_motion.gd").new()
+var _visual_frame := false
+var _visual_delta := 0.0
+var _visual_cursor := 0.0
+var _visual_boundary := 0.0
+var light_layer := Node2D.new() # Additive halos: flashes, tracers, hot sparks.
 const EffectGeometry = preload("res://scripts/tactical_effects_geometry.gd")
+# Owner decision1October2026: combat no longer runs at ECS real-time pace; the
+# active pause suffices. Each source tick and its rules/RNG are unchanged, only
+# its real-time duration is divided. Visual effects keep real time.
+const PACE := 2.0
+var pace := PACE
+var _clock_fraction := -1.0 # tick fraction pinned while source/visual steps emit
+var _steps_since_tick := 0
 
 func _ready() -> void:
 	super._ready()
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	hide()
+	var additive := CanvasItemMaterial.new()
+	additive.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	light_layer.material = additive
+	light_layer.draw.connect(_draw_light)
+	add_child(light_layer)
+	living.separate_light = true
 	for name in ["background", "actors-kit-00", "actors-kit-01", "actors-kit-04", "actors-kit-05", "actors-kit-08", "actors-kit-09", "effects-kit-04", "effects-kit-05", "effects-kit-06", "effects-kit-07", "effects-kit-08"]:
 		textures[name] = load("res://assets/combat/" + name + ".png")
 	for kind in range(1,26):
@@ -53,6 +72,7 @@ func open_battle(value) -> void:
 		for entry in lights:entry.node.queue_free()
 		lights.clear()
 		living.clear()
+		weapon_motion.clear()
 	state = value
 	show()
 	queue_redraw()
@@ -66,6 +86,9 @@ func _source_audio(offset: int) -> void:
 func _presentation_event(event: Dictionary) -> void:
 	var point: Vector2 = EffectGeometry.event_point(self,event)
 	var direction := Vector2(0,1 if event.get("side",0) == 0 else -1)
+	if event.kind in ["machinegun","cannon"]:
+		weapon_motion.fire(event.side,event.wagon,event.kind)
+		point = weapon_motion.mount(self,event.side,event.wagon,event.kind == "machinegun").muzzle
 	living.add(event.kind,point+Vector2(camera,0),direction)
 	if event.kind in ["impact","destroy"]:
 		_impact_fragments(event,point+Vector2(camera,0))
@@ -73,8 +96,51 @@ func _presentation_event(event: Dictionary) -> void:
 
 
 func _presentation_tick(seconds: float) -> void:
-	# Advance before each source tick's new events, including batched advances.
-	living.advance(seconds)
+	if not _visual_frame: return
+	var boundary: float = clampf(_visual_boundary,0,_visual_delta)
+	_advance_visual(maxf(0,boundary-_visual_cursor))
+	_visual_cursor = boundary
+	_visual_boundary += seconds/pace
+	_steps_since_tick = 0
+	_clock_fraction = 0.0 # events of this tick are born exactly at its boundary
+
+
+func _advance_visual(seconds: float) -> void:
+	living.advance(seconds,_visual_step)
+
+
+# Rotary rounds share the particle step; presentation only, no model access beyond reads.
+func _visual_step() -> void:
+	# Fraction from the50Hz visual clock, so emitters never see display-rate remainders.
+	_steps_since_tick += 1
+	_clock_fraction = clampf(_steps_since_tick*living.STEP*pace/state.STEP_SECONDS,0.0,1.0)
+	for shot in weapon_motion.step():
+		var mount: Dictionary = weapon_motion.mount(self,shot.side,shot.wagon,true)
+		var muzzle: Vector2 = mount.muzzle
+		var far: int = 1-shot.side
+		var target := EffectGeometry.wagon_at(self,far,muzzle.x)
+		var armour := false
+		var arrival := 190.0 if far == 1 else 61.0 # source: rail band beneath each train baseline.
+		var body: Rect2 = EffectGeometry.wagon(self,far,maxi(0,target)).rect
+		if target >= 0 and muzzle.x >= body.position.x and muzzle.x <= body.end.x:
+			armour = true
+			var surface := EffectGeometry.surface_y(self,far,target,muzzle.x)
+			arrival = surface+2+float(shot.round%5)*1.5 # source: authored spread over the armour face.
+		var floor_y := EffectGeometry.surface_y(self,shot.side,shot.wagon,muzzle.x+6)
+		var world := Vector2(camera,0)
+		living.fire_round(muzzle+world,mount.direction,shot.round,shot.heat,floor_y,absf(arrival-muzzle.y),armour,mount.breech+world)
+
+
+func _advance_battle(seconds: float) -> void:
+	# Tick callbacks timestamp births while preserving one unchanged model call.
+	_visual_frame = true
+	_visual_delta = seconds
+	_visual_cursor = 0
+	_visual_boundary = (state.STEP_SECONDS-state.remainder)/pace
+	state.advance(seconds*pace)
+	_advance_visual(maxf(0,seconds-_visual_cursor))
+	_visual_frame = false
+	_clock_fraction = -1.0
 
 
 func _impact_fragments(event: Dictionary, point: Vector2) -> void:
@@ -88,7 +154,7 @@ func _physics_process(delta: float) -> void:
 	if not visible or state == null or paused:
 		return
 	camera += edge_scroll * delta * 64
-	state.advance(delta)
+	_advance_battle(delta)
 	effects = effects.filter(func(effect): return state.ticks - effect.born < 23)
 	for entry in lights:
 		entry.node.energy = maxf(0.0,1.0-float(state.ticks-entry.born)/23.0)
@@ -104,18 +170,25 @@ func _draw() -> void:
 		return
 	frame()
 	begin_canvas()
+	# Presentation jolt on heavy blasts; UI text below is drawn without it.
+	var jolt: Vector2 = living.shake_offset()
+	if jolt != Vector2.ZERO:
+		var bounds := canvas_rect()
+		draw_set_transform(bounds.position+jolt*bounds.size.x/CANVAS.x,0,Vector2.ONE*bounds.size.x/CANVAS.x)
 	_draw_ground()
 	_train(0, 63)
 	_train(1, 192)
 	for actor in state.actors:
 		_actor(actor)
 	for charge in state.charges:
-		var point := _roof_point(charge.side,charge.slot)
+		var point := EffectGeometry.roof_point(self,charge.side,charge.slot)
 		_label(point,"●%d" % charge.fuse,5)
 	for effect in effects:
 		_effect(effect)
 	# World-position effects remain registered while the combat camera scrolls.
 	living.draw(self,Vector2(-camera,0))
+	begin_canvas()
+	light_layer.queue_redraw()
 	centered(9,"TRAIN COMBAT" + (" · PAUSED" if paused else ""),6)
 	text_at(Vector2(3,18),"← → CONVOY  ·  P PAUSE  ·  F5 SAVE  ·  F6 OPTIONS",5)
 	if selected_actor >= 0:
@@ -124,6 +197,13 @@ func _draw() -> void:
 		var car: Dictionary = state.trains[0][selected_wagon]
 		_status("WAGON %d · HULL %d/3 · %d ABOARD · GROUP %d · ENTER DEPLOY/FIRE" % [selected_wagon + 1,car.health,car.quantity,group_size])
 	draw_set_transform(Vector2.ZERO)
+
+func _draw_light() -> void:
+	if state == null: return
+	var bounds := canvas_rect()
+	var factor := bounds.size.x/CANVAS.x
+	light_layer.draw_set_transform(bounds.position+living.shake_offset()*factor,0,Vector2.ONE*factor)
+	living.draw_light(light_layer,Vector2(-camera,0))
 
 func _draw_ground() -> void:
 	# Source: measured authored background.png snow band170..650, track40..170.
@@ -167,6 +247,8 @@ func _train(side: int, _baseline: float) -> void:
 		# Debris uses the same isolated sprite coordinates as material occupancy.
 		wagon_bounds["%d/%d" % [side,index]] = Rect2(rect.position-used.position*factor,texture.get_size()*factor)
 		draw_texture_rect_region(texture,rect,used,Color(1,0.77,0.66) if side == 1 else Color.WHITE)
+		if car.health > 0 and car.class in [state.Setup.CANNON,state.Setup.MACHINE_GUN]:
+			weapon_motion.draw(self,self,side,index,car.class == state.Setup.MACHINE_GUN)
 		if side == 0:
 			_label(Vector2(rect.position.x+2,32),"%d:%d" % [source_index,car.health],4)
 
@@ -175,7 +257,7 @@ func _enemy_type(kind: int) -> int:
 	return classes.get(kind,25)
 
 func _actor(actor: Dictionary) -> void:
-	var point := _roof_point(actor.roof,actor.x) if actor.roof >= 0 else _field_point(actor.x,actor.y)
+	var point := EffectGeometry.roof_point(self,actor.roof,actor.x) if actor.roof >= 0 else _field_point(actor.x,actor.y)
 	actor_art.draw_actor(self,actor,point)
 	_label(point+Vector2(-4,4),str(actor.count),4)
 	if actor.id == selected_actor:
@@ -185,7 +267,16 @@ func _field_point(x: int,y: int) -> Vector2:
 	return Vector2(x*16-state.center_offset()-camera+8,61+96-y*16+16)
 
 func _roof_point(side: int,slot: int) -> Vector2:
-	return Vector2(304+state.offsets[side]-slot*16-camera,38 if side==0 else 171)
+	return Vector2(304+shown_offset(side)-slot*16-camera,38 if side==0 else 171)
+
+
+# Train offset glides between source ticks: next tick adds the current velocity
+# (move_trains applies velocities before the AI changes them). Display only.
+func shown_offset(side: int) -> float:
+	var fraction: float = _clock_fraction if _clock_fraction >= 0 else clampf(state.remainder/state.STEP_SECONDS,0.0,1.0)
+	var low: int = state.trains[side].size()*64-320-state.center_offset()
+	var high: int = state.columns*16-320-state.center_offset()
+	return clampf(state.offsets[side]+state.velocities[side]*fraction,mini(low,state.offsets[side]),maxi(high,state.offsets[side]))
 
 func _effect(effect: Dictionary) -> void:
 	var event: Dictionary = effect.event
@@ -212,7 +303,7 @@ func _gui_input(event: InputEvent) -> void:
 	for actor in state.actors:
 		if actor.side != 0:
 			continue
-		var actor_point := _roof_point(actor.roof,actor.x) if actor.roof>=0 else _field_point(actor.x,actor.y)
+		var actor_point := EffectGeometry.roof_point(self,actor.roof,actor.x) if actor.roof>=0 else _field_point(actor.x,actor.y)
 		if Rect2(actor_point-Vector2(12,22),Vector2(24,28)).has_point(point):
 			selected_actor = actor.id
 			selected_wagon = -1

@@ -1,0 +1,4 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4
+
+PASS: native A/B living effects CPU microseconds {"baseline":{"maximum_us":2,"median_us":1,"p95_us":2,"samples":60},"draw_measures":"CPU draw command submission, not GPU frame time","emitters_budget":128,"native_renderer":"Apple M4","particles_budget":2048,"peak":{"maximum_us":39795,"median_us":2536,"p95_us":2807,"samples":60},"update":{"maximum_us":3275,"median_us":812,"p95_us":1669,"samples":120}}
