@@ -1,0 +1,12 @@
+{
+	"after": {
+		"median_us": 421,
+		"p95_us": 523,
+		"samples": 128
+	},
+	"before": {
+		"median_us": 408,
+		"p95_us": 501,
+		"samples": 128
+	}
+}

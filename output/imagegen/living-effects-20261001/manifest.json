@@ -1,0 +1,19 @@
+{
+  "file": "game/assets/effects/living-atlas.png",
+  "sha256": "2bcdee4c261497f1e16050783ac404b9275cf844ed5ee2383ecb7b0cf7f4a4c7",
+  "generation": "exec-91dea65e-b514-4d95-a116-c6a7b2ab43ea.png",
+  "size": [
+    1024,
+    1536
+  ],
+  "grid": [
+    4,
+    6
+  ],
+  "alpha_bounds_threshold": 128,
+  "aliases": {
+    "shock-1": "shock-0",
+    "spark-1": "spark-0"
+  },
+  "pixel_editing": "none; RGBA copied unchanged; metadata crops measured only"
+}

@@ -1,5 +1,7 @@
 extends RefCounted
 signal audio_cue_requested(source_offset: int)
+signal presentation_event_requested(event: Dictionary)
+signal presentation_tick_started(seconds: float)
 
 # MIT. Domain state for WDECOR33. Offsets refer to the private ECS ALIS listing.
 const Setup = preload("res://scripts/combat_setup.gd")
@@ -144,6 +146,7 @@ func step() -> void:
 	if outcome != 0:
 		return
 	events.clear()
+	presentation_tick_started.emit(STEP_SECONDS)
 	ticks += 1
 	Weapons.move_trains(self)
 	Weapons.enemy_ai(self)
@@ -161,6 +164,9 @@ func step() -> void:
 			scan_side = 1 - scan_side
 			sweep += 1
 	actors = actors.filter(func(actor): return actor.count > 0)
+	# Emit each completed tick before the next step clears its event array.
+	for event in events:
+		presentation_event_requested.emit(event.duplicate(true))
 	check_end()
 
 func pools(side: int) -> Dictionary:

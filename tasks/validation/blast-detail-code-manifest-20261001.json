@@ -1,0 +1,17 @@
+{
+  "base": "ca1ece1b896a724d6c652e21020cb300924a5418",
+  "owner": "world_recovery",
+  "artistic_acceptance": "OPEN",
+  "files": {
+    "game/scripts/living_effects.gd": "fc4549797ecfd79ee2677c39162ea39cf8a33d875a506f591ced57fb6f62eac4",
+    "game/scripts/living_particles.gd": "ca7e865647e92f451c1d24ccf0bf264938210bb76454b9dfa96cccba038019d8",
+    "game/scripts/blast_pixel_volume.gd": "b9c01bdbec55b2b5f3401add4602db8a1cba515d61242596d599c1300adb6089",
+    "game/scripts/tactical_scene.gd": "70bb49dadad06d3b8af94c5509e8ceff8cfb2974122337266c767ff225179e86",
+    "game/scripts/tactical_weapon_motion.gd": "60e6dda1ff15401b70f155e4a6dfea0f0a341820a41455ab906f0ab12ee0a46f",
+    "game/tests/test_blast_detail.gd": "343c81a74e0bfc991c50b9fd0998756d3c5a10350fdbaa99829848c5417ba3be",
+    "game/tests/review_blast_detail.gd": "b3c388096979d9943f02645e861422924dc6aa7515d17a16e73f09cb310332c1",
+    "game/tests/benchmark_blast_detail.gd": "64ff6e61220bd8ede66655b8ba33e1c21091a6c8248abf014e37983a1dd504fc"
+  },
+  "patch_sha256": "f5f1b14726a5c37476486dd508df875bd61323393539cf221ac2334f6c9fc298",
+  "code_sha256": "d5390bc41a05c35877ab1b0adfebd2b34f511201cc7d2b8abb8446271d07e91e"
+}

@@ -260,3 +260,70 @@ Windows execution remains unverified because no Windows host was available.
 Cleanup removed453 822 049bytes of obsolete app/import caches and disposed the
 registered artifact-test temp after preserving evidence. Unpublished commits
 and other sessions’ work remain protected. No remote publication performed.
+
+## Living effects iteration, 1 October 2026
+
+- [x] Verify approved publication: origin/main79c80b28a5a7a9bf227269dcceac4b015b11e182.
+- [x] Assess combat-quality travel: directional art and a compatible renderer are feasible; uniform scaling cannot supply side perspective. See combat-view-feasibility-20261001.md.
+- [x] Add original-event muzzle/tracer, fracture debris, layered blasts and lingering smoke with an independent visual clock/RNG.
+- [x] Integrate launcher exhaust/impact, mine/work dust and lamps, furnace steam/embers and rigidly registered locomotive smoke.
+- [x] Correct renderer rounding at translated coordinates while preserving complete contacts and unchanged short-history rejection.
+- [x] Verify native attachments, OPTIONS pause, save/restore and New Game transient cleanup through independent review.
+- [x] Run complete Godot inventory:63 PASS records, no script/shader errors;33 Python tests pass.
+- [x] Measure native CPU effects submission at128emitters/2048particles: median3.129ms, p953.900ms. Fixed updates median0.844ms, p951.432ms. GPU frame time excluded.
+- [x] Independently approve integration after fixing stale transient caches and same-frame smoke registration.
+- [x] Verify actual rebuilt macOS executable: desktop input/save/load and28 native effect checks; source/craft gates zero findings.
+- [x] Preserve evidence; dispose registered artifact scratch and410668647bytes of redundant builds. Unpublished worktree/app and Windows archive retained.
+
+Travel-renderer preference remains unanswered. This iteration improves effects shared by either presentation. It does not claim a new directional side-view map. New changes remain on feat/living-effects; the earlier approved push is complete.
+
+## Motion design : handoff Opus, 1 octobre 2026
+
+- [x] Consigner les corrections du propriétaire sur l'ignition et les effets Gatling.
+- [x] Figer les modifications de production ; conserver les changements non commitées sur feat/living-effects.
+- [x] Préparer [le handoff avec captures et défauts confirmés](handoff-motion-design-opus-20261001.md).
+- [x] Vérifier le cache graphique natif après correction du fichier canonique wagon-01.png.
+- [x] Corriger le montage Gatling et l'alignement des pieds des acteurs sur les toits (vérifié en capture native).
+- [x] Examiner la séquence complète d'ignition et corriger les défauts signalés (flamme coupée, fumée sans accumulation, tuyère en escalier).
+- [ ] Obtenir l'acceptation artistique sur les animations natives.
+
+Les fixtures combat préservent les états source avant/après. Les ancrages de
+présentation restent défectueux ; cette itération n'est pas déclarée terminée.
+Le fichier canonique de locomotive est corrigé localement, sans nouveau push.
+
+### Itération Opus, 1 octobre 2026 (soir) — non commitée, aucun push
+
+Décision du propriétaire, 1 octobre 2026 : les scènes dynamiques ne gardent pas
+le rythme temps réel ECS (« la pause active est déjà amplement suffisante ») ;
+la carte du monde conserve une vitesse jouable. Règles et RNG par tick inchangées.
+
+- [x] Combat ×2 (`tactical_scene.PACE`) : un tick source toutes les40ms au lieu de80. Glissement des trains entre ticks (vitesse courante, bornes source).
+- [x] Lanceur : lancement/montée ×1,5, vol/impact ×2 (`launcher_session.PACE`). Armement et carte du monde inchangés.
+- [x] Fusée : courbe présentée à vitesse non décroissante (PAV + moyenne5), écart max1,4px aux poses BERTA ; Hermite cubique à la cadence d'affichage.
+- [x] Jet : cœur dense, traînée qui s'estompe sans coupure, écrasement/évasement sur le plateau. Nuage au sol alimenté à la base, front qui roule, levée après décollage ; tramage Bayer.
+- [x] Vol sur carte : défilement continu des cellules CARTE, missile interpolé, traînée continue.
+- [x] Gatling : asset original `gatling.png` (cellules mesurées) ; vue de dos complète, vue de face = socle + coiffe six bouches. Rotation, échauffement, recul, flash, traceurs, ricochets.
+- [x] Douilles laiton dessinées, éjectées depuis la culasse, rebond et repos sur le toit.
+- [x] Canon : bouclier, frein de bouche, culasse ; flash, onde, fumée latérale.
+- [x] Ancrage unique arme/flash/traceur ; pieds des acteurs sur la surface réelle du sprite (affichage et clic).
+- [x] Explosions : flash blanc, halo additif, onde au sol, braises à traînée de suie, fumée tramée qui s'érode ; secousse limitée à l'affichage.
+- [x] Parité : combat à ×1 même hash `bae607f4…` ; fusée35/35 états BERTA identiques (fixtures épinglées à ×1).
+- [x] Tests : test_blast_detail, test_rocket_ignition, test_tactical_art_cache, test_living_effects, test_tactical_combat (headless), test_launcher (natif) : PASS.
+- [x] Dégâts des wagons : cratères ouverts depuis le toit (bord déchiqueté), intérieur éventré, roussi ; les parties détachées du châssis tombent. Calcul à la résolution affichée (22–124ms par stade, contre178–285ms auparavant pour la locomotive).
+- [x] Gravité des armes : sur un wagon touché, l'arme tombe dans la brèche, inclinée, masquée par la paroi avant restante ; à la destruction elle est soulevée, tournoie et retombe couchée dans l'épave (`validation/opus-gun-fall-20261001.mp4`, dégâts forcés pour la revue).
+- [ ] Animaux, fantassins, espions : animation et lecture du combat à reprendre (demande du propriétaire, 1er octobre).
+- [ ] Canon vu de dos encore trop trapu : asset dédié souhaitable (comme gatling.png).
+- [ ] Coût CPU au pic de charge : médiane3,7ms, mais p9510,1–10,5ms et max ~16ms (référence précédente7,0/7,2ms). À optimiser.
+- [ ] Soldats : déplacement encore case par case ; interpolation de présentation à faire.
+- [ ] Facteurs de cadence (×2, ×1,5) à valider par le propriétaire en jeu.
+- [ ] Export, lancement Windows, acceptation artistique : non faits.
+
+Preuves : `validation/opus-combat-motion-20261001.mp4` (×2), `validation/opus-rocket-motion-20261001.mp4` (cadencé, jusqu'à l'impact), `validation/opus-combat-model-20261001.json` (état source à ×1).
+
+### Release intermédiaire privée, 1 octobre 2026
+
+- [x] Suite complète `game/test.sh` : 65 suites PASS, sortie 0.
+- [x] `tools/build_preview.py all` : `builds/Transartica-macOS.zip` (187011767 octets, sha256 b8082bea…) et `builds/Transartica-Windows.zip` (157834697 octets, sha256 c5f993ad…), voir `builds/manifest.json`.
+- [x] App macOS exportée lancée nativement : fenêtre titre affichée, aucune erreur de script après6s.
+- [ ] Windows : exporté sur macOS, exécution sur Windows non vérifiée.
+- Builds privés (données historiques) : non publiés sur GitHub. Code poussé sur `feat/living-effects` avec PR vers main.

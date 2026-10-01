@@ -1,0 +1,583 @@
+diff --git a/game/scripts/living_effects.gd b/game/scripts/living_effects.gd
+index 323e6e4..ea9d373 100644
+--- a/game/scripts/living_effects.gd
++++ b/game/scripts/living_effects.gd
+@@ -6,6 +6,8 @@ const STEP := 1.0/50.0 # source: existing ALIS50Hz visual cadence.
+ const MAX_EMITTERS := 128 # Authored peak budget; living-effects benchmark evidence.
+ const Particles = preload("res://scripts/living_particles.gd")
+ const Atlas = preload("res://scripts/living_effects_atlas.gd")
++const Volume = preload("res://scripts/blast_pixel_volume.gd")
++var volume = Volume.new()
+ var particles = Particles.new()
+ var atlas = Atlas.new()
+ var emitters: Array = []
+@@ -28,17 +30,24 @@ func add(kind: String, point: Vector2, direction := Vector2.RIGHT, scale := 1.0)
+ 	if kind in ["steam","smoke","dust"]: duration = 75
+ 	var emitter := {"kind":kind,"point":point,"direction":direction.normalized(),"age":0,"duration":duration,"explosive":explosive,"gun":gun,"scale":scale}
+ 	emitters.append(emitter)
++	volume.add(kind,point,direction.normalized(),scale)
+ 	if explosive or kind in ["impact","sparks","shot","melee","snow"]:
+ 		_burst(emitter,48 if explosive else 16)
+ 	if gun:
+-		particles.launch("projectile",point,direction.normalized()*180*scale,10,Vector2(8,1)*scale,Color("#fff1c2"),scale)
++		var amount := 3 if kind == "machinegun" else 1
++		for shot in amount:
++			var aim := direction.normalized().rotated(rng.randf_range(-0.025,0.025)) # source: authored narrow tracer cone, native blast-detail animation.
++			particles.launch("projectile",point,aim*(750 if kind == "machinegun" else 600)*scale,12,Vector2(6,0.25)*scale,Color("#fff1c2"),scale)
++		if kind == "machinegun":
++			for casing in 4:
++				particles.launch("debris",point,Vector2(rng.randf_range(-35,-12),rng.randf_range(-25,-10))*scale,65,Vector2(0.75,0.25)*scale,Color("#bd914d"),scale)
+ 	_plume(emitter)
+ 
+ 
+ func fragments(point: Vector2, colors: Array) -> void:
+ 	# The actual removed wagon texels supply fragment material colors.
+ 	for color in colors:
+-		particles.launch("debris",point,Vector2(rng.randf_range(-45,45),rng.randf_range(-65,-15)),75,Vector2(2,2),color)
++		particles.launch("debris",point,Vector2(rng.randf_range(-45,45),rng.randf_range(-65,-15)),75,Vector2(rng.randf_range(0.5,1.25),rng.randf_range(0.25,0.75)),color)
+ 
+ 
+ func advance(seconds: float) -> void:
+@@ -47,6 +56,7 @@ func advance(seconds: float) -> void:
+ 	while remainder >= STEP or is_equal_approx(remainder,STEP):
+ 		remainder = maxf(0,remainder-STEP)
+ 		particles.step()
++		volume.step()
+ 		for emitter in emitters:
+ 			emitter.age += 1
+ 			if emitter.age % 4 == 0 and emitter.age < emitter.duration/2:
+@@ -56,26 +66,21 @@ func advance(seconds: float) -> void:
+ 
+ func draw(canvas: CanvasItem, offset := Vector2.ZERO) -> void:
+ 	if not atlas.loaded: atlas.load_art()
+-	for emitter in emitters:
+-		var point: Vector2 = emitter.point+offset
+-		if emitter.age < 8 and (emitter.explosive or emitter.kind == "impact"):
+-			var diameter: float = float(emitter.age+1)*6*emitter.scale
+-			atlas.draw(canvas,"shock-0",point,Vector2.ONE*diameter,Color(1,0.82,0.42,1.0-emitter.age/8.0))
+-		if emitter.gun and emitter.age < 6:
+-			var tip: Vector2 = point+emitter.direction*11*emitter.scale
+-			atlas.draw(canvas,"muzzle-%d" % mini(3,emitter.age/2),tip,Vector2(22,14)*emitter.scale,Color.WHITE,emitter.direction.angle())
++	volume.draw(canvas,offset)
+ 	particles.draw(canvas,atlas,offset)
+ 
+ 
+ func clear() -> void:
+ 	emitters.clear()
+ 	particles.items.clear()
++	volume.clear()
+ 	remainder = 0
+ 	serial = 0
+ 	emitted = 0
+ 
+ 
+ func _plume(emitter: Dictionary) -> void:
++	if emitter.explosive or emitter.gun or emitter.kind == "impact": return
+ 	var rocket: bool = emitter.kind in ["rocket","rocket-exhaust"]
+ 	var smoke: bool = emitter.explosive or emitter.gun or rocket or emitter.kind in ["impact","smoke","steam","dust"]
+ 	var scale: float = emitter.scale
+@@ -93,4 +98,4 @@ func _burst(emitter: Dictionary, amount: int) -> void:
+ 	for index in amount:
+ 		var material := "snow" if index%3 == 0 or emitter.kind == "snow" else "spark"
+ 		var velocity: Vector2 = Vector2.from_angle(rng.randf_range(PI,TAU))*rng.randf_range(20,70)*emitter.scale
+-		particles.launch(material,emitter.point,velocity,45 if material == "spark" else 75,Vector2(2,2)*emitter.scale,Color("#ffd27a") if material == "spark" else Color("#dbe5ea"),emitter.scale)
++		particles.launch(material,emitter.point,velocity,45 if material == "spark" else 75,Vector2.ONE*rng.randf_range(0.25,0.75)*emitter.scale,Color("#ffd27a") if material == "spark" else Color("#dbe5ea"),emitter.scale)
+diff --git a/game/scripts/living_particles.gd b/game/scripts/living_particles.gd
+index 9a1bf7b..2e568cb 100644
+--- a/game/scripts/living_particles.gd
++++ b/game/scripts/living_particles.gd
+@@ -19,6 +19,7 @@ func step() -> void:
+ 		particle.age += 1
+ 		if particle.kind in ["snow","spark","debris","ember"]:
+ 			particle.velocity.y += GRAVITY*STEP*particle.scale
++			particle.angle += particle.velocity.x*STEP*0.1
+ 		particle.point += particle.velocity*STEP
+ 	items = items.filter(func(p):return p.age < p.life)
+ 
+@@ -27,6 +28,10 @@ func draw(canvas: CanvasItem, atlas, offset := Vector2.ZERO) -> void:
+ 	for particle in items:
+ 		var progress: float = float(particle.age)/particle.life
+ 		var color: Color = particle.color
++		if particle.kind in ["spark","ember","debris"]:
++			var heat := maxf(0,1.0-progress*3.0)
++			var incandescent := Color("#fff1b5").lerp(Color("#e55b20"),1-heat)
++			color = color.lerp(incandescent,heat)
+ 		color.a *= 1-progress
+ 		var point: Vector2 = (particle.point+offset).round()
+ 		var name: String = particle.kind
+@@ -37,10 +42,15 @@ func draw(canvas: CanvasItem, atlas, offset := Vector2.ZERO) -> void:
+ 		var extent: Vector2 = particle.extent
+ 		if particle.kind in ["smoke","steam"]: extent *= 1+progress*2
+ 		if particle.kind == "projectile":
+-			canvas.draw_line(point-particle.velocity.normalized()*8,point,color,1)
++			canvas.draw_line(point-particle.velocity.normalized()*extent.x,point,color,extent.y)
+ 		elif particle.kind in ["debris","snow","spark","ember"]:
+ 			if particle.kind in ["spark","ember"]:
+-				canvas.draw_line(point-particle.velocity.normalized()*3,point,Color(color, color.a*0.5),2)
+-			canvas.draw_rect(Rect2(point,extent),color)
++				canvas.draw_line(point-particle.velocity.normalized()*3,point,Color(color, color.a*0.35),particle.scale*0.5)
++			if particle.kind == "debris":
++				var corners := PackedVector2Array()
++				for corner in [Vector2.ZERO,Vector2(1,0),Vector2.ONE,Vector2(0,1)]:
++					corners.append(point+((corner-Vector2.ONE/2)*extent).rotated(particle.angle))
++				canvas.draw_colored_polygon(corners,color)
++			else: canvas.draw_rect(Rect2(point,extent),color)
+ 		else:
+ 			atlas.draw(canvas,name,point,extent,color,particle.angle)
+diff --git a/game/scripts/tactical_scene.gd b/game/scripts/tactical_scene.gd
+index a0084e5..28eed2f 100644
+--- a/game/scripts/tactical_scene.gd
++++ b/game/scripts/tactical_scene.gd
+@@ -20,6 +20,11 @@ var wagon_bounds := {}
+ var lights: Array = []
+ var audio
+ var living = preload("res://scripts/living_effects.gd").new()
++var weapon_motion = preload("res://scripts/tactical_weapon_motion.gd").new()
++var _visual_frame := false
++var _visual_delta := 0.0
++var _visual_cursor := 0.0
++var _visual_boundary := 0.0
+ const EffectGeometry = preload("res://scripts/tactical_effects_geometry.gd")
+ 
+ func _ready() -> void:
+@@ -53,6 +58,7 @@ func open_battle(value) -> void:
+ 		for entry in lights:entry.node.queue_free()
+ 		lights.clear()
+ 		living.clear()
++		weapon_motion.clear()
+ 	state = value
+ 	show()
+ 	queue_redraw()
+@@ -66,6 +72,9 @@ func _source_audio(offset: int) -> void:
+ func _presentation_event(event: Dictionary) -> void:
+ 	var point: Vector2 = EffectGeometry.event_point(self,event)
+ 	var direction := Vector2(0,1 if event.get("side",0) == 0 else -1)
++	if event.kind in ["machinegun","cannon"]:
++		weapon_motion.fire(event.side,event.wagon,event.kind)
++		if event.kind == "machinegun": point += direction*8
+ 	living.add(event.kind,point+Vector2(camera,0),direction)
+ 	if event.kind in ["impact","destroy"]:
+ 		_impact_fragments(event,point+Vector2(camera,0))
+@@ -73,8 +82,27 @@ func _presentation_event(event: Dictionary) -> void:
+ 
+ 
+ func _presentation_tick(seconds: float) -> void:
+-	# Advance before each source tick's new events, including batched advances.
++	if not _visual_frame: return
++	var boundary: float = clampf(_visual_boundary,0,_visual_delta)
++	_advance_visual(maxf(0,boundary-_visual_cursor))
++	_visual_cursor = boundary
++	_visual_boundary += seconds
++
++
++func _advance_visual(seconds: float) -> void:
+ 	living.advance(seconds)
++	weapon_motion.advance(seconds)
++
++
++func _advance_battle(seconds: float) -> void:
++	# Tick callbacks timestamp births while preserving one unchanged model call.
++	_visual_frame = true
++	_visual_delta = seconds
++	_visual_cursor = 0
++	_visual_boundary = state.STEP_SECONDS-state.remainder
++	state.advance(seconds)
++	_advance_visual(maxf(0,seconds-_visual_cursor))
++	_visual_frame = false
+ 
+ 
+ func _impact_fragments(event: Dictionary, point: Vector2) -> void:
+@@ -88,7 +116,7 @@ func _physics_process(delta: float) -> void:
+ 	if not visible or state == null or paused:
+ 		return
+ 	camera += edge_scroll * delta * 64
+-	state.advance(delta)
++	_advance_battle(delta)
+ 	effects = effects.filter(func(effect): return state.ticks - effect.born < 23)
+ 	for entry in lights:
+ 		entry.node.energy = maxf(0.0,1.0-float(state.ticks-entry.born)/23.0)
+@@ -167,6 +195,7 @@ func _train(side: int, _baseline: float) -> void:
+ 		# Debris uses the same isolated sprite coordinates as material occupancy.
+ 		wagon_bounds["%d/%d" % [side,index]] = Rect2(rect.position-used.position*factor,texture.get_size()*factor)
+ 		draw_texture_rect_region(texture,rect,used,Color(1,0.77,0.66) if side == 1 else Color.WHITE)
++		weapon_motion.draw(self,side,index,rect.position+Vector2(rect.size.x/2,0))
+ 		if side == 0:
+ 			_label(Vector2(rect.position.x+2,32),"%d:%d" % [source_index,car.health],4)
+ 
+diff --git a/game/scripts/blast_pixel_volume.gd b/game/scripts/blast_pixel_volume.gd
+new file mode 100644
+index 0000000..1815c94
+--- /dev/null
++++ b/game/scripts/blast_pixel_volume.gd
+@@ -0,0 +1,133 @@
++extends RefCounted
++# MIT. Authored granular blast volumes; no source damage or game RNG.
++# Material motion follows the Noita FAQ's rising gases and cooling matter.
++# Source: https://noitagame.com/ ; recipes calibrated by native blast-detail captures.
++const LIMIT := 4 # Authored texture budget reduced after23.6ms eight-field raster.
++const CELL := 0.5 # Authored fine pixel pitch: two native pixels at combat4x.
++const STEP := 1.0/50.0 # Existing ALIS presentation cadence.
++const PALETTE := [Color("#272d35"),Color("#663627"),Color("#cc4c20"),Color("#f58a27"),Color("#ffd66b"),Color("#fff4cd")]
++var fields: Array = []
++var rng := RandomNumberGenerator.new()
++var serial := 0
++
++func add(kind: String, point: Vector2, direction: Vector2, scale: float) -> void:
++	serial += 1
++	rng.seed = hash([kind,point,serial])
++	var blast := kind in ["destroy","dynamite","explosion","rocket-impact"]
++	var gun := kind in ["cannon","machinegun","muzzle"]
++	if not blast and not gun and kind != "impact": return
++	if fields.size() >= LIMIT:
++		var replace := fields.find(fields.filter(func(f):return not f.blast).front()) if fields.any(func(f):return not f.blast) else 0
++		fields.remove_at(replace)
++	var size := Vector2i(96,128) if blast else Vector2i(64,64)
++	var anchor := Vector2(size.x/2,size.y/2 if gun else size.y-18)
++	var field := {"kind":kind,"point":point,"direction":direction,"scale":scale,"blast":blast,"gun":gun,"age":0,"life":180 if blast else 65,"size":size,"anchor":anchor,"motes":[],"texture":null,"dirty":true,"bytes":PackedByteArray()}
++	field.bytes.resize(size.x*size.y*4)
++	var amount := 64 if blast else (32 if kind == "cannon" else 16)
++	for i in amount: field.motes.append(_mote(field,i))
++	fields.append(field)
++
++func _mote(field: Dictionary, index: int) -> Dictionary:
++	var angle := rng.randf_range(-PI,PI)
++	var radial := Vector2.from_angle(angle)
++	var speed := rng.randf_range(14,55) if field.blast else rng.randf_range(12,45)
++	var velocity: Vector2 = radial*speed
++	if field.gun: velocity = field.direction.rotated(rng.randf_range(-0.35,0.35))*speed
++	var point: Vector2 = radial*rng.randf_range(0,3)
++	if field.gun: point = field.direction*rng.randf_range(0,6)+field.direction.orthogonal()*rng.randf_range(-1,1)
++	var radius := rng.randi_range(3,7) if field.blast else rng.randi_range(2,4)
++	var mask: Array[Vector2i] = []
++	for y in range(-radius,radius+1):
++		for x in range(-radius,radius+1):
++			var distance := Vector2(x,y).length()/radius
++			if distance < rng.randf_range(0.72,1.08): mask.append(Vector2i(x,y))
++	# source: authored cooling distribution, native blast-detail animation.
++	return {"point":point,"velocity":velocity,"phase":angle,"mask":mask,"heat":rng.randf_range(0.75,1.0),"cool":rng.randf_range(0.012,0.035) if not field.gun else rng.randf_range(0.06,0.12),"shade":index%3,"life":rng.randi_range(100,180) if field.blast else rng.randi_range(20,50)} # source: authored cooling/lifetime recipe, native blast-detail animation.
++
++func step() -> void:
++	for field in fields:
++		field.age += 1
++		field.dirty = true
++		for mote in field.motes:
++			mote.heat = maxf(0,mote.heat-mote.cool)
++			# Authored counter-rotating eddies break the radial front into fingers.
++			var phase: float = field.age*0.09+mote.phase
++			var drift := Vector2(cos(phase)*9,sin(phase*0.7)*4-9)
++			mote.velocity = mote.velocity*0.95+drift*STEP
++			mote.point += (mote.velocity+drift)*STEP
++		field.motes = field.motes.filter(func(m):return field.age < m.life)
++	fields = fields.filter(func(f):return f.age < f.life)
++
++func draw(canvas: CanvasItem, offset: Vector2) -> void:
++	for field in fields:
++		if field.dirty: _raster(field)
++		var extent: Vector2 = Vector2(field.size)*CELL*field.scale
++		var origin: Vector2 = field.point+offset-field.anchor*CELL*field.scale
++		canvas.draw_texture_rect(field.texture,Rect2(origin,extent),false)
++
++func _raster(field: Dictionary) -> void:
++	var data: PackedByteArray = field.bytes
++	data.fill(0)
++	var width: int = field.size.x
++	var height: int = field.size.y
++	# Cold gas behind the incandescent front; shade varies per tiny parcel.
++	for hot in [false,true]:
++		for mote in field.motes:
++			if (mote.heat > 0.25) != hot: continue
++			var point := Vector2i((field.anchor+mote.point/CELL).round())
++			var color := _color(mote,field.age)
++			var red := color.r8
++			var green := color.g8
++			var blue := color.b8
++			var alpha := color.a8
++			for cell in mote.mask:
++				var x: int = point.x+cell.x
++				var y: int = point.y+cell.y
++				if x < 0 or y < 0 or x >= width or y >= height: continue
++				var index := (y*width+x)*4
++				data[index] = red
++				data[index+1] = green
++				data[index+2] = blue
++				data[index+3] = int(alpha*(1.0-cell.length_squared()/49.0*0.45))
++	field.bytes = data
++	if field.age < 9 and field.blast: _front(field)
++	var image := Image.create_from_data(field.size.x,field.size.y,false,Image.FORMAT_RGBA8,field.bytes)
++	if field.texture == null: field.texture = ImageTexture.create_from_image(image)
++	else: field.texture.update(image)
++	field.dirty = false
++
++func _color(mote: Dictionary, age: int) -> Color:
++	var heat: float = mote.heat
++	if heat <= 0.25:
++		var shade: float = 0.15+mote.shade*0.035 # source: authored ash palette, native blast-detail animation.
++		return Color(shade,shade+0.012,shade+0.028,0.5*(1.0-float(age)/mote.life)) # source: authored cool gas opacity/tint, native blast-detail animation.
++	var index := mini(PALETTE.size()-1,int(heat*(PALETTE.size()-1)))
++	var color: Color = PALETTE[index]
++	color.a = 0.9
++	return color
++
++func _front(field: Dictionary) -> void:
++	var radius: float = (field.age+1)*4.0
++	for index in 96:
++		var angle: float = TAU*index/96.0
++		var ripple := 1.0+sin(index*7.0+field.age)*0.09
++		var point := Vector2i((field.anchor+Vector2.from_angle(angle)*radius*ripple).round())
++		_write(field,point,Color(1,0.78,0.35,0.75*(1-field.age/9.0)))
++
++func _write(field: Dictionary, point: Vector2i, color: Color) -> void:
++	if point.x < 0 or point.y < 0 or point.x >= field.size.x or point.y >= field.size.y: return
++	var offset: int = (point.y*field.size.x+point.x)*4
++	field.bytes[offset] = color.r8
++	field.bytes[offset+1] = color.g8
++	field.bytes[offset+2] = color.b8
++	field.bytes[offset+3] = color.a8
++
++func clear() -> void:
++	fields.clear()
++	serial = 0
++
++func snapshot() -> Array:
++	var result := []
++	for field in fields:
++		result.append([field.kind,field.point,field.age,field.motes])
++	return result
+diff --git a/game/scripts/tactical_weapon_motion.gd b/game/scripts/tactical_weapon_motion.gd
+new file mode 100644
+index 0000000..5afdf6c
+--- /dev/null
++++ b/game/scripts/tactical_weapon_motion.gd
+@@ -0,0 +1,50 @@
++extends RefCounted
++# MIT. Authored rotary-barrel/recoil presentation, driven by actual source bursts.
++# Owner1October2026 permits modern continuous visual timing, not source-rule edits.
++const STEP := 1.0/50.0 # Shared presentation cadence, independent combat clock.
++var rigs := {}
++var remainder := 0.0
++
++func fire(side: int, wagon: int, kind: String) -> void:
++	var key := "%d/%d" % [side,wagon]
++	var rig: Dictionary = rigs.get(key,{"side":side,"wagon":wagon,"kind":kind,"phase":0.0,"speed":0.0,"recoil":0.0,"age":0})
++	rig.age = 0
++	rig.speed = 28.0 if kind == "machinegun" else 0.0
++	rig.recoil = 1.5 if kind == "machinegun" else 2.5
++	rigs[key] = rig
++
++func advance(seconds: float) -> void:
++	remainder += seconds
++	while remainder >= STEP or is_equal_approx(remainder,STEP):
++		remainder = maxf(0,remainder-STEP)
++		for key in rigs.keys():
++			var rig: Dictionary = rigs[key]
++			rig.age += 1
++			rig.phase += rig.speed*STEP
++			rig.speed *= 0.94
++			rig.recoil *= 0.65
++			if rig.age > 40: rigs.erase(key)
++
++func draw(canvas: CanvasItem, side: int, wagon: int, roof: Vector2) -> void:
++	var key := "%d/%d" % [side,wagon]
++	if not rigs.has(key): return
++	var rig: Dictionary = rigs[key]
++	if rig.kind != "machinegun": return
++	var direction := Vector2(0,1 if side == 0 else -1)
++	var cross := direction.orthogonal()
++	var base: Vector2 = roof-direction*rig.recoil
++	# Fine metal ribs and moving highlight sell rotation without moving rail contacts.
++	canvas.draw_circle(base,2.0,Color("#171f27"))
++	for barrel in 6:
++		var phase: float = rig.phase+TAU*barrel/6.0
++		var lateral: Vector2 = cross*cos(phase)*1.3
++		var start: Vector2 = base+lateral
++		var end: Vector2 = start+direction*8
++		var shade: float = (sin(phase)+1)/2
++		canvas.draw_line(start,end,Color("#27333f").lerp(Color("#9daab4"),shade),0.5)
++		canvas.draw_rect(Rect2(end-Vector2.ONE*0.3,Vector2.ONE*0.6),Color("#0d141d"))
++	canvas.draw_line(base+direction*3-cross*2,base+direction*3+cross*2,Color("#4d5d68"),0.6)
++
++func clear() -> void:
++	rigs.clear()
++	remainder = 0
+diff --git a/game/tests/test_blast_detail.gd b/game/tests/test_blast_detail.gd
+new file mode 100644
+index 0000000..85b6637
+--- /dev/null
++++ b/game/tests/test_blast_detail.gd
+@@ -0,0 +1,69 @@
++extends SceneTree
++# MIT. Modern continuous visual timing; source state and event boundaries unchanged.
++const Existing = preload("res://tests/test_living_effects.gd")
++const Scene = preload("res://scripts/tactical_scene.gd")
++var failures: Array[String] = []
++
++func _initialize() -> void:
++	var script: Script = Scene
++	if not script.can_instantiate(): quit(1); return
++	call_deferred("run")
++
++func snapshot(scene) -> String:
++	return JSON.stringify([scene.living.emitters,scene.living.particles.items,scene.living.volume.snapshot(),scene.weapon_motion.rigs])
++
++func make_scene():
++	var fixture = Existing.new()
++	var model = fixture.fresh()
++	fixture.free()
++	var scene = Scene.new()
++	root.add_child(scene)
++	scene.open_battle(model)
++	scene.set_physics_process(false)
++	return scene
++
++func check(condition: bool, label: String) -> void:
++	if not condition: failures.append(label)
++
++func run() -> void:
++	var scene = make_scene()
++	scene.living.add("destroy",Vector2(160,80))
++	var before := snapshot(scene)
++	scene._physics_process(1.0/50.0)
++	check(scene.state.ticks == 0,"visual subframe does not advance source combat tick")
++	check(snapshot(scene) != before and scene.living.emitters[0].age == 1,"granular motion advances between source ticks")
++	scene.paused = true
++	before = snapshot(scene)
++	scene._physics_process(1)
++	check(snapshot(scene) == before,"pause freezes gas, fragments and weapon rigs")
++	scene.free()
++	var batched = make_scene()
++	var sliced = make_scene()
++	batched._physics_process(3.0*batched.state.STEP_SECONDS)
++	for i in 12: sliced._physics_process(1.0/50.0)
++	var batch_state: Dictionary = batched.state.snapshot()
++	var slice_state: Dictionary = sliced.state.snapshot()
++	var fixture = Existing.new()
++	var control = fixture.fresh()
++	fixture.free()
++	control.advance(3.0*control.STEP_SECONDS)
++	check(JSON.stringify(batch_state) == JSON.stringify(control.snapshot()),"one model advance preserves exact complete source snapshot/RNG")
++	print("source remainder batched=",batch_state.get("remainder")," sliced=",slice_state.get("remainder"))
++	check(is_equal_approx(batch_state.remainder,slice_state.remainder),"source accumulator agrees to its existing float comparison")
++	batch_state.erase("remainder")
++	slice_state.erase("remainder")
++	check(JSON.stringify(batch_state) == JSON.stringify(slice_state),"batched source model/RNG matches twelve visual slices")
++	check(snapshot(batched) == snapshot(sliced),"batched event births preserve the same visual ages")
++	check(batched.living.emitters.any(func(e):return e.kind == "cannon" and e.age == 8),"first source cannon event is eight visual ticks old")
++	batched.free()
++	sliced.free()
++	var snapshots := []
++	for rate in [30,60,144]:
++		scene = make_scene()
++		for frame in rate*2: scene._physics_process(1.0/rate)
++		snapshots.append(snapshot(scene))
++		scene.free()
++	check(snapshots[0] == snapshots[1] and snapshots[1] == snapshots[2],"volume and weapon rig states match30/60/144 displayHz")
++	for failure in failures: push_error(failure)
++	if failures.is_empty(): print("PASS:50Hz sub-tick granular motion, pause, correctly aged batched source births and30/60/144Hz volume/weapon states")
++	quit(0 if failures.is_empty() else 1)
+diff --git a/game/tests/review_blast_detail.gd b/game/tests/review_blast_detail.gd
+new file mode 100644
+index 0000000..30a45fc
+--- /dev/null
++++ b/game/tests/review_blast_detail.gd
+@@ -0,0 +1,51 @@
++extends SceneTree
++# requires-native-renderer
++# MIT. Same actual source charge/guns, frame-by-frame artistic comparison.
++const Combat = preload("res://scripts/tactical_combat.gd")
++var scene
++var model
++var directory: String
++
++func _initialize() -> void:
++	OS.low_processor_usage_mode = false
++	directory = OS.get_environment("TRANSARTICA_BLAST_CAPTURE")
++	if directory.is_empty(): directory = ProjectSettings.globalize_path("res://../.cache/blast-after")
++	DirAccess.make_dir_recursive_absolute(directory)
++	call_deferred("run")
++
++func run() -> void:
++	root.size = Vector2i(1280,800)
++	var wagons = preload("res://scripts/train_wagons.gd").new()
++	wagons.wagons.append([11,0,0,0])
++	wagons.wagons.append([12,0,0,0])
++	var rng := RandomNumberGenerator.new()
++	rng.seed = 420 # Existing tactical comparison seed, unchanged before/after.
++	model = Combat.new()
++	model.begin(wagons,47,rng)
++	model.offsets = [448,448]
++	scene = preload("res://scripts/tactical_scene.gd").new()
++	scene.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
++	root.add_child(scene)
++	scene.open_battle(model)
++	scene.set_physics_process(false)
++	assert(model.fire(7) and model.fire(8))
++	for frame in 180: # Authored 3.6s observation, fixed source50Hz samples.
++		if frame == 12:
++			var actor = model.add_actor(0,29,-1,5,false,1,8)
++			assert(model.plant(actor.id,1))
++		if frame >= 12 and model.trains[1][7].health > 0:
++			model.scan_side = 0
++			model.scan = model.columns*7-1
++		scene._physics_process(1.0/50.0)
++		scene.queue_redraw()
++		await process_frame
++		await RenderingServer.frame_post_draw
++		assert(root.get_texture().get_image().save_png(directory+"/%04d.png" % frame) == OK)
++	assert(model.trains[1][7].health == 0)
++	var file := FileAccess.open(directory+"/model.json",FileAccess.WRITE)
++	file.store_string(JSON.stringify(model.snapshot(),"\t"))
++	file.close()
++	scene.queue_free()
++	await process_frame
++	print("PASS: captured180native50Hz samples of actual source guns and planted charge; destroyed wagon and final model snapshot retained")
++	quit()
+diff --git a/game/tests/benchmark_blast_detail.gd b/game/tests/benchmark_blast_detail.gd
+new file mode 100644
+index 0000000..f6713dd
+--- /dev/null
++++ b/game/tests/benchmark_blast_detail.gd
+@@ -0,0 +1,44 @@
++extends SceneTree
++# requires-native-renderer
++# MIT. Every measured native frame advances/rasterizes the bounded detail peak.
++const Effects = preload("res://scripts/living_effects.gd")
++class Surface extends Control:
++	var effects
++	var costs: Array = []
++	func _draw() -> void:
++		var start := Time.get_ticks_usec()
++		effects.draw(self)
++		costs.append(Time.get_ticks_usec()-start)
++
++func _initialize() -> void:
++	OS.low_processor_usage_mode = false
++	call_deferred("run")
++
++func run() -> void:
++	root.size = Vector2i(1280,800)
++	var surface := Surface.new()
++	surface.size = Vector2(1280,800)
++	surface.effects = Effects.new()
++	root.add_child(surface)
++	assert(surface.effects.atlas.load_art())
++	for index in Effects.MAX_EMITTERS: surface.effects.add("destroy",Vector2(index%16*75,index/16*85+50))
++	var update := []
++	for frame in 120: # Two source-clock seconds plus warmup observations.
++		var start := Time.get_ticks_usec()
++		surface.effects.advance(Effects.STEP)
++		update.append(Time.get_ticks_usec()-start)
++		surface.queue_redraw()
++		await process_frame
++		await RenderingServer.frame_post_draw
++	var result := {"draw":summary(surface.costs),"update":summary(update),"detail_fields":surface.effects.volume.LIMIT,"detail_parcels_per_blast":64,"common_emitters":Effects.MAX_EMITTERS,"sparse_particles":surface.effects.particles.LIMIT,"draw_scope":"CPU raster, texture upload call and command submission; excludesGPU frame time","renderer":RenderingServer.get_video_adapter_name()}
++	var file := FileAccess.open("res://../tasks/validation/blast-detail-benchmark-20261001.json",FileAccess.WRITE)
++	file.store_string(JSON.stringify(result,"\t"))
++	file.close()
++	print("PASS:120native advancing-detail frames at bounded peak "+JSON.stringify(result))
++	surface.queue_free()
++	await process_frame
++	quit()
++
++func summary(samples: Array) -> Dictionary:
++	samples.sort()
++	return {"samples":samples.size(),"median_us":samples[samples.size()/2],"p95_us":samples[int((samples.size()-1)*0.95)],"maximum_us":samples[-1]}

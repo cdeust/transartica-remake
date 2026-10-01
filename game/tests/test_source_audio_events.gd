@@ -102,6 +102,7 @@ func _test_oslo_chime(audio) -> void:
 
 func _test_tactical(audio) -> void:
 	var state = Tactical.new()
+	state.original = [[11,0]] # Source cannon wagon used by body-attached presentation.
 	state.trains = [[{"class":state.Setup.CANNON,"health":3,"quantity":0,"reload":23}],[{"class":state.Setup.CANNON,"health":3,"quantity":0,"reload":23}]]
 	app.encounters.manual_scene.set_physics_process(false)
 	app.encounters.manual_scene.open_battle(state)

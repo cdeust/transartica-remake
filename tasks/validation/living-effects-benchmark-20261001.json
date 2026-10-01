@@ -1,0 +1,24 @@
+{
+	"baseline": {
+		"maximum_us": 3,
+		"median_us": 1,
+		"p95_us": 2,
+		"samples": 60
+	},
+	"draw_measures": "CPU draw command submission, not GPU frame time",
+	"emitters_budget": 128,
+	"native_renderer": "Apple M4",
+	"particles_budget": 2048,
+	"peak": {
+		"maximum_us": 3946,
+		"median_us": 3129,
+		"p95_us": 3900,
+		"samples": 60
+	},
+	"update": {
+		"maximum_us": 1633,
+		"median_us": 844,
+		"p95_us": 1432,
+		"samples": 120
+	}
+}

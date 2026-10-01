@@ -71,6 +71,7 @@ static func run(state) -> void:
 			if car.class == Setup.MACHINE_GUN and reload == 12:
 				state.audio_cue_requested.emit(0x60ab if side == 0 else 0x60b7)
 			elif car.class == Setup.CANNON and reload == 23:
+				state.presentation_event_requested.emit({"kind":"cannon","side":side,"wagon":index})
 				state.audio_cue_requested.emit(0x60c3 if side == 0 else 0x60cf)
 			car.reload -= 1
 			if car.class == Setup.CANNON and reload == 22:
@@ -98,6 +99,8 @@ static func _cannon(state, side: int, index: int) -> void:
 			destroy(state, opposite, target)
 
 static func _machine_gun(state, side: int, index: int) -> void:
+	# Every source burst has a tracer, including shots that miss an actor.
+	state.presentation_event_requested.emit({"kind":"machinegun","side":side,"wagon":index})
 	var column: int = state.train_cell(side, index)
 	#0x5249 random reach for player's gun, entire column for enemy0x183d.
 	var last: int = state.rnd(4) if side == 0 else 6

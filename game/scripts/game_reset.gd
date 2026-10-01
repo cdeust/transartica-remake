@@ -4,6 +4,7 @@ extends RefCounted
 # source: main.gd new-game sequence plus tested campaign/world/works reset contracts.
 
 static func restart(app) -> void:
+	preload("res://scripts/presentation_reset.gd").clear(app)
 	app.encounters.reset()
 	app._boudoir_session.reset()
 	app.session.reset()

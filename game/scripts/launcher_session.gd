@@ -8,6 +8,10 @@ var app
 var scene
 var model
 var paused := false
+# Owner decision1October2026: dynamic scenes run faster than ECS real time; the
+# world map keeps its playable pace. Same BERTA/CARTE steps, shorter durations.
+const PACE := {"launch":1.5,"ascent":1.5,"flight":2.0,"impact":2.0}
+var pace_enabled := true
 
 
 func attach(owner) -> void:
@@ -61,7 +65,7 @@ func advance(delta: float) -> void:
 	if model == null or paused or not scene.visible:
 		return
 	var before: String = model.phase
-	model.advance(delta)
+	model.advance(delta*(PACE.get(model.phase,1.0) if pace_enabled else 1.0))
 	if model.phase in ["impact","report"] and not model.removed and model.geometry.target >= 0:
 		app.encounters.enemies.remove(model.geometry.target)
 		model.removed = true

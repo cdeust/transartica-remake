@@ -1,0 +1,10 @@
+{
+  "file": "game/assets/weapons/gatling.png",
+  "sha256": "b976fe061e763f50365a8e8fb226e4fbecc9b8ce3c0a8e4022762c5d5fd1ee29",
+  "dimensions": [
+    2075,
+    758
+  ],
+  "layout": "four equal horizontal cells; generated poses require native rotation/recoil verification",
+  "source": "original builtin imagegen output; unchanged pixels"
+}

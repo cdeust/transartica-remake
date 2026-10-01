@@ -12,6 +12,7 @@ var question := true
 var report: Dictionary = {}
 var lines: Array = []
 var _scene: Texture2D
+var ambience = preload("res://scripts/worksite_ambience.gd").new()
 
 
 func _ready() -> void:
@@ -46,9 +47,23 @@ func open_works(work_kind: String, text_lines: Array, is_question: bool) -> void
 
 
 func _load_scene() -> void:
+	ambience.clear()
 	var name := "mine" if mode == "mine" else "track-works"
 	var path := "res://assets/world-events/" + name + ".png"
 	_scene = load(path) as Texture2D if ResourceLoader.exists(path) else null
+
+
+func _physics_process(delta: float) -> void:
+	# Roamer subclasses draw different plates and have no worksite emitters.
+	if not visible or mode in ["nomads","mammoth-hunt"]: return
+	var app = get_parent()
+	if app != null and app.get("_boudoir_session") != null and app._boudoir_session.reception.visible:
+		return
+	var working: bool = not question
+	var accepted: Variant = get("_ok_result")
+	if accepted != null: working = accepted and int(get("countdown")) > 0
+	ambience.advance(delta,mode,working)
+	queue_redraw()
 
 
 func _draw() -> void:
@@ -69,6 +84,7 @@ func _draw() -> void:
 
 func _draw_scene(box: Rect2) -> void:
 	draw_texture_rect(_scene, box, false)
+	ambience.draw(self,mode)
 
 
 func _draw_button(box: Rect2, value: String) -> void:

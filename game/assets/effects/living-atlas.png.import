@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://sgc6lsgihhqu"
-path="res://.godot/imported/locomotive-hero.png-f9587515d7eea098fc18bb5585fbe391.ctex"
+uid="uid://cgwylgou07dyf"
+path="res://.godot/imported/living-atlas.png-f784387b95e8309da0937dbeafd0ec01.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/combat/locomotive-hero.png"
-dest_files=["res://.godot/imported/locomotive-hero.png-f9587515d7eea098fc18bb5585fbe391.ctex"]
+source_file="res://assets/effects/living-atlas.png"
+dest_files=["res://.godot/imported/living-atlas.png-f784387b95e8309da0937dbeafd0ec01.ctex"]
 
 [params]
 
