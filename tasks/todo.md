@@ -319,3 +319,11 @@ la carte du monde conserve une vitesse jouable. Règles et RNG par tick inchang�
 - [ ] Export, lancement Windows, acceptation artistique : non faits.
 
 Preuves : `validation/opus-combat-motion-20261001.mp4` (×2), `validation/opus-rocket-motion-20261001.mp4` (cadencé, jusqu'à l'impact), `validation/opus-combat-model-20261001.json` (état source à ×1).
+
+### Release intermédiaire privée, 1 octobre 2026
+
+- [x] Suite complète `game/test.sh` : 65 suites PASS, sortie 0.
+- [x] `tools/build_preview.py all` : `builds/Transartica-macOS.zip` (187011767 octets, sha256 b8082bea…) et `builds/Transartica-Windows.zip` (157834697 octets, sha256 c5f993ad…), voir `builds/manifest.json`.
+- [x] App macOS exportée lancée nativement : fenêtre titre affichée, aucune erreur de script après6s.
+- [ ] Windows : exporté sur macOS, exécution sur Windows non vérifiée.
+- Builds privés (données historiques) : non publiés sur GitHub. Code poussé sur `feat/living-effects` avec PR vers main.
