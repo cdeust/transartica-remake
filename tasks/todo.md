@@ -39,9 +39,13 @@ New changes remain local; no publication or merge is authorized.
 - [x] Tactical cadence: byte8375 is pass parity, not side (0x13a1/173e); player
   infantry was frozen, mammoths half speed. Both roofs swept per pass (0x1713,
   ALIS cswitch2 index=value+base); roof steps on 8548, fuses five passes.
-- [ ] Reported "commanded player mammoth did not move": not reproduced; the
-  native scene path (livestock deploy, Down) moves it 5→0 in10s before and
-  after the fix. Needs the owner's exact steps.
+- [ ] Reported "commanded player mammoth did not move": not reproduced. Scene
+  path (livestock deploy, Down) moved it 5→0 within10s pre-fix and in2.5s
+  post-fix. Faithful silent no-ops: Up/click above at y5 (0x1f27 y>=6 bound)
+  and S (split) on a mammoth. Needs the owner's exact steps.
+- Note: eight suites (campaign_fauna, campaign_visuals, city_list_icons,
+  game_boot, key_bindings, launcher, restore_city, startup_intro) hang under
+  --headless; run them with a window.
 - [x] Finish owner-scoped cleanup, preserving unpublished/concurrent work.
 
 Current proof: campaign-route-cleanup-native-after-20261001.log, source route
