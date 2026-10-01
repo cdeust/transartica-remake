@@ -78,7 +78,11 @@ static func wagon_at(scene, side: int, x: float) -> int:
 
 # Actor feet rest on the drawn roof; source slot x and rules stay unchanged.
 static func roof_point(scene, side: int, slot: int) -> Vector2:
-	var point: Vector2 = scene._roof_point(side,slot)
+	return roof_point_at(scene,side,slot)
+
+# Fractional slot for actors gliding between roof cells (presentation only).
+static func roof_point_at(scene, side: int, slot: float) -> Vector2:
+	var point: Vector2 = scene._roof_point(side,0)-Vector2(slot*16,0)
 	var index := wagon_at(scene,side,point.x)
 	if index < 0: return point
 	var rect: Rect2 = wagon(scene,side,index).rect

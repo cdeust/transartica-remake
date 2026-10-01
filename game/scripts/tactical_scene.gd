@@ -21,6 +21,7 @@ var lights: Array = []
 var audio
 var living = preload("res://scripts/living_effects.gd").new()
 var weapon_motion = preload("res://scripts/tactical_weapon_motion.gd").new()
+var actor_motion = preload("res://scripts/tactical_actor_motion.gd").new()
 var _visual_frame := false
 var _visual_delta := 0.0
 var _visual_cursor := 0.0
@@ -74,6 +75,7 @@ func open_battle(value) -> void:
 		lights.clear()
 		living.clear()
 		weapon_motion.clear()
+		actor_motion.clear()
 	state = value
 	show()
 	queue_redraw()
@@ -87,6 +89,8 @@ func _source_audio(offset: int) -> void:
 func _presentation_event(event: Dictionary) -> void:
 	var point: Vector2 = EffectGeometry.event_point(self,event)
 	var direction := Vector2(0,1 if event.get("side",0) == 0 else -1)
+	if event.kind == "melee":
+		actor_motion.melee(event)
 	if event.kind in ["machinegun","cannon"]:
 		weapon_motion.fire(event.side,event.wagon,event.kind)
 		point = weapon_motion.mount(self,event.side,event.wagon,event.kind == "machinegun").muzzle
@@ -115,6 +119,7 @@ func _visual_step() -> void:
 	# Fraction from the50Hz visual clock, so emitters never see display-rate remainders.
 	_steps_since_tick += 1
 	_clock_fraction = clampf(_steps_since_tick*living.STEP*pace/state.STEP_SECONDS,0.0,1.0)
+	actor_motion.step(self)
 	for landing in weapon_motion.settle(self): # dust and grit where a fallen gun lands
 		var base: Vector2 = weapon_motion.mount(self,landing.side,landing.wagon,true).base
 		living.add("dust",base+Vector2(camera,0),Vector2.UP,clampf(landing.speed/3.0,0.4,1.0))
@@ -186,6 +191,7 @@ func _draw() -> void:
 	_draw_ground()
 	_train(0, 63)
 	_train(1, 192)
+	actor_motion.draw(self,actor_art) # live groups plus fading removals
 	for actor in state.actors:
 		_actor(actor)
 	for charge in state.charges:
@@ -270,13 +276,12 @@ func _enemy_type(kind: int) -> int:
 	return classes.get(kind,25)
 
 func _actor(actor: Dictionary) -> void:
-	var point := EffectGeometry.roof_point(self,actor.roof,actor.x) if actor.roof >= 0 else _field_point(actor.x,actor.y)
-	actor_art.draw_actor(self,actor,point)
+	var point: Vector2 = actor_motion.point(self,actor)
 	_label(point+Vector2(-4,4),str(actor.count),4)
 	if actor.id == selected_actor:
 		draw_line(point+Vector2(-6,6),point+Vector2(6,6),GOLD,1)
 
-func _field_point(x: int,y: int) -> Vector2:
+func _field_point(x: float,y: float) -> Vector2:
 	return Vector2(x*16-state.center_offset()-camera+8,61+96-y*16+16)
 
 func _roof_point(side: int,slot: int) -> Vector2:
@@ -316,7 +321,7 @@ func _gui_input(event: InputEvent) -> void:
 	for actor in state.actors:
 		if actor.side != 0:
 			continue
-		var actor_point := EffectGeometry.roof_point(self,actor.roof,actor.x) if actor.roof>=0 else _field_point(actor.x,actor.y)
+		var actor_point: Vector2 = actor_motion.point(self,actor)
 		if Rect2(actor_point-Vector2(12,22),Vector2(24,28)).has_point(point):
 			selected_actor = actor.id
 			selected_wagon = -1
