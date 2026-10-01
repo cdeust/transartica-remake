@@ -175,14 +175,14 @@ func draw(scene, art) -> void:
 	for track in tracks.values():
 		var actor: Dictionary = track.actor
 		var foot := point(scene,actor)
-		var bob := 0.0
-		if moving(track):
-			bob = -absf(sin(track.phase))*(0.5 if actor.mammoth else 0.75) # source: authored stride lift, logical px.
 		var colour := Color.WHITE
 		if track.hit > 0: colour = colour.lerp(Color(1,0.42,0.36),track.hit/HIT)
 		if track.fade >= 0: colour.a = track.fade/FADE
-		var pose: int = art.pose_for(actor)
-		if track.crouch > 0 and not actor.mammoth: pose = 2 if actor.side == 0 else 6
-		elif moving(track) and not actor.mammoth: pose = 1 if actor.side == 0 else 5
-		elif not actor.mammoth: pose = 0 if actor.side == 0 else 4
-		art.draw_pose(scene,pose,foot+Vector2(0,bob),track.facing,colour)
+		if actor.mammoth:
+			var bob := -absf(sin(track.phase))*0.5 if moving(track) else 0.0 # source: authored stride lift, logical px.
+			art.draw_pose(scene,art.pose_for(actor),foot+Vector2(0,bob),track.facing,colour)
+			continue
+		var frame: int = art.STAND
+		if track.crouch > 0: frame = art.CROUCH
+		elif moving(track): frame = art.run_frame(track.phase)
+		art.draw_trooper(scene,actor.side,frame,foot,track.facing,colour)

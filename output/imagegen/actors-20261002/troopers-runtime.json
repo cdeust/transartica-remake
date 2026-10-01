@@ -1,0 +1,11 @@
+{
+  "file": "game/assets/combat/troopers.png",
+  "sha256": "e54e0931f4d0d7642e62ba4875d85ee9799978856c55a77fd13bcc2963e5f925",
+  "source": "output/imagegen/actors-20261002/troopers-concept-v2.png",
+  "source_sha256": "036edbc49926760e3b17b41fc08decf0530172327b3fbbe0081921d914c3a45d",
+  "builder": "game/tools/build_trooper_atlas.gd",
+  "texels_per_logical_px": 4,
+  "standing_height_logical_px": 13,
+  "frames_per_side": ["stand", "run a (contact)", "run b (down)", "run c (contact)", "run d (passing)", "crouch"],
+  "status": "first native integration; run-key order chosen, not owner-accepted; front/back headings absent (mirroring is interim); lattice polish pending"
+}

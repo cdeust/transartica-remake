@@ -357,8 +357,9 @@ Branche locale fix/combat-regressions basée sur main6dca252 ; aucun push dans c
 - [x] Miroir : un rectangle à largeur négative ne déplace pas sa position ; corrigé et vérifié par capture native (`test_tactical_actor_mirror`), clic et sélection sur le corps affiché.
 - [x] Modèle intact : modèle piloté par la scène identique au modèle nu (`test_tactical_actor_motion`). Suite complète 68 PASS.
 - [ ] Orientation : l'original dessine les acteurs au sol en tuiles (cputmap98) et ceux des toits en sprites 10+case ; son orientation n'est pas décodée. Le miroir est une présentation provisoire, pas une preuve des huit caps.
-- [ ] Intégrer la planche fantassins de Codex (`output/imagegen/actors-20261002`) : cycle de course, accroupi ; polissage au réseau de pixels, vues avant/arrière et revue du propriétaire en attente.
+- [x] Première intégration native de la planche fantassins de Codex : atlas `assets/combat/troopers.png` (outil `game/tools/build_trooper_atlas.gd`, alpha binaire, un corps connexe par cadre, 4 texels par pixel logique), pivot sur la colonne du casque, course a→b→c→d pilotée par la distance parcourue (deux images par pas), arrêt sur un appui, accroupi. Manifeste : `output/imagegen/actors-20261002/troopers-runtime.json`.
+- [ ] Fantassins : ordre des clés de course, cadence et taille à valider par le propriétaire en lecture native ; polissage au réseau de pixels ; vues avant/arrière (le miroir reste provisoire) ; montée sur le toit et mêlée sans pose dédiée.
 - [ ] Mammouths, loups, espions : hors de cette étape (planche mammouth à simplifier ; loups et espions hors effectif tactique).
 
-Preuve : `validation/actor-motion-glide-20261002.mp4` (lecture native pas à pas, avant correction du miroir).
+Preuves : `validation/actor-motion-glide-20261002.mp4` (avant correction du miroir), `validation/actor-motion-troopers-20261002.mp4` (atlas fantassins, lecture native pas à pas, 8 s).
 
