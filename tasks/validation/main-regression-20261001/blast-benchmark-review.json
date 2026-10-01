@@ -1,0 +1,20 @@
+{
+	"common_emitters": 128,
+	"detail_fields": 4,
+	"detail_parcels_per_blast": 64,
+	"draw": {
+		"maximum_us": 15322,
+		"median_us": 3764,
+		"p95_us": 10698,
+		"samples": 120
+	},
+	"draw_scope": "CPU raster, texture upload call and command submission; excludesGPU frame time",
+	"renderer": "Apple M4",
+	"sparse_particles": 2048,
+	"update": {
+		"maximum_us": 2654,
+		"median_us": 302,
+		"p95_us": 2067,
+		"samples": 120
+	}
+}

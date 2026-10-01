@@ -1,0 +1,4 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4
+
+PASS:120native advancing-detail frames at bounded peak {"common_emitters":128,"detail_fields":4,"detail_parcels_per_blast":64,"draw":{"maximum_us":18538,"median_us":3655,"p95_us":11362,"samples":120},"draw_scope":"CPU raster, texture upload call and command submission; excludesGPU frame time","renderer":"Apple M4","sparse_particles":2048,"update":{"maximum_us":3258,"median_us":269,"p95_us":2090,"samples":120}}

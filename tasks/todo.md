@@ -327,3 +327,15 @@ Preuves : `validation/opus-combat-motion-20261001.mp4` (×2), `validation/opus-r
 - [x] App macOS exportée lancée nativement : fenêtre titre affichée, aucune erreur de script après6s.
 - [ ] Windows : exporté sur macOS, exécution sur Windows non vérifiée.
 - Builds privés (données historiques) : non publiés sur GitHub. Code poussé sur `feat/living-effects` avec PR vers main.
+
+## Corrections après merge, 2 octobre 2026
+
+- [x] Corriger la sélection des wagons mobiles et pendant les secousses.
+- [x] Corriger le cache de matière/paroi/profil lorsqu'une épave remplace le sprite original.
+- [x] Garder le même transform pour corps, labels et lumières pendant les secousses.
+- [x] Rendre le test chaudière déterministe face à la pause de perte de focus, sans changer la pause de production.
+- [x] Vérifier les64 suites Godot et33 tests Python, campagne complète et sauvegarde/reprise incluses.
+- [x] Vérifier que les assets, shaders, animations et rythmes d'Opus sont conservés.
+
+Reproductions natives rouges avant et vertes après. [Rapport des corrections](combat-regression-fixes-20261001.md).
+Branche locale fix/combat-regressions basée sur main6dca252 ; aucun push dans cette tâche.

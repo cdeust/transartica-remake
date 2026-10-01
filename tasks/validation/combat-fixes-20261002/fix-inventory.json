@@ -1,0 +1,258 @@
+[
+  {
+    "suite": "run_tests.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_ambience.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_application_cadence.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_audio_routes.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_audio_session.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_authored_overview.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_automatic_combat.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_blast_detail.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_boudoir.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_camera_scale.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_campaign.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_campaign_corridor.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_campaign_encounters.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_campaign_fauna.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_campaign_route.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_campaign_session.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_campaign_visuals.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_city_list_icons.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_city_presentation.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_city_trade.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_combat.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_ecs_overview.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_ecs_panel.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_enemy_trains.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_engine_instruments.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_engine_travel_effects.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_finale.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_game_audio.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_game_boot.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_key_bindings.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_launcher.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_launcher_model.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_living_effects.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_map_discovery.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_map_entities.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_mines.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_original_panel.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_pixel_field.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_playable_trip.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_quarters.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_renderer_precision.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_restore_city.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_reverser.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_reverser_center.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_rocket_ignition.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_save_extensions.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_session_saves.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_source_audio_events.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_startup_intro.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_tactical_art_cache.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_tactical_combat.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_tactical_registration.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_terrain_water_art.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_train_journey.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_train_renderer.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_travel_terrain.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_travel_world.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_works_commit.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_world_actions.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_world_encounters.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_world_interaction.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_world_roamers.gd",
+    "pass": true
+  },
+  {
+    "suite": "test_world_session.gd",
+    "pass": true
+  },
+  {
+    "suite": "tests_engine_session.gd",
+    "pass": true
+  }
+]

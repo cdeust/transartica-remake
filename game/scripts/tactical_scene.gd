@@ -181,6 +181,8 @@ func _draw() -> void:
 	var factor := bounds.size.x/CANVAS.x
 	world_transform = Transform2D(0,Vector2.ONE*factor,0,bounds.position+jolt*factor)
 	draw_set_transform_matrix(world_transform)
+	for entry in lights:
+		entry.node.position = world_transform*(entry.point-Vector2(camera,0))
 	_draw_ground()
 	_train(0, 63)
 	_train(1, 192)
@@ -206,9 +208,7 @@ func _draw() -> void:
 
 func _draw_light() -> void:
 	if state == null: return
-	var bounds := canvas_rect()
-	var factor := bounds.size.x/CANVAS.x
-	light_layer.draw_set_transform(bounds.position+living.shake_offset()*factor,0,Vector2.ONE*factor)
+	light_layer.draw_set_transform_matrix(world_transform)
 	living.draw_light(light_layer,Vector2(-camera,0))
 
 func _draw_ground() -> void:
@@ -234,7 +234,11 @@ func _label(point: Vector2, value: String, font_size: int) -> void:
 	var pixels := maxi(1, roundi(font_size * factor))
 	var width := ThemeDB.fallback_font.get_string_size(value,HORIZONTAL_ALIGNMENT_LEFT,-1,pixels).x / factor
 	draw_rect(Rect2(point-Vector2(1,font_size+1),Vector2(width+2,font_size+3)),Color(0.03,0.06,0.08,0.9))
-	text_at(point,value,font_size)
+	# Keep output-pixel glyphs while restoring the shaken world transform.
+	# OriginalScreen.text_at resets that transform after every world label.
+	draw_set_transform(Vector2.ZERO)
+	draw_string(ThemeDB.fallback_font,world_transform*point,value,HORIZONTAL_ALIGNMENT_LEFT,-1,pixels,GOLD)
+	draw_set_transform_matrix(world_transform)
 
 func _train(side: int, _baseline: float) -> void:
 	var source_index := 0
@@ -308,7 +312,7 @@ func _gui_input(event: InputEvent) -> void:
 		return
 	if state == null or not event is InputEventMouseButton or not event.pressed or event.button_index!=MOUSE_BUTTON_LEFT:
 		return
-	var point := logical_point(event.position)
+	var point := logical_point(event.position)-living.shake_offset()
 	for actor in state.actors:
 		if actor.side != 0:
 			continue
@@ -322,10 +326,9 @@ func _gui_input(event: InputEvent) -> void:
 			return
 	if point.y >= 27 and point.y < 38:
 		var index := clampi(int(point.x / 320 * state.trains[0].size()),0,state.trains[0].size()-1)
-		camera = 128 + state.offsets[0] - index * 64
+		camera = 128 + shown_offset(0) - index * 64
 	elif point.y>=38 and point.y<64:
-		selected_wagon = int((320+state.offsets[0]-camera-point.x)/64)
-		selected_wagon = clampi(selected_wagon,0,state.trains[0].size()-1)
+		selected_wagon = EffectGeometry.wagon_at(self,0,point.x)
 		selected_actor = -1
 		group_size = mini(30,state.trains[0][selected_wagon].quantity)
 	elif selected_actor>=0 and point.y>=64 and point.y<171:
@@ -393,4 +396,4 @@ func _impact_light(event: Dictionary) -> void:
 	light.position = bounds.position+point*scale
 	light.texture_scale = 40.0*scale/light.texture.get_width()
 	add_child(light)
-	lights.append({"node":light,"born":state.ticks})
+	lights.append({"node":light,"born":state.ticks,"point":point+Vector2(camera,0)})

@@ -31,7 +31,7 @@ static var _profiles := {}
 const SURFACE_WINDOW := 3.0
 
 static func _profile(texture: Texture2D, used: Rect2) -> PackedFloat32Array:
-	var key := texture.get_rid().get_id()
+	var key := "%s/%s" % [texture.get_rid().get_id(),used]
 	if _profiles.has(key): return _profiles[key]
 	var image := texture.get_image()
 	var tops := PackedFloat32Array()
