@@ -1,0 +1,17 @@
+{
+	"bundled_dataset_sha256": {
+		"CARTE.FIC": "8e1067619b254d57717348fefedc1b5013eb1d7ba23200a815e36f9b856d811a",
+		"campaign.json": "f97758998e880ef974613445ada6a1b59c6ea2b145cf5679815e5c5ccf7490aa",
+		"commerce.json": "7af388740db5f4bb3d8740f89f91caded4d51f421d487320c413b79169e1eb48",
+		"villes-decoded.data": "874a4717840fffe2ae6573b268d765b2946d7ac6278fe198017c07b6bca7768d"
+	},
+	"executable": "/Users/cdeust/Developments/Transartica/.worktrees/living-effects/builds/macos/Transartica.app/Contents/MacOS/Transartica",
+	"executable_sha256": "56d8d1363004020305479c3a47346730d3ef083bf3be18b450a7e9799f32e883",
+	"failures": [],
+	"input_path": "Viewport.push_input: engine/map/options/START/F5/LOAD/name/Enter",
+	"mode": "EXPORTED-MACOS",
+	"passed": true,
+	"renderer": "macOS",
+	"save_path": "/Users/cdeust/Developments/Transartica/.cache/disk-hygiene-zucxj_iv/session-67202/ARTIFACT.SAV",
+	"save_sha256": "502c5ef26f71594ad798ad815c654cc08774cdc3a5b7c489f274b7debb5d2c54"
+}

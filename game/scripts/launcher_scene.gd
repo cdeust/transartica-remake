@@ -10,8 +10,8 @@ var session
 var terrain = preload("res://scripts/travel_terrain.gd").new()
 var background: Texture2D
 var rocket: Texture2D
-var explosions: Array[Texture2D] = []
 var world_data
+var living = preload("res://scripts/rocket_living_effects.gd").new()
 # Measured solid silhouette of authored launcher-rocket.png, excluding its glow.
 const ROCKET_BODY := Rect2(398,29,228,1402)
 
@@ -27,8 +27,6 @@ func _ready() -> void:
 	for pair in [["background","res://assets/interface/launcher.png"],["rocket","res://assets/interface/launcher-rocket.png"]]:
 		if ResourceLoader.exists(pair[1]):
 			set(pair[0],load(pair[1]))
-	for frame in range(4,8):
-		explosions.append(load("res://assets/combat/effects-kit-%02d.png" % frame))
 	hide()
 
 
@@ -48,6 +46,16 @@ func _layout() -> void:
 func _physics_process(delta: float) -> void:
 	if visible:
 		session.advance(delta)
+		if session.model != null and not session.paused:
+			living.observe(session.model,delta,_exhaust_point(session.model))
+			queue_redraw()
+
+
+func _exhaust_point(model) -> Vector2:
+	var offset := 0
+	if model.phase == "launch": offset = LAUNCH_OFFSETS[mini(model.cursor,15)]
+	elif model.phase == "ascent": offset = 42+model.ascent
+	return Vector2(141,103-offset) # source: rocket drawn y7,height96; base y103.
 
 
 func _draw() -> void:
@@ -61,6 +69,7 @@ func _draw() -> void:
 		if background != null:
 			draw_texture_rect(background,Rect2(0,0,320,149),false)
 		_draw_rocket(model)
+		living.draw(self,model.camera)
 		_controls(model)
 	text_at(Vector2(5,146),"P: PAUSE   F5: SAVE   F6: OPTIONS   ESC: EXIT",5)
 	if session.paused:
@@ -101,9 +110,6 @@ func _draw_rocket(model) -> void:
 	elif model.phase == "ascent":
 		offset = 42+model.ascent # BERTA moving body z187 vs initial145.
 	var width := 96.0 * ROCKET_BODY.size.x / ROCKET_BODY.size.y
-	if model.phase in ["launch","ascent"]:
-		# Authored flame artwork; source continuation controls when ignition exists.
-		draw_texture_rect(explosions[model.cursor%explosions.size()],Rect2(132,94-offset,18,25),false)
 	draw_texture_rect_region(rocket,Rect2(141-width/2,7-offset,width,96),ROCKET_BODY)
 	if model.phase in ["arming","armed","disarming"] and background != null:
 		# Authored gantry beam measured in launcher.png. Source has four linkage poses.
@@ -140,10 +146,7 @@ func _map() -> void:
 		var width := 12.0 * ROCKET_BODY.size.x / ROCKET_BODY.size.y
 		draw_texture_rect_region(rocket,Rect2(-width/2,-6,width,12),ROCKET_BODY)
 		begin_canvas()
-	if model.phase == "impact":
-		# CARTE0x1c50..74 draws two miss or four hit poses, then erases sprite7.
-		var texture: Texture2D = explosions[mini(model.cursor,explosions.size()-1)]
-		draw_texture_rect(texture,Rect2(point-Vector2(12,12),Vector2(24,24)),false)
+	living.draw(self,model.camera)
 	if model.phase == "report":
 		draw_rect(Rect2(0,102,320,47),Color("#172b34")) # authored panel ink.
 		var lines: Array = session.app.works_dialog._message(60+model.status)

@@ -133,6 +133,7 @@ static func _commit(app, parsed: Dictionary, base: Dictionary, extra: Dictionary
 		app.session.paused = true
 		app.encounters.resume_pending()
 	Extensions.commit_audio(app, extra)
+	preload("res://scripts/presentation_reset.gd").clear(app)
 	return {"ok": true, "notice": "Journey and engine restored" if parsed.has("journey") else "Previous engine restored · first journey starts at departure"}
 
 

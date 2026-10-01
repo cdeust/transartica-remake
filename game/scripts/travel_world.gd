@@ -44,6 +44,8 @@ var _arc_to := 0.0
 var _ground: TextureRect
 var _ground_material: ShaderMaterial
 var _discovery_mask: ImageTexture
+var living = preload("res://scripts/travel_living_effects.gd").new()
+var visual_clock
 
 
 func _ready() -> void:
@@ -177,6 +179,7 @@ func _draw() -> void:
 	_draw_rails()
 	map_entities.draw(self)
 	_draw_train()
+	living.draw(self)
 	map_entities.draw_player_heading(self)
 
 
@@ -329,7 +332,16 @@ func _reveal_occupied_track() -> void:
 
 
 func _process(delta: float) -> void:
-	if not _interpolating or not _can_animate() or delta <= 0.0:
+	if not _can_animate() or delta <= 0.0:
+		return
+	_advance_motion(delta)
+	# Register new plumes against the pose drawn in this frame.
+	living.advance(self,delta)
+	queue_redraw()
+
+
+func _advance_motion(delta: float) -> void:
+	if not _interpolating:
 		return
 	var duration := _cycle_duration()
 	if duration <= 0.0:
@@ -344,8 +356,6 @@ func _process(delta: float) -> void:
 		_position_camera(_visual_position)
 	else:
 		_keep_train_in_view()
-	queue_redraw()
-
 
 func center_on_train() -> void:
 	inspecting_map = false
@@ -413,7 +423,7 @@ func _cycle_duration() -> float:
 
 
 func _can_animate() -> bool:
-	return is_visible_in_tree() and session != null and not session.paused and not session.engine.event_pending
+	return is_visible_in_tree() and session != null and not session.paused and not session.engine.event_pending and (visual_clock == null or not visual_clock.paused)
 
 
 func _position_camera(position: Vector2) -> void:

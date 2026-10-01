@@ -80,6 +80,7 @@ func _ready() -> void:
 	engine.train_mass = wagons.mass()
 	journey.network = network
 	_build_interface()
+	world_view.visual_clock = clock
 	game_audio.attach(self)
 	world.attach(journey, wagons, engine, trade, _trade_rng)
 	_world_session.attach(self)

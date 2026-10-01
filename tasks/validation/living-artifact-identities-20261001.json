@@ -1,0 +1,52 @@
+{
+  "base": "79c80b28a5a7a9bf227269dcceac4b015b11e182",
+  "files": [
+    {
+      "file": "builds/macos/Transartica.app/Contents/MacOS/Transartica",
+      "bytes": 189159072,
+      "sha256": "56d8d1363004020305479c3a47346730d3ef083bf3be18b450a7e9799f32e883"
+    },
+    {
+      "file": "builds/macos/Transartica.app/Contents/Resources/Transartica.pck",
+      "bytes": 126507044,
+      "sha256": "437afb0f750a72538ba661fe116f29364905625527f1cb3f0b4b7fef976645c5"
+    },
+    {
+      "file": "builds/windows/Transartica.exe",
+      "bytes": 96762368,
+      "sha256": "5bae54022c7e699b6f0f26230cf49a01c3582640623c6cf7f055c15eac9c5f29"
+    },
+    {
+      "file": "builds/windows/Transartica.pck",
+      "bytes": 126507044,
+      "sha256": "437afb0f750a72538ba661fe116f29364905625527f1cb3f0b4b7fef976645c5"
+    },
+    {
+      "file": "game/tests/accept_desktop_artifact.gd",
+      "bytes": 8803,
+      "sha256": "23922efbad044fff8b0c167073c32cf10f89bc52a02a346a5358c2a0db8b40e9"
+    },
+    {
+      "file": "/Users/cdeust/Developments/Transartica/.cache/disk-hygiene-zucxj_iv/review_exported_effects.gd",
+      "bytes": 5735,
+      "sha256": "1d4a00f21142eeca148907cd14a14346ccfae7254d46efeeccbc4401916f7df5"
+    }
+  ],
+  "archives": [
+    {
+      "file": "Transartica-Windows.zip",
+      "bytes": 158220390,
+      "sha256": "9230680f1c993637104d66dab7274cbe946b60edcb7682133b4f021280769c7f"
+    },
+    {
+      "file": "Transartica-macOS.zip",
+      "bytes": 187397458,
+      "sha256": "7dacc01cf9721dc0c67a938599d420ea2cb65298dc96a61bbe0d3280cbd69e02"
+    }
+  ],
+  "removed_redundant_build_bytes": 410668647,
+  "retained": [
+    "builds/macos/Transartica.app",
+    "builds/Transartica-Windows.zip"
+  ]
+}

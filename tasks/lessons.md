@@ -105,3 +105,11 @@ When unifying the locomotive, replace the actual scene PNGs and train-master.png
 including distant background trains. A new sprite override alone does not correct
 the source sheet. Check the saved files and native scenes before claiming completion.
 The Urga engine needs a readable twin-stack/beak/plow silhouette at its distant scale.
+
+## Living effects acceptance, 1 October 2026
+
+Anchor flashes and smoke through the same current sprite registration used for drawing. Emit after movement interpolation; source actor-grid roof heights do not necessarily match an authored sprite roof.
+
+Successful save restore and New Game must clear transient visual caches, including a visible paused launcher. OPTIONS freezes the existing cache. Prove both paths through the actual application.
+
+Numerical renderer regressions need translated map coordinates and all vehicle types. Keep the best valid sampled chord during bisection; keep the full-length acceptance and missing-history rejection.

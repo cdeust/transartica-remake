@@ -19,6 +19,8 @@ var materials = preload("res://scripts/tactical_materials.gd").new()
 var wagon_bounds := {}
 var lights: Array = []
 var audio
+var living = preload("res://scripts/living_effects.gd").new()
+const EffectGeometry = preload("res://scripts/tactical_effects_geometry.gd")
 
 func _ready() -> void:
 	super._ready()
@@ -35,7 +37,13 @@ func open_battle(value) -> void:
 	if state != value:
 		if state != null and state.audio_cue_requested.is_connected(_source_audio):
 			state.audio_cue_requested.disconnect(_source_audio)
+		if state != null and state.presentation_event_requested.is_connected(_presentation_event):
+			state.presentation_event_requested.disconnect(_presentation_event)
+		if state != null and state.presentation_tick_started.is_connected(_presentation_tick):
+			state.presentation_tick_started.disconnect(_presentation_tick)
 		value.audio_cue_requested.connect(_source_audio)
+		value.presentation_event_requested.connect(_presentation_event)
+		value.presentation_tick_started.connect(_presentation_tick)
 		if audio != null:
 			audio.stop_effects()
 			audio.effect("wdecor",0x6121) # WDECOR127→6114, ECS25918>1 ambient.
@@ -44,6 +52,7 @@ func open_battle(value) -> void:
 		wagon_bounds.clear()
 		for entry in lights:entry.node.queue_free()
 		lights.clear()
+		living.clear()
 	state = value
 	show()
 	queue_redraw()
@@ -53,17 +62,34 @@ func _source_audio(offset: int) -> void:
 	if audio != null:
 		audio.effect("wdecor",offset)
 
+
+func _presentation_event(event: Dictionary) -> void:
+	var point: Vector2 = EffectGeometry.event_point(self,event)
+	var direction := Vector2(0,1 if event.get("side",0) == 0 else -1)
+	living.add(event.kind,point+Vector2(camera,0),direction)
+	if event.kind in ["impact","destroy"]:
+		_impact_fragments(event,point+Vector2(camera,0))
+	_impact_light(event)
+
+
+func _presentation_tick(seconds: float) -> void:
+	# Advance before each source tick's new events, including batched advances.
+	living.advance(seconds)
+
+
+func _impact_fragments(event: Dictionary, point: Vector2) -> void:
+	var car: Dictionary = state.trains[event.side][event.wagon]
+	var texture: Texture2D = EffectGeometry.wagon(self,event.side,event.wagon,true).texture
+	materials.texture_for(texture,event.side,event.wagon,car.health)
+	var key := "%d/%d/%d" % [event.side,event.wagon,car.health]
+	living.fragments(point,materials.fragment_colors(key))
+
 func _physics_process(delta: float) -> void:
 	if not visible or state == null or paused:
 		return
-	var before: int = state.ticks
 	camera += edge_scroll * delta * 64
 	state.advance(delta)
-	if state.ticks != before:
-		for event in state.events:
-			effects.append({"event":event.duplicate(), "born":state.ticks})
-			_impact_light(event)
-		effects = effects.filter(func(effect): return state.ticks - effect.born < 23)
+	effects = effects.filter(func(effect): return state.ticks - effect.born < 23)
 	for entry in lights:
 		entry.node.energy = maxf(0.0,1.0-float(state.ticks-entry.born)/23.0)
 		if entry.node.energy <= 0: entry.node.queue_free()
@@ -88,6 +114,8 @@ func _draw() -> void:
 		_label(point,"●%d" % charge.fuse,5)
 	for effect in effects:
 		_effect(effect)
+	# World-position effects remain registered while the combat camera scrolls.
+	living.draw(self,Vector2(-camera,0))
 	centered(9,"TRAIN COMBAT" + (" · PAUSED" if paused else ""),6)
 	text_at(Vector2(3,18),"← → CONVOY  ·  P PAUSE  ·  F5 SAVE  ·  F6 OPTIONS",5)
 	if selected_actor >= 0:
@@ -122,24 +150,19 @@ func _label(point: Vector2, value: String, font_size: int) -> void:
 	draw_rect(Rect2(point-Vector2(1,font_size+1),Vector2(width+2,font_size+3)),Color(0.03,0.06,0.08,0.9))
 	text_at(point,value,font_size)
 
-func _train(side: int, baseline: float) -> void:
+func _train(side: int, _baseline: float) -> void:
 	var source_index := 0
 	for index in state.trains[side].size():
 		var car: Dictionary = state.trains[side][index]
 		if car.class == state.Setup.LOCOMOTIVE_COMPANION:
 			continue
-		var kind: int = state.original[source_index][0] if side == 0 else _enemy_type(car.class)
 		if side == 0:
 			source_index += 1
-		var name := "wagon-%02d" % (kind if car.health > 0 else 25)
-		var texture: Texture2D = textures[name]
-		var used: Rect2 = texture_bounds[name]
-		var width := 128.0 if car.class == state.Setup.LOCOMOTIVE else 64.0
-		# Crop transparent atlas padding; preserve authored body aspect ratio.
-		var factor := minf(width/used.size.x,26.0/used.size.y)
-		var extent := used.size*factor
-		var x: float = 320 + state.offsets[side] - index*64 - camera
-		var rect := Rect2(x-width,baseline-extent.y,extent.x,extent.y)
+		var geometry: Dictionary = EffectGeometry.wagon(self,side,index)
+		var texture: Texture2D = geometry.texture
+		var used: Rect2 = geometry.used
+		var factor: float = geometry.factor
+		var rect: Rect2 = geometry.rect
 		texture = materials.texture_for(texture,side,index,car.health)
 		# Debris uses the same isolated sprite coordinates as material occupancy.
 		wagon_bounds["%d/%d" % [side,index]] = Rect2(rect.position-used.position*factor,texture.get_size()*factor)
@@ -167,7 +190,7 @@ func _roof_point(side: int,slot: int) -> Vector2:
 func _effect(effect: Dictionary) -> void:
 	var event: Dictionary = effect.event
 	var age: int = state.ticks-effect.born
-	var point: Vector2 = _field_point(event.x,event.y) if event.has("x") else _roof_point(event.side,event.wagon*4+2)
+	var point: Vector2 = EffectGeometry.event_point(self,event)
 	# Authored keyposes: impact→flame→embers→smoke; visual clock never changes rules.
 	var frame_index := mini(age/5,3)+4
 	var texture: Texture2D = textures["effects-kit-%02d" % frame_index]
@@ -260,7 +283,7 @@ func _direction(key: int, diagonal: bool) -> void:
 func _impact_light(event: Dictionary) -> void:
 	if event.kind not in ["impact","destroy","shot"]:
 		return
-	var point: Vector2 = _field_point(event.x,event.y) if event.has("x") else _roof_point(event.side,event.wagon*4+2)
+	var point: Vector2 = EffectGeometry.event_point(self,event)
 	var light := PointLight2D.new()
 	# Pixel silhouette of the authored explosion supplies the light footprint.
 	light.texture = textures["effects-kit-04"]

@@ -260,3 +260,19 @@ Windows execution remains unverified because no Windows host was available.
 Cleanup removed453 822 049bytes of obsolete app/import caches and disposed the
 registered artifact-test temp after preserving evidence. Unpublished commits
 and other sessions’ work remain protected. No remote publication performed.
+
+## Living effects iteration, 1 October 2026
+
+- [x] Verify approved publication: origin/main79c80b28a5a7a9bf227269dcceac4b015b11e182.
+- [x] Assess combat-quality travel: directional art and a compatible renderer are feasible; uniform scaling cannot supply side perspective. See combat-view-feasibility-20261001.md.
+- [x] Add original-event muzzle/tracer, fracture debris, layered blasts and lingering smoke with an independent visual clock/RNG.
+- [x] Integrate launcher exhaust/impact, mine/work dust and lamps, furnace steam/embers and rigidly registered locomotive smoke.
+- [x] Correct renderer rounding at translated coordinates while preserving complete contacts and unchanged short-history rejection.
+- [x] Verify native attachments, OPTIONS pause, save/restore and New Game transient cleanup through independent review.
+- [x] Run complete Godot inventory:63 PASS records, no script/shader errors;33 Python tests pass.
+- [x] Measure native CPU effects submission at128emitters/2048particles: median3.129ms, p953.900ms. Fixed updates median0.844ms, p951.432ms. GPU frame time excluded.
+- [x] Independently approve integration after fixing stale transient caches and same-frame smoke registration.
+- [x] Verify actual rebuilt macOS executable: desktop input/save/load and28 native effect checks; source/craft gates zero findings.
+- [x] Preserve evidence; dispose registered artifact scratch and410668647bytes of redundant builds. Unpublished worktree/app and Windows archive retained.
+
+Travel-renderer preference remains unanswered. This iteration improves effects shared by either presentation. It does not claim a new directional side-view map. New changes remain on feat/living-effects; the earlier approved push is complete.

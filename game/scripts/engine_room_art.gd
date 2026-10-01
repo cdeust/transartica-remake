@@ -34,6 +34,7 @@ var _last_visual_state: Array = []
 var _engineer_overlay: Sprite2D
 var _engineer_mask: Image
 var _interface_overlay: Sprite2D
+var living = preload("res://scripts/engine_living_effects.gd").new()
 
 
 func _ready() -> void:
@@ -52,6 +53,7 @@ func _ready() -> void:
 func advance_visual(delta: float) -> void:
 	if not paused and is_finite(delta) and delta > 0.0:
 		_visual_time += delta
+		living.advance(delta,engine)
 	var state := [_visual_time, engine.heat, engine.pressure_reserve, engine.lignite_rate, engine.anthracite_rate, size]
 	if state == _last_visual_state:
 		return
@@ -86,7 +88,7 @@ func _draw() -> void:
 	draw_set_transform(fitted.position, 0.0, Vector2.ONE * scale)
 	_draw_background()
 	_draw_fire()
-	_draw_steam()
+	living.draw(self)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
@@ -230,15 +232,3 @@ func _load_texture(path: String) -> Texture2D:
 	if not ResourceLoader.exists(path):
 		return null
 	return load(path) as Texture2D
-
-
-func _draw_steam() -> void:
-	if engine == null or engine.pressure_reserve <= 0:
-		return
-	# Authored pixel wisps; their opacity reflects reserve, not simulated fluid dynamics.
-	var opacity := clampf(float(engine.pressure_reserve) / 32000.0, 0.0, 1.0) * 0.22
-	for index in 18:
-		var age := fposmod(_visual_time * 24.0 + index * 13.0, 150.0)
-		var side := 416.0 if index % 2 == 0 else 1119.0
-		var point := Vector2(side + sin(age * 0.04 + index) * 12.0, 270.0 - age).floor()
-		draw_rect(Rect2(point, Vector2(12, 5)), Color(0.76, 0.82, 0.84, opacity * (1.0 - age / 150.0)))

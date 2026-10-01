@@ -57,10 +57,19 @@ func draw_debris(canvas: CanvasItem, key: String, bounds: Rect2, age: int) -> vo
 	var count: int = material.removed.size()
 	if count == 0:
 		return
-	# Display one representative pixel per original roof cell (four slots).
-	for index in 4:
-		var fragment: Dictionary = material.removed[index*(count-1)/3]
+	# Authored six-fragment fan per source roof cell, sampled from removed texels.
+	for index in 24:
+		var fragment: Dictionary = material.removed[index*(count-1)/23]
 		var point: Vector2 = bounds.position+Vector2(fragment.point)*bounds.size/Vector2(material.size)
-		var drift := Vector2(index-2,-(index+1))*age
+		var drift := Vector2.from_angle(PI+(index+0.5)/24*PI)*(1+index%4)*age
 		var fall := Vector2(0,age*age/4.0)
 		canvas.draw_rect(Rect2(point+drift+fall,Vector2.ONE*2),fragment.color)
+
+
+func fragment_colors(key: String) -> Array:
+	if not instances.has(key) or instances[key].removed.is_empty(): return []
+	var removed: Array = instances[key].removed
+	var result := []
+	for index in 24:
+		result.append(removed[index*(removed.size()-1)/23].color)
+	return result

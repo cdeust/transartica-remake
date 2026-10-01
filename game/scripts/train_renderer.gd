@@ -4,8 +4,8 @@ const Rails = preload("res://scripts/rail_network.gd")
 const Consist = preload("res://scripts/train_consist.gd")
 const MANIFEST := "res://assets/travel/vehicles-overhead.json"
 
-# Overhead view (owner decision, 26 September 2026, tasks/todo.md "Decision :
-# train en vue de dessus"): one rigid top-down drawing per vehicle, at a
+# Overhead view (owner decision, 26 September 2026): one rigid top-down drawing
+# per vehicle, at a
 # single fixed pixel scale. Every heading is the SAME raster rotated by the
 # projected travel angle, so the drawn gabarit (length and width in screen
 # pixels) is mathematically identical at every heading and every point along
@@ -26,10 +26,10 @@ var texels_per_cell := 0.0
 # termination therefore does not depend on how the loop body behaves.
 # source: tasks/evidence/complete-train-scale.md; fixed authored ratio, verified
 # against the initial original rail history. Same ratio for every heading.
-const WAGON_CELL_RATIO := 0.75
-const CHORD_ITERATIONS := 24
-const CHORD_BRACKET_LOW := 0.35
-const CHORD_BRACKET_HIGH := 2.2
+const WAGON_CELL_RATIO := 0.75 # source: tasks/evidence/complete-train-scale.md.
+const CHORD_ITERATIONS := 24 # source: bracket uncertainty calculation above.
+const CHORD_BRACKET_LOW := 0.35 # source: original authored renderer search bracket.
+const CHORD_BRACKET_HIGH := 2.2 # source: original authored renderer search bracket.
 
 
 func load_assets() -> bool:
@@ -107,13 +107,16 @@ func texel_scale(view) -> float:
 # A rigid chord across a curve consumes more route arc than its straight length.
 # Bisect the known route to retain invariant vehicle size while keeping both
 # contacts on the actual rails. Missing history never authorizes extrapolation.
-func _bisected_rear(view, journey, front_distance: float, front_screen: Vector2, kind: String) -> Dictionary:
+func _bisected_rear(view, journey, front_distance: float, front_position: Vector2, kind: String) -> Dictionary:
+	# Project a local displacement: absolute map projection rounds large pixel
+	# coordinates before subtraction. Source: renderer-precision-20261001.md.
 	var nominal: float = Consist.LENGTHS[kind] * WAGON_CELL_RATIO
 	var target: float = nominal * view.WORLD_EAST.length()
 	var low := front_distance + nominal * CHORD_BRACKET_LOW
 	var high := front_distance + nominal * CHORD_BRACKET_HIGH
 	var last_ok := {}
 	var last_distance := front_distance
+	var closest_error := INF
 	# invariant: after each iteration, [low, high] still brackets the distance
 	# whose projected chord equals target, given chord(distance) monotonic
 	# non-decreasing over this range (true for rail turns, which are bounded
@@ -124,9 +127,14 @@ func _bisected_rear(view, journey, front_distance: float, front_screen: Vector2,
 		if not sample.ok:
 			high = mid
 			continue
-		last_ok = sample
-		last_distance = mid
-		var chord := front_screen.distance_to(view._project(sample.position))
+		var chord: float = view._project(sample.position-front_position).length()
+		# Quantized Vector2 samples may straddle target after the interval has
+		# converged. Keep the closest valid contact, not the final rounded sample.
+		var error := absf(chord-target)
+		if error < closest_error:
+			closest_error = error
+			last_ok = sample
+			last_distance = mid
 		if chord < target:
 			low = mid
 		else:
@@ -136,7 +144,7 @@ func _bisected_rear(view, journey, front_distance: float, front_screen: Vector2,
 	# Missing history also shrinks the bracket: it does not prove that a full
 	# vehicle fits. Source: PR #3 short-history regression (0.6 of 1 cell),
 	# tasks/validation/pr3-review-20260927.md; retain Godot float comparison.
-	if not is_equal_approx(front_screen.distance_to(view._project(last_ok.position)), target):
+	if not is_equal_approx(view._project(last_ok.position-front_position).length(), target):
 		return {"ok": false}
 	return {"ok": true, "distance": last_distance, "position": last_ok.position}
 
@@ -148,8 +156,7 @@ func poses(view, journey, consist, lag: float) -> Array[Dictionary]:
 		var front: Dictionary = journey.sample_behind(distance)
 		if not front.ok:
 			break
-		var front_screen: Vector2 = view._project(front.position)
-		var rear_search := _bisected_rear(view, journey, distance, front_screen, kind)
+		var rear_search := _bisected_rear(view, journey, distance, front.position, kind)
 		if not rear_search.ok:
 			break
 		var rear_position: Vector2 = rear_search.position
