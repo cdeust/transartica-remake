@@ -310,7 +310,8 @@ la carte du monde conserve une vitesse jouable. Règles et RNG par tick inchang�
 - [x] Parité : combat à ×1 même hash `bae607f4…` ; fusée35/35 états BERTA identiques (fixtures épinglées à ×1).
 - [x] Tests : test_blast_detail, test_rocket_ignition, test_tactical_art_cache, test_living_effects, test_tactical_combat (headless), test_launcher (natif) : PASS.
 - [x] Dégâts des wagons : cratères ouverts depuis le toit (bord déchiqueté), intérieur éventré, roussi ; les parties détachées du châssis tombent. Calcul à la résolution affichée (22–124ms par stade, contre178–285ms auparavant pour la locomotive).
-- [x] Gravité des armes : canon et Gatling retombent sur la coque restante (support = coque pleine, pas la paroi intérieure), rebond et poussière ; restent noircis sur l'épave.
+- [x] Gravité des armes : sur un wagon touché, l'arme tombe dans la brèche, inclinée, masquée par la paroi avant restante ; à la destruction elle est soulevée, tournoie et retombe couchée dans l'épave (`validation/opus-gun-fall-20261001.mp4`, dégâts forcés pour la revue).
+- [ ] Animaux, fantassins, espions : animation et lecture du combat à reprendre (demande du propriétaire, 1er octobre).
 - [ ] Canon vu de dos encore trop trapu : asset dédié souhaitable (comme gatling.png).
 - [ ] Coût CPU au pic de charge : médiane3,7ms, mais p9510,1–10,5ms et max ~16ms (référence précédente7,0/7,2ms). À optimiser.
 - [ ] Soldats : déplacement encore case par case ; interpolation de présentation à faire.

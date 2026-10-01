@@ -87,6 +87,9 @@ func texture_for(source: Texture2D, side: int, wagon: int, health: int) -> Textu
 	image.blit_rect_mask(Image.create(full.x,full.y,false,Image.FORMAT_RGBA8),open,whole,Vector2i.ZERO)
 	if health == 0: image.adjust_bcs(0.78,1.05,0.6) # burnt-out wreck, still readable
 	var texture := ImageTexture.create_from_image(image)
+	# Front wall only (gutted interior removed): redrawn over a gun that fell in.
+	var front := image.duplicate() as Image
+	front.blit_rect_mask(Image.create(full.x,full.y,false,Image.FORMAT_RGBA8),interior,whole,Vector2i.ZERO)
 	# Bearing surface per column: solid hull only (not the gutted interior wall).
 	var support := PackedFloat32Array()
 	for x in width:
@@ -97,8 +100,13 @@ func texture_for(source: Texture2D, side: int, wagon: int, health: int) -> Textu
 				top = float(y*step)
 				break
 		support.append(top)
-	instances[key] = {"texture":texture,"occupancy":occupancy,"removed":removed,"size":Vector2i(width,height),"support":support,"step":step}
+	instances[key] = {"texture":texture,"occupancy":occupancy,"removed":removed,"size":Vector2i(width,height),"support":support,"step":step,"front":ImageTexture.create_from_image(front)}
 	return texture
+
+
+func front_for(side: int, wagon: int, health: int) -> Texture2D:
+	var key := "%d/%d/%d" % [side,wagon,health]
+	return instances[key].front if instances.has(key) else null
 
 
 # Bearing-surface top (source texel y) for each source column in used.

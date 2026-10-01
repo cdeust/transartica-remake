@@ -34,6 +34,7 @@ const PACE := 2.0
 var pace := PACE
 var _clock_fraction := -1.0 # tick fraction pinned while source/visual steps emit
 var _steps_since_tick := 0
+var world_transform := Transform2D() # current logical→control transform while drawing
 
 func _ready() -> void:
 	super._ready()
@@ -176,9 +177,10 @@ func _draw() -> void:
 	begin_canvas()
 	# Presentation jolt on heavy blasts; UI text below is drawn without it.
 	var jolt: Vector2 = living.shake_offset()
-	if jolt != Vector2.ZERO:
-		var bounds := canvas_rect()
-		draw_set_transform(bounds.position+jolt*bounds.size.x/CANVAS.x,0,Vector2.ONE*bounds.size.x/CANVAS.x)
+	var bounds := canvas_rect()
+	var factor := bounds.size.x/CANVAS.x
+	world_transform = Transform2D(0,Vector2.ONE*factor,0,bounds.position+jolt*factor)
+	draw_set_transform_matrix(world_transform)
 	_draw_ground()
 	_train(0, 63)
 	_train(1, 192)
@@ -253,6 +255,9 @@ func _train(side: int, _baseline: float) -> void:
 		draw_texture_rect_region(texture,rect,used,Color(1,0.77,0.66) if side == 1 else Color.WHITE)
 		if car.class in [state.Setup.CANNON,state.Setup.MACHINE_GUN]:
 			weapon_motion.draw(self,self,side,index,car.class == state.Setup.MACHINE_GUN)
+			# A gun that fell into the breach sits behind the remaining front wall.
+			var front: Texture2D = materials.front_for(side,index,car.health) if car.health < 3 else null
+			if front != null: draw_texture_rect_region(front,rect,used,Color(1,0.77,0.66) if side == 1 else Color.WHITE)
 		if side == 0:
 			_label(Vector2(rect.position.x+2,32),"%d:%d" % [source_index,car.health],4)
 

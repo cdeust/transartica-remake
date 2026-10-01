@@ -26,6 +26,7 @@ const HUB := Vector2(208,480) # trunnion hub, cell-relative
 const ENEMY_TINT := Color(1,0.77,0.66) # same modulate as the side1 wagon sprite
 var rigs := {}
 var resting := {} # side/wagon → fall state of the gun on the (damaged) hull
+const SINK := 3.0 # source: authored depth below the bearing edge, logical px.
 const GRAVITY := 0.12 # source: authored logical px per50Hz step², ≈300px/s².
 
 
@@ -77,6 +78,21 @@ func reach(side: int, machine_gun: bool) -> float:
 
 # Guns obey gravity: when the roof under them is torn away they drop onto
 # whatever hull remains, with a small bounce. Presentation only (50Hz step).
+# Drawn extent of each gun (logical px), for contact and rotation pivot.
+func extent(side: int, machine_gun: bool) -> Vector2:
+	if machine_gun:
+		if side == 0: return Vector2(CELLS[0].size.x,CELLS[0].size.y-BASE_TOP)*SCALE
+		return CELLS[0].size*SCALE
+	return Vector2(8.5,5.5 if side == 0 else 10.0)
+
+
+static func _noise(key: String, salt: int) -> float:
+	return fposmod(sin(float(hash([key,salt])%100000)*12.9898)*43758.5453,1.0)
+
+
+# Guns obey gravity on the (damaged) bearing hull. A lost hull point drops and
+# cants the gun; destruction throws it up, spinning, to land on its side on the
+# wreck. Authored presentation physics, 50Hz visual step; rules untouched.
 func settle(scene) -> Array:
 	var landings := []
 	for side in 2:
@@ -84,34 +100,70 @@ func settle(scene) -> Array:
 			var car: Dictionary = scene.state.trains[side][wagon]
 			if not car.class in [scene.state.Setup.CANNON,scene.state.Setup.MACHINE_GUN]: continue
 			var key := "%d/%d" % [side,wagon]
-			var target: float = Geometry.mount(scene,side,wagon).base.y
+			var size := extent(side,car.class == scene.state.Setup.MACHINE_GUN)
+			var rect: Rect2 = Geometry.wagon(scene,side,wagon).rect
+			var centre_x := rect.position.x+rect.size.x/2
 			if not resting.has(key):
-				resting[key] = {"y":target,"v":0.0}
+				var foot := Geometry.surface_y(scene,side,wagon,centre_x)+1.8
+				resting[key] = {"x":0.0,"y":foot-size.y/2,"vx":0.0,"vy":0.0,"a":0.0,"w":0.0,"health":car.health,"rest":0.0}
 				continue
-			var fall: Dictionary = resting[key]
-			if target < fall.y:
-				fall.y = target
-				fall.v = 0.0
-			elif target > fall.y+0.01 or fall.v != 0.0:
-				fall.v += GRAVITY
-				fall.y += fall.v
-				if fall.y >= target:
-					fall.y = target
-					if fall.v > 0.8:
-						landings.append({"side":side,"wagon":wagon,"speed":fall.v})
-						fall.v = -fall.v*0.25
-					else:
-						fall.v = 0.0
+			var body: Dictionary = resting[key]
+			var lean := -1.0 if _noise(key,car.health) < 0.5 else 1.0
+			if car.health < body.health:
+				if car.health <= 0: # thrown by the blast
+					body.vy = -1.3
+					body.vx = lean*(0.06+0.08*_noise(key,7))
+					body.w = lean*(0.12+0.1*_noise(key,9))
+					body.rest = lean*(PI/2-0.25*_noise(key,11)) # ends on its side
+				else:
+					body.w = lean*0.02
+					body.rest = lean*(0.15+0.2*_noise(key,13)) # canted in the crater
+				body.health = car.health
+			var x: float = clampf(centre_x+body.x,rect.position.x+2,rect.end.x-2)
+			body.x = x-centre_x
+			# Damaged hull: the gun sinks into the breach, its foot behind the front wall.
+			var ground := Geometry.surface_y(scene,side,wagon,x)+(1.8 if car.health >= 3 else SINK)
+			var half := (absf(size.y*cos(body.a))+absf(size.x*sin(body.a)))/2
+			var airborne: bool = body.y+half < ground-0.01 or body.vy < 0
+			if airborne:
+				body.vy += GRAVITY
+				body.y += body.vy
+				body.x += body.vx
+				body.a += body.w
+				half = (absf(size.y*cos(body.a))+absf(size.x*sin(body.a)))/2
+			if body.y+half >= ground:
+				body.y = ground-half
+				if body.vy > 0.8:
+					landings.append({"side":side,"wagon":wagon,"speed":body.vy})
+					body.vy = -body.vy*0.3
+					body.vx *= 0.5
+					body.w *= 0.4
+				else:
+					body.vy = 0.0
+					body.vx *= 0.6
+					body.w = 0.0
+					body.a = lerpf(body.a,body.rest,0.2) # settles onto its resting cant
+					if absf(body.vx) < 0.02: body.vx = 0.0
 	return landings
 
 
+# Unrotated mount plus the pivot/angle of the gun's current pose.
 func mount(scene, side: int, wagon: int, machine_gun: bool) -> Dictionary:
 	var rig := state_for(side,wagon)
 	var key := "%d/%d" % [side,wagon]
-	var rest: float = resting[key].y if resting.has(key) else INF
-	var result: Dictionary = Geometry.mount(scene,side,wagon,rig.recoil,reach(side,machine_gun),rest)
-	# Spent brass leaves the receiver's right side.
+	var size := extent(side,machine_gun)
+	var body: Dictionary = resting.get(key,{})
+	var foot: float = body.y+size.y/2 if not body.is_empty() else INF
+	var result: Dictionary = Geometry.mount(scene,side,wagon,rig.recoil,reach(side,machine_gun),foot)
+	var shift := Vector2(body.get("x",0.0),0)
+	for name in ["base","body","muzzle"]: result[name] += shift
 	result.breech = result.body+Vector2(2.5,-(3.5 if side == 0 else 2.0))
+	result.angle = body.get("a",0.0)
+	result.pivot = result.base-Vector2(0,size.y/2)
+	if result.angle != 0.0: # emitters follow the canted gun
+		for name in ["muzzle","breech"]:
+			result[name] = result.pivot+(result[name]-result.pivot).rotated(result.angle)
+		result.direction = result.direction.rotated(result.angle)
 	return result
 
 
@@ -119,13 +171,19 @@ func mount(scene, side: int, wagon: int, machine_gun: bool) -> Dictionary:
 func draw(canvas: CanvasItem, scene, side: int, wagon: int, machine_gun: bool) -> void:
 	var rig := state_for(side,wagon)
 	var at := mount(scene,side,wagon,machine_gun)
+	var world: Transform2D = scene.world_transform
+	if at.angle != 0.0:
+		# Draw in the gun's unrotated frame, rotated about its centre.
+		canvas.draw_set_transform_matrix(world*Transform2D(at.angle,at.pivot)*Transform2D(0,-at.pivot))
+		at.muzzle = at.pivot+(at.muzzle-at.pivot).rotated(-at.angle)
 	var tint := ENEMY_TINT if side == 1 else Color.WHITE
-	if scene.state.trains[side][wagon].health <= 0: tint = tint*Color(0.45,0.4,0.38) # burnt in the wreck
+	if scene.state.trains[side][wagon].health <= 0: tint = tint*Color(0.78,0.72,0.68) # scorched, still legible on the wreck
 	if machine_gun:
 		if side == 0: _gatling_front(canvas,at,rig,tint)
 		else: _gatling_rear(canvas,at,rig,tint)
 	elif side == 0: _cannon_front(canvas,at,rig,tint)
 	else: _cannon_rear(canvas,at,rig,tint)
+	if at.angle != 0.0: canvas.draw_set_transform_matrix(world)
 
 
 func _cell(rig: Dictionary) -> Rect2:
