@@ -44,6 +44,34 @@ static func draw_frame(canvas: CanvasItem, world: Transform2D, side: int, foot: 
 	canvas.draw_set_transform_matrix(world)
 
 
+# Where a climber's hand holds, in texels from each climb frame's top-left (blue
+# and olive rows alike): rungs 0-3 the reaching glove, frame 4 (mantle) the fist.
+# source: read off the atlas frames at 10x with a texel grid (res://tests/review_trooper_scale.gd
+# draws them); re-measure after rebuilding the atlas at another scale.
+const HAND := [Vector2(24,4),Vector2(24,6),Vector2(19.5,15),Vector2(23,4),Vector2(33,12)]
+
+# The hand's offset from a climb frame's pivot, logical px (+x toward the facing, -y up).
+static func hand(index: int) -> Vector2:
+	var frame: Array = FRAMES[CLIMB][0][index]
+	return (HAND[index]-frame[1])/PER
+
+
+# Opaque texels of a frame as offsets from its pivot, logical px, every second one (cached).
+static var _texels := {}
+static func texels(family: int, index: int, side := 0) -> PackedVector2Array:
+	var key := "%d/%d/%d" % [family,index,side]
+	if _texels.has(key): return _texels[key]
+	var image := TEXTURE.get_image()
+	var frame: Array = FRAMES[family][side][index]
+	var region: Rect2 = frame[0]
+	var points := PackedVector2Array()
+	for y in range(0,int(region.size.y),2):
+		for x in range(0,int(region.size.x),2):
+			if image.get_pixel(int(region.position.x)+x,int(region.position.y)+y).a >= 0.5: points.append((Vector2(x+0.5,y+0.5)-frame[1])/PER)
+	_texels[key] = points
+	return points
+
+
 # Height of a frame's top above its pivot, logical px (negative up).
 static func top(family: int, index: int, side := 0) -> float:
 	return -FRAMES[family][side][clampi(index,0,count(family)-1)][1].y/PER

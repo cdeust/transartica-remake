@@ -260,8 +260,8 @@ func run() -> void:
 	var arrival_clashes := 0
 	var landing_gap := 0.0
 	var ladder_matches := true
-	var mantle_samples := 0
-	var mantle_bad := 0
+	var contact_frames := 0
+	var contact_worst := 0.0
 	var landing_samples := 0
 	for frame in 50*3:
 		motion.step(scene)
@@ -273,19 +273,17 @@ func run() -> void:
 			rungs[pose.frame] = true
 			# The ladder exists exactly during the rung frames; the mantle's feet stay on or above the drawn roof and inside the hull end.
 			ladder_matches = ladder_matches and (Motion.ladder_up(rider.board) == (pose.frame >= 0 and pose.frame < Motion.MANTLE))
-			if pose.frame == Motion.MANTLE:
-				var tr: Dictionary = motion.tracks[boarder.id]
-				var edge_x: float = motion._place(scene,0,rider.cell,motion._offset(tr,rider)).x+rider.board.ladder
-				var drawn: float = preload("res://scripts/tactical_effects_geometry.gd").drawn_y(scene,0,rider.board.wagon,pose.at.x)
-				mantle_samples += 1
-				if pose.at.y > drawn+0.01 or (pose.at.x-edge_x)*signf(rider.board.off) > 0.01: mantle_bad += 1
+			if rider.board.t >= rider.board.run and rider.board.wagon >= 0:
+				var gap: float = motion.contact_gap(scene,motion.tracks[boarder.id],rider)
+				contact_frames += 1
+				contact_worst = maxf(contact_worst,gap)
 			if rider.board.t >= rider.board.run+rider.board.climb+rider.board.rise-0.045 and rider.board.wagon >= 0: # last mantle frames: feet on the drawn roof
 				var land_x: float = motion._place(scene,0,rider.cell,motion._offset(motion.tracks[boarder.id],rider)).x+rider.board.land
 				landing_samples += 1
 				landing_gap = maxf(landing_gap,absf(pose.at.y-preload("res://scripts/tactical_effects_geometry.gd").drawn_y(scene,0,rider.board.wagon,land_x)))
 	check(climb_jumps.get("climb/count",0) == 2 and worst(climb_jumps,"climb") <= 1.0,"run, climb, mantle and stand switch within 1px (top %.2f feet %.2f step %.2f)" % [climb_jumps.get("climb/top",-1.0),climb_jumps.get("climb/feet",-1.0),climb_jumps.get("climb/step",-1.0)])
 	check(ladder_matches,"ladder up exactly while he climbs it")
-	check(mantle_samples > 3 and mantle_bad == 0,"mantle feet never below the drawn roof nor outside the hull end (%d of %d frames)" % [mantle_bad,mantle_samples])
+	check(contact_frames > 30 and contact_worst <= 0.5,"every frame of the climb and mantle has a body texel within 0.5px of the ladder or the wagon (%d frames, worst %.2f px)" % [contact_frames,contact_worst])
 	check(landing_samples > 0 and landing_gap < 0.01,"mantle lands exactly on the drawn roof silhouette (%.3f px)" % landing_gap)
 	check(arrival_clashes == 0,"labels clear of soldiers, wagon bodies and each other through the roof arrival (%d clashes)" % arrival_clashes)
 	check(rungs.has(0) and rungs.has(1) and rungs.has(2) and rungs.has(3) and rungs.has(Motion.MANTLE),"climb cycles four rung frames then mantles (%s)" % [rungs.keys()])
