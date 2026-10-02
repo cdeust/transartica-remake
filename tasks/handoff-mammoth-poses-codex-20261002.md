@@ -8,6 +8,13 @@ missing poses must be generated in the same art direction as
 sheets (`trooper-poses.html`), NOT in the softer painted style of the current
 `actors-kit-08/09`. No hand-drawn or ASCII draft will be accepted.
 
+## Owner direction (2 October 2026)
+
+"Les mammouths doivent avoir une animation par sprite comme c'est le cas pour
+les troopers et espions." Every mammoth motion (walk, stop, melee, hit, death,
+riders, dismount) is played from generated sprite frames, like the trooper
+sheets. No single-pose bob, no procedural rig substitute, no hand-drawn draft.
+
 ## Verified inventory (what exists)
 
 - `game/assets/combat/actors-master.png` (1448x1086) holds the two in-game
