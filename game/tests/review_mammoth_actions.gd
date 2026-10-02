@@ -5,7 +5,7 @@ extends SceneTree
 # and dying: A bare player mammoth (the deploy case, count 1); B enemy mounted
 # mammoth (count 5) whose riders step onto the player's roof (0x123a) before it is
 # worn down to a bare beast and killed; C player mammoth carrying merged infantry
-# (merge limit 31, 0x31f9) killed while two ride. Fixture only: cells and melee
+# (merge limit 31, 0x31f9) killed with its gunner up after the spotter fell. Fixture only: cells and melee
 # reports are placed directly, at the source pace of one cell per scan (1.12 s for a
 # player mammoth). Frame numbers and the beast's screen point go to points.txt for
 # the close-up cuts.
@@ -69,9 +69,8 @@ func run() -> void:
 			if local == 350: _strike(scene,foe,group,2)
 			if local == 385: model.actors.erase(group)
 		if phase == 2:
-			if local == 220: _strike(scene,foe,group,1)
-			if local == 280: _strike(scene,foe,group,1)
-			if local == 340: model.actors.erase(group) # killed with two riders up
+			if local == 220: _strike(scene,foe,group,3) # three lost: the spotter falls, the gunner stays
+			if local == 340: model.actors.erase(group) # killed with the gunner up
 		scene._advance_visual(0.02)
 		scene.queue_redraw()
 		await process_frame

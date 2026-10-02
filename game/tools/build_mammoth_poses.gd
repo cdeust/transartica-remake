@@ -50,11 +50,14 @@ const BOOTS := 60 # source: measured; source px a boot reaches beyond the torso.
 const SNOW := 6 # source: measured; rows of snow on the dismount sheet's rim above its wood.
 const RIM_ROWS := 0.45 # source: authored; the rim is the first row holding this share of the widest wooden row.
 const SEATED := 17 # source: the prompt: death 2 (index 17) onward the riders are airborne, not seated.
-const ARC := 8.0 # source: authored; logical px a thrown rider rises above the straight path.
-const RIDER_RATIO := 1.33 # source: measured 2 October 2026 on 2x crops of the dismount frame 1 and the riders frame 1: hood width 70/57 px = 1.23, hood height 75/52 px = 1.44, mean 1.33 (the riders are drawn with smaller heads; both sheets asked for 256 px standing).
-const REACH := 2.2 # source: authored; logical px, the most a body advances between two walk frames (the median backward move of a hoof is 1.2).
-const LEAST := 1.1 # source: authored; logical px, the least a walk frame advances: the sheets' hooves barely travel against the body (median backward move 0.7-0.9 px per frame), which at the 14 px/s gait would play the legs at 20 frames/s; at 1.1 they play at ~13.
-const TOLERANCE := 0.5 # source: authored; logical px within which two hooves are the same one.
+const TROOPER_HEIGHT := 336.0 # source: build_trooper_rig.gd CONCEPT_FRAME height, src px.
+# Head heights (face bottom to the top of the hood in the face's column), src px, measured 2 October 2026
+# with the skin-face blob on the standing blue frame of troopers-concept-v2 (rig source), the first
+# dismount frame and the gunner of the riders sheet: the three sheets draw the same head at different sizes,
+# so each is scaled to the rig's head (the body is then not the rig's height: reported by SCALE).
+const HEAD_SRC := {"trooper":62.0,"dismount":57.0,"riders":40.0}
+const REACH := 4.0 # source: authored; logical px, the most a body advances between two walk frames when matching a planted hoof.
+const BACK := -1.0 # source: authored; logical px, the body never goes backward between two walk frames.
 # Frame order per sheet, row-major (prompt SHEET1 / SHEET2): bare walk 8, stop 2, melee 4, hit 2, death 8;
 # mounted walk 8, stop 2, hit 2, melee 4, death 5. Motions in the runtime tables' order.
 const MOTIONS := ["walk","stop","melee","hit","death"]
@@ -70,7 +73,7 @@ func _initialize() -> void:
 	var stop_box: Rect2i = bare.frames[8].box
 	var base := height*PER/stop_box.size.y
 	print("SCALE bare %.4f texel/px: stop frame %d x %d px -> %.2f x %.2f logical px (former pose %.2f x %.2f)" % [base,stop_box.size.x,stop_box.size.y,stop_box.size.x*base/PER,stop_box.size.y*base/PER,OLD_POSE.x*minf(OLD_LIMIT/OLD_POSE.x,OLD_LIMIT/OLD_POSE.y),height])
-	var table := {"body":[],"step":[],"feet":[],"seat":[],"riders":[],"dismount":[],"scale":{}}
+	var table := {"body":[],"step":[],"feet":[],"seat":[],"rim":[],"riders":[],"dismount":[],"scale":{}}
 	table.scale["bare"] = base
 	table.body.append(_body(bare,BARE_ORDER,base,"bare",table))
 	var bare_tusks := []
@@ -130,10 +133,30 @@ func _body(sheet: Dictionary, order: Array, scale: float, name: String, table: D
 		var row := []
 		for foot in walk[index].stance.feet: row.append((foot-walk[index].stance.x)*scale/PER)
 		feet.append(row)
+	# Planted-hoof matching: for each frame change the pair of hooves (one per frame) whose offsets differ
+	# by the advance nearest the usual one is taken as the planted hoof; the body then advances by exactly
+	# that between the two frames. The advances differ from frame to frame, so each frame is drawn
+	# shifted by CORRECTION (the running sum of advance minus the mean advance) and the body travels
+	# at the mean: at every frame change the matched hoof keeps its world x, and the shifts are the
+	# body's honest bob (printed as WOBBLE).
 	var usual := _usual(feet)
+	var advances := []
+	var mean := usual
+	for round in 6: # re-pick each hoof pair nearest the mean advance until it settles: the least bob
+		advances = []
+		for index in 8: advances.append(_shift(feet[index],feet[(index+1)%8],mean))
+		mean = _mean(advances)
+	var correction := []
+	var run := 0.0
+	for index in 8:
+		correction.append(run)
+		run += advances[index]-mean
+	for index in 8:
+		walk[index].pivot.x -= correction[index]*PER # the sprite is drawn that much farther along
+		for hoof in feet[index].size(): feet[index][hoof] += correction[index]
 	var steps := []
-	for index in 8: steps.append(_shift(feet[index],feet[(index+1)%8],usual)) # logical px the body advances while the planted hooves stay
-	print("STEP %s logical px per frame %s ; usual %.2f ; stride %.2f px per cycle" % [name,steps.map(func(v): return snappedf(v,0.01)),usual,_sum(steps)])
+	for index in 8: steps.append(mean)
+	print("STEP %s advances %s ; mean %.2f (stride %.2f px per cycle) ; WOBBLE correction %s max %.2f px" % [name,advances.map(func(v): return snappedf(v,0.01)),mean,mean*8.0,correction.map(func(v): return snappedf(v,0.01)),correction.map(func(v): return absf(v)).max()])
 	table.step.append(steps)
 	table.feet.append(feet)
 	return motions
@@ -145,27 +168,19 @@ func _sum(values: Array) -> float:
 	return sum
 
 
-# Logical px the body advances from walk frame a to b keeping the most planted hooves where they
-# are (within TOLERANCE, advance within LEAST..REACH); among equally good shifts the one nearest
-# `usual`. Hoof offsets are in logical px from each frame's pivot.
+# Logical px the body advances from walk frame a to b with a planted hoof still: among the hoof
+# pairs whose offsets differ by an advance within BACK..REACH, the one nearest `usual`. Hoof offsets
+# are in logical px from each frame's pivot.
 func _shift(a: Array, b: Array, usual: float) -> float:
 	var best := usual
-	var votes := 0
-	var candidates := [maxf(usual,LEAST)]
+	var gap := INF
 	for foot_a in a:
 		for foot_b in b:
 			var shift: float = foot_a-foot_b
-			if shift >= LEAST and shift <= REACH: candidates.append(shift)
-	for shift in candidates:
-		var inliers := []
-		for foot_a in a:
-			for foot_b in b:
-				var other: float = foot_a-foot_b
-				if absf(other-shift) <= TOLERANCE: inliers.append(other)
-		if inliers.size() > votes or (inliers.size() == votes and absf(_mean(inliers)-usual) < absf(best-usual)):
-			votes = inliers.size()
-			best = _mean(inliers)
-	return maxf(best,LEAST)
+			if shift >= BACK and shift <= REACH and absf(shift-usual) < gap:
+				gap = absf(shift-usual)
+				best = shift
+	return best
 
 
 # Median of the backward moves (logical px) of each planted hoof to its nearest hoof of the next frame.
@@ -236,8 +251,8 @@ func _dismount(table: Dictionary) -> Dictionary:
 					floors[k] = rim.y-SNOW
 					if k == 0:
 						stand = floors[k]-frame.box.position.y
-						scale = STAND*PER/stand
-						print("SCALE dismount %.4f texel/px: standing soldier %d px (rim row %d) -> %.1f logical px" % [scale,stand,rim.y,STAND])
+						scale = STAND*PER/TROOPER_HEIGHT*HEAD_SRC.trooper/HEAD_SRC.dismount
+						print("SCALE dismount %.4f texel/px: head-matched to the trooper rig; standing soldier %d src px = %.1f logical px (rig %.1f)" % [scale,stand,stand*scale/PER,STAND])
 				var reach := _torso(sheet,frame,floors[k]+side*drop)
 				cut = sheets.cut(sheet,frame,scale,func(at: Vector2i, _colour: Color): return at.x >= reach.x and at.x < reach.y,floors[k]+side*drop,0.1)
 			elif k == 2:
@@ -319,23 +334,18 @@ func _hugging(sheet: Dictionary, rect: Rect2i, radius: int) -> Dictionary:
 # ground beside the fallen body.
 func _riders(side: int, table: Dictionary, mount: Dictionary, trooper: Dictionary) -> void:
 	var sheet := sheets.read(SHEETS.riders[side],Vector2i(7,3))
-	var scale: float = trooper.scale*RIDER_RATIO
-	print("SCALE riders %d %.4f texel/px (dismount %.4f x %.2f)" % [side,scale,trooper.scale,RIDER_RATIO])
+	var scale: float = STAND*PER/TROOPER_HEIGHT*HEAD_SRC.trooper/HEAD_SRC.riders
+	print("SCALE riders %d %.4f texel/px (head-matched to the trooper rig; dismount %.4f)" % [side,scale,trooper.scale])
 	var motions := []
 	for motion in MOTIONS.size(): motions.append([])
 	var seats := []
 	for motion in MOTIONS.size(): seats.append([])
-	var anchor := Vector2.ZERO
-	var landing := Vector2.ZERO
-	var last := sheets.stance(mount,mount.frames[20])
-	landing.x = (mount.frames[20].box.position.x-last.x)*mount.scale
 	for index in 21:
 		var frame: Dictionary = sheet.frames[index]
 		var stance := sheets.stance(mount,mount.frames[index])
 		var rim := _rim(mount,mount.frames[index])
 		var seat := Vector2(((rim.left+rim.right)/2.0-stance.x)*mount.scale,(rim.y-stance.sole)*mount.scale)
 		var entry := {"parts":[],"merged":frame.comps.size() == 1}
-		if index == 16: anchor = seat
 		if index < SEATED:
 			var clip: int = frame.box.position.y+int(SEAT_SPLIT*frame.box.size.y)
 			for comp in frame.comps:
@@ -344,14 +354,16 @@ func _riders(side: int, table: Dictionary, mount: Dictionary, trooper: Dictionar
 				entry.parts.append({"piece":cut.piece,"off":off})
 		else:
 			var cut := sheets.cut(sheet,frame,scale)
-			var t := float(index-16)/4.0
-			var x := lerpf(anchor.x,landing.x-cut.size.x/2.0,t)
-			var y := lerpf(anchor.y,0.0,t)-sin(PI*t)*ARC*PER
-			entry.parts.append({"piece":cut.piece,"off":Vector2(x-cut.size.x/2.0,y-cut.size.y)})
+			# Thrown or fallen riders: one sprite per frame, anchored at its bottom centre; the runtime moves it
+			# along a ballistic path (tactical_mammoth_motion.gd rider_fall), not along the sheet.
+			entry.parts.append({"piece":cut.piece,"off":Vector2(-cut.size.x/2.0,-cut.size.y)})
 			entry.merged = true
 		motions[MOUNT_ORDER[index]].append(entry)
 		seats[MOUNT_ORDER[index]].append(seat)
 		print("RIDERS %d %s #%d parts %d seat %s" % [side,MOTIONS[MOUNT_ORDER[index]],motions[MOUNT_ORDER[index]].size()-1,entry.parts.size(),seat])
+	var stopped := _rim(mount,mount.frames[8])
+	var at := sheets.stance(mount,mount.frames[8])
+	table.rim.append(Vector2((stopped.left-at.x)*mount.scale,(stopped.y-at.sole)*mount.scale))
 	table.riders.append(motions)
 	table.seat.append(seats)
 
@@ -390,6 +402,8 @@ func _pack(table: Dictionary) -> void:
 	text += "const FEET := %s\n" % JSON.stringify(table.feet.map(func(v): return v.map(func(r): return r.map(func(x): return snappedf(x,0.001)))))
 	text += "# SEAT[side][motion][index]: rider seat (hips on the howdah rim), texels from the howdah frame's pivot.\n"
 	text += "const SEAT := %s\n" % _lines(table.seat.map(func(side): return side.map(func(motion): return motion.map(func(v): return _vec(v)))))
+	text += "# RIM[side]: rear end of the howdah rim (x) and the rim's top (y) on the first stop frame, texels from its pivot.\n"
+	text += "const RIM := %s\n" % _lines(table.rim.map(func(v): return _vec(v)))
 	text += "# RIDERS[side][motion][index] = [[Rect2, offset of its top-left from the howdah pivot], ...]: spotter then gunner; one part: both, merged.\n"
 	text += "const RIDERS := %s\n" % _lines(table.riders.map(func(side): return side.map(func(motion): return motion.map(func(e): return "[%s]" % ",".join(e.parts.map(func(p): return "[%s,%s]" % [_rect(sheets.pieces[p.piece].rect),_vec(p.off)]))))))
 	text += "# DISMOUNT[side][k] = [Rect2, pivot]: stand, leg over, hang, drop, land.\n"

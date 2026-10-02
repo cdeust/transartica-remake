@@ -380,7 +380,7 @@ First integration of Codex's mammoth sheets; not owner-accepted. Builder
 - [x] Walk 8 frames driven by distance (stepped, hooves still while a frame shows), stop, melee, hit, death (8 bare / 5 howdah), rider layer min(count-1, 2), blue and olive.
 - [x] Dismount of riders stepping off a howdah (stand, leg over, hang, drop, land) before the run to the wagon; review fixture lands them on a wagon, not the locomotive.
 - [ ] Owner acceptance of the mammoth sprites (scale, gait speed, rider size).
-- [ ] Swap in Codex's empty-howdah `-v2` sheets (one constant, `SHEETS`), then rebuild and re-record.
+- [x] No `-v2` sheets: Codex confirms the howdah sheets hold no rider silhouettes (seat backs only).
 - [ ] Howdah and rider fall physics (the rider death frames are authored arcs of the merged pairs).
 - [ ] `tactical_actor_motion.gd` is 830 lines (740 before this work): split boarding, dynamite and drawing out of it; `tactical_actor_art.gd` now has no runtime caller (mirror test and review script only).
 

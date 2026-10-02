@@ -8,7 +8,7 @@ const DIR := "res://../output/imagegen/actors-20261002/"
 const OPAQUE := 0.75 # source: measured sheet alpha; softer pixels are halo.
 const NOISE := 40 # source: measured; smaller components are specks.
 const FEET_BAND := 0.08 # source: authored; share of the body's height counted as hooves.
-const PLANTED := 3 # source: authored; a hoof this close (source px) to the sole is planted.
+const PLANTED := 4 # source: authored; a hoof this close (source px) to the sole is planted.
 const HOOF_GAP := 3 # source: measured; columns of clear space between two hooves.
 var pieces := [] # {"image": Image}; table entries refer to them by index until packed.
 

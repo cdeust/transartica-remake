@@ -15,6 +15,52 @@ const HALT := 0.7 # source: authored, s the settle frames show after the beast h
 const FLICK := 0.15 # source: authored, s settled before the trunk lowers and the ear flicks.
 
 
+# A rider killed in the howdah slumps first (hit frames, then the bracing frame), then topples off
+# the rim: a ballistic fall from the rim to the ground with a hit impulse that barely lifts him,
+# a drift away from the beast, then a slide of under a pixel and lying. A man is ~13 logical px.
+const SLUMP := [0.12,0.12,0.2] # source: authored, s on the two hit frames and the bracing frame.
+const GRAVITY := 200.0 # source: authored, logical px/s²: a 14-16 px fall takes ~0.45 s.
+const LIFT := -24.0 # source: authored, logical px/s (up is negative): a rise of 1.4 px.
+const DRIFT := -11.0 # source: authored, logical px/s toward the rear (away from the facing): ~5.6 px over the fall.
+const HIPS := 3.0 # source: authored, logical px the toppling body's bottom hangs below the rim.
+const BOUNCE := 0.8 # source: authored, logical px of the small bounce on landing.
+const SLIDE := 0.8 # source: authored, logical px slid after landing.
+
+
+# Rider fall at dt seconds after he is hit: launch is the rim point (logical px from the beast's
+# pivot, x toward the facing, y up negative). Returns {stage: 0 slump, 1 flying, 2 lying; frame:
+# slump index or flight frame 0-2; pos: the body's bottom centre; flight: seconds in flight}.
+static func rider_fall(dt: float, launch: Vector2) -> Dictionary:
+	var start := launch+Vector2(0,HIPS)
+	var slumped := 0.0
+	for index in SLUMP.size():
+		slumped += SLUMP[index]
+		if dt < slumped: return {"stage":0,"frame":index,"pos":start,"flight":0.0}
+	var flight := dt-slumped
+	var total := (-LIFT+sqrt(LIFT*LIFT-2.0*GRAVITY*start.y))/GRAVITY
+	if flight < total:
+		var frame := 0 if flight < 0.12 else (1 if flight < 0.3 else 2) # source: authored frame times, s.
+		return {"stage":1,"frame":frame,"pos":Vector2(start.x+DRIFT*flight,start.y+LIFT*flight+0.5*GRAVITY*flight*flight),"flight":flight}
+	var lying := flight-total
+	var settle := minf(lying/0.1,1.0) # source: authored, s the bounce and slide take.
+	return {"stage":2,"frame":3,"pos":Vector2(start.x+DRIFT*total-SLIDE*settle,-BOUNCE*sin(PI*settle)),"flight":flight}
+
+
+# Seconds a rider slumps before he topples.
+static func rider_slump() -> float:
+	var slumped := 0.0
+	for time in SLUMP: slumped += time
+	return slumped
+
+
+# Seconds a rider falls from the hit to landing from this rim point.
+static func rider_fall_time(launch: Vector2) -> float:
+	var start_y := launch.y+HIPS
+	var slumped := 0.0
+	for time in SLUMP: slumped += time
+	return slumped+(-LIFT+sqrt(LIFT*LIFT-2.0*GRAVITY*start_y))/GRAVITY
+
+
 # A mammoth's gait: for each move the walk frames needed are planned (Mammoth.plan): the drawn
 # body advances by whole planted-hoof steps, only when the frame changes, so a hoof planted in
 # one frame is where it was while that frame shows. soldier.lag (cells) is how far the drawn
@@ -54,7 +100,10 @@ static func gait(track: Dictionary, soldier: Dictionary) -> void:
 static func state(track: Dictionary, soldier: Dictionary) -> Dictionary:
 	var actor: Dictionary = track.actor
 	var seated: int = actor.count+waiting(track) # riders about to step off still sit in the howdah
-	var state := {"kind":Mammoth.variant(actor.side,seated),"motion":Mammoth.STOP,"index":0,"riders":Mammoth.riders(seated)}
+	var dying := 0 # riders killed this moment keep the howdah on the beast until they have landed
+	for body in track.get("dying",[]):
+		if body.t < body.delay+body.span: dying = 3
+	var state := {"kind":Mammoth.variant(actor.side,seated+dying),"motion":Mammoth.STOP,"index":0,"riders":Mammoth.riders(seated)}
 	if soldier.recoil > 0:
 		state.motion = Mammoth.HIT
 		state.index = 0 if soldier.recoil > soldier.recoil_len*0.5 else 1

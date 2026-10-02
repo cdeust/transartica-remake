@@ -92,6 +92,46 @@ static func _seated(parts: Array, riders_shown: int) -> Array:
 	return [parts[-1]]
 
 
+# One seated rider (which 0 spotter, 1 gunner; a merged frame is drawn whole) of a rider-layer
+# frame, with the pivot at a logical foot point, shifted by `shift` texels (a howdah that moved).
+static func draw_seated(canvas: CanvasItem, world: Transform2D, side: int, motion: int, index: int, which: int, foot: Vector2, facing: float, shift := Vector2.ZERO, colour := Color.WHITE) -> void:
+	var parts: Array = Frames.RIDERS[side][motion][index_of(PLAYER,motion,index)]
+	var part: Array = parts[mini(which,parts.size()-1)]
+	canvas.draw_set_transform_matrix(world*Transform2D(0,Vector2(facing/PER,1/PER),0,foot))
+	canvas.draw_texture_rect_region(Frames.TEXTURE,Rect2(part[1]+shift,part[0].size),part[0],colour)
+	canvas.draw_set_transform_matrix(world)
+
+
+# Where the rider's hips are when seated, logical px from the pivot of the frame: how far its rim
+# moved from the same motion's first frame (texels), for shifting a seated rider with a moving howdah.
+static func rim_shift(side: int, motion: int, index: int, from_motion: int, from_index: int) -> Vector2:
+	return Frames.SEAT[side][motion][index_of(PLAYER,motion,index)]-Frames.SEAT[side][from_motion][index_of(PLAYER,from_motion,from_index)]
+
+
+# A fallen rider (death frame 1-4 of the rider sheet: 1 slipping, 2-3 falling, 4 lying; the pair
+# of riders when both go) with its bottom centre at a logical point.
+static func draw_faller(canvas: CanvasItem, world: Transform2D, side: int, index: int, foot: Vector2, facing: float, colour := Color.WHITE) -> void:
+	var part: Array = Frames.RIDERS[side][DEATH][clampi(index,1,4)][0]
+	canvas.draw_set_transform_matrix(world*Transform2D(0,Vector2(facing/PER,1/PER),0,foot))
+	canvas.draw_texture_rect_region(Frames.TEXTURE,Rect2(part[1],part[0].size),part[0],colour)
+	canvas.draw_set_transform_matrix(world)
+
+
+# Rider sprite size of a fall frame, logical px.
+static func faller_size(side: int, index: int) -> Vector2:
+	return Frames.RIDERS[side][DEATH][clampi(index,1,4)][0][0].size/PER
+
+
+# Seat of rider `which` relative to the howdah's rim centre on the first stop frame, logical px (x toward the facing).
+static func seat_x(side: int, which: int) -> float:
+	return seat(side,which).x-Frames.SEAT[side][STOP][0].x/PER
+
+
+# Hips on the rim at the howdah pivot: logical px of the rim centre of a frame.
+static func rim_point(side: int, motion: int, index: int) -> Vector2:
+	return Frames.SEAT[side][motion][index_of(PLAYER,motion,index)]/PER
+
+
 # Dismount frame k (0 stand on the rim, 1 leg over, 2 hang, 3 drop, 4 land) of a side.
 static func draw_dismount(canvas: CanvasItem, world: Transform2D, side: int, k: int, foot: Vector2, facing: float, colour := Color.WHITE) -> void:
 	var frame: Array = Frames.DISMOUNT[side][clampi(k,0,4)]
@@ -113,6 +153,11 @@ static func seat(side: int, which: int) -> Vector2:
 	var part: Array = parts[clampi(which,0,parts.size()-1)]
 	var rim: Vector2 = Frames.SEAT[side][STOP][0]
 	return Vector2(part[1].x+part[0].size.x/2.0,rim.y)/PER
+
+
+# The howdah's rear end (x, toward the facing: negative is behind) and rim top (y), logical px from the pivot.
+static func rim(side: int) -> Vector2:
+	return Frames.RIM[side]/PER
 
 
 # Logical-px bounds of a drawn frame with its riders at foot (for layout checks).
