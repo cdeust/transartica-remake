@@ -11,7 +11,6 @@ var camera := 0.0
 var paused := false
 var textures := {}
 var texture_bounds := {}
-var actor_art = preload("res://scripts/tactical_actor_art.gd").new()
 var wagon_art = preload("res://scripts/tactical_wagon_art.gd").new()
 var effects: Array = []
 var edge_scroll := 0
@@ -76,6 +75,8 @@ func open_battle(value) -> void:
 		living.clear()
 		weapon_motion.clear()
 		actor_motion.clear()
+		_kept.clear() # label spots belong to the battle that placed them
+		_shown.clear()
 	state = value
 	show()
 	queue_redraw()
@@ -192,7 +193,7 @@ func _draw() -> void:
 	_draw_ground()
 	_train(0, 63)
 	_train(1, 192)
-	actor_motion.draw(self,actor_art) # live groups plus fading removals
+	actor_motion.draw(self) # live groups plus fading removals
 	var layout := layout_labels()
 	for actor in state.actors: _actor(actor)
 	for label in layout.charges+layout.counts: _label(label.shown,label.text,label.size,label.anchor)
@@ -261,8 +262,9 @@ func layout_labels() -> Dictionary:
 					options.append({"point":home+offset,"offset":offset,"text":"●%d" % charge.fuse,"anchor":1.0 if left else 0.0,"size":size})
 		layout.charges.append(_settle("c%d/%d" % [charge.side,charge.slot],home,options,avoid))
 	for actor in state.actors:
+		if actor_motion.label_hidden(actor): continue
 		var feet := actor_motion.point(self,actor)
-		var offsets := [Vector2(-4,4),Vector2(2,4),Vector2(-6,-4),Vector2(7,-4),Vector2(-12,-4),Vector2(13,-4)] # below, then beside
+		var offsets := [Vector2(-4,4),Vector2(2,4),Vector2(-6,-4),Vector2(7,-4),Vector2(-12,-4),Vector2(13,-4),Vector2(-4,11),Vector2(2,11),Vector2(-12,11),Vector2(13,11)] # below, then beside, then farther below (a second group at the same feet)
 		for lift in [-16.0,-22.0,-28.0,-34.0]: # then above the heads, sliding sideways
 			for slide in [-3.0,4.0,-10.0,11.0,-17.0,18.0]: offsets.append(Vector2(slide,lift))
 		var options := []

@@ -367,3 +367,20 @@ Branche locale fix/combat-regressions basée sur main6dca252 ; aucun push dans c
 
 Preuves : `validation/actor-motion-glide-20261002.mp4` (avant correction du miroir), `validation/actor-motion-troopers-20261002.mp4` (atlas à 4 images, rejeté), `validation/trooper-rig-20261002.mp4` (rig en combat, 8 s), `validation/trooper-actions-20261002.mp4` (morts, dynamite, montée mises en scène, modèle figé).
 
+## Sprite-animated mammoths — 2 October 2026 (branch feat/mammoth-motion)
+
+First integration of Codex's mammoth sheets; not owner-accepted. Builder
+`game/tools/build_mammoth_poses.gd` (helpers `mammoth_sheets.gd`) writes
+`game/assets/combat/mammoth-poses.png` and the generated table
+`game/scripts/tactical_mammoth_frames.gd`; hashes, scales and measurements in
+`output/imagegen/actors-20261002/mammoth-poses-runtime.json`; recording and close-ups in
+`tasks/validation/mammoth-actions-20261002.mp4`, `mammoth-actions-contact-20261002.png`,
+`mammoth-closeups-20261002.png`.
+
+- [x] Walk 8 frames driven by distance (stepped, hooves still while a frame shows), stop, melee, hit, death (8 bare / 5 howdah), rider layer min(count-1, 2), blue and olive.
+- [x] Dismount of riders stepping off a howdah (stand, leg over, hang, drop, land) before the run to the wagon; review fixture lands them on a wagon, not the locomotive.
+- [ ] Owner acceptance of the mammoth sprites (scale, gait speed, rider size).
+- [x] No `-v2` sheets: Codex confirms the howdah sheets hold no rider silhouettes (seat backs only).
+- [ ] Howdah and rider fall physics (the rider death frames are authored arcs of the merged pairs).
+- [ ] `tactical_actor_motion.gd` is 830 lines (740 before this work): split boarding, dynamite and drawing out of it; `tactical_actor_art.gd` now has no runtime caller (mirror test and review script only).
+

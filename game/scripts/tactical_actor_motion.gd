@@ -13,6 +13,8 @@ extends RefCounted
 const Geometry = preload("res://scripts/tactical_effects_geometry.gd")
 const Rig = preload("res://scripts/tactical_trooper_rig.gd")
 const Poses = preload("res://scripts/tactical_trooper_poses.gd")
+const Mammoth = preload("res://scripts/tactical_mammoth_poses.gd")
+const Beast = preload("res://scripts/tactical_mammoth_motion.gd")
 const STEP := 1.0/50.0
 const SPRINT := 22.0 # source: authored top speed, logical px/s (~1.7 body heights/s).
 const ACCEL := 140.0 # source: authored, logical px/s².
@@ -34,7 +36,13 @@ const MANTLE_HOLD := 0.6 # source: authored share of the rise spent in the mantl
 const WAGON_SIDE := 25.0 # source: roof 38 above the top train baseline 63, logical px.
 const MAMMOTH_SPEED := 14.0 # source: authored heavy gait, logical px/s.
 const STRIDE_PX := Rig.STRIDE/Rig.PER # one step of the rig, logical px.
-const MAMMOTH_STRIDE := 7.0 # source: authored, logical px per step.
+# Riders stepping off a howdah (0x123a): seconds on each of the 5 dismount frames (stand on the
+# rim, leg over, hang from it, drop, land). They climb down the howdah's rear end, behind the
+# rump, where the sprite shows him clear of the flank; HANG_OUT logical px outside the rim end (authored).
+const DISMOUNT := [0.25,0.22,0.3,0.14,0.22]
+const HANG_OUT := 2.0
+const REAR := 3.0 # source: authored, logical px a toppling rider starts behind his seat, over the howdah's rear rim.
+const DISMOUNT_GAP := 0.5 # source: authored, s between two riders stepping off the same howdah.
 const VISIBLE := 4 # source: authored most soldiers drawn per group.
 # Formation offsets, logical px; negative y stands farther from the viewer.
 const FIELD_FORMATION := [Vector2(1,0),Vector2(-6,-3),Vector2(6.5,-1.5),Vector2(-0.5,-5.5)]
@@ -60,6 +68,7 @@ var charges := {} # "side/slot" → {"placed","lit"}
 var _melees := []
 var _rng := RandomNumberGenerator.new()
 var _sparks := 0
+var _serial := 0
 
 
 func _init() -> void:
@@ -102,6 +111,7 @@ func step(scene) -> void:
 				track.soldiers[index].delay = index*0.06+_rng.randf()*0.05 # source: authored ragged start.
 		_muster(track,actor,fighting)
 		track.count = actor.count
+		if actor.count > 0: track.alive = actor.count # a killed beast is drawn with the strength it died with
 		for soldier in track.soldiers: _run(track,soldier)
 		track.engaged = maxf(0.0,track.engaged-STEP)
 	for id in tracks.keys():
@@ -116,12 +126,23 @@ func step(scene) -> void:
 	_melees.clear()
 	_plants(state)
 	_age_bodies(scene)
+	_prune_leaving()
+
+
+# Riders still to step off a howdah whose destination group is gone (merged, killed, restored)
+# no longer hold a seat in it.
+func _prune_leaving() -> void:
+	var alive := {}
+	for track in tracks.values():
+		for soldier in track.soldiers: alive[soldier.uid] = true # by number: soldiers refer to their tracks, hashing one would not end
+	for track in tracks.values():
+		track.leaving = track.leaving.filter(func(soldier): return alive.has(soldier.uid) and not soldier.board.is_empty())
 
 
 func _track(actor: Dictionary) -> Dictionary:
 	if not tracks.has(actor.id):
 		var cell := Vector2(actor.x,actor.y)
-		tracks[actor.id] = {"to":cell,"roof":actor.roof,"facing":1.0,"count":actor.count,"engaged":0.0,"shed":0,"soldiers":[],"actor":actor}
+		tracks[actor.id] = {"to":cell,"roof":actor.roof,"facing":1.0,"count":actor.count,"engaged":0.0,"shed":0,"soldiers":[],"leaving":[],"dying":[],"alive":actor.count,"actor":actor}
 		_muster(tracks[actor.id],actor,false)
 	var track: Dictionary = tracks[actor.id]
 	track.actor = actor
@@ -135,6 +156,9 @@ func _snap(track: Dictionary, cell: Vector2) -> void:
 		soldier.cell = cell
 		soldier.speed = 0.0
 		soldier.board = {}
+		soldier.walk = {}
+		soldier.gait = -1
+		soldier.lag = Vector2.ZERO
 
 
 # Visible soldiers follow the group's strength. In a melee every loss fells a
@@ -143,6 +167,7 @@ func _snap(track: Dictionary, cell: Vector2) -> void:
 func _muster(track: Dictionary, actor: Dictionary, fighting: bool) -> void:
 	var wanted := 1 if actor.mammoth else clampi(actor.count,1,VISIBLE)
 	var losses: int = track.count-actor.count
+	if actor.mammoth and fighting and losses > 0: _drop_riders(track,Mammoth.riders(track.count),Mammoth.riders(actor.count))
 	if losses > 0 and not fighting and actor.roof < 0: track.shed += losses # men leaving to board
 	var falls := mini(losses,2) if fighting and not actor.mammoth else 0
 	var order := 0
@@ -160,24 +185,51 @@ func _muster(track: Dictionary, actor: Dictionary, fighting: bool) -> void:
 		comrade.delay = order*NEXT_FALL+0.3
 		track.soldiers[index] = comrade
 		order += 1
-	if fighting and losses > 0 and not track.soldiers.is_empty(): track.soldiers[0].recoil = RECOIL
+	if fighting and losses > 0 and not track.soldiers.is_empty(): _hit(track.soldiers[0],actor.mammoth,1.0)
 	while track.soldiers.size() < wanted:
 		track.soldiers.append(_soldier(track.to,track.soldiers.size()))
 
 
+# Riders killed in the howdah while the beast lives: the spotter (rear) goes first, then the gunner;
+# each slumps, topples off the rim and lies (rider_fall), one after the other.
+func _drop_riders(track: Dictionary, before: int, after: int) -> void:
+	if after >= before or track.soldiers.is_empty(): return
+	var lost := [1] if after == 0 and before == 1 else ([0] if after == 1 else [0,1]) # both: one pair sprite, as the beast's death
+	var pair: bool = lost.size() > 1
+	var soldier: Dictionary = track.soldiers[0]
+	var order := 0
+	for which in ([0] if pair else lost):
+		bodies.append({"roof":track.roof,"cell":soldier.cell-soldier.lag,"offset":_offset(track,soldier)+soldier.shift,
+			"facing":soldier.face if soldier.face != 0 else track.facing,"side":track.actor.side,"mammoth":false,"rider":which,
+			"pair":pair,"count":0,"t":0.0,"delay":order*NEXT_FALL,"fall":true,"landed":true,"kind":0,"breath":0.0,
+			"span":Beast.rider_fall_time(_launch(track.actor.side,Mammoth.STOP,0,which))})
+		track.dying.append(bodies[-1])
+		order += 1
+	track.dying = track.dying.filter(func(body): return body.t < body.delay+body.span)
+
+
+# The rim point a rider topples from, logical px from the beast's pivot (x toward the facing).
+func _launch(side: int, motion: int, index: int, which: int) -> Vector2:
+	var rim := Mammoth.rim_point(side,motion,index)
+	return Vector2(rim.x+Mammoth.seat_x(side,which)-REAR,rim.y)
+
+
 func _soldier(cell: Vector2, slot: int) -> Dictionary:
-	return {"cell":cell,"speed":0.0,"amp":0.0,"phase":_rng.randf()*TAU,"delay":0.0,
+	_serial += 1
+	return {"uid":_serial,"cell":cell,"speed":0.0,"amp":0.0,"phase":_rng.randf()*TAU,"delay":0.0,
 		"vmul":_rng.randf_range(0.92,1.08),"breath":_rng.randf()*TAU,"strike":0.0,"recoil":0.0,
 		"slot":slot%VISIBLE,"offset":Vector2.ZERO,"shift":Vector2.ZERO,"shift_to":Vector2.ZERO,
-		"shift_speed":0.0,"face":0.0,"board":{},"task":{},"crouch":0.0,"plant":-1}
+		"shift_speed":0.0,"face":0.0,"board":{},"task":{},"crouch":0.0,"plant":-1,
+		"walk":{},"gait":-1,"halt":0.0,"lag":Vector2.ZERO,"strike_len":STRIKE,"recoil_len":RECOIL}
 
 
 func _drop(track: Dictionary, soldier: Dictionary, fell: bool, delay: float) -> void:
 	var actor: Dictionary = track.actor
 	var roll := _rng.randf()
-	bodies.append({"roof":track.roof,"cell":soldier.cell,"offset":_offset(track,soldier)+soldier.shift,
+	# A mammoth that leaves the field is dead (it never merges away) and falls whatever the cause.
+	bodies.append({"roof":track.roof,"cell":soldier.cell-soldier.lag,"offset":_offset(track,soldier)+soldier.shift,
 		"facing":soldier.face if soldier.face != 0 else track.facing,"side":actor.side,"mammoth":actor.mammoth,
-		"count":actor.count,"t":0.0,"delay":delay,"fall":fell and not actor.mammoth,
+		"count":track.alive,"t":0.0,"delay":delay,"fall":fell or actor.mammoth,"span":Beast.DEATH if actor.mammoth else DEATH,
 		"kind":_fall_kind(track,soldier,roll),"landed":false,"breath":soldier.breath})
 
 
@@ -202,12 +254,13 @@ func _fall_kind(track: Dictionary, soldier: Dictionary, roll: float) -> int:
 func _age_bodies(scene) -> void:
 	for body in bodies:
 		body.t += STEP
-		if body.fall and not body.landed and (body.t-body.delay)/DEATH >= IMPACT:
+		if body.fall and not body.landed and (body.t-body.delay)/body.span >= IMPACT:
 			body.landed = true # snow kicked up where the body hits
 			var lying := death_frame(body.kind,1.0)
-			var at := _place(scene,body.roof,body.cell,body.offset)+Vector2(body.facing*Poses.centre(lying[0],lying[1]),0) # where the body lies
+			var reach: float = -body.facing*2.0 if body.mammoth else body.facing*Poses.centre(lying[0],lying[1])
+			var at := _place(scene,body.roof,body.cell,body.offset)+Vector2(reach,0) # where the body lies
 			scene.living.add("dust",at+Vector2(scene.camera,0),Vector2.UP,0.12) # source: authored light puff
-	bodies = bodies.filter(func(body): return body.t < (body.delay+DEATH+LIE+FADE if body.fall else FADE))
+	bodies = bodies.filter(func(body): return body.t < (body.delay+body.span+LIE+FADE if body.fall else FADE))
 
 
 # Sprint kinematics: accelerate, hold top speed, brake to stop on the cell.
@@ -217,7 +270,7 @@ func _run(track: Dictionary, soldier: Dictionary) -> void:
 	soldier.strike = maxf(0.0,soldier.strike-STEP)
 	soldier.recoil = maxf(0.0,soldier.recoil-STEP)
 	soldier.breath += STEP*2.4 # source: authored breathing rate, rad/s.
-	var stride: float = MAMMOTH_STRIDE if mammoth else STRIDE_PX
+	var stride := STRIDE_PX
 	if not soldier.board.is_empty():
 		_climbing(soldier)
 		return
@@ -249,6 +302,17 @@ func _run(track: Dictionary, soldier: Dictionary) -> void:
 	soldier.phase += travelled/stride*PI
 	# Full stride as soon as the body travels; feet gather while it stops.
 	soldier.amp = move_toward(soldier.amp,clampf(maxf(soldier.speed,soldier.shift_speed)/6.0,0,1),STEP*6.0)
+	if mammoth: Beast.gait(track,soldier)
+
+
+func _swing(soldier: Dictionary, mammoth: bool) -> void:
+	soldier.strike_len = Beast.STRIKE if mammoth else STRIKE
+	soldier.strike = soldier.strike_len
+
+
+func _hit(soldier: Dictionary, mammoth: bool, share: float) -> void:
+	soldier.recoil_len = (Beast.RECOIL if mammoth else RECOIL)*share
+	soldier.recoil = soldier.recoil_len
 
 
 # Dynamite: run to the charge, kneel, set the box, light the fuse, rise, return.
@@ -307,15 +371,24 @@ func _board_from_shedder(scene, track: Dictionary) -> void:
 			best = distance
 			source = other
 	if source == null: return
-	var lift := Vector2(0,-12) if source.actor.mammoth else Vector2.ZERO # riders step off the howdah
 	var start: Vector2 = source.soldiers[0].cell if not source.soldiers.is_empty() else source.to
+	if not source.actor.mammoth:
+		for index in track.soldiers.size(): _start_climb(scene,track,track.soldiers[index],start,FIELD_FORMATION[index%VISIBLE],index*0.12)
+		return
+	# Riders step off the howdah one after the other: stand on its rim, swing a leg over, hang, drop, land
+	# beside the beast, then run to the wagon; until each one's turn the howdah's rider layer shows him.
+	var beast := _beast_point(scene,source)
+	var offset: Vector2 = beast-scene._field_point(start.x,start.y)
 	for index in track.soldiers.size():
-		_start_climb(scene,track,track.soldiers[index],start,FIELD_FORMATION[index%VISIBLE]+lift,index*0.12)
+		var soldier: Dictionary = track.soldiers[index]
+		_start_climb(scene,track,soldier,start,offset,index*DISMOUNT_GAP,{"source":source,"which":index%Mammoth.SEATED})
+		source.leaving.append(soldier)
 
 
 # Climbs go up the end ladder of the wagon nearest the runner (ladders drawn
 # 3px inside each wagon end), then he runs along the roof to his slot.
-func _start_climb(scene, track: Dictionary, soldier: Dictionary, from_cell: Vector2, from_offset: Vector2, delay: float) -> void:
+# ride: {source, which} when he steps off a howdah first (dismount frames, then he runs from where he lands).
+func _start_climb(scene, track: Dictionary, soldier: Dictionary, from_cell: Vector2, from_offset: Vector2, delay: float, ride := {}) -> void:
 	var start := _place(scene,-1,from_cell,from_offset)
 	var top := _place(scene,track.roof,soldier.cell,_offset(track,soldier))
 	var height := minf(start.y-top.y,WAGON_SIDE)
@@ -341,16 +414,29 @@ func _start_climb(scene, track: Dictionary, soldier: Dictionary, from_cell: Vect
 	# rung frame is always the one that reaches the edge (frame 1).
 	var climbed := maxf(foot.y-(cap+MANTLE_START),RUNG*2)
 	var rungs := 4*maxi(0,roundi((climbed/RUNG-2.0)/4.0))+2
+	var heading := signf(foot.x-start.x) if absf(foot.x-start.x) > 0.5 else 0.0
+	var dismount := 0.0
+	var drop := Vector2.ZERO # where he lands from the beast's point
+	if not ride.is_empty():
+		var seat := Mammoth.seat(ride.source.actor.side,ride.which)
+		drop = Vector2((Mammoth.rim(ride.source.actor.side).x-HANG_OUT)*ride.source.facing,0) # behind the rump
+		from_offset += drop
+		start += drop
+		for time in DISMOUNT: dismount += time
 	soldier.board = {"from_cell":from_cell,"from_offset":from_offset,"t":-delay,"height":height,"ladder":ladder,"out":out,"land":land,"wagon":wagon,"rungs":rungs,"rung":climbed/rungs,
-		"run":start.distance_to(foot)/SPRINT,"climb":climbed/CLIMB if climbing else 0.35,"hop":not climbing,"rise":0.45}
-	soldier.face = signf(foot.x-start.x) if absf(foot.x-start.x) > 0.5 else 0.0
+		"run":start.distance_to(foot)/SPRINT,"climb":climbed/CLIMB if climbing else 0.35,"hop":not climbing,"rise":0.45,
+		"dismount":dismount,"source":ride.get("source",{}),"which":ride.get("which",0),"face":heading}
+	soldier.face = heading
 
 
 func _climbing(soldier: Dictionary) -> void:
 	var board: Dictionary = soldier.board
 	board.t += STEP
-	var t: float = board.t
-	if t < 0: return
+	var t: float = board.t-board.dismount
+	if board.t < 0: return
+	if t < 0: # stepping off the howdah: the dismount frames play
+		soldier.amp = 0.0
+		return
 	if t < board.run: # running to the wagon, feet gathering for the last SETTLE s
 		soldier.phase += SPRINT*STEP/STRIDE_PX*PI
 		soldier.amp = move_toward(soldier.amp,1.0 if t < board.run-SETTLE else 0.0,STEP*8.0)
@@ -379,8 +465,9 @@ func _board_pose(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 	var roof := Vector2(land_x,_roof_y(scene,track.roof,board.wagon,land_x,top.y))
 	var cap := _roof_y(scene,track.roof,board.wagon,edge_x,top.y) # the roof's end cap at the ladder
 	var foot := Vector2(edge_x+out*Poses.hand(0).x,roof.y+board.height)
-	var t: float = maxf(board.t,0.0)
-	var pose := {"at":foot,"climb":0.0,"crouch":0.0,"frame":-1,"amp":-1.0}
+	var pose := {"at":foot,"climb":0.0,"crouch":0.0,"frame":-1,"amp":-1.0,"dismount":-1}
+	if board.t < board.dismount: return _dismount_pose(scene,board,pose)
+	var t: float = maxf(board.t-board.dismount,0.0)
 	if t < board.run:
 		pose.at = start.lerp(foot,t/maxf(board.run,0.001))
 		return pose
@@ -410,6 +497,40 @@ func _board_pose(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 	if rise < MANTLE_HOLD: pose.frame = MANTLE
 	pose.crouch = _matched(track.actor.side,Poses.top(Poses.CLIMB,MANTLE,track.actor.side))*(1.0-clampf((rise-MANTLE_HOLD)/(1.0-MANTLE_HOLD),0,1))
 	pose.amp = 0.0
+	return pose
+
+
+# Where a mammoth group stands (its drawn feet), or its target cell once it is gone.
+func _beast_point(scene, source: Dictionary) -> Vector2:
+	if source.soldiers.is_empty(): return _place(scene,-1,source.to,Vector2.ZERO)
+	return _soldier_point(scene,source,source.soldiers[0])
+
+
+# A rider stepping off a howdah: which dismount frame, and where his feet are. Frames 0-1 stand
+# on the howdah's rim at his seat (following the beast), 2 hangs from the rim, 3 drops, 4 lands
+# where the run to the wagon starts.
+func _dismount_pose(scene, board: Dictionary, pose: Dictionary) -> Dictionary:
+	var source: Dictionary = board.source
+	var side: int = source.actor.side
+	var beast := _beast_point(scene,source)
+	var seat := Mammoth.seat(side,board.which)
+	var rim := beast+Vector2(seat.x*source.facing,seat.y)
+	var edge := beast+Vector2((Mammoth.rim(side).x-HANG_OUT)*source.facing,Mammoth.rim(side).y) # outside the rear end of the rim
+	var landing := _place(scene,-1,board.from_cell,board.from_offset)
+	var hang := edge+Vector2(0,Mammoth.dismount_height(side,2)-0.5)
+	var t := maxf(board.t,0.0)
+	var k := 0
+	for time in DISMOUNT:
+		if t < time or k == DISMOUNT.size()-1: break
+		t -= time
+		k += 1
+	var u := clampf(t/DISMOUNT[k],0,1)
+	pose.dismount = k
+	if k == 0: pose.at = rim
+	elif k == 1: pose.at = rim.lerp(edge,u) # along the rim to its rear end
+	elif k == 2: pose.at = hang
+	elif k == 3: pose.at = hang.lerp(landing,u*u) # falls, speeding up
+	else: pose.at = landing
 	return pose
 
 
@@ -451,8 +572,8 @@ func _engage(event: Dictionary) -> void:
 	target.engaged = ENGAGED
 	# One soldier swings per report; the struck group's front man reels.
 	var striker: Dictionary = attacker.soldiers[_rng.randi()%attacker.soldiers.size()]
-	striker.strike = STRIKE
-	if not target.soldiers.is_empty() and target.soldiers[0].recoil <= 0: target.soldiers[0].recoil = RECOIL*0.6
+	_swing(striker,attacker.actor.mammoth)
+	if not target.soldiers.is_empty() and target.soldiers[0].recoil <= 0: _hit(target.soldiers[0],target.actor.mammoth,0.6)
 
 
 # A new charge (0x1c73 enemy, 0x4674 player) sends the planting group's
@@ -491,13 +612,27 @@ func planter_facing(charge: Dictionary) -> float:
 	return 0.0
 
 
+# A group whose men are all still stepping off a howdah has no label yet: they belong to the
+# beast until they have landed, then become a group of their own.
+func label_hidden(actor: Dictionary) -> bool:
+	var track: Dictionary = tracks.get(actor.id,{})
+	if track.is_empty() or track.soldiers.is_empty(): return false
+	for soldier in track.soldiers:
+		if soldier.board.is_empty() or soldier.board.dismount <= 0.0 or soldier.board.t >= soldier.board.dismount: return false
+	return true
+
+
 # Logical-px rectangles of the soldiers standing or kneeling on screen (for label placement).
 func soldier_rects(scene) -> Array:
 	var rects := []
 	for track in tracks.values():
-		if track.actor.mammoth: continue
 		for soldier in track.soldiers:
+			if not soldier.board.is_empty() and soldier.board.t < 0: continue # still seated: drawn with the howdah
 			var at := _soldier_point(scene,track,soldier)
+			if track.actor.mammoth:
+				var state := Beast.state(track,soldier)
+				rects.append(Mammoth.bounds(track.actor.side,state.kind,state.motion,state.index,at,track.facing,state.riders))
+				continue
 			var facing: float = soldier.face if soldier.face != 0 else track.facing
 			if soldier.board.is_empty() and soldier.plant >= 0: rects.append(Poses.bounds(at,facing,Poses.PLANT,soldier.plant,track.actor.side))
 			else: rects.append(Rect2(at+Vector2(-4,-13),Vector2(8,12))) # source: standing rig, 13 px tall, ~8 wide with its rifle; boots may meet a label below.
@@ -516,7 +651,7 @@ func _place(scene, roof: int, cell: Vector2, offset: Vector2) -> Vector2:
 
 func _soldier_point(scene, track: Dictionary, soldier: Dictionary) -> Vector2:
 	if not soldier.board.is_empty(): return _board_pose(scene,track,soldier).at
-	return _place(scene,track.roof,soldier.cell,_offset(track,soldier)+soldier.shift)
+	return _place(scene,track.roof,soldier.cell-soldier.lag,_offset(track,soldier)+soldier.shift)
 
 
 static func moving(track: Dictionary) -> bool:
@@ -533,13 +668,16 @@ func point(scene, actor: Dictionary) -> Vector2:
 	return _soldier_point(scene,track,track.soldiers[0])
 
 
-func draw(scene, art) -> void:
+func draw(scene) -> void:
 	for actor in scene.state.actors: _track(actor) # drawable before the first visual step
 	_sparks += 1
 	var items := []
 	for track in tracks.values():
 		for soldier in track.soldiers:
-			items.append({"at":_soldier_point(scene,track,soldier),"track":track,"soldier":soldier})
+			var item := {"at":_soldier_point(scene,track,soldier),"track":track,"soldier":soldier}
+			if not soldier.board.is_empty() and soldier.board.t < soldier.board.dismount and not soldier.board.source.is_empty():
+				item.depth = _beast_point(scene,soldier.board.source).y+0.3 # in front of the howdah he leaves
+			items.append(item)
 	for body in bodies:
 		items.append({"at":_place(scene,body.roof,body.cell,body.offset),"body":body})
 	for charge in scene.state.charges:
@@ -550,14 +688,16 @@ func draw(scene, art) -> void:
 		for soldier in track.soldiers: _draw_ladder(scene,track,soldier)
 	items.sort_custom(func(a,b): return _depth(a) < _depth(b))
 	for item in items:
-		if item.has("body"): _draw_body(scene,art,item.at,item.body)
+		if item.has("body"): _draw_body(scene,item.at,item.body)
 		elif item.has("charge"): _draw_box(scene,item.at,item.charge.lit)
-		else: _draw_soldier(scene,art,item.at,item.track,item.soldier)
+		else: _draw_soldier(scene,item.at,item.track,item.soldier)
 
 
 # The ladder is up exactly while he is on it: from the first rung to the last frame before his feet leave the top one.
 static func ladder_up(board: Dictionary) -> bool:
-	return not board.is_empty() and not board.hop and board.wagon >= 0 and board.t >= board.run and board.t < board.run+board.climb+STEP*0.5
+	if board.is_empty() or board.hop or board.wagon < 0: return false
+	var t: float = board.t-board.dismount
+	return t >= board.run and t < board.run+board.climb+STEP*0.5
 
 
 # A ladder up the end of the wagon being climbed, there only while someone climbs
@@ -646,17 +786,20 @@ func _iron(scene, roof: int, index: int) -> Color:
 
 
 func _depth(item: Dictionary) -> float:
-	return item.at.y+(0.5 if item.has("body") and item.body.fall and item.body.t >= item.body.delay else 0.0) # source: authored, half a logical px nearer.
+	return item.get("depth",item.at.y)+(0.5 if item.has("body") and item.body.fall and item.body.t >= item.body.delay else 0.0) # source: authored, half a logical px nearer.
 
 
-func _draw_soldier(scene, art, at: Vector2, track: Dictionary, soldier: Dictionary) -> void:
+func _draw_soldier(scene, at: Vector2, track: Dictionary, soldier: Dictionary) -> void:
 	var actor: Dictionary = track.actor
 	var colour := Color.WHITE.lerp(Color(1,0.5,0.45),soldier.recoil/RECOIL*0.7)
 	var facing: float = soldier.face if soldier.face != 0 else track.facing
 	if actor.mammoth:
-		var bob: float = -absf(sin(soldier.phase))*0.5*soldier.amp # source: authored stride lift, logical px.
-		art.draw_pose(scene,art.pose_for(actor),at+Vector2(0,bob),facing,colour)
+		var state := Beast.state(track,soldier)
+		Mammoth.draw(scene,scene.world_transform,actor.side,state.kind,state.motion,state.index,at,facing,state.riders)
 		return
+	if not soldier.board.is_empty() and soldier.board.t < soldier.board.dismount:
+		if soldier.board.t >= 0: Mammoth.draw_dismount(scene,scene.world_transform,actor.side,_board_pose(scene,track,soldier).dismount,at,soldier.board.face,colour)
+		return # before his turn the howdah's rider layer shows him
 	var stance := stance_of(scene,track,soldier)
 	var carrying: bool = not soldier.task.is_empty() and not charges.get(soldier.task.key,{"placed":true}).placed
 	if stance.sprite.frame >= 0:
@@ -695,11 +838,41 @@ static func death_frame(kind: int, u: float) -> Array:
 	return [family,floori(clampf(u/IMPACT,0,1)*(Poses.count(family)-1)+0.5)]
 
 
-func _draw_body(scene, art, at: Vector2, body: Dictionary) -> void:
-	var fading: float = body.t-(body.delay+DEATH+LIE) if body.fall else body.t
+# One rider's death: seated slump (hit frames, bracing frame) on the howdah, then the ballistic fall.
+# beast_motion/beast_index: the howdah's frame, which the seated rider follows; pair: the sprite of
+# both riders falls together; launched: the howdah frame index he topples from (a dying beast).
+func _draw_rider(scene, at: Vector2, body: Dictionary, which: int, dt: float, beast_motion: int, beast_index: int, pair: bool, colour: Color, launched := 0) -> void:
+	var side: int = body.side
+	var facing: float = body.facing
+	var launch := _launch(side,beast_motion,launched,which)
+	dt = maxf(dt,0.0) # before his turn he sits, as his first slump frame
+	var fall := Beast.rider_fall(dt,launch)
+	if fall.stage == 0:
+		var motion := Mammoth.HIT if fall.frame < 2 else Mammoth.DEATH
+		var index: int = fall.frame if fall.frame < 2 else 0
+		Mammoth.draw_seated(scene,scene.world_transform,side,motion,index,which,at,facing,Mammoth.rim_shift(side,beast_motion,beast_index,motion,index),colour)
+		return
+	var foot := at+Vector2(fall.pos.x*facing,fall.pos.y)
+	if fall.stage == 2 and not pair: # one man: the trooper's lying sprite
+		Poses.draw_frame(scene,scene.world_transform,side,foot,facing,Poses.FALL_BACK,Poses.count(Poses.FALL_BACK)-1,colour)
+		return
+	var frame: int = fall.frame+1 if pair else (4 if fall.stage == 2 else 2+mini(fall.frame,1))
+	Mammoth.draw_faller(scene,scene.world_transform,side,frame,foot,facing,colour)
+
+
+func _draw_body(scene, at: Vector2, body: Dictionary) -> void:
+	var fading: float = body.t-(body.delay+body.span+LIE) if body.fall else body.t
 	var colour := Color(1,1,1,clampf(1.0-fading/FADE,0,1))
-	if body.mammoth:
-		art.draw_pose(scene,9 if body.count > 1 else 8,at,body.facing,colour)
+	if body.has("rider"):
+		_draw_rider(scene,at,body,body.rider,body.t-body.delay,Mammoth.STOP,0,body.pair,colour)
+		return
+	if body.mammoth: # standing until its turn, then every death frame once, lying till it fades
+		var shown := Beast.body_state(body)
+		Mammoth.draw(scene,scene.world_transform,body.side,shown.kind,shown.motion,shown.index,at,body.facing,shown.riders,colour)
+		if shown.motion != Mammoth.DEATH or shown.pair == 0: return
+		for which in ([0,1] if shown.pair == 2 else [1]): # a pair falls as one sprite, drawn with the first
+			_draw_rider(scene,at,body,which,body.t-body.delay,Mammoth.DEATH,shown.index,shown.pair == 2,colour,shown.launched)
+			if shown.pair == 2: break
 		return
 	if body.fall and body.t >= body.delay:
 		var fall := death_frame(body.kind,(body.t-body.delay)/DEATH)

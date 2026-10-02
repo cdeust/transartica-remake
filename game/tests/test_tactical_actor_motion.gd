@@ -7,6 +7,9 @@ const Combat = preload("res://scripts/tactical_combat.gd")
 const Rig = preload("res://scripts/tactical_trooper_rig.gd")
 const Poses = preload("res://scripts/tactical_trooper_poses.gd")
 const Motion = preload("res://scripts/tactical_actor_motion.gd")
+const Mammoth = preload("res://scripts/tactical_mammoth_poses.gd")
+const Beast = preload("res://scripts/tactical_mammoth_motion.gd")
+const Frames = preload("res://scripts/tactical_mammoth_frames.gd")
 var failures: Array[String] = []
 
 func _initialize() -> void:
@@ -63,6 +66,214 @@ func track_jump(jumps: Dictionary, last: Dictionary, name: String, motion, scene
 
 func worst(jumps: Dictionary, name: String) -> float:
 	return maxf(jumps.get(name+"/top",INF),maxf(jumps.get(name+"/feet",INF),jumps.get(name+"/step",INF)))
+
+# A mammoth scene frozen in the model: groups are moved and removed by hand, the presentation steps.
+func beasts() -> Dictionary:
+	var scene = Scene.new()
+	scene.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.add_child(scene)
+	var model := battle()
+	model.actors.clear()
+	scene.open_battle(model)
+	scene.set_physics_process(false)
+	var stop := 0 # column whose roof slot lies over a wagon of the player's train (slot 9), as the review fixture
+	for x in model.columns:
+		if model.roof_cell(0,x) == 9: stop = x
+	return {"scene":scene,"model":model,"motion":scene.actor_motion,"stop":stop}
+
+
+# Walking: frames follow the distance travelled, whole planted-hoof steps, the hooves of the
+# frame shown stay where they are, and each frame change moves the best planted hoof by <= 0.5px.
+func walking(world: Dictionary) -> void:
+	var scene = world.scene
+	var model: Combat = world.model
+	var motion = world.motion
+	var beast: Dictionary = model.add_actor(0,world.stop-3,5,1,true,-1,2)
+	motion.step(scene)
+	var track: Dictionary = motion.tracks[beast.id]
+	var soldier: Dictionary = track.soldiers[0]
+	var shown := []
+	var last := {"frame":-1,"x":0.0}
+	var held := 0.0 # worst hoof drift while one frame shows
+	var anchors := [] # best-hoof move over each frame change
+	var settle := {}
+	var travelled := 0.0
+	var origin: float = motion.point(scene,beast).x
+	for tick in 50*8:
+		if tick%56 == 10 and beast.x < world.stop: beast.x += 1
+		motion.step(scene)
+		var state: Dictionary = Beast.state(track,soldier)
+		var at: float = motion.point(scene,beast).x
+		if state.motion == Mammoth.WALK:
+			var hooves: Array = Mammoth.feet(state.kind,state.index)
+			if last.frame == state.index:
+				for hoof in hooves.size(): held = maxf(held,absf((at+track.facing*hooves[hoof])-last.worlds[hoof]))
+			elif last.frame >= 0:
+				shown.append(state.index)
+				var best := INF
+				for old in last.worlds:
+					for hoof in hooves: best = minf(best,absf(old-(at+track.facing*hoof)))
+				anchors.append(best)
+			last = {"frame":state.index,"worlds":hooves.map(func(h): return at+track.facing*h)}
+		else:
+			last = {"frame":-1}
+			if state.motion == Mammoth.STOP and tick > 100: settle[state.index] = true
+		travelled = at-origin
+	var ordered := true
+	for index in range(1,shown.size()): ordered = ordered and shown[index] == (shown[index-1]+1)%8
+	check(model.actors[0].x == world.stop and absf(travelled-48.0) < 0.5,"mammoth walked three cells (%.2f px)" % travelled)
+	check(shown.size() >= 8 and ordered,"walk frames advance in cycle order with the distance (%d changes)" % shown.size())
+	check(held < 0.01,"no foot slides while a walk frame shows (%.3f px)" % held)
+	check(anchors.size() >= 20 and anchors.max() <= 0.5,"a planted hoof keeps its world x within 0.5px on every one of %d frame changes (worst %.2f px)" % [anchors.size(),anchors.max()])
+	print("mammoth gait: %d frame changes, worst planted-hoof move %.2f px; hooves drift %.3f px while a frame shows" % [anchors.size(),anchors.max(),held])
+	check(soldier.lag.length() == 0.0 and Beast.state(track,soldier).motion == Mammoth.STOP,"halted on its cell, drawn without lag, in the settle frames")
+	check(settle.has(0) and settle.has(1),"after halting it shows both stop frames")
+	await fighting(world,beast)
+
+
+# A blow plays the four melee frames and a hit the two hit frames, whatever else the beast was doing.
+func fighting(world: Dictionary, beast: Dictionary) -> void:
+	var scene = world.scene
+	var model: Combat = world.model
+	var motion = world.motion
+	var track: Dictionary = motion.tracks[beast.id]
+	var soldier: Dictionary = track.soldiers[0]
+	var rival = model.add_actor(1,beast.x+2,5,3,false,-1,6)
+	motion.melee({"kind":"melee","x":beast.x,"y":beast.y})
+	motion.step(scene)
+	var blows := {}
+	for tick in 50:
+		motion.step(scene)
+		var state: Dictionary = Beast.state(track,soldier)
+		if state.motion == Mammoth.MELEE: blows[state.index] = true
+	check(blows.keys().size() == 4,"a blow plays the four melee frames (%s)" % [blows.keys()])
+	beast.count = 3
+	motion.melee({"kind":"melee","x":rival.x,"y":rival.y})
+	motion.step(scene)
+	var hits := {}
+	for tick in 40:
+		motion.step(scene)
+		var state: Dictionary = Beast.state(track,soldier)
+		if state.motion == Mammoth.HIT: hits[state.index] = true
+	check(hits.keys().size() == 2,"a hit plays both hit frames (%s)" % [hits.keys()])
+
+
+# Strength: bare for one, howdah for more (the beast counts as one), riders min(count-1, 2).
+func riding(world: Dictionary) -> void:
+	var motion = world.motion
+	var shown := []
+	for count in [1,2,3,5,31]: shown.append([Mammoth.variant(0,count),Mammoth.riders(count)])
+	check(shown == [[0,0],[1,1],[1,2],[1,2],[1,2]],"riders follow the count: bare at 1, howdah with min(count-1,2) riders (%s)" % [shown])
+	check(Mammoth.variant(1,4) == Mammoth.ENEMY and Mammoth.variant(0,4) == Mammoth.PLAYER,"enemy riders are olive, player riders blue (sheet per side)")
+	var model: Combat = world.model
+	var enemy: Dictionary = model.add_actor(1,world.stop-4,5,5,true,-1,6)
+	motion.step(world.scene)
+	var track: Dictionary = motion.tracks[enemy.id]
+	check(Beast.state(track,track.soldiers[0]).riders == 2,"five-strong enemy group seats two riders")
+	enemy.count = 2
+	motion.step(world.scene)
+	check(Beast.state(track,track.soldiers[0]).riders == 1,"count 2 seats one rider")
+	enemy.count = 1
+	motion.step(world.scene)
+	check(Beast.state(track,track.soldiers[0]).kind == Mammoth.BARE,"count 1 is the bare mammoth")
+
+
+# Death: no fade-only death: a mammoth that leaves the field falls through every frame of its
+# variant (8 bare, 5 with a howdah), lies, then fades.
+func dying(world: Dictionary) -> void:
+	var scene = world.scene
+	var model: Combat = world.model
+	var motion = world.motion
+	for count in [1,4]:
+		var beast: Dictionary = model.add_actor(0,world.stop-6,5,count,true,-1,2)
+		motion.step(scene)
+		beast.count = 0 # killed: the model zeroes it before the group goes
+		motion.step(scene)
+		model.actors.erase(beast)
+		var start: int = motion.bodies.size()
+		motion.step(scene)
+		var body: Dictionary = motion.bodies[start]
+		var kind := Mammoth.variant(0,count)
+		var seen := {}
+		var last := -1
+		for tick in 50*8:
+			motion.step(scene)
+			if body.t >= body.delay and body.t < body.delay+body.span:
+				last = Mammoth.death_index(kind,(body.t-body.delay)/body.span)
+				seen[last] = true
+		var played := {}
+		for tick in 120:
+			var shown: Dictionary = Beast.body_state({"side":0,"count":body.count,"t":body.delay+tick*body.span/119.0,"delay":body.delay,"span":body.span})
+			played[shown.index] = shown.kind
+		check(body.count == count and (count == 1 or played.size() == 5 and played.values().all(func(k): return k == Mammoth.PLAYER)),"a killed beast is drawn with the strength it died with (%d): %s death frames through the body state" % [body.count,"howdah" if count > 1 else "bare"])
+		check(body.fall and body.mammoth and seen.size() == Mammoth.count(kind,Mammoth.DEATH),"count %d: death plays all %d frames, not a fade (%d seen)" % [count,Mammoth.count(kind,Mammoth.DEATH),seen.size()])
+		check(not motion.bodies.has(body),"the body is released after it lies and fades")
+
+
+# Dismount (0x123a): riders stepping off a howdah play stand, leg over, hang, drop, land beside
+# the beast, in that order, before any climb frame, landing on the ground.
+func orphaned(world: Dictionary) -> void:
+	var scene = world.scene
+	var model: Combat = world.model
+	var motion = world.motion
+	var beast: Dictionary = model.add_actor(1,world.stop,5,5,true,-1,6)
+	motion.step(scene)
+	var roof: Dictionary = model.add_actor(1,model.roof_cell(0,beast.x),-1,2,false,0,2)
+	beast.count -= 2
+	motion.step(scene)
+	var track: Dictionary = motion.tracks[beast.id]
+	var held: bool = track.leaving.size() == 2 and Beast.waiting(track) >= 1
+	model.actors.erase(roof) # the destination group is gone before the riders' turn
+	motion.step(scene)
+	check(held and track.leaving.is_empty() and Beast.waiting(track) == 0,"riders whose destination group is gone no longer hold a seat (%d left)" % track.leaving.size())
+
+
+func dismounting(world: Dictionary) -> void:
+	var scene = world.scene
+	var model: Combat = world.model
+	var motion = world.motion
+	var beast: Dictionary = model.add_actor(1,world.stop,5,5,true,-1,6)
+	motion.step(scene)
+	model.add_actor(1,model.roof_cell(0,beast.x),-1,2,false,0,2)
+	beast.count -= 2
+	motion.step(scene)
+	var track: Dictionary = motion.tracks[beast.id]
+	var rider: Dictionary = {}
+	for other in motion.tracks.values():
+		if other.roof >= 0: rider = other.soldiers[0]
+	check(not rider.is_empty() and rider.board.dismount > 0.0 and track.leaving.size() == 2,"riders stepping off a howdah start with the dismount frames")
+	var order := []
+	var climbed_before := false
+	var seated := []
+	var landing := INF
+	var apart := INF
+	var clashes := 0
+	var hidden_ok := true
+	var shown_ok := false
+	var riders_actor: Dictionary = model.actors[-1]
+	for tick in 50*6:
+		motion.step(scene)
+		if rider.board.is_empty(): break
+		var pose: Dictionary = motion._board_pose(scene,motion.tracks.values().filter(func(t): return t.roof >= 0)[0],rider)
+		if rider.board.t >= 0.0 and rider.board.t < rider.board.dismount:
+			if order.is_empty() or order[-1] != pose.dismount: order.append(pose.dismount)
+			climbed_before = climbed_before or pose.frame >= 0
+		clashes += scene.layout_clashes()
+		if rider.board.t < rider.board.dismount: hidden_ok = hidden_ok and motion.label_hidden(riders_actor)
+		else: shown_ok = shown_ok or not motion.label_hidden(riders_actor)
+		if rider.board.t >= 0.0: seated.append(Beast.state(track,track.soldiers[0]).riders)
+		if pose.dismount == 4 and landing == INF:
+			var ground: float = motion.point(scene,beast).y
+			landing = absf(pose.at.y-ground)
+			apart = absf(pose.at.x-motion.point(scene,beast).x)
+	check(order == [0,1,2,3,4],"dismount frames play in order stand, leg over, hang, drop, land (%s)" % [order])
+	check(not climbed_before,"no climb frame before the soldier has landed")
+	check(landing < 0.5,"he lands on the ground line of the beast (%.2f px off)" % landing)
+	check(apart > 8.0 and apart < 18.0,"he lands behind the beast's rump, clear of its flank (%.1f px)" % apart)
+	check(clashes <= 3,"labels stay clear of each other, soldiers and wagons through the dismount (%d of 300 steps graze one: the runner's label meeting the wagon end)" % clashes)
+	check(hidden_ok and shown_ok,"the riders have no label of their own while they step off, and get it once landed")
+	check(seated.min() >= 0 and seated.max() <= 2,"howdah shows at most two riders while they step off")
+
 
 func run() -> void:
 	var scene = Scene.new()
@@ -288,9 +499,44 @@ func run() -> void:
 	check(arrival_clashes == 0,"labels clear of soldiers, wagon bodies and each other through the roof arrival (%d clashes)" % arrival_clashes)
 	check(rungs.has(0) and rungs.has(1) and rungs.has(2) and rungs.has(3) and rungs.has(Motion.MANTLE),"climb cycles four rung frames then mantles (%s)" % [rungs.keys()])
 	check(motion.tracks[boarder.id].soldiers[0].board.is_empty() and motion.point(scene,boarder).y < low-10,"climb ends on the roof (%s, %.1f -> %.1f)" % [motion.tracks[boarder.id].soldiers[0].board,low,motion.point(scene,boarder).y])
+	# A rider killed in the howdah: slump, then a ballistic topple that barely rises and drifts little.
+	for side in 2:
+		for which in 2:
+			var launch := Vector2(Mammoth.rim_point(side,Mammoth.STOP,0).x+Mammoth.seat_x(side,which),Mammoth.rim_point(side,Mammoth.STOP,0).y)
+			var apex := 0.0
+			var travel := 0.0
+			var stages := {}
+			var jump := 0.0
+			var last := Vector2.INF
+			for tick in 200:
+				var fall: Dictionary = Beast.rider_fall(tick*0.01,launch)
+				stages[fall.stage] = true
+				apex = maxf(apex,launch.y+Beast.HIPS-fall.pos.y)
+				if fall.stage == 1: travel = absf(fall.pos.x-(launch.x))
+				if last != Vector2.INF: jump = maxf(jump,fall.pos.distance_to(last))
+				last = fall.pos
+			var lied: Dictionary = Beast.rider_fall(2.0,launch)
+			var total: float = Beast.rider_fall_time(launch)-Beast.rider_slump()
+			check(apex <= 2.0 and travel <= 6.0,"rider killed in the howdah rises %.2f px at most and drifts %.2f px (limits 2, 6)" % [apex,travel])
+			check(stages.size() == 3 and absf(lied.pos.y) < 0.01+Beast.BOUNCE*0.01 and lied.pos.x >= launch.x+Beast.DRIFT*total-Beast.SLIDE-0.01 and total > 0.35 and total < 0.65,"slump, fall of %.2f s under gravity, lying at the ground with a slide under 1px" % total)
+			check(jump < 1.7,"the falling rider moves smoothly (largest step %.2f px per 10 ms)" % jump)
+	var world := beasts()
+	await walking(world)
+	var planted_worst := 0.0 # every variant, every one of the 8 walk frame changes (wrap included)
+	for kind in 3:
+		for frame in 8:
+			var gap := INF
+			for hoof in Mammoth.feet(kind,frame):
+				for next in Mammoth.feet(kind,frame+1): gap = minf(gap,absf(hoof-next-Mammoth.step(kind,frame)))
+			planted_worst = maxf(planted_worst,gap)
+	check(planted_worst <= 0.5,"bare, player and olive walk tables: a planted hoof keeps its world x on all 24 frame changes (worst %.2f px)" % planted_worst)
+	await riding(beasts())
+	await dying(beasts())
+	await dismounting(beasts())
+	await orphaned(beasts())
 	if failures.is_empty():
 		print("switch mismatch, logical px (top/feet/step): kneel %.2f/%.2f/%.2f, climb %.2f/%.2f/%.2f, death %.2f" % [jumps.get("kneel/top",-1.0),jumps.get("kneel/feet",-1.0),jumps.get("kneel/step",-1.0),climb_jumps.get("climb/top",-1.0),climb_jumps.get("climb/feet",-1.0),climb_jumps.get("climb/step",-1.0),death_jump])
-		print("PASS: sprint-then-wait, planted feet, facing, soldiers per strength, melee, staggered sprite deaths, kneeling plant sprites with a clear counter, dynamite set and lit, ladder climb sprites, merge fade, model untouched")
+		print("PASS: mammoth sprite gait without foot slide, riders by strength, full death, dismount order; sprint-then-wait, planted feet, facing, soldiers per strength, melee, staggered sprite deaths, kneeling plant sprites with a clear counter, dynamite set and lit, ladder climb sprites, merge fade, model untouched")
 	else:
 		for failure in failures: push_error(failure)
 	quit()
