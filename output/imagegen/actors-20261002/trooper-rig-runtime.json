@@ -1,0 +1,10 @@
+{
+  "file": "game/assets/combat/trooper-rig.png",
+  "sha256": "ea3224947c86f3ab98aa593b2118f7b825ffc46f76056676e4bca65b0e382c02",
+  "source": "output/imagegen/actors-20261002/troopers-concept-v2.png (standing frames, blue and olive)",
+  "source_sha256": "036edbc49926760e3b17b41fc08decf0530172327b3fbbe0081921d914c3a45d",
+  "builder": "game/tools/build_trooper_rig.gd",
+  "pieces_per_side": ["upper body with arms and rifle (waist pivot)", "rear coat panel", "front coat panel", "boot (shaft-top pivot)"],
+  "procedural": "legs (two-bone IK to planted feet), run cycle, kneel, strike, recoil, climb, three death falls: game/scripts/tactical_trooper_rig.gd",
+  "status": "first native integration; cadence, sizes and falls not owner-accepted; front/back headings absent (mirroring is interim)"
+}

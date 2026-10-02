@@ -3,15 +3,16 @@ extends SceneTree
 # MIT. Mirrored actors stay on their foot point: rendered silhouettes of each
 # pose facing right and left are reflections about the same column.
 const Art = preload("res://scripts/tactical_actor_art.gd")
+const Rig = preload("res://scripts/tactical_trooper_rig.gd")
 const SCALE := 8.0 # source: review magnification, logical→screen px
 class Probe extends Control:
-	var pose := 0 # master poses; >= 100 selects trooper side*6+frame
+	var pose := 0 # master poses; 100+side selects the procedural trooper
 	var facing := 1.0
 	func _draw() -> void:
 		draw_rect(Rect2(Vector2.ZERO,size),Color.WHITE)
 		draw_set_transform(Vector2.ZERO,0,Vector2.ONE*SCALE)
 		if pose < 0: draw_rect(Rect2(39.5,30,1,10),Color.BLACK)
-		elif pose >= 100: Art.new().draw_trooper(self,(pose-100)/6,(pose-100)%6,Vector2(40,40),facing)
+		elif pose >= 100: Rig.draw(self,Transform2D(0,Vector2.ONE*SCALE,0,Vector2.ZERO),pose-100,Vector2(40,40),facing,Rig.pose(PI*0.3,1.0,0.3))
 		else: Art.new().draw_pose(self,pose,Vector2(40,40),facing)
 
 func _initialize() -> void:
@@ -44,7 +45,7 @@ func run() -> void:
 	await process_frame
 	await RenderingServer.frame_post_draw
 	_marker = (span(root.get_texture().get_image()).x+span(root.get_texture().get_image()).y)/2
-	for pose in [0,1,2,4,5,6,8,9]+range(100,112):
+	for pose in [0,1,2,4,5,6,8,9,100,101]:
 		var spans := []
 		for facing in [1.0,-1.0]:
 			probe.pose = pose

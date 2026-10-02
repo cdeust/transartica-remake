@@ -357,9 +357,13 @@ Branche locale fix/combat-regressions basée sur main6dca252 ; aucun push dans c
 - [x] Miroir : un rectangle à largeur négative ne déplace pas sa position ; corrigé et vérifié par capture native (`test_tactical_actor_mirror`), clic et sélection sur le corps affiché.
 - [x] Modèle intact : modèle piloté par la scène identique au modèle nu (`test_tactical_actor_motion`). Suite complète 68 PASS.
 - [ ] Orientation : l'original dessine les acteurs au sol en tuiles (cputmap98) et ceux des toits en sprites 10+case ; son orientation n'est pas décodée. Le miroir est une présentation provisoire, pas une preuve des huit caps.
-- [x] Première intégration native de la planche fantassins de Codex : atlas `assets/combat/troopers.png` (outil `game/tools/build_trooper_atlas.gd`, alpha binaire, un corps connexe par cadre, 4 texels par pixel logique), pivot sur la colonne du casque, course a→b→c→d pilotée par la distance parcourue (deux images par pas), arrêt sur un appui, accroupi. Manifeste : `output/imagegen/actors-20261002/troopers-runtime.json`.
-- [ ] Fantassins : ordre des clés de course, cadence et taille à valider par le propriétaire en lecture native ; polissage au réseau de pixels ; vues avant/arrière (le miroir reste provisoire) ; montée sur le toit et mêlée sans pose dédiée.
+- [x] Retour du propriétaire (2 octobre) : « pas un sprite qui glisse avec 4 images ». Remplacé par un rig procédural découpé dans le soldat debout de Codex (`assets/combat/trooper-rig.png`, outil `game/tools/build_trooper_rig.gd`) : buste avec bras et fusil, deux pans de manteau, bottes ; jambes en cinématique inverse vers des pieds plantés (glissement mesuré < 0,05 px pendant l'appui).
+- [x] Choix du propriétaire : sprint puis attente (case franchie en ~0,8 s, freinage sur la case, attente du pas source), plusieurs soldats visibles par groupe (jusqu'à 4).
+- [x] Mêlée : coups et reculs ; chaque perte fait tomber un soldat, un par un (0,3 s d'écart), selon trois chutes (à la renverse, effondrement en avant, titubement puis chute) ; un camarade vient combler le rang ; les corps restent 3 s.
+- [x] Dynamite : le meneur court à la case, caisse en main, s'agenouille, pose, allume (mèche qui crépite), se relève et revient.
+- [x] Embarquement : course jusqu'à l'échelle en bout de wagon, escalade, rétablissement, course sur le toit ; les hommes transférés au toit ennemi partent de leur groupe d'origine.
+- [ ] Revue du propriétaire en lecture native : cadence, taille, chutes, dynamite, montée. Vues avant/arrière absentes (miroir provisoire). Mammouths sans rig.
 - [ ] Mammouths, loups, espions : hors de cette étape (planche mammouth à simplifier ; loups et espions hors effectif tactique).
 
-Preuves : `validation/actor-motion-glide-20261002.mp4` (avant correction du miroir), `validation/actor-motion-troopers-20261002.mp4` (atlas fantassins, lecture native pas à pas, 8 s).
+Preuves : `validation/actor-motion-glide-20261002.mp4` (avant correction du miroir), `validation/actor-motion-troopers-20261002.mp4` (atlas à 4 images, rejeté), `validation/trooper-rig-20261002.mp4` (rig en combat, 8 s), `validation/trooper-actions-20261002.mp4` (morts, dynamite, montée mises en scène, modèle figé).
 

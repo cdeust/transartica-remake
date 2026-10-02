@@ -196,7 +196,7 @@ func _draw() -> void:
 		_actor(actor)
 	for charge in state.charges:
 		var point := EffectGeometry.roof_point(self,charge.side,charge.slot)
-		_label(point,"●%d" % charge.fuse,5)
+		_label(point+Vector2(0,-9),"●%d" % charge.fuse,5) # above the drawn box
 	for effect in effects:
 		_effect(effect)
 	# World-position effects remain registered while the combat camera scrolls.

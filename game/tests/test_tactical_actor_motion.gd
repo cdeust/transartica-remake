@@ -1,8 +1,11 @@
 extends SceneTree
-# MIT. Actor presentation motion: continuous glides at the source cadence,
-# facing, plant crouch, melee read-out, removal fade, and an unchanged model.
+# MIT. Actor presentation: sprint-then-wait at the source cadence, planted feet
+# that never slide, facing, visible soldiers per strength, melee strikes,
+# recoils and falling casualties, plant crouch, merge fade, unchanged model.
 const Scene = preload("res://scripts/tactical_scene.gd")
 const Combat = preload("res://scripts/tactical_combat.gd")
+const Rig = preload("res://scripts/tactical_trooper_rig.gd")
+const Motion = preload("res://scripts/tactical_actor_motion.gd")
 var failures: Array[String] = []
 
 func _initialize() -> void:
@@ -28,6 +31,17 @@ func populate(model: Combat) -> void:
 	model.add_actor(0,20,4,3,false,-1,8)
 	model.add_actor(1,22,4,6,false,-1,6) # closes on the stationary group
 
+# World x of each planted foot of a soldier (logical px), keyed by leg.
+func planted(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
+	var result := {}
+	if soldier.amp < 0.999: return result
+	var rig := Rig.pose(soldier.phase,soldier.amp,0)
+	var at: Vector2 = scene.actor_motion._place(scene,track.roof,soldier.cell,scene.actor_motion._offset(track,soldier))
+	for leg in 2:
+		if not rig.swing[leg] and fposmod(soldier.phase+PI*leg,TAU) > 0.05:
+			result[leg] = {"x":at.x+track.facing*rig.feet[leg].x/Rig.PER,"stance":floori((soldier.phase+PI*leg)/TAU)}
+	return result
+
 func run() -> void:
 	var scene = Scene.new()
 	scene.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -41,56 +55,108 @@ func run() -> void:
 	await process_frame
 	var walker: int = model.actors[0].id
 	var left: int = model.actors[1].id
-	var previous: Vector2 = scene.actor_motion.point(scene,model.actors[0])
-	var largest := 0.0
-	var travelled := 0.0
-	var melee_seen := false
-	var hit_seen := false
+	var motion = scene.actor_motion
+	var fastest := 0.0
+	var waited := 0
+	var sprinted := 0
+	var slip := 0.0
+	var feet := {}
+	var strike_seen := false
+	var recoil_seen := false
+	var falls_seen := false
+	var previous := Vector2.INF
 	for frame in 50*12: # source: twelve seconds at the shared 50Hz step
 		scene._physics_process(0.02)
 		bare.advance(0.02*scene.pace)
-		for actor in model.actors:
-			if actor.id == walker:
-				var now: Vector2 = scene.actor_motion.point(scene,actor)
-				largest = maxf(largest,absf(now.x-previous.x))
-				travelled += now.x-previous.x
-				previous = now
-		for track in scene.actor_motion.tracks.values():
-			if track.lunge > 0: melee_seen = true
-			if track.hit > 0: hit_seen = true
-	# Glide: no16px cell jumps, steady rightward progress.
-	check(largest < 1.0,"walker never jumps a cell (max %.2fpx/frame)" % largest)
-	check(travelled > 16.0,"walker progressed across cells (%.1fpx)" % travelled)
-	check(scene.actor_motion.tracks[walker].facing > 0,"right walker faces right")
-	check(scene.actor_motion.tracks[left].facing < 0,"left walker is mirrored")
-	check(melee_seen and hit_seen,"melee shows a lunge and a hit flash")
+		if motion.tracks.has(walker):
+			var track: Dictionary = motion.tracks[walker]
+			var leader: Dictionary = track.soldiers[0]
+			var now: Vector2 = motion.point(scene,track.actor)
+			if previous != Vector2.INF: fastest = maxf(fastest,now.distance_to(previous))
+			previous = now
+			if leader.speed > Motion.SPRINT*0.8: sprinted += 1
+			if leader.speed == 0 and leader.cell == track.to: waited += 1
+			var down := planted(scene,track,leader)
+			for leg in down:
+				if feet.has(leg) and feet[leg].stance == down[leg].stance:
+					slip = maxf(slip,absf(down[leg].x-feet[leg].x))
+			feet = down
+		for track in motion.tracks.values():
+			for soldier in track.soldiers:
+				if soldier.strike > 0: strike_seen = true
+				if soldier.recoil > 0: recoil_seen = true
+		for body in motion.bodies:
+			if body.fall: falls_seen = true
+	# Sprint then wait: real running speed, then standing for the next source step.
+	check(fastest <= Motion.SPRINT*1.08*0.02+0.01,"no jump faster than the sprint (%.2fpx/frame)" % fastest)
+	check(sprinted > 20 and waited > 20,"sprints (%d) and waits (%d) between source steps" % [sprinted,waited])
+	check(slip < 0.05,"planted feet never slide (max %.3fpx)" % slip)
+	check(motion.tracks[walker].facing > 0,"right walker faces right")
+	check(motion.tracks[left].facing < 0,"left walker is mirrored")
+	check(strike_seen and recoil_seen and falls_seen,"melee shows strikes, recoils and falling casualties")
+	for track in motion.tracks.values():
+		check(track.soldiers.size() == (1 if track.actor.mammoth else clampi(track.actor.count,1,Motion.VISIBLE)),"visible soldiers follow strength")
 	# Presentation never writes the model.
 	check(JSON.stringify(model.snapshot()) == JSON.stringify(bare.snapshot()),"scene-driven model equals bare model")
-	# A stopped group finishes its stride and stands within half a second.
-	var stopper: Dictionary = model.actors[1]
+	# A stopped group comes to rest standing.
+	var stopper: Dictionary = model.actors[1] if model.actors.size() > 1 else model.actors[0]
 	stopper.direction = 8
-	for frame in 50*3: scene._physics_process(0.02) # finish the current glide
-	check(not scene.actor_motion.moving(scene.actor_motion.tracks[stopper.id]),"stopped group stands")
-	# A restore-like jump snaps instead of sliding across the field.
+	for frame in 50*3: scene._physics_process(0.02)
+	check(not Motion.moving(motion.tracks[stopper.id]),"stopped group stands")
+	# A restore-like jump snaps instead of sprinting across the field.
 	stopper.x += 10
 	scene._physics_process(0.02)
-	check(scene.actor_motion.shown_cell(scene.actor_motion.tracks[stopper.id]).x == stopper.x,"discontinuity snaps")
-	# Removal fades over FADE then the track is released.
-	var gone: Dictionary = model.actors[0]
-	gone.count = 0
-	model.actors.erase(gone)
+	check(motion.tracks[stopper.id].soldiers[0].cell.x == stopper.x,"discontinuity snaps")
+	# A merge (no melee) fades its soldiers instead of felling them.
+	var merged: Dictionary = stopper
+	model.actors.erase(merged)
+	var before: int = motion.bodies.size()
 	scene._physics_process(0.02)
-	check(scene.actor_motion.tracks.has(gone.id) and scene.actor_motion.tracks[gone.id].fade > 0,"removed group fades")
-	for frame in 30: scene._physics_process(0.02)
-	check(not scene.actor_motion.tracks.has(gone.id),"faded group released")
-	# A real player plant crouches the planting group.
+	var standing: Array = motion.bodies.slice(before).filter(func(body): return not body.fall)
+	check(not standing.is_empty(),"merged group fades standing")
+	for frame in 40: scene._physics_process(0.02)
+	check(motion.bodies.filter(func(body): return not body.fall).is_empty(),"faded group released")
+	# Presentation-only steps from here: the model is frozen so each sequence plays out.
+	# A real player plant: the planter runs to the slot, kneels, sets and lights the box.
 	var planter = model.add_actor(0,29,-1,5,false,1,8)
-	scene._physics_process(0.02)
+	motion.step(scene)
 	check(model.plant(planter.id,1),"real charge planted")
-	scene._physics_process(0.02)
-	check(scene.actor_motion.tracks[planter.id].crouch > 0,"planting group crouches")
+	var key := "1/30"
+	var knelt := false
+	var carried := false
+	for frame in 50*3:
+		motion.step(scene)
+		var soldier: Dictionary = motion.tracks[planter.id].soldiers[0]
+		if soldier.crouch >= 1.0: knelt = true
+		if motion.charges.has(key) and not motion.charges[key].placed: carried = true
+	check(carried and knelt,"planter carries the box and kneels")
+	check(motion.charges.has(key) and motion.charges[key].placed and motion.charges[key].lit,"box set down and fuse lit")
+	check(motion.tracks[planter.id].soldiers[0].shift.length() < 0.01,"planter back in his place")
+	# A group wiped out in melee falls one man after another.
+	var doomed = model.add_actor(0,8,1,3,false,-1,8)
+	motion.step(scene)
+	model.actors.erase(doomed)
+	motion.melee({"kind":"melee","x":40,"y":6})
+	var start: int = motion.bodies.size()
+	motion.step(scene)
+	var falls: Array = motion.bodies.slice(start).filter(func(body): return body.fall)
+	var delays := {}
+	for body in falls: delays[snappedf(body.delay,0.01)] = true
+	check(falls.size() == 3 and delays.size() == 3,"three men fall at three different moments")
+	# Boarding: a field group entering a roof climbs instead of appearing there.
+	var boarder = model.add_actor(0,14,6,2,false,-1,8)
+	motion.step(scene)
+	boarder.roof = 0
+	boarder.x = model.roof_cell(0,14)
+	boarder.y = -1
+	motion.step(scene)
+	var climbing: Dictionary = motion.tracks[boarder.id].soldiers[0]
+	check(not climbing.board.is_empty(),"boarding group climbs")
+	var low: float = motion.point(scene,boarder).y
+	for frame in 50*3: motion.step(scene)
+	check(motion.tracks[boarder.id].soldiers[0].board.is_empty() and motion.point(scene,boarder).y < low-10,"climb ends on the roof (%s, %.1f -> %.1f)" % [motion.tracks[boarder.id].soldiers[0].board,low,motion.point(scene,boarder).y])
 	if failures.is_empty():
-		print("PASS: continuous actor glides, facing, plant crouch, melee lunge/hit, removal fade, model untouched")
+		print("PASS: sprint-then-wait, planted feet, facing, soldiers per strength, melee, staggered deaths, dynamite set and lit, ladder boarding, merge fade, model untouched")
 	else:
 		for failure in failures: push_error(failure)
 	quit()
