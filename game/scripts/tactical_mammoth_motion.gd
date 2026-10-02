@@ -125,3 +125,15 @@ static func waiting(track: Dictionary) -> int:
 	for soldier in track.leaving:
 		if soldier.board.t < 0: waiting += 1
 	return waiting
+
+
+# What a dead (or waiting to die) mammoth body shows: the sheet variant of the strength it died with,
+# the stop frame until its turn, then every death frame once; the riders it died with (pair: 0 none,
+# 1 gunner, 2 both) are drawn by their own falls, so the howdah frame carries none; launched is the
+# howdah's frame when they topple.
+static func body_state(body: Dictionary) -> Dictionary:
+	var kind := Mammoth.variant(body.side,body.count)
+	var riders := Mammoth.riders(body.count)
+	if body.t < body.delay: return {"kind":kind,"motion":Mammoth.STOP,"index":0,"riders":riders,"pair":0,"launched":0}
+	var index := Mammoth.death_index(kind,(body.t-body.delay)/body.span)
+	return {"kind":kind,"motion":Mammoth.DEATH,"index":index,"riders":0,"pair":riders,"launched":Mammoth.death_index(kind,rider_slump()/body.span)}

@@ -187,6 +187,8 @@ func dying(world: Dictionary) -> void:
 	for count in [1,4]:
 		var beast: Dictionary = model.add_actor(0,world.stop-6,5,count,true,-1,2)
 		motion.step(scene)
+		beast.count = 0 # killed: the model zeroes it before the group goes
+		motion.step(scene)
 		model.actors.erase(beast)
 		var start: int = motion.bodies.size()
 		motion.step(scene)
@@ -199,12 +201,33 @@ func dying(world: Dictionary) -> void:
 			if body.t >= body.delay and body.t < body.delay+body.span:
 				last = Mammoth.death_index(kind,(body.t-body.delay)/body.span)
 				seen[last] = true
+		var played := {}
+		for tick in 120:
+			var shown: Dictionary = Beast.body_state({"side":0,"count":body.count,"t":body.delay+tick*body.span/119.0,"delay":body.delay,"span":body.span})
+			played[shown.index] = shown.kind
+		check(body.count == count and (count == 1 or played.size() == 5 and played.values().all(func(k): return k == Mammoth.PLAYER)),"a killed beast is drawn with the strength it died with (%d): %s death frames through the body state" % [body.count,"howdah" if count > 1 else "bare"])
 		check(body.fall and body.mammoth and seen.size() == Mammoth.count(kind,Mammoth.DEATH),"count %d: death plays all %d frames, not a fade (%d seen)" % [count,Mammoth.count(kind,Mammoth.DEATH),seen.size()])
 		check(not motion.bodies.has(body),"the body is released after it lies and fades")
 
 
 # Dismount (0x123a): riders stepping off a howdah play stand, leg over, hang, drop, land beside
 # the beast, in that order, before any climb frame, landing on the ground.
+func orphaned(world: Dictionary) -> void:
+	var scene = world.scene
+	var model: Combat = world.model
+	var motion = world.motion
+	var beast: Dictionary = model.add_actor(1,world.stop,5,5,true,-1,6)
+	motion.step(scene)
+	var roof: Dictionary = model.add_actor(1,model.roof_cell(0,beast.x),-1,2,false,0,2)
+	beast.count -= 2
+	motion.step(scene)
+	var track: Dictionary = motion.tracks[beast.id]
+	var held: bool = track.leaving.size() == 2 and Beast.waiting(track) >= 1
+	model.actors.erase(roof) # the destination group is gone before the riders' turn
+	motion.step(scene)
+	check(held and track.leaving.is_empty() and Beast.waiting(track) == 0,"riders whose destination group is gone no longer hold a seat (%d left)" % track.leaving.size())
+
+
 func dismounting(world: Dictionary) -> void:
 	var scene = world.scene
 	var model: Combat = world.model
@@ -510,6 +533,7 @@ func run() -> void:
 	await riding(beasts())
 	await dying(beasts())
 	await dismounting(beasts())
+	await orphaned(beasts())
 	if failures.is_empty():
 		print("switch mismatch, logical px (top/feet/step): kneel %.2f/%.2f/%.2f, climb %.2f/%.2f/%.2f, death %.2f" % [jumps.get("kneel/top",-1.0),jumps.get("kneel/feet",-1.0),jumps.get("kneel/step",-1.0),climb_jumps.get("climb/top",-1.0),climb_jumps.get("climb/feet",-1.0),climb_jumps.get("climb/step",-1.0),death_jump])
 		print("PASS: mammoth sprite gait without foot slide, riders by strength, full death, dismount order; sprint-then-wait, planted feet, facing, soldiers per strength, melee, staggered sprite deaths, kneeling plant sprites with a clear counter, dynamite set and lit, ladder climb sprites, merge fade, model untouched")

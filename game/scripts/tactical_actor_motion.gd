@@ -68,6 +68,7 @@ var charges := {} # "side/slot" → {"placed","lit"}
 var _melees := []
 var _rng := RandomNumberGenerator.new()
 var _sparks := 0
+var _serial := 0
 
 
 func _init() -> void:
@@ -110,6 +111,7 @@ func step(scene) -> void:
 				track.soldiers[index].delay = index*0.06+_rng.randf()*0.05 # source: authored ragged start.
 		_muster(track,actor,fighting)
 		track.count = actor.count
+		if actor.count > 0: track.alive = actor.count # a killed beast is drawn with the strength it died with
 		for soldier in track.soldiers: _run(track,soldier)
 		track.engaged = maxf(0.0,track.engaged-STEP)
 	for id in tracks.keys():
@@ -124,12 +126,23 @@ func step(scene) -> void:
 	_melees.clear()
 	_plants(state)
 	_age_bodies(scene)
+	_prune_leaving()
+
+
+# Riders still to step off a howdah whose destination group is gone (merged, killed, restored)
+# no longer hold a seat in it.
+func _prune_leaving() -> void:
+	var alive := {}
+	for track in tracks.values():
+		for soldier in track.soldiers: alive[soldier.uid] = true # by number: soldiers refer to their tracks, hashing one would not end
+	for track in tracks.values():
+		track.leaving = track.leaving.filter(func(soldier): return alive.has(soldier.uid) and not soldier.board.is_empty())
 
 
 func _track(actor: Dictionary) -> Dictionary:
 	if not tracks.has(actor.id):
 		var cell := Vector2(actor.x,actor.y)
-		tracks[actor.id] = {"to":cell,"roof":actor.roof,"facing":1.0,"count":actor.count,"engaged":0.0,"shed":0,"soldiers":[],"leaving":[],"dying":[],"actor":actor}
+		tracks[actor.id] = {"to":cell,"roof":actor.roof,"facing":1.0,"count":actor.count,"engaged":0.0,"shed":0,"soldiers":[],"leaving":[],"dying":[],"alive":actor.count,"actor":actor}
 		_muster(tracks[actor.id],actor,false)
 	var track: Dictionary = tracks[actor.id]
 	track.actor = actor
@@ -202,7 +215,8 @@ func _launch(side: int, motion: int, index: int, which: int) -> Vector2:
 
 
 func _soldier(cell: Vector2, slot: int) -> Dictionary:
-	return {"cell":cell,"speed":0.0,"amp":0.0,"phase":_rng.randf()*TAU,"delay":0.0,
+	_serial += 1
+	return {"uid":_serial,"cell":cell,"speed":0.0,"amp":0.0,"phase":_rng.randf()*TAU,"delay":0.0,
 		"vmul":_rng.randf_range(0.92,1.08),"breath":_rng.randf()*TAU,"strike":0.0,"recoil":0.0,
 		"slot":slot%VISIBLE,"offset":Vector2.ZERO,"shift":Vector2.ZERO,"shift_to":Vector2.ZERO,
 		"shift_speed":0.0,"face":0.0,"board":{},"task":{},"crouch":0.0,"plant":-1,
@@ -215,7 +229,7 @@ func _drop(track: Dictionary, soldier: Dictionary, fell: bool, delay: float) -> 
 	# A mammoth that leaves the field is dead (it never merges away) and falls whatever the cause.
 	bodies.append({"roof":track.roof,"cell":soldier.cell-soldier.lag,"offset":_offset(track,soldier)+soldier.shift,
 		"facing":soldier.face if soldier.face != 0 else track.facing,"side":actor.side,"mammoth":actor.mammoth,
-		"count":actor.count,"t":0.0,"delay":delay,"fall":fell or actor.mammoth,"span":Beast.DEATH if actor.mammoth else DEATH,
+		"count":track.alive,"t":0.0,"delay":delay,"fall":fell or actor.mammoth,"span":Beast.DEATH if actor.mammoth else DEATH,
 		"kind":_fall_kind(track,soldier,roll),"landed":false,"breath":soldier.breath})
 
 
@@ -853,19 +867,12 @@ func _draw_body(scene, at: Vector2, body: Dictionary) -> void:
 		_draw_rider(scene,at,body,body.rider,body.t-body.delay,Mammoth.STOP,0,body.pair,colour)
 		return
 	if body.mammoth: # standing until its turn, then every death frame once, lying till it fades
-		var kind := Mammoth.variant(body.side,body.count)
-		var riders := Mammoth.riders(body.count)
-		if body.t < body.delay:
-			Mammoth.draw(scene,scene.world_transform,body.side,kind,Mammoth.STOP,0,at,body.facing,riders,colour)
-			return
-		var dt: float = body.t-body.delay
-		var index := Mammoth.death_index(kind,dt/body.span)
-		Mammoth.draw(scene,scene.world_transform,body.side,kind,Mammoth.DEATH,index,at,body.facing,0,colour)
-		if riders == 0: return
-		var launched := Mammoth.death_index(kind,Beast.rider_slump()/body.span) # the howdah's frame when they topple
-		for which in ([0,1] if riders == 2 else [1]): # a pair falls as one sprite, drawn with the first
-			_draw_rider(scene,at,body,which,dt,Mammoth.DEATH,index,riders == 2,colour,launched)
-			if riders == 2 and which == 0: break
+		var shown := Beast.body_state(body)
+		Mammoth.draw(scene,scene.world_transform,body.side,shown.kind,shown.motion,shown.index,at,body.facing,shown.riders,colour)
+		if shown.motion != Mammoth.DEATH or shown.pair == 0: return
+		for which in ([0,1] if shown.pair == 2 else [1]): # a pair falls as one sprite, drawn with the first
+			_draw_rider(scene,at,body,which,body.t-body.delay,Mammoth.DEATH,shown.index,shown.pair == 2,colour,shown.launched)
+			if shown.pair == 2: break
 		return
 	if body.fall and body.t >= body.delay:
 		var fall := death_frame(body.kind,(body.t-body.delay)/DEATH)

@@ -75,6 +75,8 @@ func open_battle(value) -> void:
 		living.clear()
 		weapon_motion.clear()
 		actor_motion.clear()
+		_kept.clear() # label spots belong to the battle that placed them
+		_shown.clear()
 	state = value
 	show()
 	queue_redraw()
