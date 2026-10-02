@@ -63,6 +63,16 @@ static func surface_y(scene, side: int, index: int, x: float) -> float:
 	var top: float = samples[samples.size()/2]
 	return rect.position.y+(top-geometry.used.position.y)*factor
 
+# The drawn roof under x: the topmost opaque texel of that column of the wagon
+# sprite (no median window), so feet placed on it touch the picture exactly.
+static func drawn_y(scene, side: int, index: int, x: float) -> float:
+	var geometry := wagon(scene,side,index)
+	var rect: Rect2 = geometry.rect
+	var car: Dictionary = scene.state.trains[side][index]
+	var tops: PackedFloat32Array = _profile(geometry.texture,geometry.used) if car.health >= 3 else scene.materials.support_profile(geometry.texture,side,index,car.health,geometry.used)
+	var column := clampi(int((clampf(x,rect.position.x,rect.end.x)-rect.position.x)/geometry.factor),0,tops.size()-1)
+	return rect.position.y+(tops[column]-geometry.used.position.y)*geometry.factor
+
 # Wagon whose drawn body covers x; nearest body for coupler gaps.
 static func wagon_at(scene, side: int, x: float) -> int:
 	var best := -1
@@ -78,11 +88,19 @@ static func wagon_at(scene, side: int, x: float) -> int:
 
 # Actor feet rest on the drawn roof; source slot x and rules stay unchanged.
 static func roof_point(scene, side: int, slot: int) -> Vector2:
-	var point: Vector2 = scene._roof_point(side,slot)
+	return roof_point_at(scene,side,slot)
+
+# Fractional slot for actors gliding between roof cells (presentation only).
+static func roof_point_at(scene, side: int, slot: float) -> Vector2:
+	var point: Vector2 = scene._roof_point(side,0)-Vector2(slot*16,0)
 	var index := wagon_at(scene,side,point.x)
 	if index < 0: return point
 	var rect: Rect2 = wagon(scene,side,index).rect
 	return Vector2(point.x,surface_y(scene,side,index,clampf(point.x,rect.position.x,rect.end.x)))
+
+# Roof surface point under a screen x (clamped to its wagon), logical px.
+static func roof_point_x(scene, side: int, x: float) -> Vector2:
+	return roof_point_at(scene,side,(scene._roof_point(side,0).x-x)/16.0)
 
 # One mount for drawing, flash and tracer origin. Oblique projection authored:
 # side0 aims toward the viewer (muzzle face), side1 away (breech visible).

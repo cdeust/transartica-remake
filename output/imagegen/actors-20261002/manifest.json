@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-02",
+  "generator": "built-in image_gen",
+  "prompts": "prompts.json",
+  "assets": [
+    {
+      "file": "mammoths-concept-v1.png",
+      "width": 1774,
+      "height": 887,
+      "bytes": 1518232,
+      "sha256": "f4a7b13ca46795926baa4528e5b097d6c8971ccebba6838c609efd58f7a1958a",
+      "status": "concept; not integrated; atlas geometry and alpha need finalization"
+    },
+    {
+      "file": "spies-concept-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1555955,
+      "sha256": "dd8ae73503eaed9ad67783b01358bf0e2178096844323df92e2a337a23ba80b4",
+      "status": "concept; not integrated; atlas geometry and alpha need finalization"
+    },
+    {
+      "file": "troopers-concept-v2.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1600458,
+      "sha256": "036edbc49926760e3b17b41fc08decf0530172327b3fbbe0081921d914c3a45d",
+      "status": "concept; not integrated; atlas geometry and alpha need finalization"
+    },
+    {
+      "file": "wolves-concept-v1.png",
+      "width": 1774,
+      "height": 887,
+      "bytes": 801909,
+      "sha256": "849d08fadd8b55b70abe32cb277351c6fe6770cfaeae217371babb6aad6aa5ae",
+      "status": "concept; not integrated; atlas geometry and alpha need finalization"
+    }
+  ],
+  "discarded_workspace_variant": {
+    "file": "troopers-concept-v1.png",
+    "sha256": "06b07d53d31df4e6ddf2b792da5aa089cfa01913ac31413255c40340805bd33a",
+    "reason": "retained sharper v2 after built-in background cleanup attempt; generated source remains in default tool storage"
+  },
+  "inspection": {
+    "visual": "poses/costumes inspected; full bodies present; frame rectangles, pivot alignment and anatomy need artist finalization",
+    "alpha": "RGBA8 with transparent empty space; all sheets have numerous partially transparent pixels; no clean opaque sprite mask certified",
+    "runtime": "no engine source or canonical runtime asset changed",
+    "animations": "key poses only; no native playback proof"
+  },
+  "source_references": [
+    "game/scripts/tactical_actor_art.gd",
+    "game/scripts/tactical_actors.gd",
+    "game/scripts/campaign_spies.gd",
+    "game/scripts/campaign_screen.gd",
+    "game/scripts/roamer_screen.gd",
+    "tasks/evidence/combat.md",
+    "https://noitagame.com/press/index.html"
+  ]
+}

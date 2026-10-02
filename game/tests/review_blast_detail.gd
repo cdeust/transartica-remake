@@ -36,8 +36,7 @@ func run() -> void:
 			var actor = model.add_actor(0,29,-1,5,false,1,8)
 			assert(model.plant(actor.id,1))
 		if frame >= 12 and model.trains[1][7].health > 0:
-			model.scan_side = 0
-			model.scan = model.columns*7-1
+			model.scan = model.columns*6-1
 		scene._physics_process(1.0/50.0)
 		scene.queue_redraw()
 		await process_frame

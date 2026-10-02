@@ -152,16 +152,21 @@ func step() -> void:
 	Weapons.enemy_ai(self)
 	Weapons.run(self)
 	#0x0244,1389: scan max(columns/4,40) cells each tick, not all actors each frame.
+	#0x13a1/173e: byte8375 is the pass parity carried by the cell sign (processed
+	# marker), not a side; both sides are updated on every pass.
 	for cell in maxi(columns / 4, 40):
 		var actor = actor_at(scan % columns, scan / columns)
-		if actor != null and actor.side == scan_side and actor.processed != sweep:
+		if actor != null and actor.processed != sweep:
 			actor.processed = sweep
 			Actors.update(self, actor)
 		scan += 1
+		#0x1713: cswitch2 base-6 (ALIS opcodes.c) sweeps roof1 entering row6, roof0 at wrap.
+		if scan == columns * 6:
+			Actors.roof_sweep(self, 1)
 		if scan >= columns * 7:
 			scan = 0
-			Actors.roof_sweep(self)
-			scan_side = 1 - scan_side
+			Actors.roof_sweep(self, 0)
+			scan_side = 1 - scan_side # byte8375 pass parity, kept for saves.
 			sweep += 1
 	actors = actors.filter(func(actor): return actor.count > 0)
 	# Emit each completed tick before the next step clears its event array.

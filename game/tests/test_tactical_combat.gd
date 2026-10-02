@@ -23,6 +23,7 @@ func run() -> void:
 	_weapons()
 	_actors()
 	_results()
+	_cadence()
 	_resume()
 	_scene()
 	_materials()
@@ -70,14 +71,14 @@ func _actors() -> void:
 	check(actor.roof==1,"cross lower edge boards enemy roof")
 	actor.x=9
 	check(state.plant(actor.id,1),"roof actor plants adjacent dynamite")
-	state.scan_side=0
-	for sweep in 4: Actors.roof_sweep(state)
+	for sweep in 4: Actors.roof_sweep(state,1)
 	check(state.trains[1][2].health==3,"dynamite survives four roof sweeps")
-	Actors.roof_sweep(state)
+	Actors.roof_sweep(state,1)
 	check(state.trains[1][2].health==0,"fifth roof sweep destroys target wagon")
 	var target=state.add_actor(1,12,-1,5,false,1,6)
 	state.charges=[{"side":1,"slot":13,"fuse":5,"owner":0}]
-	Actors.roof_sweep(state)
+	state.sweep=0
+	Actors.roof_sweep(state,1)
 	check(state.charges.is_empty(),"opposing actor defuses by walking onto charge")
 func _results() -> void:
 	var state=fresh()
@@ -98,6 +99,27 @@ func _results() -> void:
 	var after: Array=wagons.wagons.duplicate(true)
 	var coal: int=engine.lignite
 	check(Result.commit(win,wagons,engine).is_empty() and wagons.wagons==after and engine.lignite==coal,"second commit cannot repeat booty")
+func _cadence() -> void:
+	var state=fresh()
+	state.actors.clear()
+	state.aggressiveness=0
+	var mammoth=state.add_actor(0,30,5,1,true,-1,0)
+	var infantry=state.add_actor(0,40,6,5,false,-1,0)
+	var enemy=state.add_actor(1,50,0,5,false,-1,4)
+	while state.sweep<8: state.step() #0x1748..1773: eight complete field passes.
+	check(mammoth.y==0,"player mammoth moves on every pass (0x20e3)")
+	check(infantry.y==2,"player infantry moves on alternate passes (8548)")
+	check(enemy.y==2,"enemy infantry moves every fourth pass (8549)")
+	var roofs=fresh()
+	roofs.actors.clear()
+	roofs.aggressiveness=0
+	roofs.charges=[{"side":0,"slot":9,"fuse":5,"owner":1},{"side":1,"slot":9,"fuse":5,"owner":0}]
+	var walker=roofs.add_actor(0,5,-1,3,false,1,6)
+	while roofs.sweep<4: roofs.step()
+	check(roofs.trains[0][2].health==3 and roofs.trains[1][2].health==3,"both roof fuses survive four passes")
+	check(walker.x==7,"roof group steps on alternate passes (0x1bd6)")
+	while roofs.sweep<5: roofs.step()
+	check(roofs.trains[0][2].health==0 and roofs.trains[1][2].health==0,"both roofs swept each pass: fuses fire on fifth (0x1713)")
 func _resume() -> void:
 	var state=fresh()
 	state.deploy(0,6,5)

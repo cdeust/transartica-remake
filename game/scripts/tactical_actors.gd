@@ -102,9 +102,9 @@ static func _enemy_direction(state, actor: Dictionary) -> void:
 				state.add_actor(1, slot, -1, amount, false, 0, 2 if state.rnd(3) != 0 else 6)
 				actor.count -= amount
 
-static func roof_sweep(state) -> void:
-	#0x1722/179a: sweep one train roof per field pass, descending slot order.
-	var roof := 0 if state.scan_side == 1 else 1
+static func roof_sweep(state, roof: int) -> void:
+	#0x1722/179a: each roof is swept once per field pass, descending slot order;
+	#0x1b4b: fuses burn on every sweep.
 	for charge in state.charges:
 		if charge.side != roof:
 			continue
@@ -134,6 +134,9 @@ static func _roof_move(state, actor: Dictionary) -> void:
 	if target != null:
 		if target.side != actor.side:
 			melee(state, actor, target)
+		return
+	#0x1bd6: steps into free or dynamite cells (0x1dce,1e22) wait while byte8548 is set.
+	if state.sweep % 2 != 0:
 		return
 	var previous: int = actor.x
 	actor.x = next

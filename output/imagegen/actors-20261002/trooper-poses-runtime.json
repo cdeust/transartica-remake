@@ -1,0 +1,71 @@
+{
+  "file": "game/assets/combat/trooper-poses.png",
+  "sha256": "49201f88bbbcc91e3b47477ed738f82543ca63711cad8da79ebeffe954810037",
+  "sources": [
+    {
+      "file": "output/imagegen/actors-20261002/trooper-climb-mantle-generated.png",
+      "sha256": "dc9387530eecab567a11f9d9d1b4e594293b1425b42a9c1ef27b2117e3abb611"
+    },
+    {
+      "file": "output/imagegen/actors-20261002/trooper-plant-generated.png",
+      "sha256": "714310d9e19a6fc6e364520367c75bb761d61db19bea9c863a127249e8177eb0"
+    },
+    {
+      "file": "output/imagegen/actors-20261002/trooper-death-forward-generated.png",
+      "sha256": "912d4a245aa03eeaedf5b1e6ff6e458957936dc0bc248fa4357691f5c4ab24d3"
+    },
+    {
+      "file": "output/imagegen/actors-20261002/trooper-death-backward-generated.png",
+      "sha256": "c786d34c07c141b0220c37f10fd43b7fb456972a4d11ab6ca0441e113006a69f"
+    }
+  ],
+  "builder": "game/tools/build_trooper_poses.gd",
+  "frames": {
+    "climb": "4 rung frames + mantle, blue and olive",
+    "plant": "kneel and set, light (box and flame removed; the game draws the charge)",
+    "fall_forward": "5 frames",
+    "fall_back": "4 frames"
+  },
+  "scales_texel_per_source_px": {
+    "climb": 0.1223,
+    "plant": 0.1107,
+    "fall_forward": 0.1635,
+    "fall_back": 0.121
+  },
+  "unused_source": "trooper-run-passing-generated.png (not integrated; the rig run is kept)",
+  "renderer": "game/scripts/tactical_trooper_poses.gd",
+  "status": "first integration; not owner-accepted; per-sheet scales and x pivots are authored estimates",
+  "scale_method": {
+    "head": "pompom sqrt(area) on the reference frame against troopers-concept-v2's standing frame (321 px area)",
+    "body": "reference frame height / stance against the rig's 13 logical px",
+    "used": {
+      "climb": "head",
+      "fall_back": "head",
+      "plant": "body",
+      "fall_forward": "body"
+    },
+    "measurements": {
+      "climb": {
+        "head": 0.1223,
+        "body": 0.1294
+      },
+      "plant": {
+        "head": 0.0978,
+        "body": 0.1107,
+        "note": "head disagrees: the kneeling head looked ~20% smaller than the rig's"
+      },
+      "fall_forward": {
+        "head": 0.1474,
+        "body": 0.1635,
+        "note": "standing frame 318 px = 13.0 logical px (rig 13.0); head would make it 11.7"
+      },
+      "fall_back": {
+        "head": 0.121,
+        "body": 0.1566,
+        "note": "reference frame is a crouched stagger, body stance unknown; head kept"
+      }
+    },
+    "printed_by": "game/tools/build_trooper_poses.gd (SCALE lines)"
+  },
+  "pivots": "computed by the builder: feet centroid (climb, plant) or body centroid (falls) for x, sheet row ground line for y (grounded frames on their own lowest pixel)"
+}
