@@ -58,11 +58,18 @@ static func pose(phase: float, amp: float, lean: float, crouch := 0.0, strike :=
 	var bob := -1.4*cos(2*phase)*amp+SINK*amp+sin(breath)*0.35*(1-amp)
 	return {
 		"feet": feet, "swing": swing,
+		"crouch": crouch,
 		"hip": Vector2(-2.0*crouch+strike_shape*3.0-recoil*2.0,-HIP+9.0*crouch+bob+1.5*strike_shape),
 		"lean": lean+0.5*minf(crouch,1.0)+0.35*strike_shape-0.3*recoil+0.1*climb,
 		"thrust": strike_shape*4.0-recoil*1.5,
 		"drag": 0.12*amp,
 	}
+
+
+# Where the rig stands, logical px from its foot origin (+x toward his facing):
+# the middle of his feet.
+static func support(rig: Dictionary) -> Vector2:
+	return (rig.feet[0]+rig.feet[1])/2.0/PER
 
 
 # Draws one trooper at a logical foot point. world maps logical to canvas.

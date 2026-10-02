@@ -88,6 +88,10 @@ static func roof_point_at(scene, side: int, slot: float) -> Vector2:
 	var rect: Rect2 = wagon(scene,side,index).rect
 	return Vector2(point.x,surface_y(scene,side,index,clampf(point.x,rect.position.x,rect.end.x)))
 
+# Roof surface point under a screen x (clamped to its wagon), logical px.
+static func roof_point_x(scene, side: int, x: float) -> Vector2:
+	return roof_point_at(scene,side,(scene._roof_point(side,0).x-x)/16.0)
+
 # One mount for drawing, flash and tracer origin. Oblique projection authored:
 # side0 aims toward the viewer (muzzle face), side1 away (breech visible).
 static func mount(scene, side: int, index: int, recoil := 0.0, reach := 0.0, resting := INF) -> Dictionary:

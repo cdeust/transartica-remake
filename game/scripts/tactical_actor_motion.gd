@@ -20,6 +20,14 @@ const BRAKE := 110.0 # source: authored, logical px/s².
 const CLIMB := 24.0 # source: authored climbing speed up a wagon side, logical px/s.
 const RUNG := 3.0 # source: authored climbing step, logical px.
 const MANTLE := 4 # index of the mantle among the climb frames, after the four rung frames.
+const LADDER_INSET := 3.0 # source: authored ladder inset from the wagon end, logical px.
+const CLIMB_STANDOFF := 4.4 # mean reach of the rung frames' hands past their feet (Poses.FRONT), so the hands meet the wagon end.
+const BOX_HALF := 1.75 # half the drawn box's width, logical px (see _draw_box).
+const CLIMB_TOP := 8.0 # source: authored; the last rung leaves the feet this far under the roof, hands on its edge.
+const LAND := 2.5 # source: authored; the mantle lands this far inside the ladder, on the flat roof (the roof's end drops away at the ladder).
+const FALL_REACH := 14.0 # source: measured, logical px; length of a lying soldier (Poses fall frames, 12-14).
+const BLEND := 0.08 # source: authored cross-fade between rig and sprite poses, s.
+const MANTLE_HOLD := 0.5 # source: authored share of the rise spent in the mantle sprite before standing.
 const WAGON_SIDE := 25.0 # source: roof 38 above the top train baseline 63, logical px.
 const MAMMOTH_SPEED := 14.0 # source: authored heavy gait, logical px/s.
 const STRIDE_PX := Rig.STRIDE/Rig.PER # one step of the rig, logical px.
@@ -158,7 +166,7 @@ func _soldier(cell: Vector2, slot: int) -> Dictionary:
 	return {"cell":cell,"speed":0.0,"amp":0.0,"phase":_rng.randf()*TAU,"delay":0.0,
 		"vmul":_rng.randf_range(0.92,1.08),"breath":_rng.randf()*TAU,"strike":0.0,"recoil":0.0,
 		"slot":slot%VISIBLE,"offset":Vector2.ZERO,"shift":Vector2.ZERO,"shift_to":Vector2.ZERO,
-		"shift_speed":0.0,"face":0.0,"board":{},"task":{},"crouch":0.0,"plant":-1}
+		"shift_speed":0.0,"face":0.0,"board":{},"task":{},"crouch":0.0,"plant":-1,"plant_mix":0.0}
 
 
 func _drop(track: Dictionary, soldier: Dictionary, fell: bool, delay: float) -> void:
@@ -167,7 +175,25 @@ func _drop(track: Dictionary, soldier: Dictionary, fell: bool, delay: float) -> 
 	bodies.append({"roof":track.roof,"cell":soldier.cell,"offset":_offset(track,soldier)+soldier.shift,
 		"facing":soldier.face if soldier.face != 0 else track.facing,"side":actor.side,"mammoth":actor.mammoth,
 		"count":actor.count,"t":0.0,"delay":delay,"fall":fell and not actor.mammoth,
-		"kind":0 if roll < 0.4 else (1 if roll < 0.75 else 2),"landed":false,"breath":soldier.breath})
+		"kind":_fall_kind(track,soldier,roll),"landed":false,"breath":soldier.breath})
+
+
+# Falls toward the side with fewer comrades standing within a body length, so
+# the faller lands clear of them; with no difference the roll chooses.
+func _fall_kind(track: Dictionary, soldier: Dictionary, roll: float) -> int:
+	var kind := 0 if roll < 0.4 else (1 if roll < 0.75 else 2)
+	var mine: Vector2 = _offset(track,soldier)+soldier.shift
+	var ahead := 0
+	var behind := 0
+	for other in track.soldiers:
+		if other == soldier: continue
+		var dx: float = (_offset(track,other)+other.shift-mine).x*(soldier.face if soldier.face != 0 else track.facing)
+		if absf(dx) > FALL_REACH: continue
+		if dx > 0: ahead += 1
+		else: behind += 1
+	if ahead > behind: return 0 if kind != 2 else 2 # backward falls
+	if behind > ahead: return 1 # forward falls
+	return kind
 
 
 func _age_bodies(scene) -> void:
@@ -175,7 +201,8 @@ func _age_bodies(scene) -> void:
 		body.t += STEP
 		if body.fall and not body.landed and (body.t-body.delay)/DEATH >= IMPACT:
 			body.landed = true # snow kicked up where the body hits
-			var at := _place(scene,body.roof,body.cell,body.offset)+Vector2(body.facing*(4.0 if body.kind == 1 else -5.0),0)
+			var lying := death_frame(body.kind,1.0)
+			var at := _place(scene,body.roof,body.cell,body.offset)+Vector2(body.facing*Poses.centre(lying[0],lying[1]),0) # where the body lies
 			scene.living.add("dust",at+Vector2(scene.camera,0),Vector2.UP,0.12) # source: authored light puff
 	bodies = bodies.filter(func(body): return body.t < (body.delay+DEATH+LIE+FADE if body.fall else FADE))
 
@@ -225,6 +252,7 @@ func _task(soldier: Dictionary) -> void:
 	var task: Dictionary = soldier.task
 	soldier.crouch = 0.0
 	soldier.plant = -1
+	soldier.plant_mix = 0.0
 	if task.is_empty(): return
 	task.t += STEP
 	if not task.arrived:
@@ -234,7 +262,12 @@ func _task(soldier: Dictionary) -> void:
 		return
 	var t: float = task.t
 	var entry: Dictionary = charges.get(task.key,{})
-	if t < KNEEL+SET+LIGHT: soldier.plant = 0 if t < KNEEL+SET else 1 # sprite kneel, then the light
+	# Rig crouches down to the kneel, cross-fades into the sprite for the set and the
+	# light, and back into the rig's crouch to rise.
+	var done := KNEEL+SET+LIGHT
+	if t >= KNEEL and t < done+BLEND:
+		soldier.plant = 0 if t < KNEEL+SET else 1
+		soldier.plant_mix = clampf((t-KNEEL)/BLEND,0,1) if t < done else 1.0-(t-done)/BLEND
 	if t < KNEEL: soldier.crouch = 1.2*t/KNEEL
 	elif t < KNEEL+SET+LIGHT: soldier.crouch = 1.2
 	elif t < KNEEL+SET+LIGHT+RISE: soldier.crouch = 1.2*(1.0-(t-KNEEL-SET-LIGHT)/RISE)
@@ -286,16 +319,20 @@ func _start_climb(scene, track: Dictionary, soldier: Dictionary, from_cell: Vect
 	var climbing := height > 6.0
 	if not climbing: height = start.y-top.y
 	var ladder := 0.0
+	var off := 0.0 # screen offset of the climber's feet outside the ladder: hands on it, body clear of the wagon end
 	var index := Geometry.wagon_at(scene,track.roof,top.x)
 	if climbing and index >= 0:
 		var rect: Rect2 = Geometry.wagon(scene,track.roof,index).rect
-		var left := rect.position.x+3.0 # source: authored ladder inset, logical px.
-		var right := rect.end.x-3.0
+		var left := rect.position.x+LADDER_INSET
+		var right := rect.end.x-LADDER_INSET
 		ladder = (left if absf(left-top.x) < absf(right-top.x) else right)-top.x
 		if absf(ladder) > 32.0: ladder = 0.0 # source: half a 64px wagon; longer bodies climb in place
-	var foot := Vector2(top.x+ladder,top.y+height)
-	soldier.board = {"from_cell":from_cell,"from_offset":from_offset,"t":-delay,"height":height,"ladder":ladder,
-		"run":start.distance_to(foot)/SPRINT,"climb":height/CLIMB if climbing else 0.35,"hop":not climbing,"rise":0.3}
+		else: off = (LADDER_INSET+CLIMB_STANDOFF)*(1.0 if top.x+ladder > rect.get_center().x else -1.0)
+	var land := ladder-signf(off)*LAND # screen offset, from his slot, of where the mantle puts his feet
+	var roof := Vector2(top.x+land,_roof_y(scene,track.roof,index if ladder != 0.0 else -1,top.x+land,top.y))
+	var foot := Vector2(top.x+ladder+off,roof.y+height)
+	soldier.board = {"from_cell":from_cell,"from_offset":from_offset,"t":-delay,"height":height,"ladder":ladder,"off":off,"land":land,"wagon":index if ladder != 0.0 else -1,
+		"run":start.distance_to(foot)/SPRINT,"climb":(height-CLIMB_TOP)/CLIMB if climbing else 0.35,"hop":not climbing,"rise":0.3}
 	soldier.face = signf(foot.x-start.x) if absf(foot.x-start.x) > 0.5 else 0.0
 
 
@@ -314,29 +351,62 @@ func _climbing(soldier: Dictionary) -> void:
 	else:
 		soldier.amp = move_toward(soldier.amp,0.0,STEP*6.0)
 	if t >= board.run+board.climb+board.rise:
-		soldier.shift = Vector2(board.ladder,0) # then along the roof to his slot
+		soldier.shift = Vector2(board.land,0) # then along the roof to his slot
 		soldier.shift_to = Vector2.ZERO
 		soldier.board = {}
 		soldier.face = 0.0
 
 
+# Where a boarding soldier is and how he is drawn: "frame" is the climb sprite
+# (-1: rig), "mix" its weight while it cross-fades with the rig, "amp" the rig
+# layer's stride (-1: his own).
 func _board_pose(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 	var board: Dictionary = soldier.board
 	var start := _place(scene,-1,board.from_cell,board.from_offset)
 	var top := _place(scene,track.roof,soldier.cell,_offset(track,soldier))
-	top.x += board.ladder
-	var foot := Vector2(top.x,top.y+board.height)
+	var ladder_x: float = top.x+board.ladder
+	var land_x: float = top.x+board.land
+	var roof := Vector2(land_x,_roof_y(scene,track.roof,board.wagon,land_x,top.y))
+	var foot := Vector2(ladder_x+board.off,roof.y+board.height)
+	var perch := Vector2(foot.x,roof.y+CLIMB_TOP) # hands on the roof edge
 	var t: float = maxf(board.t,0.0)
+	var pose := {"at":foot,"climb":0.0,"crouch":0.0,"frame":-1,"mix":0.0,"amp":-1.0}
 	if t < board.run:
-		return {"at":start.lerp(foot,t/maxf(board.run,0.001)),"climb":0.0,"crouch":0.0,"frame":-1}
+		pose.at = start.lerp(foot,t/maxf(board.run,0.001))
+		return pose
 	if t < board.run+board.climb:
 		var u: float = (t-board.run)/board.climb
 		if board.hop: # vault: crouch, jump, land
-			return {"at":foot.lerp(top,u)+Vector2(0,-6.0*sin(PI*u)),"climb":0.0,"crouch":0.5*(1.0-sin(PI*u)),"frame":-1}
+			pose.at = foot.lerp(roof,u)+Vector2(0,-6.0*sin(PI*u))
+			pose.crouch = 0.5*(1.0-sin(PI*u))
+			return pose
 		# One rung frame per RUNG climbed, like the run's stride follows distance.
-		return {"at":foot.lerp(top,u),"climb":1.0,"crouch":0.0,"frame":int(u*board.height/RUNG)%MANTLE}
-	var rise: float = (t-board.run-board.climb)/board.rise
-	return {"at":top,"climb":0.0,"crouch":1.0-clampf(rise,0,1),"frame":-1 if board.hop else MANTLE} # mantle and stand
+		pose.at = foot.lerp(perch,u)
+		pose.frame = int(u*(board.height-CLIMB_TOP)/RUNG)%MANTLE
+		pose.mix = clampf((t-board.run)/BLEND,0,1) # run to ladder cross-fade
+		pose.amp = 0.0 # the fading rig stands, its feet centred on the climber's point
+		return pose
+	var rise: float = clampf((t-board.run-board.climb)/board.rise,0,1)
+	if board.hop:
+		pose.at = roof
+		pose.crouch = 1.0-rise
+		return pose
+	# Mantle: pull up over the edge, the feet stepping from the ladder onto the
+	# roof (x and y reach it together), then stand up as the rig.
+	var pull := smoothstep(0,1,clampf(rise/MANTLE_HOLD,0,1))
+	pose.at = Vector2(lerpf(foot.x,land_x,pull),roof.y+CLIMB_TOP*(1.0-pull))
+	pose.frame = MANTLE
+	pose.mix = 1.0-clampf((rise-MANTLE_HOLD)/(BLEND/board.rise),0,1)
+	pose.crouch = 1.0-clampf((rise-MANTLE_HOLD)/(1.0-MANTLE_HOLD),0,1)
+	pose.amp = 0.0
+	return pose
+
+
+# Roof surface under x of the wagon being climbed (clamped to it); fallback outside any wagon.
+func _roof_y(scene, roof: int, index: int, x: float, fallback: float) -> float:
+	if index < 0: return fallback
+	var rect: Rect2 = Geometry.wagon(scene,roof,index).rect
+	return Geometry.surface_y(scene,roof,index,clampf(x,rect.position.x,rect.end.x))
 
 
 # WDECOR0x2679 melee reports the attacker's cell; both groups turn to fight.
@@ -382,7 +452,7 @@ func _plants(state) -> void:
 		var soldier: Dictionary = planter.soldiers[0]
 		var screen: float = -(charge.slot-soldier.cell.x)*16.0 # roof slots run right→left
 		var side := signf(screen) if screen != 0 else float(planter.facing)
-		soldier.shift_to = Vector2(screen-_offset(planter,soldier).x-side*3.0,0) # source: authored, kneels 3px short of the box.
+		soldier.shift_to = Vector2(screen-_offset(planter,soldier).x-side*(BOX_HALF+Poses.BOX_REACH[0]),0) # feet where the kneeling sprite's box edge meets the drawn box.
 		soldier.face = side
 		soldier.task = {"key":key,"t":0.0,"arrived":false}
 		current[key] = {"placed":false,"lit":false}
@@ -396,6 +466,19 @@ func planter_facing(charge: Dictionary) -> float:
 		for soldier in track.soldiers:
 			if soldier.plant >= 0 and soldier.task.get("key","") == key: return soldier.face
 	return 0.0
+
+
+# Logical-px rectangles of the soldiers standing or kneeling on screen (for label placement).
+func soldier_rects(scene) -> Array:
+	var rects := []
+	for track in tracks.values():
+		if track.actor.mammoth: continue
+		for soldier in track.soldiers:
+			var at := _soldier_point(scene,track,soldier)
+			var facing: float = soldier.face if soldier.face != 0 else track.facing
+			if soldier.board.is_empty() and soldier.plant >= 0: rects.append(Poses.bounds(at,facing,Poses.PLANT,soldier.plant,track.actor.side))
+			else: rects.append(Rect2(at+Vector2(-4,-13),Vector2(8,13))) # source: standing rig, 13 px tall, ~8 wide with its rifle.
+	return rects
 
 
 func _offset(track: Dictionary, soldier: Dictionary) -> Vector2:
@@ -439,11 +522,16 @@ func draw(scene, art) -> void:
 	for charge in scene.state.charges:
 		var entry: Dictionary = charges.get("%d/%d" % [charge.side,charge.slot],{"placed":true,"lit":true})
 		if entry.placed: items.append({"at":Geometry.roof_point(scene,charge.side,charge.slot),"charge":entry})
-	items.sort_custom(func(a,b): return a.at.y < b.at.y) # farther first
+	# Farther first; a man falling is drawn in front of the comrades standing at his depth.
+	items.sort_custom(func(a,b): return _depth(a) < _depth(b))
 	for item in items:
 		if item.has("body"): _draw_body(scene,art,item.at,item.body)
 		elif item.has("charge"): _draw_box(scene,item.at,item.charge.lit)
 		else: _draw_soldier(scene,art,item.at,item.track,item.soldier)
+
+
+func _depth(item: Dictionary) -> float:
+	return item.at.y+(0.5 if item.has("body") and item.body.fall and item.body.t >= item.body.delay else 0.0) # source: authored, half a logical px nearer.
 
 
 func _draw_soldier(scene, art, at: Vector2, track: Dictionary, soldier: Dictionary) -> void:
@@ -454,27 +542,42 @@ func _draw_soldier(scene, art, at: Vector2, track: Dictionary, soldier: Dictiona
 		var bob: float = -absf(sin(soldier.phase))*0.5*soldier.amp # source: authored stride lift, logical px.
 		art.draw_pose(scene,art.pose_for(actor),at+Vector2(0,bob),facing,colour)
 		return
+	var stance := stance_of(scene,track,soldier)
+	if stance.mix < 1.0:
+		var faded := colour
+		faded.a *= 1.0-stance.mix
+		Rig.draw(scene,scene.world_transform,actor.side,at,facing,stance.rig,faded)
+		# The planter carries the box until he sets it down.
+		if soldier.plant < 0 and not soldier.task.is_empty() and not charges.get(soldier.task.key,{"placed":true}).placed:
+			var low := minf(stance.rig.crouch,1.0)
+			_draw_box(scene,at+Vector2(facing*(2.0+1.5*low),-5.5+3.5*low),false)
+	if soldier.plant >= 0 and soldier.board.is_empty() and not charges.get(soldier.task.key,{"placed":true}).placed:
+		_draw_box(scene,at+Vector2(facing*(Poses.BOX_REACH[0]+BOX_HALF),0),false) # carried to where it is set down
+	if stance.mix > 0.0:
+		colour.a *= stance.mix
+		Poses.draw_frame(scene,scene.world_transform,actor.side,at,facing,stance.sprite.family,stance.sprite.frame,colour)
+
+
+# How a trooper is posed: the rig layer, the sprite layer and the sprite's weight
+# "mix" while the two cross-fade. The rig's feet centroid and the sprite's pivot
+# are both the soldier's point, so a switch moves nothing but the pose.
+func stance_of(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 	var climb := 0.0
 	var crouch: float = soldier.crouch
+	var amp: float = soldier.amp
+	var sprite := {"family":Poses.PLANT,"frame":soldier.plant}
+	var mix: float = soldier.plant_mix
 	if not soldier.board.is_empty():
 		var board := _board_pose(scene,track,soldier)
-		if board.frame >= 0:
-			Poses.draw_frame(scene,scene.world_transform,actor.side,at,facing,Poses.CLIMB,board.frame,colour)
-			return
 		climb = board.climb
 		crouch = board.crouch
-	if soldier.plant >= 0:
-		# Kneeling at the box: the frame's pivot is the box's left edge, 1.25px ahead of the planter's point.
-		Poses.draw_frame(scene,scene.world_transform,actor.side,at+Vector2(facing*1.25,0),facing,Poses.PLANT,soldier.plant,colour)
-		if not charges.get(soldier.task.key,{"placed":true}).placed: _draw_box(scene,at+Vector2(facing*3.0,0),false)
-		return
+		if board.amp >= 0: amp = board.amp
+		sprite = {"family":Poses.CLIMB,"frame":board.frame}
+		mix = board.mix
+	if sprite.frame < 0: mix = 0.0
 	var strike: float = 1.0-soldier.strike/STRIKE if soldier.strike > 0 else 0.0
-	var rig := Rig.pose(soldier.phase,soldier.amp,0.32*soldier.amp*(1.0-climb),crouch,strike,soldier.recoil/RECOIL,climb,soldier.breath)
-	Rig.draw(scene,scene.world_transform,actor.side,at,facing,rig,colour)
-	# The planter carries the box until he sets it down.
-	if not soldier.task.is_empty() and not charges.get(soldier.task.key,{"placed":true}).placed:
-		var low := minf(crouch,1.0)
-		_draw_box(scene,at+Vector2(facing*(2.0+1.5*low),-5.5+3.5*low),false)
+	var rig := Rig.pose(soldier.phase,amp,0.32*amp*(1.0-climb),crouch,strike,soldier.recoil/RECOIL,climb,soldier.breath)
+	return {"rig":rig,"sprite":sprite,"mix":mix}
 
 
 # Sprite of a fall at u of DEATH: [family, frame]; the last frame lands at IMPACT and lies.

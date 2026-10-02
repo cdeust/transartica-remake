@@ -43,6 +43,19 @@ func planted(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 			result[leg] = {"x":at.x+track.facing*rig.feet[leg].x/Rig.PER,"stance":floori((soldier.phase+PI*leg)/TAU)}
 	return result
 
+# Worst jump at a rig/sprite switch: while both layers show, the distance between
+# the rig's feet centroid and the sprite's pivot, and how far the soldier's point moved.
+func track_jump(jumps: Dictionary, last_at: Dictionary, name: String, motion, scene, track: Dictionary, soldier: Dictionary) -> void:
+	var stance: Dictionary = motion.stance_of(scene,track,soldier)
+	var at: Vector2 = motion._soldier_point(scene,track,soldier)
+	var mixed: bool = stance.mix > 0.0 and stance.mix < 1.0
+	if mixed or last_at.get(name+"/mixed",false):
+		var step: float = at.distance_to(last_at[name]) if last_at.has(name) else 0.0
+		var gap: float = Rig.support(stance.rig).length() if mixed else 0.0
+		jumps[name] = maxf(jumps.get(name,0.0),maxf(gap,step))
+	last_at[name] = at
+	last_at[name+"/mixed"] = mixed
+
 func run() -> void:
 	var scene = Scene.new()
 	scene.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -127,21 +140,25 @@ func run() -> void:
 	var carried := false
 	var frames_seen := {}
 	var covered := false
+	var jumps := {} # worst rig/sprite switch jump per transition, logical px
+	var last_at := {}
 	for frame in 50*3:
 		motion.step(scene)
 		var soldier: Dictionary = motion.tracks[planter.id].soldiers[0]
 		if soldier.crouch >= 1.0: knelt = true
 		if motion.charges.has(key) and not motion.charges[key].placed: carried = true
-		if soldier.plant >= 0:
-			frames_seen[soldier.plant] = true
-			# The fuse counter never covers the kneeling planter (either side of the box).
+		if soldier.plant >= 0: frames_seen[soldier.plant] = true
+		track_jump(jumps,last_at,"kneel",motion,scene,motion.tracks[planter.id],soldier)
+		if not model.charges.is_empty():
+			# The fuse counter covers no soldier and no other label (wagon tags), whichever side the planter kneels.
 			var charge: Dictionary = model.charges[0]
 			var label := scene.charge_label(charge)
-			var foot: Vector2 = motion.point(scene,planter)+Vector2(soldier.face*1.25,0)
-			var body := Poses.bounds(foot,soldier.face,Poses.PLANT,soldier.plant,planter.side)
-			if scene.label_rect(label.point,label.text,5,label.anchor).intersects(body): covered = true
+			var rect: Rect2 = scene.label_rect(label.point,label.text,5,label.anchor)
+			for other in scene.wagon_tag_rects()+motion.soldier_rects(scene):
+				if rect.intersects(other): covered = true
 	check(carried and knelt,"planter carries the box and kneels")
-	check(frames_seen.has(0) and frames_seen.has(1) and not covered,"plant sprites kneel then light, label clear of the planter")
+	check(jumps.get("kneel",INF) <= 0.5,"stand to kneel and back switch within 0.5px (%.2f)" % jumps.get("kneel",-1.0))
+	check(frames_seen.has(0) and frames_seen.has(1) and not covered,"plant sprites kneel then light, counter clear of soldiers and wagon tags")
 	# Facing the other way the counter moves to the other side of the box.
 	var there: Dictionary = {"side":1,"slot":30,"fuse":5}
 	var anchor_right: float = scene.charge_label(there).anchor
@@ -157,11 +174,26 @@ func run() -> void:
 	# A group wiped out in melee falls one man after another.
 	var doomed = model.add_actor(0,8,1,3,false,-1,8)
 	motion.step(scene)
+	var stood := []
+	for soldier in motion.tracks[doomed.id].soldiers: stood.append(motion._soldier_point(scene,motion.tracks[doomed.id],soldier))
+	var support := 0.0
+	for soldier in motion.tracks[doomed.id].soldiers: support = maxf(support,Rig.support(motion.stance_of(scene,motion.tracks[doomed.id],soldier).rig).length())
 	model.actors.erase(doomed)
 	motion.melee({"kind":"melee","x":40,"y":6})
 	var start: int = motion.bodies.size()
 	motion.step(scene)
 	var falls: Array = motion.bodies.slice(start).filter(func(body): return body.fall)
+	# Alive to first fall frame: each body starts where a soldier stood, and the rig's feet centroid is that point.
+	var death_jump := support
+	for body in falls:
+		var nearest := INF
+		for point in stood: nearest = minf(nearest,point.distance_to(motion._place(scene,body.roof,body.cell,body.offset)))
+		death_jump = maxf(death_jump,nearest)
+	check(death_jump <= 0.5,"alive to death frame 0 within 0.5px (%.2f)" % death_jump)
+	# A man with comrades ahead falls back, with comrades behind falls forward.
+	var pair := {"facing":1.0,"roof":-1,"actor":{"mammoth":false},"soldiers":[]}
+	for slot in [0,2]: pair.soldiers.append(motion._soldier(Vector2.ZERO,slot))
+	check(motion._fall_kind(pair,pair.soldiers[0],0.5) == 0 and motion._fall_kind(pair,pair.soldiers[1],0.5) == 1,"fall lands clear of comrades")
 	var delays := {}
 	for body in falls: delays[snappedf(body.delay,0.01)] = true
 	check(falls.size() == 3 and delays.size() == 3,"three men fall at three different moments")
@@ -186,13 +218,18 @@ func run() -> void:
 	check(not climbing.board.is_empty(),"boarding group climbs")
 	var low: float = motion.point(scene,boarder).y
 	var rungs := {}
+	var climb_jumps := {}
+	var last_climb := {}
 	for frame in 50*3:
 		motion.step(scene)
 		var rider: Dictionary = motion.tracks[boarder.id].soldiers[0]
+		track_jump(climb_jumps,last_climb,"climb",motion,scene,motion.tracks[boarder.id],rider)
 		if not rider.board.is_empty(): rungs[motion._board_pose(scene,motion.tracks[boarder.id],rider).frame] = true
+	check(climb_jumps.get("climb",INF) <= 0.5,"run, climb, mantle and stand switch within 0.5px (%.2f)" % climb_jumps.get("climb",-1.0))
 	check(rungs.has(0) and rungs.has(1) and rungs.has(2) and rungs.has(3) and rungs.has(Motion.MANTLE),"climb cycles four rung frames then mantles (%s)" % [rungs.keys()])
 	check(motion.tracks[boarder.id].soldiers[0].board.is_empty() and motion.point(scene,boarder).y < low-10,"climb ends on the roof (%s, %.1f -> %.1f)" % [motion.tracks[boarder.id].soldiers[0].board,low,motion.point(scene,boarder).y])
 	if failures.is_empty():
+		print("continuity (logical px): kneel %.2f, climb %.2f, death %.2f" % [jumps.get("kneel",-1.0),climb_jumps.get("climb",-1.0),death_jump])
 		print("PASS: sprint-then-wait, planted feet, facing, soldiers per strength, melee, staggered sprite deaths, kneeling plant sprites with a clear counter, dynamite set and lit, ladder climb sprites, merge fade, model untouched")
 	else:
 		for failure in failures: push_error(failure)

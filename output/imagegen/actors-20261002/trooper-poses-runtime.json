@@ -1,6 +1,6 @@
 {
   "file": "game/assets/combat/trooper-poses.png",
-  "sha256": "6397522e38e3bb543b5d5ba99cba8ced1b435160b87a1258ed74c55e0da6ac31",
+  "sha256": "898414de8b677479f8ec0faf0555df62202cf14545849db4cc4c162cfeb5dccb",
   "sources": [
     {
       "file": "output/imagegen/actors-20261002/trooper-climb-mantle-generated.png",
@@ -27,12 +27,14 @@
     "fall_back": "4 frames"
   },
   "scales_texel_per_source_px": {
-    "climb": 0.13,
-    "plant": 0.1118,
-    "fall_forward": 0.164,
-    "fall_back": 0.1368
+    "climb": 0.1223,
+    "plant": 0.0978,
+    "fall_forward": 0.1474,
+    "fall_back": 0.121
   },
   "unused_source": "trooper-run-passing-generated.png (not integrated; the rig run is kept)",
   "renderer": "game/scripts/tactical_trooper_poses.gd",
-  "status": "first integration; not owner-accepted; per-sheet scales and x pivots are authored estimates"
+  "status": "first integration; not owner-accepted; per-sheet scales and x pivots are authored estimates",
+  "scale_method": "head: the hood's cream pompom sqrt(area) on each sheet's reference frame against troopers-concept-v2's standing frame (321 px area; sheets: climb 514, plant 803, fall_forward 354, fall_back 525); printed as HEAD lines by the builder; comparison image tasks/validation/trooper-poses-scale-20261002.png",
+  "pivots": "computed by the builder: feet centroid (climb, plant) or body centroid (falls) for x, sheet row ground line for y (grounded frames on their own lowest pixel)"
 }

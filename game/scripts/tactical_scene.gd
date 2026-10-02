@@ -234,12 +234,40 @@ func _status(value: String) -> void:
 	draw_rect(Rect2(0,94,320,10), Color(0.03,0.06,0.08,0.8))
 	text_at(Vector2(3,101), value, 5)
 
-# Counter over a charge's box, on the side away from the man kneeling at it
-# (anchor 1 ends the text at its point, so it grows away from him).
+# Counter over a charge's box. It sits where its backing rectangle covers no
+# soldier and no other label (wagon tags): beside the box on the side away from
+# the man kneeling at it, else the other side, else higher. anchor 1 ends the
+# text at its point, so it grows leftwards.
 func charge_label(charge: Dictionary) -> Dictionary:
-	var planter := actor_motion.planter_facing(charge)
-	var left := planter < 0
-	return {"point":EffectGeometry.roof_point(self,charge.side,charge.slot)+Vector2(-2.0 if left else 0.0,-9),"text":"●%d" % charge.fuse,"anchor":1.0 if left else 0.0}
+	var home := EffectGeometry.roof_point(self,charge.side,charge.slot)
+	var text := "●%d" % charge.fuse
+	var left_first := actor_motion.planter_facing(charge) < 0
+	var avoid := wagon_tag_rects()+actor_motion.soldier_rects(self)
+	var best := {}
+	var least := INF
+	for lift in [-9.0,-16.0,-23.0]: # source: authored, logical px above the box; 9 clears a kneeling man, the others a standing one.
+		for turn in 2:
+			var left := (turn == 0) == left_first
+			var option := {"point":home+Vector2(-2.0 if left else 0.0,lift),"text":text,"anchor":1.0 if left else 0.0}
+			var rect := label_rect(option.point,text,5,option.anchor)
+			var covered := 0.0
+			for other in avoid:
+				if rect.intersects(other): covered += rect.intersection(other).get_area()
+			if covered < least:
+				least = covered
+				best = option
+			if covered == 0.0: return option
+	return best
+
+# Wagon tags drawn over the player's train (logical px).
+func wagon_tag_rects() -> Array:
+	var rects := []
+	var source_index := 0
+	for index in state.trains[0].size():
+		if state.trains[0][index].class == state.Setup.LOCOMOTIVE_COMPANION: continue
+		source_index += 1
+		rects.append(label_rect(Vector2(EffectGeometry.wagon(self,0,index).rect.position.x+2,32),"%d:%d" % [source_index,state.trains[0][index].health],4))
+	return rects
 
 # Backing rectangle of a label (logical px); anchor 0 starts the text at point,
 # 1 ends it there, so a charge's counter can sit away from the man kneeling at it.

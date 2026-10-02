@@ -13,18 +13,22 @@ enum {CLIMB, PLANT, FALL_FORWARD, FALL_BACK}
 # climb 0-3 rungs, 4 mantle; plant 0 kneel and set, 1 light; falls in order.
 const FRAMES := [
 	[ # climb
-		[[Rect2(1,1,28,60),Vector2(13.6,59.1)],[Rect2(30,1,27,41),Vector2(13.0,53.4)],[Rect2(58,1,26,52),Vector2(12.0,52.3)],[Rect2(85,1,26,61),Vector2(7.4,63.3)],[Rect2(112,1,36,50),Vector2(14.0,51.1)]],
-		[[Rect2(149,1,28,60),Vector2(13.6,59.1)],[Rect2(178,1,27,41),Vector2(13.0,53.4)],[Rect2(206,1,26,52),Vector2(12.0,52.0)],[Rect2(233,1,26,61),Vector2(7.4,61.7)],[Rect2(260,1,36,50),Vector2(14.0,51.2)]]],
+		[[Rect2(1,1,26,56),Vector2(5.2,55.6)],[Rect2(28,1,25,39),Vector2(11.1,50.3)],[Rect2(54,1,24,49),Vector2(5.3,49.2)],[Rect2(79,1,24,58),Vector2(7.5,59.6)],[Rect2(104,1,34,47),Vector2(8.0,47.2)]],
+		[[Rect2(139,1,26,56),Vector2(5.2,55.6)],[Rect2(166,1,25,38),Vector2(11.4,50.3)],[Rect2(192,1,24,49),Vector2(5.3,48.9)],[Rect2(217,1,24,57),Vector2(7.5,58.1)],[Rect2(242,1,34,47),Vector2(8.0,47.3)]]],
 	[ # plant
-		[[Rect2(297,1,36,41),Vector2(29.5,40.7)],[Rect2(334,1,33,41),Vector2(31.4,40.7)]],
-		[[Rect2(368,1,36,41),Vector2(29.5,40.6)],[Rect2(405,1,33,41),Vector2(31.4,40.6)]]],
+		[[Rect2(277,1,31,36),Vector2(12.5,35.6)],[Rect2(309,1,29,36),Vector2(13.3,35.6)]],
+		[[Rect2(339,1,31,36),Vector2(12.5,35.5)],[Rect2(371,1,29,36),Vector2(13.3,35.6)]]],
 	[ # fall_forward
-		[[Rect2(439,1,39,52),Vector2(15.1,52.2)],[Rect2(1,63,49,47),Vector2(10.7,46.9)],[Rect2(51,63,53,37),Vector2(7.7,32.3)],[Rect2(105,63,51,26),Vector2(6.4,23.1)],[Rect2(157,63,55,21),Vector2(5.7,16.6)]],
-		[[Rect2(213,63,39,52),Vector2(15.1,52.5)],[Rect2(253,63,49,47),Vector2(10.7,47.1)],[Rect2(303,63,53,37),Vector2(7.7,32.3)],[Rect2(357,63,51,26),Vector2(6.4,23.3)],[Rect2(409,63,55,21),Vector2(5.7,16.6)]]],
+		[[Rect2(401,1,35,47),Vector2(13.9,46.9)],[Rect2(437,1,44,42),Vector2(16.1,42.1)],[Rect2(1,60,48,33),Vector2(21.9,29.0)],[Rect2(50,60,46,23),Vector2(24.4,20.8)],[Rect2(97,60,50,19),Vector2(28.1,14.9)]],
+		[[Rect2(148,60,35,47),Vector2(13.9,47.2)],[Rect2(184,60,44,42),Vector2(16.1,42.3)],[Rect2(229,60,48,33),Vector2(22.0,29.0)],[Rect2(278,60,46,23),Vector2(25.1,20.9)],[Rect2(325,60,50,19),Vector2(28.1,14.9)]]],
 	[ # fall_back
-		[[Rect2(1,116,58,51),Vector2(33.0,52.4)],[Rect2(60,116,37,45),Vector2(22.4,45.4)],[Rect2(98,116,48,33),Vector2(23.9,32.7)],[Rect2(147,116,62,24),Vector2(48.4,18.5)]],
-		[[Rect2(210,116,58,51),Vector2(33.0,52.7)],[Rect2(269,116,37,46),Vector2(22.4,45.6)],[Rect2(307,116,48,33),Vector2(23.9,33.1)],[Rect2(356,116,62,23),Vector2(48.4,19.0)]]]
+		[[Rect2(376,60,51,45),Vector2(19.3,46.3)],[Rect2(428,60,32,40),Vector2(16.2,40.2)],[Rect2(461,60,42,29),Vector2(17.8,28.9)],[Rect2(1,108,55,21),Vector2(23.5,16.3)]],
+		[[Rect2(57,108,51,45),Vector2(19.2,46.6)],[Rect2(109,108,32,40),Vector2(16.2,40.3)],[Rect2(142,108,42,29),Vector2(17.7,29.3)],[Rect2(185,108,55,21),Vector2(23.6,16.8)]]]
 ]
+# Logical px from each frame's pivot to its front (printed by the builder as EXTENT).
+const FRONT := [[5.27,3.46,4.73,4.14,6.37],[4.67,3.87],[5.18,4.45,4.35,5.31,5.39],[5.90,4.02,6.12,6.82]]
+# Logical px from the planting frames' pivot to the box's left edge they were drawn beside.
+const BOX_REACH := [3.33,3.55]
 
 
 static func count(family: int) -> int:
@@ -38,6 +42,12 @@ static func draw_frame(canvas: CanvasItem, world: Transform2D, side: int, foot: 
 	canvas.draw_set_transform_matrix(world*Transform2D(0,Vector2(facing/PER,1/PER),0,foot))
 	canvas.draw_texture_rect_region(TEXTURE,Rect2(-frame[1],frame[0].size),frame[0],colour)
 	canvas.draw_set_transform_matrix(world)
+
+
+# Logical px from the pivot to the middle of a frame, toward the facing.
+static func centre(family: int, index: int) -> float:
+	var frame: Array = FRAMES[family][0][clampi(index,0,count(family)-1)]
+	return (frame[0].size.x/2.0-frame[1].x)/PER
 
 
 # Logical-px bounds of a pose drawn at foot (for layout checks).

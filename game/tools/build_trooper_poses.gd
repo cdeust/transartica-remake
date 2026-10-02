@@ -9,10 +9,21 @@ extends SceneTree
 # scripts/tactical_trooper_poses.gd.
 # Method: opaque pixels (alpha >= OPAQUE, soft halo and background ignored) are
 # grouped in 8-connected components; every small component (a flying or fallen
-# rifle) joins the nearest body of its frame, so detached parts survive. Each
-# sheet gets one scale from its own upright soldier; frames keep their sheet
-# coordinates, so the pivot's y is one ground line per row and frames never jitter.
+# rifle) joins the nearest body of its frame, so detached parts survive.
+# Scale: the soldiers of the sheets are drawn at different sizes, so each sheet
+# is scaled by its head against the rig's standing soldier: the cream pompom on
+# the hood is round, side-on and visible in every pose; its diameter
+# sqrt(area) on the sheet's reference frame is compared with the same measure
+# on troopers-concept-v2's standing frame, which the rig is cut from. The
+# numbers are printed (HEAD lines).
+# Pivots are computed: climb and plant frames sit on the centroid of their
+# lowest band of body pixels (the feet); falls hang from the body's centroid (the
+# hip stays where it was while he drops); y is one ground line per row (the
+# reference frame's sole), except grounded frames, which stand on their own
+# lowest pixel (the mantle on the roof). x is shared by both rows.
 const DIR := "res://../output/imagegen/actors-20261002/"
+const CONCEPT := "res://../output/imagegen/actors-20261002/troopers-concept-v2.png"
+const CONCEPT_FRAME := Rect2i(34,134,230,336) # standing blue soldier (build_trooper_rig.gd).
 const TARGET := "res://assets/combat/trooper-poses.png"
 const PER := 4.0 # source: the 320x200 logical scene is shown at ~x4 (1280x800).
 const STAND := 13.0 # source: standing soldier height, 12.7 logical px (build_trooper_rig.gd).
@@ -21,27 +32,29 @@ const BODY_AREA := 15000 # source: measured; bodies are 25000+ px, rifles and bo
 const NOISE := 60 # source: measured; smaller components are specks.
 const JOIN := 80 # source: measured; a rifle lies within this many px of its body.
 const ATLAS_WIDTH := 512
-# upright: height in source px of a standing soldier drawn on that sheet. Forward
-# death frame 0 stands (317 measured). The other sheets draw him larger than the
-# rig's concept sheet (336 px): plant walks away 450 px tall and the head
-# (pompom) is 1.47x frame 0 of the forward sheet's; climb 1.25x; backward skin
-# patch 1.2x: upright = 317 x ratio. base: frame whose boots define each row's
-# ground line. x: per-frame pivot x in sheet px (feet, or the box's left edge
-# for the plant), shared by both rows. cuts: rectangles of row 0 (olive: shifted
-# by the row offset) that are not the soldier (the box and its fuse; the game
-# draws the charge itself).
+const FEET_BAND := 0.12 # source: authored; share of the body's height counted as feet.
+const POMPOM_MIN := 0.62 # source: measured; the pompom's shaded part is still above this on every sheet.
+const POMPOM_MAX := 1200 # source: measured; the collar beside it is 1300+ px, the pompom 320-830.
+const POMPOM_SPREAD := 0.25 # source: measured; cream stays near grey.
+# ref: frame whose sole is the row's ground line and whose head sets the scale.
+# feet: false hangs the frame from its centroid. grounded: frames standing on
+# their own lowest pixel. cuts: rectangles of row 0 (olive: shifted by the row
+# offset) that are not the soldier (the box and its fuse; the game draws the
+# charge itself); box: x of the box's left edge, for the reach printed.
 const SHEETS := [
-	{"name":"climb","file":"trooper-climb-mantle-generated.png","upright":400.0,"base":2,
-	 "x":[163,475,770,1020,1360],"cuts":{}},
-	{"name":"plant","file":"trooper-plant-generated.png","upright":465.0,"base":2,"frames":2,
-	 "x":[352,849],"cuts":{0:[Rect2i(352,450,300,100),Rect2i(410,400,100,60)],1:[Rect2i(849,450,300,100),Rect2i(862,0,400,500)]}},
-	{"name":"fall_forward","file":"trooper-death-forward-generated.png","upright":317.0,"base":0,
-	 "x":[112,322,578,903,1220],"cuts":{}},
-	{"name":"fall_back","file":"trooper-death-backward-generated.png","upright":380.0,"base":1,
-	 "x":[285,693,1075,1660],"cuts":{}},
+	{"name":"climb","file":"trooper-climb-mantle-generated.png","ref":2,"feet":true,"grounded":[4],"cuts":{}},
+	{"name":"plant","file":"trooper-plant-generated.png","ref":2,"frames":2,"feet":true,"grounded":[0,1],
+	 "box":[352,849],"cuts":{0:[Rect2i(352,450,300,100),Rect2i(410,400,100,60)],1:[Rect2i(849,450,300,100),Rect2i(862,0,400,500)]}},
+	{"name":"fall_forward","file":"trooper-death-forward-generated.png","ref":0,"feet":false,"grounded":[],"cuts":{}},
+	{"name":"fall_back","file":"trooper-death-backward-generated.png","ref":1,"feet":false,"grounded":[],"cuts":{}},
 ]
 
+var _head_area := 0
+
 func _initialize() -> void:
+	var concept := Image.load_from_file(ProjectSettings.globalize_path(CONCEPT))
+	concept.convert(Image.FORMAT_RGBA8)
+	_head_area = _head(concept,CONCEPT_FRAME)
 	var frames := []
 	for sheet in SHEETS: frames.append_array(_sheet(sheet))
 	var rows := []
@@ -67,14 +80,15 @@ func _sheet(sheet: Dictionary) -> Array:
 	var image := Image.load_from_file(ProjectSettings.globalize_path(DIR+sheet.file))
 	image.convert(Image.FORMAT_RGBA8)
 	var label := _label(image)
-	var scale: float = STAND*PER/sheet.upright
-	print("SCALE %s texels per source px %.4f" % [sheet.name,scale])
 	var groups := _group(label,image.get_size())
+	var head := _head(image,groups[0][sheet.ref].bbox)
+	var scale: float = STAND*PER/CONCEPT_FRAME.size.y*sqrt(float(_head_area)/head)
+	print("HEAD %s pompom area %d (concept %d) -> scale %.4f texels per source px; reference frame %d px tall = %.1f logical px" % [sheet.name,head,_head_area,scale,groups[0][sheet.ref].bbox.size.y,groups[0][sheet.ref].bbox.size.y*scale/PER])
 	var out := []
 	var base := [0.0,0.0]
 	for side in 2:
 		var row: Array = groups[side]
-		base[side] = row[sheet.base].bbox.end.y
+		base[side] = row[sheet.ref].bbox.end.y
 	for side in 2:
 		var row: Array = groups[side]
 		for index in row.size():
@@ -85,12 +99,14 @@ func _sheet(sheet: Dictionary) -> Array:
 			var cuts: Array = sheet.cuts.get(index,[])
 			var shift := int(base[side]-base[0])
 			var piece := Image.create(box.size.x,box.size.y,false,Image.FORMAT_RGBA8)
+			var body: Array[Vector2i] = []
 			for y in box.size.y:
 				for x in box.size.x:
 					var at := box.position+Vector2i(x,y)
 					if not ids.has(label.ids[at.y*image.get_width()+at.x]) or _cut(cuts,at,shift): continue
 					var colour := image.get_pixelv(at)
 					piece.set_pixel(x,y,Color(colour.r,colour.g,colour.b,1.0))
+					if label.ids[at.y*image.get_width()+at.x] == ids[0]: body.append(at)
 			var used := piece.get_used_rect()
 			piece = piece.get_region(used)
 			var origin := box.position+used.position
@@ -103,7 +119,13 @@ func _sheet(sheet: Dictionary) -> Array:
 				for x in size.x:
 					var colour := piece.get_pixel(x,y)
 					piece.set_pixel(x,y,Color(colour.r/colour.a,colour.g/colour.a,colour.b/colour.a,1.0) if colour.a >= 0.5 else Color(0,0,0,0))
-			var pivot: Vector2 = (Vector2(sheet.x[index],base[side])-Vector2(origin))*scale
+			var anchor := _anchor(body,sheet.feet)
+			var ground: float = _bottom(body) if sheet.grounded.has(index) else base[side]
+			var pivot: Vector2 = (Vector2(anchor,ground)-Vector2(origin))*scale
+			if side == 0:
+				var front: float = (_right(body)-anchor)*scale/PER # logical px from the pivot to the frame's front
+				var reach: float = ((sheet.box[index]-anchor)*scale/PER) if sheet.has("box") else 0.0
+				print("EXTENT %s #%d front %.2f box edge %.2f logical px ahead of the pivot" % [sheet.name,index,front,reach])
 			out.append({"name":sheet.name,"side":side,"index":index,"image":piece,"pivot":pivot})
 	return out
 
@@ -178,3 +200,58 @@ func _gap(a: Rect2i, b: Rect2i) -> float:
 	var dx := maxi(0,maxi(a.position.x-b.end.x,b.position.x-a.end.x))
 	var dy := maxi(0,maxi(a.position.y-b.end.y,b.position.y-a.end.y))
 	return Vector2(dx,dy).length()
+
+
+# Pivot x in sheet px: centroid of the lowest FEET_BAND of the body (feet) or of all of it.
+func _anchor(body: Array[Vector2i], feet: bool) -> float:
+	var low := _bottom(body)
+	var top := low
+	for point in body: top = mini(top,point.y)
+	var sum := 0.0
+	var count := 0
+	for point in body:
+		if feet and point.y < low-(low-top)*FEET_BAND: continue
+		sum += point.x
+		count += 1
+	return sum/maxi(count,1)
+
+
+func _bottom(body: Array[Vector2i]) -> int:
+	var low := 0
+	for point in body: low = maxi(low,point.y+1)
+	return low
+
+
+func _right(body: Array[Vector2i]) -> int:
+	var far := 0
+	for point in body: far = maxi(far,point.x+1)
+	return far
+
+
+# Pompom area in px: the topmost cream blob of the soldier inside frame.
+func _head(image: Image, frame: Rect2i) -> int:
+	var seen := {}
+	var best := [INF,0]
+	for y in range(frame.position.y,frame.end.y):
+		for x in range(frame.position.x,frame.end.x):
+			var point := Vector2i(x,y)
+			if seen.has(point) or not _cream(image.get_pixelv(point)): continue
+			var stack: Array[Vector2i] = [point]
+			seen[point] = true
+			var area := 0
+			while not stack.is_empty():
+				var at: Vector2i = stack.pop_back()
+				area += 1
+				for step in [Vector2i(1,0),Vector2i(-1,0),Vector2i(0,1),Vector2i(0,-1)]:
+					var next: Vector2i = at+step
+					if seen.has(next) or not frame.has_point(next) or not _cream(image.get_pixelv(next)): continue
+					seen[next] = true
+					stack.append(next)
+			if area >= 100 and area < POMPOM_MAX and y < best[0]: best = [y,area]
+	return best[1]
+
+
+func _cream(colour: Color) -> bool:
+	var high := maxf(colour.r,maxf(colour.g,colour.b))
+	var low := minf(colour.r,minf(colour.g,colour.b))
+	return colour.a > 0.9 and low > POMPOM_MIN and high-low < POMPOM_SPREAD

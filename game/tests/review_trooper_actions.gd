@@ -28,12 +28,20 @@ func run() -> void:
 	var victor = model.add_actor(1,centre-2,3,5,false,-1,6)
 	var planter = model.add_actor(0,model.roof_cell(0,centre+2),-1,3,false,0,8)
 	var boarder = model.add_actor(0,centre+6,6,2,false,-1,8)
+	var lone_back = model.add_actor(0,centre-9,5,1,false,-1,2) # isolated deaths, one of each fall
+	var lone_forward = model.add_actor(0,centre-7,1,1,false,-1,6)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	for frame in 50*6: # source: six seconds at the shared50Hz step
 		if frame == 25: # melee: the doomed group is wiped out
 			model.actors.erase(doomed)
 			scene.actor_motion.melee({"kind":"melee","x":victor.x,"y":victor.y})
 		if frame == 40: model.plant(planter.id,1)
+		if frame == 120 or frame == 170: # isolated man struck down; the fall is pinned to show both
+			var victim = lone_back if frame == 120 else lone_forward
+			model.actors.erase(victim)
+			scene.actor_motion.melee({"kind":"melee","x":victor.x,"y":victor.y})
+			scene._advance_visual(0.02)
+			scene.actor_motion.bodies[-1].kind = 0 if frame == 120 else 1
 		if frame == 60:
 			boarder.roof = 0
 			boarder.x = model.roof_cell(0,boarder.x)
