@@ -1,0 +1,38 @@
+{
+  "file": "game/assets/combat/trooper-poses.png",
+  "sha256": "6397522e38e3bb543b5d5ba99cba8ced1b435160b87a1258ed74c55e0da6ac31",
+  "sources": [
+    {
+      "file": "output/imagegen/actors-20261002/trooper-climb-mantle-generated.png",
+      "sha256": "dc9387530eecab567a11f9d9d1b4e594293b1425b42a9c1ef27b2117e3abb611"
+    },
+    {
+      "file": "output/imagegen/actors-20261002/trooper-plant-generated.png",
+      "sha256": "714310d9e19a6fc6e364520367c75bb761d61db19bea9c863a127249e8177eb0"
+    },
+    {
+      "file": "output/imagegen/actors-20261002/trooper-death-forward-generated.png",
+      "sha256": "912d4a245aa03eeaedf5b1e6ff6e458957936dc0bc248fa4357691f5c4ab24d3"
+    },
+    {
+      "file": "output/imagegen/actors-20261002/trooper-death-backward-generated.png",
+      "sha256": "c786d34c07c141b0220c37f10fd43b7fb456972a4d11ab6ca0441e113006a69f"
+    }
+  ],
+  "builder": "game/tools/build_trooper_poses.gd",
+  "frames": {
+    "climb": "4 rung frames + mantle, blue and olive",
+    "plant": "kneel and set, light (box and flame removed; the game draws the charge)",
+    "fall_forward": "5 frames",
+    "fall_back": "4 frames"
+  },
+  "scales_texel_per_source_px": {
+    "climb": 0.13,
+    "plant": 0.1118,
+    "fall_forward": 0.164,
+    "fall_back": 0.1368
+  },
+  "unused_source": "trooper-run-passing-generated.png (not integrated; the rig run is kept)",
+  "renderer": "game/scripts/tactical_trooper_poses.gd",
+  "status": "first integration; not owner-accepted; per-sheet scales and x pivots are authored estimates"
+}

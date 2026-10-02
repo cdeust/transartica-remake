@@ -5,6 +5,7 @@ extends SceneTree
 const Scene = preload("res://scripts/tactical_scene.gd")
 const Combat = preload("res://scripts/tactical_combat.gd")
 const Rig = preload("res://scripts/tactical_trooper_rig.gd")
+const Poses = preload("res://scripts/tactical_trooper_poses.gd")
 const Motion = preload("res://scripts/tactical_actor_motion.gd")
 var failures: Array[String] = []
 
@@ -124,12 +125,33 @@ func run() -> void:
 	var key := "1/30"
 	var knelt := false
 	var carried := false
+	var frames_seen := {}
+	var covered := false
 	for frame in 50*3:
 		motion.step(scene)
 		var soldier: Dictionary = motion.tracks[planter.id].soldiers[0]
 		if soldier.crouch >= 1.0: knelt = true
 		if motion.charges.has(key) and not motion.charges[key].placed: carried = true
+		if soldier.plant >= 0:
+			frames_seen[soldier.plant] = true
+			# The fuse counter never covers the kneeling planter (either side of the box).
+			var charge: Dictionary = model.charges[0]
+			var label := scene.charge_label(charge)
+			var foot: Vector2 = motion.point(scene,planter)+Vector2(soldier.face*1.25,0)
+			var body := Poses.bounds(foot,soldier.face,Poses.PLANT,soldier.plant,planter.side)
+			if scene.label_rect(label.point,label.text,5,label.anchor).intersects(body): covered = true
 	check(carried and knelt,"planter carries the box and kneels")
+	check(frames_seen.has(0) and frames_seen.has(1) and not covered,"plant sprites kneel then light, label clear of the planter")
+	# Facing the other way the counter moves to the other side of the box.
+	var there: Dictionary = {"side":1,"slot":30,"fuse":5}
+	var anchor_right: float = scene.charge_label(there).anchor
+	motion.tracks[planter.id].soldiers[0].task = {"key":"1/30","t":0.0,"arrived":true}
+	motion.tracks[planter.id].soldiers[0].plant = 0
+	motion.tracks[planter.id].soldiers[0].face = -1.0
+	check(anchor_right == 0.0 and scene.charge_label(there).anchor == 1.0,"counter flips to the side away from a planter on its right")
+	motion.tracks[planter.id].soldiers[0].plant = -1
+	motion.tracks[planter.id].soldiers[0].task = {}
+	motion.tracks[planter.id].soldiers[0].face = 0.0
 	check(motion.charges.has(key) and motion.charges[key].placed and motion.charges[key].lit,"box set down and fuse lit")
 	check(motion.tracks[planter.id].soldiers[0].shift.length() < 0.01,"planter back in his place")
 	# A group wiped out in melee falls one man after another.
@@ -143,6 +165,16 @@ func run() -> void:
 	var delays := {}
 	for body in falls: delays[snappedf(body.delay,0.01)] = true
 	check(falls.size() == 3 and delays.size() == 3,"three men fall at three different moments")
+	# Infantry deaths are sprite sequences: no rigid tilt, frames advance and the last one lies.
+	check(not Rig.pose(0,0,0).has("tilt") and not Rig.new().has_method("dying"),"rig has no rigid-tilt fall")
+	for kind in 3:
+		var previous_frame := -1
+		var monotonic := true
+		for step in 101:
+			var fall := Motion.death_frame(kind,step/100.0)
+			monotonic = monotonic and fall[1] >= previous_frame and fall[0] == (Poses.FALL_FORWARD if kind == 1 else Poses.FALL_BACK)
+			previous_frame = fall[1]
+		check(monotonic and Motion.death_frame(kind,0.0)[1] == 0 and Motion.death_frame(kind,1.0)[1] == Poses.count(Motion.death_frame(kind,1.0)[0])-1,"fall %d plays every sprite frame in order" % kind)
 	# Boarding: a field group entering a roof climbs instead of appearing there.
 	var boarder = model.add_actor(0,14,6,2,false,-1,8)
 	motion.step(scene)
@@ -153,10 +185,15 @@ func run() -> void:
 	var climbing: Dictionary = motion.tracks[boarder.id].soldiers[0]
 	check(not climbing.board.is_empty(),"boarding group climbs")
 	var low: float = motion.point(scene,boarder).y
-	for frame in 50*3: motion.step(scene)
+	var rungs := {}
+	for frame in 50*3:
+		motion.step(scene)
+		var rider: Dictionary = motion.tracks[boarder.id].soldiers[0]
+		if not rider.board.is_empty(): rungs[motion._board_pose(scene,motion.tracks[boarder.id],rider).frame] = true
+	check(rungs.has(0) and rungs.has(1) and rungs.has(2) and rungs.has(3) and rungs.has(Motion.MANTLE),"climb cycles four rung frames then mantles (%s)" % [rungs.keys()])
 	check(motion.tracks[boarder.id].soldiers[0].board.is_empty() and motion.point(scene,boarder).y < low-10,"climb ends on the roof (%s, %.1f -> %.1f)" % [motion.tracks[boarder.id].soldiers[0].board,low,motion.point(scene,boarder).y])
 	if failures.is_empty():
-		print("PASS: sprint-then-wait, planted feet, facing, soldiers per strength, melee, staggered deaths, dynamite set and lit, ladder boarding, merge fade, model untouched")
+		print("PASS: sprint-then-wait, planted feet, facing, soldiers per strength, melee, staggered sprite deaths, kneeling plant sprites with a clear counter, dynamite set and lit, ladder climb sprites, merge fade, model untouched")
 	else:
 		for failure in failures: push_error(failure)
 	quit()

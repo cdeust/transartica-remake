@@ -61,48 +61,13 @@ static func pose(phase: float, amp: float, lean: float, crouch := 0.0, strike :=
 		"hip": Vector2(-2.0*crouch+strike_shape*3.0-recoil*2.0,-HIP+9.0*crouch+bob+1.5*strike_shape),
 		"lean": lean+0.5*minf(crouch,1.0)+0.35*strike_shape-0.3*recoil+0.1*climb,
 		"thrust": strike_shape*4.0-recoil*1.5,
-		"tilt": 0.0, "pivot": Vector2.ZERO,
 		"drag": 0.12*amp,
 	}
 
 
-# Death falls, t normalised over DEATH seconds; the body ends lying on the
-# ground (tilt about a ground pivot). Kinds: 0 struck backward, 1 knees give
-# and he pitches forward with legs straightening, 2 staggers a step back and falls.
-const DEATH := 0.9 # source: authored fall duration, s.
-const IMPACT := 0.85 # source: authored fraction of DEATH when the body lands.
-static func dying(kind: int, t: float) -> Dictionary:
-	var gravity := func(start: float, span: float) -> float:
-		var u := clampf((t-start)/span,0,1)
-		return u*u
-	var settle := 0.06*sin(PI*clampf((t-IMPACT)/(1.0-IMPACT),0,1)) # small bounce on landing
-	var rig: Dictionary
-	match kind:
-		1:
-			var buckle := clampf(t/0.4,0,1)
-			var drop: float = gravity.call(0.4,IMPACT-0.4)
-			rig = pose(0,0,0.3+0.5*buckle,1.3*buckle*(1.0-drop)+0.1)
-			rig.tilt = 1.5*drop-settle
-			rig.pivot = Vector2(5,0)
-		2:
-			var stagger := clampf(t/0.35,0,1)
-			rig = pose(0,0,0,0.3*stagger,0,1.0)
-			rig.feet[0] = Vector2(2.0-8.0*stagger,-4.0*sin(PI*stagger))
-			rig.hip.x -= 4.0*stagger
-			rig.tilt = -1.5*gravity.call(0.35,IMPACT-0.35)+settle
-			rig.pivot = Vector2(-6,0)
-		_:
-			var reel := clampf(t/0.3,0,1)
-			rig = pose(0,0,0,0.5*reel,0,1.0-0.5*clampf((t-0.3)/0.5,0,1))
-			rig.tilt = -1.52*gravity.call(0.3,IMPACT-0.3)+settle
-			rig.pivot = Vector2(-3,0)
-	return rig
-
-
 # Draws one trooper at a logical foot point. world maps logical to canvas.
 static func draw(canvas: CanvasItem, world: Transform2D, side: int, foot: Vector2, facing: float, rig: Dictionary, colour := Color.WHITE) -> void:
-	# Falls tilt the whole body about a ground pivot (heels or knees).
-	var base := world*Transform2D(0,Vector2(facing/PER,1/PER),0,foot)*Transform2D(rig.tilt,rig.pivot)*Transform2D(0,-rig.pivot)
+	var base := world*Transform2D(0,Vector2(facing/PER,1/PER),0,foot)
 	var hip: Vector2 = rig.hip
 	var knees := []
 	var shafts := []

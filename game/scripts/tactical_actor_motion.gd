@@ -12,12 +12,14 @@ extends RefCounted
 # of this claims original behaviour.
 const Geometry = preload("res://scripts/tactical_effects_geometry.gd")
 const Rig = preload("res://scripts/tactical_trooper_rig.gd")
+const Poses = preload("res://scripts/tactical_trooper_poses.gd")
 const STEP := 1.0/50.0
 const SPRINT := 22.0 # source: authored top speed, logical px/s (~1.7 body heights/s).
 const ACCEL := 140.0 # source: authored, logical px/s².
 const BRAKE := 110.0 # source: authored, logical px/s².
 const CLIMB := 24.0 # source: authored climbing speed up a wagon side, logical px/s.
 const RUNG := 3.0 # source: authored climbing step, logical px.
+const MANTLE := 4 # index of the mantle among the climb frames, after the four rung frames.
 const WAGON_SIDE := 25.0 # source: roof 38 above the top train baseline 63, logical px.
 const MAMMOTH_SPEED := 14.0 # source: authored heavy gait, logical px/s.
 const STRIDE_PX := Rig.STRIDE/Rig.PER # one step of the rig, logical px.
@@ -32,6 +34,10 @@ const ENGAGED := 1.2 # source: authored hold-facing after a melee, s.
 const NEXT_FALL := 0.3 # source: authored delay between successive deaths, s.
 const LIE := 3.0 # source: authored time a casualty stays down, s.
 const FADE := 0.6 # source: authored fade of bodies and merged groups, s.
+# Deaths play the sprite falls of Poses over DEATH s (kind 1 pitches forward,
+# the others are thrown back), the last frame landing at IMPACT.
+const DEATH := 0.9 # source: authored fall duration, s.
+const IMPACT := 0.85 # source: authored fraction of DEATH when the body lands.
 # Plant sequence, s (authored): kneel, set the box, light the fuse, rise.
 const KNEEL := 0.25
 const SET := 0.35
@@ -152,7 +158,7 @@ func _soldier(cell: Vector2, slot: int) -> Dictionary:
 	return {"cell":cell,"speed":0.0,"amp":0.0,"phase":_rng.randf()*TAU,"delay":0.0,
 		"vmul":_rng.randf_range(0.92,1.08),"breath":_rng.randf()*TAU,"strike":0.0,"recoil":0.0,
 		"slot":slot%VISIBLE,"offset":Vector2.ZERO,"shift":Vector2.ZERO,"shift_to":Vector2.ZERO,
-		"shift_speed":0.0,"face":0.0,"board":{},"task":{},"crouch":0.0}
+		"shift_speed":0.0,"face":0.0,"board":{},"task":{},"crouch":0.0,"plant":-1}
 
 
 func _drop(track: Dictionary, soldier: Dictionary, fell: bool, delay: float) -> void:
@@ -167,11 +173,11 @@ func _drop(track: Dictionary, soldier: Dictionary, fell: bool, delay: float) -> 
 func _age_bodies(scene) -> void:
 	for body in bodies:
 		body.t += STEP
-		if body.fall and not body.landed and (body.t-body.delay)/Rig.DEATH >= Rig.IMPACT:
+		if body.fall and not body.landed and (body.t-body.delay)/DEATH >= IMPACT:
 			body.landed = true # snow kicked up where the body hits
 			var at := _place(scene,body.roof,body.cell,body.offset)+Vector2(body.facing*(4.0 if body.kind == 1 else -5.0),0)
 			scene.living.add("dust",at+Vector2(scene.camera,0),Vector2.UP,0.12) # source: authored light puff
-	bodies = bodies.filter(func(body): return body.t < (body.delay+Rig.DEATH+LIE+FADE if body.fall else FADE))
+	bodies = bodies.filter(func(body): return body.t < (body.delay+DEATH+LIE+FADE if body.fall else FADE))
 
 
 # Sprint kinematics: accelerate, hold top speed, brake to stop on the cell.
@@ -218,6 +224,7 @@ func _run(track: Dictionary, soldier: Dictionary) -> void:
 func _task(soldier: Dictionary) -> void:
 	var task: Dictionary = soldier.task
 	soldier.crouch = 0.0
+	soldier.plant = -1
 	if task.is_empty(): return
 	task.t += STEP
 	if not task.arrived:
@@ -227,6 +234,7 @@ func _task(soldier: Dictionary) -> void:
 		return
 	var t: float = task.t
 	var entry: Dictionary = charges.get(task.key,{})
+	if t < KNEEL+SET+LIGHT: soldier.plant = 0 if t < KNEEL+SET else 1 # sprite kneel, then the light
 	if t < KNEEL: soldier.crouch = 1.2*t/KNEEL
 	elif t < KNEEL+SET+LIGHT: soldier.crouch = 1.2
 	elif t < KNEEL+SET+LIGHT+RISE: soldier.crouch = 1.2*(1.0-(t-KNEEL-SET-LIGHT)/RISE)
@@ -320,14 +328,15 @@ func _board_pose(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 	var foot := Vector2(top.x,top.y+board.height)
 	var t: float = maxf(board.t,0.0)
 	if t < board.run:
-		return {"at":start.lerp(foot,t/maxf(board.run,0.001)),"climb":0.0,"crouch":0.0}
+		return {"at":start.lerp(foot,t/maxf(board.run,0.001)),"climb":0.0,"crouch":0.0,"frame":-1}
 	if t < board.run+board.climb:
 		var u: float = (t-board.run)/board.climb
 		if board.hop: # vault: crouch, jump, land
-			return {"at":foot.lerp(top,u)+Vector2(0,-6.0*sin(PI*u)),"climb":0.0,"crouch":0.5*(1.0-sin(PI*u))}
-		return {"at":foot.lerp(top,u),"climb":1.0,"crouch":0.0}
+			return {"at":foot.lerp(top,u)+Vector2(0,-6.0*sin(PI*u)),"climb":0.0,"crouch":0.5*(1.0-sin(PI*u)),"frame":-1}
+		# One rung frame per RUNG climbed, like the run's stride follows distance.
+		return {"at":foot.lerp(top,u),"climb":1.0,"crouch":0.0,"frame":int(u*board.height/RUNG)%MANTLE}
 	var rise: float = (t-board.run-board.climb)/board.rise
-	return {"at":top,"climb":0.0,"crouch":1.0-clampf(rise,0,1)} # mantle and stand
+	return {"at":top,"climb":0.0,"crouch":1.0-clampf(rise,0,1),"frame":-1 if board.hop else MANTLE} # mantle and stand
 
 
 # WDECOR0x2679 melee reports the attacker's cell; both groups turn to fight.
@@ -378,6 +387,15 @@ func _plants(state) -> void:
 		soldier.task = {"key":key,"t":0.0,"arrived":false}
 		current[key] = {"placed":false,"lit":false}
 	charges = current
+
+
+# Facing of the soldier kneeling at a charge (+1: he stands left of it), 0 if none.
+func planter_facing(charge: Dictionary) -> float:
+	var key := "%d/%d" % [charge.side,charge.slot]
+	for track in tracks.values():
+		for soldier in track.soldiers:
+			if soldier.plant >= 0 and soldier.task.get("key","") == key: return soldier.face
+	return 0.0
 
 
 func _offset(track: Dictionary, soldier: Dictionary) -> Vector2:
@@ -440,8 +458,16 @@ func _draw_soldier(scene, art, at: Vector2, track: Dictionary, soldier: Dictiona
 	var crouch: float = soldier.crouch
 	if not soldier.board.is_empty():
 		var board := _board_pose(scene,track,soldier)
+		if board.frame >= 0:
+			Poses.draw_frame(scene,scene.world_transform,actor.side,at,facing,Poses.CLIMB,board.frame,colour)
+			return
 		climb = board.climb
 		crouch = board.crouch
+	if soldier.plant >= 0:
+		# Kneeling at the box: the frame's pivot is the box's left edge, 1.25px ahead of the planter's point.
+		Poses.draw_frame(scene,scene.world_transform,actor.side,at+Vector2(facing*1.25,0),facing,Poses.PLANT,soldier.plant,colour)
+		if not charges.get(soldier.task.key,{"placed":true}).placed: _draw_box(scene,at+Vector2(facing*3.0,0),false)
+		return
 	var strike: float = 1.0-soldier.strike/STRIKE if soldier.strike > 0 else 0.0
 	var rig := Rig.pose(soldier.phase,soldier.amp,0.32*soldier.amp*(1.0-climb),crouch,strike,soldier.recoil/RECOIL,climb,soldier.breath)
 	Rig.draw(scene,scene.world_transform,actor.side,at,facing,rig,colour)
@@ -451,16 +477,25 @@ func _draw_soldier(scene, art, at: Vector2, track: Dictionary, soldier: Dictiona
 		_draw_box(scene,at+Vector2(facing*(2.0+1.5*low),-5.5+3.5*low),false)
 
 
+# Sprite of a fall at u of DEATH: [family, frame]; the last frame lands at IMPACT and lies.
+static func death_frame(kind: int, u: float) -> Array:
+	var family := Poses.FALL_FORWARD if kind == 1 else Poses.FALL_BACK
+	return [family,floori(clampf(u/IMPACT,0,1)*(Poses.count(family)-1)+0.5)]
+
+
 func _draw_body(scene, art, at: Vector2, body: Dictionary) -> void:
-	var fading: float = body.t-(body.delay+Rig.DEATH+LIE) if body.fall else body.t
+	var fading: float = body.t-(body.delay+DEATH+LIE) if body.fall else body.t
 	var colour := Color(1,1,1,clampf(1.0-fading/FADE,0,1))
 	if body.mammoth:
 		art.draw_pose(scene,9 if body.count > 1 else 8,at,body.facing,colour)
 		return
+	if body.fall and body.t >= body.delay:
+		var fall := death_frame(body.kind,(body.t-body.delay)/DEATH)
+		Poses.draw_frame(scene,scene.world_transform,body.side,at,body.facing,fall[0],fall[1],colour)
+		return
 	var rig: Dictionary
 	if not body.fall: rig = Rig.pose(0,0,0,0,0,0,0,body.breath)
-	elif body.t < body.delay: rig = Rig.pose(0,0,0,0.2,0,0.6,0,body.breath) # wounded, still standing his turn
-	else: rig = Rig.dying(body.kind,clampf((body.t-body.delay)/Rig.DEATH,0,1))
+	else: rig = Rig.pose(0,0,0,0.2,0,0.6,0,body.breath) # wounded, still standing his turn
 	Rig.draw(scene,scene.world_transform,body.side,at,body.facing,rig,colour)
 
 

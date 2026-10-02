@@ -195,8 +195,8 @@ func _draw() -> void:
 	for actor in state.actors:
 		_actor(actor)
 	for charge in state.charges:
-		var point := EffectGeometry.roof_point(self,charge.side,charge.slot)
-		_label(point+Vector2(0,-9),"●%d" % charge.fuse,5) # above the drawn box
+		var label := charge_label(charge)
+		_label(label.point,label.text,5,label.anchor)
 	for effect in effects:
 		_effect(effect)
 	# World-position effects remain registered while the combat camera scrolls.
@@ -234,16 +234,31 @@ func _status(value: String) -> void:
 	draw_rect(Rect2(0,94,320,10), Color(0.03,0.06,0.08,0.8))
 	text_at(Vector2(3,101), value, 5)
 
-func _label(point: Vector2, value: String, font_size: int) -> void:
-	# Authored dark backing keeps health/count readouts legible on snow and smoke.
+# Counter over a charge's box, on the side away from the man kneeling at it
+# (anchor 1 ends the text at its point, so it grows away from him).
+func charge_label(charge: Dictionary) -> Dictionary:
+	var planter := actor_motion.planter_facing(charge)
+	var left := planter < 0
+	return {"point":EffectGeometry.roof_point(self,charge.side,charge.slot)+Vector2(-2.0 if left else 0.0,-9),"text":"●%d" % charge.fuse,"anchor":1.0 if left else 0.0}
+
+# Backing rectangle of a label (logical px); anchor 0 starts the text at point,
+# 1 ends it there, so a charge's counter can sit away from the man kneeling at it.
+func label_rect(point: Vector2, value: String, font_size: int, anchor := 0.0) -> Rect2:
 	var factor := canvas_rect().size.x / CANVAS.x
 	var pixels := maxi(1, roundi(font_size * factor))
 	var width := ThemeDB.fallback_font.get_string_size(value,HORIZONTAL_ALIGNMENT_LEFT,-1,pixels).x / factor
-	draw_rect(Rect2(point-Vector2(1,font_size+1),Vector2(width+2,font_size+3)),Color(0.03,0.06,0.08,0.9))
+	return Rect2(point-Vector2(1+anchor*width,font_size+1),Vector2(width+2,font_size+3))
+
+func _label(point: Vector2, value: String, font_size: int, anchor := 0.0) -> void:
+	# Authored dark backing keeps health/count readouts legible on snow and smoke.
+	var factor := canvas_rect().size.x / CANVAS.x
+	var pixels := maxi(1, roundi(font_size * factor))
+	var rect := label_rect(point,value,font_size,anchor)
+	draw_rect(rect,Color(0.03,0.06,0.08,0.9))
 	# Keep output-pixel glyphs while restoring the shaken world transform.
 	# OriginalScreen.text_at resets that transform after every world label.
 	draw_set_transform(Vector2.ZERO)
-	draw_string(ThemeDB.fallback_font,world_transform*point,value,HORIZONTAL_ALIGNMENT_LEFT,-1,pixels,GOLD)
+	draw_string(ThemeDB.fallback_font,world_transform*Vector2(rect.position.x+1,point.y),value,HORIZONTAL_ALIGNMENT_LEFT,-1,pixels,GOLD)
 	draw_set_transform_matrix(world_transform)
 
 func _train(side: int, _baseline: float) -> void:
