@@ -4,14 +4,16 @@ extends SceneTree
 # pose facing right and left are reflections about the same column.
 const Art = preload("res://scripts/tactical_actor_art.gd")
 const Rig = preload("res://scripts/tactical_trooper_rig.gd")
+const Mammoth = preload("res://scripts/tactical_mammoth_poses.gd")
 const SCALE := 8.0 # source: review magnification, logical→screen px
 class Probe extends Control:
-	var pose := 0 # master poses; 100+side selects the procedural trooper
+	var pose := 0 # master poses; 100+side selects the procedural trooper; 200+kind a sprite mammoth (stopped, riders seated)
 	var facing := 1.0
 	func _draw() -> void:
 		draw_rect(Rect2(Vector2.ZERO,size),Color.WHITE)
 		draw_set_transform(Vector2.ZERO,0,Vector2.ONE*SCALE)
 		if pose < 0: draw_rect(Rect2(39.5,30,1,10),Color.BLACK)
+		elif pose >= 200: Mammoth.draw(self,Transform2D(0,Vector2.ONE*SCALE,0,Vector2.ZERO),0,pose-200,Mammoth.STOP,0,Vector2(40,40),facing,2)
 		elif pose >= 100: Rig.draw(self,Transform2D(0,Vector2.ONE*SCALE,0,Vector2.ZERO),pose-100,Vector2(40,40),facing,Rig.pose(PI*0.3,1.0,0.3))
 		else: Art.new().draw_pose(self,pose,Vector2(40,40),facing)
 
@@ -45,7 +47,7 @@ func run() -> void:
 	await process_frame
 	await RenderingServer.frame_post_draw
 	_marker = (span(root.get_texture().get_image()).x+span(root.get_texture().get_image()).y)/2
-	for pose in [0,1,2,4,5,6,8,9,100,101]:
+	for pose in [0,1,2,4,5,6,8,9,100,101,200,201]:
 		var spans := []
 		for facing in [1.0,-1.0]:
 			probe.pose = pose

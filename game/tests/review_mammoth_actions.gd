@@ -5,8 +5,10 @@ extends SceneTree
 # and dying: A bare player mammoth (the deploy case, count 1); B enemy mounted
 # mammoth (count 5) whose riders step onto the player's roof (0x123a) before it is
 # worn down to a bare beast and killed; C player mammoth carrying merged infantry
-# (merge limit 31, 0x31f9). Fixture only: cells and melee reports are placed
-# directly, at the source pace of one cell per scan (1.12 s for a player mammoth).
+# (merge limit 31, 0x31f9) killed while two ride. Fixture only: cells and melee
+# reports are placed directly, at the source pace of one cell per scan (1.12 s for a
+# player mammoth). Frame numbers and the beast's screen point go to points.txt for
+# the close-up cuts.
 const OUT := "res://../.cache/mammoth/actions"
 const PHASE := 400 # frames per phase, 50 Hz
 const WALK_FIRST := 10 # frame of the first one-cell step
@@ -32,11 +34,12 @@ func run() -> void:
 	root.add_child(scene)
 	scene.open_battle(model)
 	scene.set_physics_process(false)
-	var stop := 0 # field column where the mammoth halts: its roof slot is 4, above the player's second wagon
+	var stop := 0 # field column where the mammoth halts: its roof slot is 9, above a wagon (slot 4 is the locomotive's)
 	for x in model.columns:
-		if model.roof_cell(0,x) == 4: stop = x
+		if model.roof_cell(0,x) == 9: stop = x
 	scene.camera = float((stop-1)*16-model.center_offset()-160) # source: _field_point; the walk is centred on screen
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
+	var points := FileAccess.open(ProjectSettings.globalize_path(OUT+"/points.txt"),FileAccess.WRITE)
 	var group = null
 	var foe = null
 	var step := 1
@@ -48,7 +51,7 @@ func run() -> void:
 			scene.actor_motion.clear()
 			step = -1 if phase == 1 else 1
 			var side := 1 if phase == 1 else 0
-			group = model.add_actor(side,stop-step*WALK_CELLS,5,[1,5,4][phase],true,-1,6 if step < 0 else 2)
+			group = model.add_actor(side,stop-step*WALK_CELLS,5,[1,5,5][phase],true,-1,6 if step < 0 else 2)
 			foe = null
 		var walked := clampi((local-WALK_FIRST)/CELL_FRAMES+1 if local >= WALK_FIRST else 0,0,WALK_CELLS)
 		group.x = stop-step*(WALK_CELLS-walked)
@@ -56,24 +59,28 @@ func run() -> void:
 			foe = model.add_actor(1-group.side,stop+step*2,5,3,false,-1,6 if step > 0 else 2)
 		if phase == 0:
 			if local == 210: scene.actor_motion.melee({"kind":"melee","x":foe.x,"y":foe.y}) # the beast is struck, survives
+			if local == 262: scene.actor_motion.melee({"kind":"melee","x":group.x,"y":group.y}) # the beast strikes back
 			if local == 330: model.actors.erase(group)
 		if phase == 1:
 			if local == 200: # riders step off onto the player's roof, a new enemy roof group
 				model.add_actor(1,model.roof_cell(0,group.x),-1,2,false,0,2)
 				group.count -= 2
-			if local == 250: _strike(scene,foe,group,2)
-			if local == 300: _strike(scene,foe,group,2)
-			if local == 350: model.actors.erase(group)
+			if local == 310: _strike(scene,foe,group,2) # after both riders have dropped and run off
+			if local == 350: _strike(scene,foe,group,2)
+			if local == 385: model.actors.erase(group)
 		if phase == 2:
 			if local == 220: _strike(scene,foe,group,1)
-			if local == 280: _strike(scene,foe,group,2)
-			if local == 340: model.actors.erase(group)
+			if local == 280: _strike(scene,foe,group,1)
+			if local == 340: model.actors.erase(group) # killed with two riders up
 		scene._advance_visual(0.02)
 		scene.queue_redraw()
 		await process_frame
 		await RenderingServer.frame_post_draw
 		root.get_texture().get_image().save_png(ProjectSettings.globalize_path(OUT+"/%04d.png" % frame))
-		if local%50 == 0 and is_instance_valid(group): print("f%d phase %d group at %s" % [frame,phase,scene.actor_motion.point(scene,group)])
+		if group != null and model.actors.has(group):
+			var screen: Vector2 = scene.world_transform*scene.actor_motion.point(scene,group)*(float(root.size.x)/scene.size.x) # the capture is the window, the scene its own size
+			points.store_line("%d %d %d" % [frame,screen.x,screen.y])
+	points.close()
 	print("PASS: staged mammoth action frames written")
 	quit()
 

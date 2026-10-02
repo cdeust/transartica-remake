@@ -11,7 +11,6 @@ var camera := 0.0
 var paused := false
 var textures := {}
 var texture_bounds := {}
-var actor_art = preload("res://scripts/tactical_actor_art.gd").new()
 var wagon_art = preload("res://scripts/tactical_wagon_art.gd").new()
 var effects: Array = []
 var edge_scroll := 0
@@ -192,7 +191,7 @@ func _draw() -> void:
 	_draw_ground()
 	_train(0, 63)
 	_train(1, 192)
-	actor_motion.draw(self,actor_art) # live groups plus fading removals
+	actor_motion.draw(self) # live groups plus fading removals
 	var layout := layout_labels()
 	for actor in state.actors: _actor(actor)
 	for label in layout.charges+layout.counts: _label(label.shown,label.text,label.size,label.anchor)
