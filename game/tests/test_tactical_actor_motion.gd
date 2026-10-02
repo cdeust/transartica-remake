@@ -187,6 +187,20 @@ func run() -> void:
 	for frame in 50*2:
 		motion.step(scene)
 		crowd += scene.layout_clashes()
+	var eased := 0.0
+	var moved := 0
+	var offsets := {}
+	for frame in 50*2:
+		motion.step(scene)
+		scene.ease_labels()
+		for label_key in scene._shown:
+			if offsets.has(label_key):
+				eased = maxf(eased,scene._shown[label_key].distance_to(offsets[label_key]))
+				if scene._kept[label_key].offset != offsets[label_key + "/kept"]: moved += 1
+			offsets[label_key] = scene._shown[label_key]
+			offsets[label_key + "/kept"] = scene._kept[label_key].offset
+	check(eased <= scene.LABEL_EASE+0.001,"labels move at most %.1fpx per step (%.2f)" % [scene.LABEL_EASE,eased])
+	check(moved < 6,"labels keep their spot while it stays clear (%d moves in two seconds)" % moved)
 	check(crowd == 0,"crowded charge: counter within reach, clear of soldiers and labels (%d clashes)" % crowd)
 	# A group wiped out in melee falls one man after another.
 	var doomed = model.add_actor(0,8,1,3,false,-1,8)
@@ -208,6 +222,9 @@ func run() -> void:
 		var nearest := INF
 		for point in stood: nearest = minf(nearest,point.distance_to(motion._place(scene,body.roof,body.cell,body.offset)))
 		death_jump = maxf(death_jump,nearest)
+	var stand_top: float = Rig.top(Rig.pose(0,0,0),0)
+	var stand_ratio: float = Poses.top(Poses.FALL_FORWARD,0)/stand_top
+	check(absf(stand_ratio-1.0) <= 0.02,"forward fall's standing frame is the rig's height within 2%% (%.3f)" % stand_ratio)
 	check(death_jump <= 1.0,"alive to death frame 0 within 1px (%.2f)" % death_jump)
 	# A man with comrades ahead falls back, with comrades behind falls forward.
 	var pair := {"facing":1.0,"roof":-1,"actor":{"mammoth":false},"soldiers":[]}
@@ -242,6 +259,9 @@ func run() -> void:
 	var last_climb := {}
 	var arrival_clashes := 0
 	var landing_gap := 0.0
+	var ladder_matches := true
+	var mantle_samples := 0
+	var mantle_bad := 0
 	var landing_samples := 0
 	for frame in 50*3:
 		motion.step(scene)
@@ -251,11 +271,21 @@ func run() -> void:
 		if not rider.board.is_empty():
 			var pose: Dictionary = motion._board_pose(scene,motion.tracks[boarder.id],rider)
 			rungs[pose.frame] = true
+			# The ladder exists exactly during the rung frames; the mantle's feet stay on or above the drawn roof and inside the hull end.
+			ladder_matches = ladder_matches and (Motion.ladder_up(rider.board) == (pose.frame >= 0 and pose.frame < Motion.MANTLE))
+			if pose.frame == Motion.MANTLE:
+				var tr: Dictionary = motion.tracks[boarder.id]
+				var edge_x: float = motion._place(scene,0,rider.cell,motion._offset(tr,rider)).x+rider.board.ladder
+				var drawn: float = preload("res://scripts/tactical_effects_geometry.gd").drawn_y(scene,0,rider.board.wagon,pose.at.x)
+				mantle_samples += 1
+				if pose.at.y > drawn+0.01 or (pose.at.x-edge_x)*signf(rider.board.off) > 0.01: mantle_bad += 1
 			if rider.board.t >= rider.board.run+rider.board.climb+rider.board.rise-0.045 and rider.board.wagon >= 0: # last mantle frames: feet on the drawn roof
 				var land_x: float = motion._place(scene,0,rider.cell,motion._offset(motion.tracks[boarder.id],rider)).x+rider.board.land
 				landing_samples += 1
 				landing_gap = maxf(landing_gap,absf(pose.at.y-preload("res://scripts/tactical_effects_geometry.gd").drawn_y(scene,0,rider.board.wagon,land_x)))
 	check(climb_jumps.get("climb/count",0) == 2 and worst(climb_jumps,"climb") <= 1.0,"run, climb, mantle and stand switch within 1px (top %.2f feet %.2f step %.2f)" % [climb_jumps.get("climb/top",-1.0),climb_jumps.get("climb/feet",-1.0),climb_jumps.get("climb/step",-1.0)])
+	check(ladder_matches,"ladder up exactly while he climbs it")
+	check(mantle_samples > 3 and mantle_bad == 0,"mantle feet never below the drawn roof nor outside the hull end (%d of %d frames)" % [mantle_bad,mantle_samples])
 	check(landing_samples > 0 and landing_gap < 0.01,"mantle lands exactly on the drawn roof silhouette (%.3f px)" % landing_gap)
 	check(arrival_clashes == 0,"labels clear of soldiers, wagon bodies and each other through the roof arrival (%d clashes)" % arrival_clashes)
 	check(rungs.has(0) and rungs.has(1) and rungs.has(2) and rungs.has(3) and rungs.has(Motion.MANTLE),"climb cycles four rung frames then mantles (%s)" % [rungs.keys()])

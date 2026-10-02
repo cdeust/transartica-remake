@@ -22,7 +22,10 @@ const RUNG := 3.0 # source: authored climbing step, logical px.
 const MANTLE := 4 # index of the mantle among the climb frames, after the four rung frames.
 const CLIMB_STANDOFF := 4.4 # mean reach of the rung frames' hands past their feet (Poses.FRONT), so the hands meet the wagon end.
 const BOX_HALF := 1.75 # half the drawn box's width, logical px (see _draw_box).
-const CLIMB_TOP := 8.0 # source: authored; the last rung leaves the feet this far under the roof, hands on its edge.
+const STEP_IN := 0.8 # source: authored; share of the climb after which the feet step in from the ladder to the hull end.
+const MANTLE_HOP := 0.5 # source: authored; logical px the feet lift over the cap while stepping onto the roof.
+const LADDER_OVER := 6.0 # source: authored; the rails stand this far above the roof, a hand rail.
+const KNEEL_CROUCH := 1.0 # source: measured on the rig; beyond ~1.2 its feet sink below the ground line and the coat bunches.
 const HULL_DROP := 4.0 # source: measured on the wagon sprites; the cap falls ~10px at the hull end, the roof's own curve under 3.
 const LAND := 4.0 # source: authored; the mantle lands this far inside the ladder, on the flat roof (the roof's end drops away at the ladder).
 const FALL_REACH := 14.0 # source: measured, logical px; length of a lying soldier (Poses fall frames, 12-14).
@@ -266,7 +269,7 @@ func _task(soldier: Dictionary, side: int) -> void:
 	# the sprite takes over for the set and the light, and the rig rises from that
 	# same crouch (hard switches at equal height and feet, no blending).
 	var done := KNEEL+SET+LIGHT
-	var kneel := _matched(side,Poses.top(Poses.PLANT,0,side))
+	var kneel := minf(_matched(side,Poses.top(Poses.PLANT,0,side)),KNEEL_CROUCH)
 	if t >= KNEEL and t < done: soldier.plant = 0 if t < KNEEL+SET else 1
 	if t < KNEEL: soldier.crouch = kneel*t/KNEEL
 	elif t < done: soldier.crouch = kneel
@@ -332,7 +335,7 @@ func _start_climb(scene, track: Dictionary, soldier: Dictionary, from_cell: Vect
 	var roof := Vector2(top.x+land,_roof_y(scene,track.roof,index if ladder != 0.0 else -1,top.x+land,top.y))
 	var foot := Vector2(top.x+ladder+off,roof.y+height)
 	soldier.board = {"from_cell":from_cell,"from_offset":from_offset,"t":-delay,"height":height,"ladder":ladder,"off":off,"land":land,"wagon":index if ladder != 0.0 else -1,
-		"run":start.distance_to(foot)/SPRINT,"climb":(height-CLIMB_TOP)/CLIMB if climbing else 0.35,"hop":not climbing,"rise":0.3}
+		"run":start.distance_to(foot)/SPRINT,"climb":height/CLIMB if climbing else 0.35,"hop":not climbing,"rise":0.3}
 	soldier.face = signf(foot.x-start.x) if absf(foot.x-start.x) > 0.5 else 0.0
 
 
@@ -368,7 +371,6 @@ func _board_pose(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 	var roof := Vector2(land_x,_roof_y(scene,track.roof,board.wagon,land_x,top.y))
 	var foot := Vector2(ladder_x+board.off,roof.y+board.height)
 	var cap := _roof_y(scene,track.roof,board.wagon,ladder_x,top.y) # the roof's end cap at the ladder
-	var perch := Vector2(foot.x,cap+CLIMB_TOP) # hands on the roof edge
 	var t: float = maxf(board.t,0.0)
 	var pose := {"at":foot,"climb":0.0,"crouch":0.0,"frame":-1,"amp":-1.0}
 	if t < board.run:
@@ -380,21 +382,22 @@ func _board_pose(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 			pose.at = foot.lerp(roof,u)+Vector2(0,-6.0*sin(PI*u))
 			pose.crouch = 0.5*(1.0-sin(PI*u))
 			return pose
-		# One rung frame per RUNG climbed, like the run's stride follows distance.
-		pose.at = foot.lerp(perch,u)
-		pose.frame = int(u*(board.height-CLIMB_TOP)/RUNG)%MANTLE
+		# One rung frame per RUNG climbed, like the run's stride follows distance. The
+		# last fifth steps the feet in from the ladder to the hull end, at roof level.
+		var step := smoothstep(0,1,clampf((u-STEP_IN)/(1.0-STEP_IN),0,1))
+		pose.at = Vector2(lerpf(foot.x,ladder_x,step),lerpf(foot.y,cap,u))
+		pose.frame = int(u*board.height/RUNG)%MANTLE
 		return pose
 	var rise: float = clampf((t-board.run-board.climb)/board.rise,0,1)
 	if board.hop:
 		pose.at = roof
 		pose.crouch = 1.0-rise
 		return pose
-	# Mantle: pull up over the edge, the feet stepping from the ladder onto the
-	# roof (x and y reach it together), then stand up as the rig.
+	# Mantle: from the hull end the feet step over the cap onto the roof, always on
+	# or above the drawn roof (lifted MANTLE_HOP at mid-step), then he stands up as the rig.
 	var pull := smoothstep(0,1,clampf(rise/MANTLE_HOLD,0,1))
-	var x := lerpf(foot.x,land_x,pull)
-	var on_hull := minf(x,ladder_x) if board.off > 0 else maxf(x,ladder_x) # past the hull end the feet follow its cap
-	pose.at = Vector2(x,_roof_y(scene,track.roof,board.wagon,on_hull,top.y)+CLIMB_TOP*(1.0-pull))
+	var x := lerpf(ladder_x,land_x,pull)
+	pose.at = Vector2(x,_roof_y(scene,track.roof,board.wagon,x,top.y)-MANTLE_HOP*sin(PI*pull))
 	if rise < MANTLE_HOLD: pose.frame = MANTLE
 	pose.crouch = _matched(track.actor.side,Poses.top(Poses.CLIMB,MANTLE,track.actor.side))*(1.0-clampf((rise-MANTLE_HOLD)/(1.0-MANTLE_HOLD),0,1))
 	pose.amp = 0.0
@@ -543,16 +546,20 @@ func draw(scene, art) -> void:
 		else: _draw_soldier(scene,art,item.at,item.track,item.soldier)
 
 
+# The ladder is up exactly while he is on it: from the first rung to the last frame before his feet leave the top one.
+static func ladder_up(board: Dictionary) -> bool:
+	return not board.is_empty() and not board.hop and board.wagon >= 0 and board.t >= board.run and board.t < board.run+board.climb
+
+
 # A ladder up the end of the wagon being climbed, there only while someone climbs
 # it: one rail on the wagon's end edge (where the climbers' hands are) and a
 # rung every RUNG, which is also the climb frame's step. Iron colour from the wagon.
 func _draw_ladder(scene, track: Dictionary, soldier: Dictionary) -> void:
 	var board: Dictionary = soldier.board
-	if board.is_empty() or board.hop or board.wagon < 0: return
-	if board.t < board.run-0.15 or board.t > board.run+board.climb+board.rise*MANTLE_HOLD: return
+	if not ladder_up(board): return
 	var out := signf(board.off)
 	var edge: float = _place(scene,track.roof,soldier.cell,_offset(track,soldier)).x+board.ladder
-	var top: float = Geometry.drawn_y(scene,track.roof,board.wagon,edge-out*LAND)
+	var top: float = Geometry.drawn_y(scene,track.roof,board.wagon,edge-out*LAND)-LADDER_OVER
 	var low: float = _roof_y(scene,track.roof,board.wagon,edge-out*LAND,0.0)+board.height # where the climb starts
 	var iron := _iron(scene,track.roof,board.wagon)
 	scene.draw_rect(Rect2(edge+(0.0 if out > 0 else -0.5),top,0.5,low-top),iron) # rail on the hull end

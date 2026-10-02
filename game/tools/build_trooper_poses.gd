@@ -11,11 +11,14 @@ extends SceneTree
 # grouped in 8-connected components; every small component (a flying or fallen
 # rifle) joins the nearest body of its frame, so detached parts survive.
 # Scale: the soldiers of the sheets are drawn at different sizes, so each sheet
-# is scaled by its head against the rig's standing soldier: the cream pompom on
-# the hood is round, side-on and visible in every pose; its diameter
-# sqrt(area) on the sheet's reference frame is compared with the same measure
-# on troopers-concept-v2's standing frame, which the rig is cut from. The
-# numbers are printed (HEAD lines).
+# is scaled against the rig's standing soldier by one of two references, both
+# printed per sheet (SCALE lines). Head: the cream pompom on the hood is round
+# and side-on in every pose; its diameter sqrt(area) on the sheet's reference
+# frame against the same measure on troopers-concept-v2's standing frame, which
+# the rig is cut from. Body: the reference frame's height, divided by its stance
+# (the share of a standing height it keeps: 1.0 upright, 0.96 mid-stride),
+# against the rig's STAND. The sheets where the two disagree (forward fall,
+# plant: Codex drew bigger or smaller heads there) use the body; the others the head.
 # Pivots are computed: climb and plant frames sit on the centroid of their
 # lowest band of body pixels (the feet); falls hang from the body's centroid (the
 # hip stays where it was while he drops); y is one ground line per row (the
@@ -36,16 +39,17 @@ const FEET_BAND := 0.12 # source: authored; share of the body's height counted a
 const POMPOM_MIN := 0.62 # source: measured; the pompom's shaded part is still above this on every sheet.
 const POMPOM_MAX := 1200 # source: measured; the collar beside it is 1300+ px, the pompom 320-830.
 const POMPOM_SPREAD := 0.25 # source: measured; cream stays near grey.
-# ref: frame whose sole is the row's ground line and whose head sets the scale.
+# ref: frame whose sole is the row's ground line and whose head or body sets the
+# scale; body: {stance} switches the scale to the body reference.
 # feet: false hangs the frame from its centroid. grounded: frames standing on
 # their own lowest pixel. cuts: rectangles of row 0 (olive: shifted by the row
 # offset) that are not the soldier (the box and its fuse; the game draws the
 # charge itself); box: x of the box's left edge, for the reach printed.
 const SHEETS := [
 	{"name":"climb","file":"trooper-climb-mantle-generated.png","ref":2,"feet":true,"grounded":[4],"cuts":{}},
-	{"name":"plant","file":"trooper-plant-generated.png","ref":2,"frames":2,"feet":true,"grounded":[0,1],
+	{"name":"plant","file":"trooper-plant-generated.png","ref":2,"frames":2,"feet":true,"grounded":[0,1],"body":{"stance":0.96},
 	 "box":[352,849],"cuts":{0:[Rect2i(352,450,300,100),Rect2i(410,400,100,60)],1:[Rect2i(849,450,300,100),Rect2i(862,0,400,500)]}},
-	{"name":"fall_forward","file":"trooper-death-forward-generated.png","ref":0,"feet":false,"grounded":[],"cuts":{}},
+	{"name":"fall_forward","file":"trooper-death-forward-generated.png","ref":0,"feet":false,"grounded":[],"body":{"stance":1.0},"cuts":{}},
 	{"name":"fall_back","file":"trooper-death-backward-generated.png","ref":1,"feet":false,"grounded":[],"cuts":{}},
 ]
 
@@ -82,8 +86,11 @@ func _sheet(sheet: Dictionary) -> Array:
 	var label := _label(image)
 	var groups := _group(label,image.get_size())
 	var head := _head(image,groups[0][sheet.ref].bbox)
-	var scale: float = STAND*PER/CONCEPT_FRAME.size.y*sqrt(float(_head_area)/head)
-	print("HEAD %s pompom area %d (concept %d) -> scale %.4f texels per source px; reference frame %d px tall = %.1f logical px" % [sheet.name,head,_head_area,scale,groups[0][sheet.ref].bbox.size.y,groups[0][sheet.ref].bbox.size.y*scale/PER])
+	var height: int = groups[0][sheet.ref].bbox.size.y
+	var by_head: float = STAND*PER/CONCEPT_FRAME.size.y*sqrt(float(_head_area)/head)
+	var by_body: float = STAND*PER/(height/(sheet.body.stance if sheet.has("body") else 1.0))
+	var scale: float = by_body if sheet.has("body") else by_head
+	print("SCALE %s head %.4f (pompom %d vs concept %d), body %.4f (frame %d px, stance %.2f); used %s %.4f; frame stands %.1f logical px (rig %.1f)" % [sheet.name,by_head,head,_head_area,by_body,height,sheet.body.stance if sheet.has("body") else 1.0,"body" if sheet.has("body") else "head",scale,height*scale/PER,STAND])
 	var out := []
 	var base := [0.0,0.0]
 	for side in 2:

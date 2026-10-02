@@ -120,6 +120,7 @@ func _visual_step() -> void:
 	_steps_since_tick += 1
 	_clock_fraction = clampf(_steps_since_tick*living.STEP*pace/state.STEP_SECONDS,0.0,1.0)
 	actor_motion.step(self)
+	ease_labels()
 	for landing in weapon_motion.settle(self): # dust and grit where a fallen gun lands
 		var base: Vector2 = weapon_motion.mount(self,landing.side,landing.wagon,true).base
 		living.add("dust",base+Vector2(camera,0),Vector2.UP,clampf(landing.speed/3.0,0.4,1.0))
@@ -194,7 +195,7 @@ func _draw() -> void:
 	actor_motion.draw(self,actor_art) # live groups plus fading removals
 	var layout := layout_labels()
 	for actor in state.actors: _actor(actor)
-	for label in layout.charges+layout.counts: _label(label.point,label.text,label.size,label.anchor)
+	for label in layout.charges+layout.counts: _label(label.shown,label.text,label.size,label.anchor)
 	for effect in effects:
 		_effect(effect)
 	# World-position effects remain registered while the combat camera scrolls.
@@ -234,12 +235,17 @@ func _status(value: String) -> void:
 
 # Where this frame's labels go. Each is the first spot of a short preference list
 # whose backing rectangle covers no soldier, wagon body, wagon tag or label placed
-# before it; none free: the least covered. Charge counters first (beside the box,
-# away from the man kneeling at it, then the other side, then a smaller font, then
-# up to LABEL_REACH above it, never farther), then each group's count (below its
-# feet, else beside or above the group).
+# before it; none free: the least covered. A label keeps its spot while that stays
+# clear and moves only when it clashes, easing there (ease_labels) so it never
+# jumps. Charge counters first (beside the box, away from the man kneeling at it,
+# then the other side, then a smaller font, then up to LABEL_REACH above it, never
+# farther), then each group's count (below its feet, else beside or above the group).
+# Returns each label's "point" (where it settles) and "shown" (where it is drawn).
 const LABEL_GAP := 0.75 # source: authored, logical px kept clear around a label.
 const LABEL_REACH := 16.0 # source: authored, logical px; highest a charge counter goes above its box.
+const LABEL_EASE := 1.0 # source: authored, logical px a label may move per visual step.
+var _kept := {} # label key -> {"offset","size","anchor"}: the spot it keeps while clear
+var _shown := {} # label key -> offset from its base where it is drawn
 func layout_labels() -> Dictionary:
 	var avoid := wagon_tag_rects()+actor_motion.soldier_rects(self)+wagon_body_rects()
 	var layout := {"charges":[],"counts":[]}
@@ -251,23 +257,63 @@ func layout_labels() -> Dictionary:
 			for size in [5,4]:
 				for turn in 2:
 					var left := (turn == 0) == left_first
-					options.append({"point":home+Vector2(-2.0 if left else 0.0,lift),"text":"●%d" % charge.fuse,"anchor":1.0 if left else 0.0,"size":size})
-		var spot := _free_spot(options,avoid)
-		layout.charges.append(spot)
-		avoid.append(label_rect(spot.point,spot.text,spot.size,spot.anchor))
+					var offset := Vector2(-2.0 if left else 0.0,lift)
+					options.append({"point":home+offset,"offset":offset,"text":"●%d" % charge.fuse,"anchor":1.0 if left else 0.0,"size":size})
+		layout.charges.append(_settle("c%d/%d" % [charge.side,charge.slot],home,options,avoid))
 	for actor in state.actors:
 		var feet := actor_motion.point(self,actor)
-		var options := []
 		var offsets := [Vector2(-4,4),Vector2(2,4),Vector2(-6,-4),Vector2(7,-4),Vector2(-12,-4),Vector2(13,-4)] # below, then beside
 		for lift in [-16.0,-22.0,-28.0,-34.0]: # then above the heads, sliding sideways
 			for slide in [-3.0,4.0,-10.0,11.0,-17.0,18.0]: offsets.append(Vector2(slide,lift))
+		var options := []
 		for offset in offsets:
 			var left: bool = offset.x == -6 or offset.x == -12 # beside, growing leftwards
-			options.append({"point":feet+offset,"text":str(actor.count),"anchor":1.0 if left else 0.0,"size":4})
-		var spot := _free_spot(options,avoid)
-		layout.counts.append(spot)
-		avoid.append(label_rect(spot.point,spot.text,spot.size,spot.anchor))
+			options.append({"point":feet+offset,"offset":offset,"text":str(actor.count),"anchor":1.0 if left else 0.0,"size":4})
+		layout.counts.append(_settle("a%d" % actor.id,feet,options,avoid))
 	return layout
+
+# The spot a label settles on: its kept one while still clear, else the first free.
+func _settle(key: String, base: Vector2, options: Array, avoid: Array) -> Dictionary:
+	var spot: Dictionary = {}
+	if _kept.has(key):
+		var kept: Dictionary = _kept[key]
+		var same: Dictionary = options[0].duplicate()
+		same.offset = kept.offset
+		same.point = base+kept.offset
+		same.anchor = kept.anchor
+		same.size = kept.size
+		if _cover(same,avoid) == 0.0: spot = same
+	if spot.is_empty(): spot = _free_spot(options,avoid)
+	_kept[key] = {"offset":spot.offset,"size":spot.size,"anchor":spot.anchor}
+	avoid.append(label_rect(spot.point,spot.text,spot.size,spot.anchor))
+	spot = spot.duplicate()
+	spot.key = key
+	spot.base = base
+	spot.shown = base+_shown.get(key,spot.offset)
+	return spot
+
+# One visual step of the labels: settle them, then move each drawn label at most
+# LABEL_EASE toward its spot, taking the step (toward it, up, down, sideways or
+# staying) that covers the least and then gets closest, so it slides around the
+# soldiers instead of across them.
+func ease_labels() -> void:
+	var layout := layout_labels()
+	var avoid := wagon_tag_rects()+actor_motion.soldier_rects(self)+wagon_body_rects()
+	var shown := {}
+	for label in layout.charges+layout.counts:
+		var here: Vector2 = _shown.get(label.key,label.offset)
+		var steps := [here.move_toward(label.offset,LABEL_EASE),here,here+Vector2(0,-LABEL_EASE),here+Vector2(0,LABEL_EASE),here+Vector2(-LABEL_EASE,0),here+Vector2(LABEL_EASE,0)]
+		var best: Vector2 = steps[0]
+		var cost := INF
+		for step in steps:
+			var option := {"point":label.base+step,"text":label.text,"anchor":label.anchor,"size":label.size}
+			var value: float = _cover(option,avoid)*1000.0+step.distance_to(label.offset)
+			if value < cost:
+				cost = value
+				best = step
+		shown[label.key] = best
+		avoid.append(label_rect(label.base+best,label.text,label.size,label.anchor))
+	_shown = shown
 
 # Overlaps among this frame's labels and the soldiers, wagon tags and wagon
 # bodies (a charge counter may not touch a soldier; a count label may meet
@@ -291,15 +337,21 @@ func _free_spot(options: Array, avoid: Array) -> Dictionary:
 	var best: Dictionary = options[0]
 	var least := INF
 	for option in options:
-		var rect := label_rect(option.point,option.text,option.size,option.anchor).grow(LABEL_GAP)
-		var covered := 0.0 if Rect2(Vector2(0,22),Vector2(320,178)).encloses(rect.grow(-LABEL_GAP)) else 1000.0 # source: canvas below the HUD bar (88 px at x4).
-		for other in avoid:
-			if rect.intersects(other): covered += rect.intersection(other).get_area()
+		var covered := _cover(option,avoid)
 		if covered < least:
 			least = covered
 			best = option
 		if covered == 0.0: break
 	return best
+
+# How much of the obstacles a label's backing rectangle (with its gap) covers;
+# 1000 and up when it leaves the canvas below the HUD bar.
+func _cover(option: Dictionary, avoid: Array) -> float:
+	var rect := label_rect(option.point,option.text,option.size,option.anchor).grow(LABEL_GAP)
+	var covered := 0.0 if Rect2(Vector2(0,22),Vector2(320,178)).encloses(rect.grow(-LABEL_GAP)) else 1000.0 # source: canvas below the HUD bar (88 px at x4).
+	for other in avoid:
+		if rect.intersects(other): covered += rect.intersection(other).get_area()
+	return covered
 
 # The wagons' bodies below their roof line (logical px), where no label fits.
 func wagon_body_rects() -> Array:
