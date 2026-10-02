@@ -31,6 +31,7 @@ func run() -> void:
 	var lone_back = model.add_actor(0,centre-9,5,1,false,-1,2) # isolated deaths, one of each fall
 	var lone_forward = model.add_actor(0,centre-7,1,1,false,-1,6)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
+	var clashes := 0
 	for frame in 50*6: # source: six seconds at the shared50Hz step
 		if frame == 25: # melee: the doomed group is wiped out
 			model.actors.erase(doomed)
@@ -47,9 +48,11 @@ func run() -> void:
 			boarder.x = model.roof_cell(0,boarder.x)
 			boarder.y = -1
 		scene._advance_visual(0.02)
+		clashes += scene.layout_clashes()
 		scene.queue_redraw()
 		await process_frame
 		await RenderingServer.frame_post_draw
 		root.get_texture().get_image().save_png(ProjectSettings.globalize_path(OUT+"/%04d.png" % frame))
+	print("label clashes over the fixture: %d" % clashes)
 	print("PASS: staged trooper action frames written")
 	quit()

@@ -44,6 +44,11 @@ static func draw_frame(canvas: CanvasItem, world: Transform2D, side: int, foot: 
 	canvas.draw_set_transform_matrix(world)
 
 
+# Height of a frame's top above its pivot, logical px (negative up).
+static func top(family: int, index: int, side := 0) -> float:
+	return -FRAMES[family][side][clampi(index,0,count(family)-1)][1].y/PER
+
+
 # Logical px from the pivot to the middle of a frame, toward the facing.
 static func centre(family: int, index: int) -> float:
 	var frame: Array = FRAMES[family][0][clampi(index,0,count(family)-1)]

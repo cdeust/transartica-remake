@@ -192,11 +192,9 @@ func _draw() -> void:
 	_train(0, 63)
 	_train(1, 192)
 	actor_motion.draw(self,actor_art) # live groups plus fading removals
-	for actor in state.actors:
-		_actor(actor)
-	for charge in state.charges:
-		var label := charge_label(charge)
-		_label(label.point,label.text,5,label.anchor)
+	var layout := layout_labels()
+	for actor in state.actors: _actor(actor)
+	for label in layout.charges+layout.counts: _label(label.point,label.text,label.size,label.anchor)
 	for effect in effects:
 		_effect(effect)
 	# World-position effects remain registered while the combat camera scrolls.
@@ -234,30 +232,85 @@ func _status(value: String) -> void:
 	draw_rect(Rect2(0,94,320,10), Color(0.03,0.06,0.08,0.8))
 	text_at(Vector2(3,101), value, 5)
 
-# Counter over a charge's box. It sits where its backing rectangle covers no
-# soldier and no other label (wagon tags): beside the box on the side away from
-# the man kneeling at it, else the other side, else higher. anchor 1 ends the
-# text at its point, so it grows leftwards.
-func charge_label(charge: Dictionary) -> Dictionary:
-	var home := EffectGeometry.roof_point(self,charge.side,charge.slot)
-	var text := "●%d" % charge.fuse
-	var left_first := actor_motion.planter_facing(charge) < 0
-	var avoid := wagon_tag_rects()+actor_motion.soldier_rects(self)
-	var best := {}
+# Where this frame's labels go. Each is the first spot of a short preference list
+# whose backing rectangle covers no soldier, wagon body, wagon tag or label placed
+# before it; none free: the least covered. Charge counters first (beside the box,
+# away from the man kneeling at it, then the other side, then a smaller font, then
+# up to LABEL_REACH above it, never farther), then each group's count (below its
+# feet, else beside or above the group).
+const LABEL_GAP := 0.75 # source: authored, logical px kept clear around a label.
+const LABEL_REACH := 16.0 # source: authored, logical px; highest a charge counter goes above its box.
+func layout_labels() -> Dictionary:
+	var avoid := wagon_tag_rects()+actor_motion.soldier_rects(self)+wagon_body_rects()
+	var layout := {"charges":[],"counts":[]}
+	for charge in state.charges:
+		var home := EffectGeometry.roof_point(self,charge.side,charge.slot)
+		var left_first := actor_motion.planter_facing(charge) < 0
+		var options := []
+		for lift in [-9.0,-LABEL_REACH]: # 9 clears a kneeling man, 16 a standing one
+			for size in [5,4]:
+				for turn in 2:
+					var left := (turn == 0) == left_first
+					options.append({"point":home+Vector2(-2.0 if left else 0.0,lift),"text":"●%d" % charge.fuse,"anchor":1.0 if left else 0.0,"size":size})
+		var spot := _free_spot(options,avoid)
+		layout.charges.append(spot)
+		avoid.append(label_rect(spot.point,spot.text,spot.size,spot.anchor))
+	for actor in state.actors:
+		var feet := actor_motion.point(self,actor)
+		var options := []
+		var offsets := [Vector2(-4,4),Vector2(2,4),Vector2(-6,-4),Vector2(7,-4),Vector2(-12,-4),Vector2(13,-4)] # below, then beside
+		for lift in [-16.0,-22.0,-28.0,-34.0]: # then above the heads, sliding sideways
+			for slide in [-3.0,4.0,-10.0,11.0,-17.0,18.0]: offsets.append(Vector2(slide,lift))
+		for offset in offsets:
+			var left: bool = offset.x == -6 or offset.x == -12 # beside, growing leftwards
+			options.append({"point":feet+offset,"text":str(actor.count),"anchor":1.0 if left else 0.0,"size":4})
+		var spot := _free_spot(options,avoid)
+		layout.counts.append(spot)
+		avoid.append(label_rect(spot.point,spot.text,spot.size,spot.anchor))
+	return layout
+
+# Overlaps among this frame's labels and the soldiers, wagon tags and wagon
+# bodies (a charge counter may not touch a soldier; a count label may meet
+# boots), plus charge counters farther than LABEL_REACH from their box. 0 is clean.
+func layout_clashes() -> int:
+	var layout := layout_labels()
+	var rects := []
+	for label in layout.charges+layout.counts: rects.append(label_rect(label.point,label.text,label.size,label.anchor))
+	var clashes := 0
+	for index in rects.size():
+		for other in rects.slice(index+1)+wagon_tag_rects()+wagon_body_rects():
+			if rects[index].grow(LABEL_GAP).intersects(other): clashes += 1
+	for index in layout.charges.size():
+		for other in actor_motion.soldier_rects(self):
+			if rects[index].grow(LABEL_GAP).intersects(other): clashes += 1
+		var home := EffectGeometry.roof_point(self,state.charges[index].side,state.charges[index].slot)
+		if home.y-layout.charges[index].point.y > LABEL_REACH+0.01 or absf(layout.charges[index].point.x-home.x) > LABEL_REACH: clashes += 1
+	return clashes
+
+func _free_spot(options: Array, avoid: Array) -> Dictionary:
+	var best: Dictionary = options[0]
 	var least := INF
-	for lift in [-9.0,-16.0,-23.0]: # source: authored, logical px above the box; 9 clears a kneeling man, the others a standing one.
-		for turn in 2:
-			var left := (turn == 0) == left_first
-			var option := {"point":home+Vector2(-2.0 if left else 0.0,lift),"text":text,"anchor":1.0 if left else 0.0}
-			var rect := label_rect(option.point,text,5,option.anchor)
-			var covered := 0.0
-			for other in avoid:
-				if rect.intersects(other): covered += rect.intersection(other).get_area()
-			if covered < least:
-				least = covered
-				best = option
-			if covered == 0.0: return option
+	for option in options:
+		var rect := label_rect(option.point,option.text,option.size,option.anchor).grow(LABEL_GAP)
+		var covered := 0.0 if Rect2(Vector2(0,22),Vector2(320,178)).encloses(rect.grow(-LABEL_GAP)) else 1000.0 # source: canvas below the HUD bar (88 px at x4).
+		for other in avoid:
+			if rect.intersects(other): covered += rect.intersection(other).get_area()
+		if covered < least:
+			least = covered
+			best = option
+		if covered == 0.0: break
 	return best
+
+# The wagons' bodies below their roof line (logical px), where no label fits.
+func wagon_body_rects() -> Array:
+	var rects := []
+	for side in 2:
+		for index in state.trains[side].size():
+			if state.trains[side][index].class == state.Setup.LOCOMOTIVE_COMPANION: continue
+			var rect: Rect2 = EffectGeometry.wagon(self,side,index).rect
+			var roof := EffectGeometry.surface_y(self,side,index,rect.get_center().x)
+			rects.append(Rect2(rect.position.x,roof,rect.size.x,rect.end.y-roof))
+	return rects
 
 # Wagon tags drawn over the player's train (logical px).
 func wagon_tag_rects() -> Array:
@@ -320,7 +373,6 @@ func _enemy_type(kind: int) -> int:
 
 func _actor(actor: Dictionary) -> void:
 	var point: Vector2 = actor_motion.point(self,actor)
-	_label(point+Vector2(-4,4),str(actor.count),4)
 	if actor.id == selected_actor:
 		draw_line(point+Vector2(-6,6),point+Vector2(6,6),GOLD,1)
 

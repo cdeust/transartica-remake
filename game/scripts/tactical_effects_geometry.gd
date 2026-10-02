@@ -63,6 +63,16 @@ static func surface_y(scene, side: int, index: int, x: float) -> float:
 	var top: float = samples[samples.size()/2]
 	return rect.position.y+(top-geometry.used.position.y)*factor
 
+# The drawn roof under x: the topmost opaque texel of that column of the wagon
+# sprite (no median window), so feet placed on it touch the picture exactly.
+static func drawn_y(scene, side: int, index: int, x: float) -> float:
+	var geometry := wagon(scene,side,index)
+	var rect: Rect2 = geometry.rect
+	var car: Dictionary = scene.state.trains[side][index]
+	var tops: PackedFloat32Array = _profile(geometry.texture,geometry.used) if car.health >= 3 else scene.materials.support_profile(geometry.texture,side,index,car.health,geometry.used)
+	var column := clampi(int((clampf(x,rect.position.x,rect.end.x)-rect.position.x)/geometry.factor),0,tops.size()-1)
+	return rect.position.y+(tops[column]-geometry.used.position.y)*geometry.factor
+
 # Wagon whose drawn body covers x; nearest body for coupler gaps.
 static func wagon_at(scene, side: int, x: float) -> int:
 	var best := -1

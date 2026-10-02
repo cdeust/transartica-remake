@@ -72,6 +72,33 @@ static func support(rig: Dictionary) -> Vector2:
 	return (rig.feet[0]+rig.feet[1])/2.0/PER
 
 
+# Height of the rig's silhouette above its feet, logical px (negative up): the
+# topmost opaque texel of the torso piece under the pose's lean. Used to pick the
+# rig pose that matches a sprite frame's height at a hard switch.
+static func top(rig: Dictionary, side: int) -> float:
+	var image := TEXTURE.get_image()
+	var region: Rect2 = UPPER[side]
+	var waist: Vector2 = rig.hip+Vector2(0,HIP-WAIST)+Vector2(rig.thrust,0)
+	var turn := Transform2D(rig.lean,waist)
+	var best := 0.0
+	for y in range(int(region.position.y),int(region.end.y)):
+		for x in range(int(region.position.x),int(region.end.x)):
+			if image.get_pixel(x,y).a < 0.5: continue
+			best = minf(best,(turn*(Vector2(x,y)-region.position-UPPER_PIVOT)).y)
+	return best/PER
+
+
+# The crouch (see pose) at which a standing rig's top reaches `top` (logical px, negative up).
+static func crouch_for_top(top_wanted: float, side: int) -> float:
+	var low := 0.0
+	var high := 2.0
+	for step in 24: # bisection: top rises monotonically toward 0 as he crouches
+		var middle := (low+high)/2.0
+		if top(pose(0,0,0,middle),side) < top_wanted: low = middle # still taller than wanted: crouch more
+		else: high = middle
+	return (low+high)/2.0
+
+
 # Draws one trooper at a logical foot point. world maps logical to canvas.
 static func draw(canvas: CanvasItem, world: Transform2D, side: int, foot: Vector2, facing: float, rig: Dictionary, colour := Color.WHITE) -> void:
 	var base := world*Transform2D(0,Vector2(facing/PER,1/PER),0,foot)

@@ -20,13 +20,13 @@ const BRAKE := 110.0 # source: authored, logical px/s².
 const CLIMB := 24.0 # source: authored climbing speed up a wagon side, logical px/s.
 const RUNG := 3.0 # source: authored climbing step, logical px.
 const MANTLE := 4 # index of the mantle among the climb frames, after the four rung frames.
-const LADDER_INSET := 3.0 # source: authored ladder inset from the wagon end, logical px.
 const CLIMB_STANDOFF := 4.4 # mean reach of the rung frames' hands past their feet (Poses.FRONT), so the hands meet the wagon end.
 const BOX_HALF := 1.75 # half the drawn box's width, logical px (see _draw_box).
 const CLIMB_TOP := 8.0 # source: authored; the last rung leaves the feet this far under the roof, hands on its edge.
-const LAND := 2.5 # source: authored; the mantle lands this far inside the ladder, on the flat roof (the roof's end drops away at the ladder).
+const HULL_DROP := 4.0 # source: measured on the wagon sprites; the cap falls ~10px at the hull end, the roof's own curve under 3.
+const LAND := 4.0 # source: authored; the mantle lands this far inside the ladder, on the flat roof (the roof's end drops away at the ladder).
 const FALL_REACH := 14.0 # source: measured, logical px; length of a lying soldier (Poses fall frames, 12-14).
-const BLEND := 0.08 # source: authored cross-fade between rig and sprite poses, s.
+const SETTLE := 0.12 # source: authored; the runner gathers his feet this long before the ladder, s.
 const MANTLE_HOLD := 0.5 # source: authored share of the rise spent in the mantle sprite before standing.
 const WAGON_SIDE := 25.0 # source: roof 38 above the top train baseline 63, logical px.
 const MAMMOTH_SPEED := 14.0 # source: authored heavy gait, logical px/s.
@@ -166,7 +166,7 @@ func _soldier(cell: Vector2, slot: int) -> Dictionary:
 	return {"cell":cell,"speed":0.0,"amp":0.0,"phase":_rng.randf()*TAU,"delay":0.0,
 		"vmul":_rng.randf_range(0.92,1.08),"breath":_rng.randf()*TAU,"strike":0.0,"recoil":0.0,
 		"slot":slot%VISIBLE,"offset":Vector2.ZERO,"shift":Vector2.ZERO,"shift_to":Vector2.ZERO,
-		"shift_speed":0.0,"face":0.0,"board":{},"task":{},"crouch":0.0,"plant":-1,"plant_mix":0.0}
+		"shift_speed":0.0,"face":0.0,"board":{},"task":{},"crouch":0.0,"plant":-1}
 
 
 func _drop(track: Dictionary, soldier: Dictionary, fell: bool, delay: float) -> void:
@@ -210,6 +210,7 @@ func _age_bodies(scene) -> void:
 # Sprint kinematics: accelerate, hold top speed, brake to stop on the cell.
 func _run(track: Dictionary, soldier: Dictionary) -> void:
 	var mammoth: bool = track.actor.mammoth
+	var actor_side: int = track.actor.side
 	soldier.strike = maxf(0.0,soldier.strike-STEP)
 	soldier.recoil = maxf(0.0,soldier.recoil-STEP)
 	soldier.breath += STEP*2.4 # source: authored breathing rate, rad/s.
@@ -217,7 +218,7 @@ func _run(track: Dictionary, soldier: Dictionary) -> void:
 	if not soldier.board.is_empty():
 		_climbing(soldier)
 		return
-	_task(soldier)
+	_task(soldier,actor_side)
 	var travelled := 0.0
 	var remaining: float = soldier.cell.distance_to(track.to)*16.0
 	if soldier.delay > 0:
@@ -248,11 +249,10 @@ func _run(track: Dictionary, soldier: Dictionary) -> void:
 
 
 # Dynamite: run to the charge, kneel, set the box, light the fuse, rise, return.
-func _task(soldier: Dictionary) -> void:
+func _task(soldier: Dictionary, side: int) -> void:
 	var task: Dictionary = soldier.task
 	soldier.crouch = 0.0
 	soldier.plant = -1
-	soldier.plant_mix = 0.0
 	if task.is_empty(): return
 	task.t += STEP
 	if not task.arrived:
@@ -262,15 +262,15 @@ func _task(soldier: Dictionary) -> void:
 		return
 	var t: float = task.t
 	var entry: Dictionary = charges.get(task.key,{})
-	# Rig crouches down to the kneel, cross-fades into the sprite for the set and the
-	# light, and back into the rig's crouch to rise.
+	# The rig crouches down to the kneel pose whose height matches the sprite's,
+	# the sprite takes over for the set and the light, and the rig rises from that
+	# same crouch (hard switches at equal height and feet, no blending).
 	var done := KNEEL+SET+LIGHT
-	if t >= KNEEL and t < done+BLEND:
-		soldier.plant = 0 if t < KNEEL+SET else 1
-		soldier.plant_mix = clampf((t-KNEEL)/BLEND,0,1) if t < done else 1.0-(t-done)/BLEND
-	if t < KNEEL: soldier.crouch = 1.2*t/KNEEL
-	elif t < KNEEL+SET+LIGHT: soldier.crouch = 1.2
-	elif t < KNEEL+SET+LIGHT+RISE: soldier.crouch = 1.2*(1.0-(t-KNEEL-SET-LIGHT)/RISE)
+	var kneel := _matched(side,Poses.top(Poses.PLANT,0,side))
+	if t >= KNEEL and t < done: soldier.plant = 0 if t < KNEEL+SET else 1
+	if t < KNEEL: soldier.crouch = kneel*t/KNEEL
+	elif t < done: soldier.crouch = kneel
+	elif t < done+RISE: soldier.crouch = kneel*(1.0-(t-done)/RISE)
 	if not entry.is_empty():
 		entry.placed = entry.placed or t >= KNEEL+SET*0.7
 		entry.lit = entry.lit or t >= KNEEL+SET+LIGHT*0.6
@@ -318,16 +318,16 @@ func _start_climb(scene, track: Dictionary, soldier: Dictionary, from_cell: Vect
 	var height := minf(start.y-top.y,WAGON_SIDE)
 	var climbing := height > 6.0
 	if not climbing: height = start.y-top.y
-	var ladder := 0.0
-	var off := 0.0 # screen offset of the climber's feet outside the ladder: hands on it, body clear of the wagon end
+	var ladder := 0.0 # screen offset, from his slot, of the wagon's end edge where he climbs
+	var off := 0.0 # of his feet outside it: hands on the ladder at the edge, body clear of the hull
 	var index := Geometry.wagon_at(scene,track.roof,top.x)
 	if climbing and index >= 0:
 		var rect: Rect2 = Geometry.wagon(scene,track.roof,index).rect
-		var left := rect.position.x+LADDER_INSET
-		var right := rect.end.x-LADDER_INSET
+		var left := _hull_end(scene,track.roof,index,-1.0)
+		var right := _hull_end(scene,track.roof,index,1.0)
 		ladder = (left if absf(left-top.x) < absf(right-top.x) else right)-top.x
 		if absf(ladder) > 32.0: ladder = 0.0 # source: half a 64px wagon; longer bodies climb in place
-		else: off = (LADDER_INSET+CLIMB_STANDOFF)*(1.0 if top.x+ladder > rect.get_center().x else -1.0)
+		else: off = CLIMB_STANDOFF*(1.0 if top.x+ladder > rect.get_center().x else -1.0)
 	var land := ladder-signf(off)*LAND # screen offset, from his slot, of where the mantle puts his feet
 	var roof := Vector2(top.x+land,_roof_y(scene,track.roof,index if ladder != 0.0 else -1,top.x+land,top.y))
 	var foot := Vector2(top.x+ladder+off,roof.y+height)
@@ -341,12 +341,12 @@ func _climbing(soldier: Dictionary) -> void:
 	board.t += STEP
 	var t: float = board.t
 	if t < 0: return
-	if t < board.run: # running to the wagon
+	if t < board.run: # running to the wagon, feet gathering for the last SETTLE s
 		soldier.phase += SPRINT*STEP/STRIDE_PX*PI
-		soldier.amp = move_toward(soldier.amp,1.0,STEP*6.0)
+		soldier.amp = move_toward(soldier.amp,1.0 if t < board.run-SETTLE else 0.0,STEP*8.0)
 	elif t < board.run+board.climb: # rung over rung up the end ladder, facing the wagon
 		if not board.hop: soldier.phase += CLIMB*STEP/RUNG*PI
-		soldier.amp = 0.0 if board.hop else 1.0
+		soldier.amp = 0.0
 		if board.ladder != 0: soldier.face = -signf(board.ladder)
 	else:
 		soldier.amp = move_toward(soldier.amp,0.0,STEP*6.0)
@@ -358,8 +358,7 @@ func _climbing(soldier: Dictionary) -> void:
 
 
 # Where a boarding soldier is and how he is drawn: "frame" is the climb sprite
-# (-1: rig), "mix" its weight while it cross-fades with the rig, "amp" the rig
-# layer's stride (-1: his own).
+# (-1: rig) and "amp" the rig layer's stride (-1: his own).
 func _board_pose(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 	var board: Dictionary = soldier.board
 	var start := _place(scene,-1,board.from_cell,board.from_offset)
@@ -368,9 +367,10 @@ func _board_pose(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 	var land_x: float = top.x+board.land
 	var roof := Vector2(land_x,_roof_y(scene,track.roof,board.wagon,land_x,top.y))
 	var foot := Vector2(ladder_x+board.off,roof.y+board.height)
-	var perch := Vector2(foot.x,roof.y+CLIMB_TOP) # hands on the roof edge
+	var cap := _roof_y(scene,track.roof,board.wagon,ladder_x,top.y) # the roof's end cap at the ladder
+	var perch := Vector2(foot.x,cap+CLIMB_TOP) # hands on the roof edge
 	var t: float = maxf(board.t,0.0)
-	var pose := {"at":foot,"climb":0.0,"crouch":0.0,"frame":-1,"mix":0.0,"amp":-1.0}
+	var pose := {"at":foot,"climb":0.0,"crouch":0.0,"frame":-1,"amp":-1.0}
 	if t < board.run:
 		pose.at = start.lerp(foot,t/maxf(board.run,0.001))
 		return pose
@@ -383,8 +383,6 @@ func _board_pose(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 		# One rung frame per RUNG climbed, like the run's stride follows distance.
 		pose.at = foot.lerp(perch,u)
 		pose.frame = int(u*(board.height-CLIMB_TOP)/RUNG)%MANTLE
-		pose.mix = clampf((t-board.run)/BLEND,0,1) # run to ladder cross-fade
-		pose.amp = 0.0 # the fading rig stands, its feet centred on the climber's point
 		return pose
 	var rise: float = clampf((t-board.run-board.climb)/board.rise,0,1)
 	if board.hop:
@@ -394,19 +392,32 @@ func _board_pose(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 	# Mantle: pull up over the edge, the feet stepping from the ladder onto the
 	# roof (x and y reach it together), then stand up as the rig.
 	var pull := smoothstep(0,1,clampf(rise/MANTLE_HOLD,0,1))
-	pose.at = Vector2(lerpf(foot.x,land_x,pull),roof.y+CLIMB_TOP*(1.0-pull))
-	pose.frame = MANTLE
-	pose.mix = 1.0-clampf((rise-MANTLE_HOLD)/(BLEND/board.rise),0,1)
-	pose.crouch = 1.0-clampf((rise-MANTLE_HOLD)/(1.0-MANTLE_HOLD),0,1)
+	var x := lerpf(foot.x,land_x,pull)
+	var on_hull := minf(x,ladder_x) if board.off > 0 else maxf(x,ladder_x) # past the hull end the feet follow its cap
+	pose.at = Vector2(x,_roof_y(scene,track.roof,board.wagon,on_hull,top.y)+CLIMB_TOP*(1.0-pull))
+	if rise < MANTLE_HOLD: pose.frame = MANTLE
+	pose.crouch = _matched(track.actor.side,Poses.top(Poses.CLIMB,MANTLE,track.actor.side))*(1.0-clampf((rise-MANTLE_HOLD)/(1.0-MANTLE_HOLD),0,1))
 	pose.amp = 0.0
 	return pose
+
+
+# x of a wagon's hull end on one side (out: +1 right, -1 left): the outermost
+# column whose drawn roof is still within HULL_DROP of the roof 9px inside, where
+# the end cap falls away and the coupler platform begins.
+func _hull_end(scene, roof: int, index: int, out: float) -> float:
+	var rect: Rect2 = Geometry.wagon(scene,roof,index).rect
+	var edge := rect.end.x if out > 0 else rect.position.x
+	var flat := Geometry.drawn_y(scene,roof,index,edge-out*9.0)
+	var x := edge
+	while absf(x-edge) < 9.0 and Geometry.drawn_y(scene,roof,index,x) > flat+HULL_DROP: x -= out*0.25
+	return x
 
 
 # Roof surface under x of the wagon being climbed (clamped to it); fallback outside any wagon.
 func _roof_y(scene, roof: int, index: int, x: float, fallback: float) -> float:
 	if index < 0: return fallback
 	var rect: Rect2 = Geometry.wagon(scene,roof,index).rect
-	return Geometry.surface_y(scene,roof,index,clampf(x,rect.position.x,rect.end.x))
+	return Geometry.drawn_y(scene,roof,index,clampf(x,rect.position.x,rect.end.x))
 
 
 # WDECOR0x2679 melee reports the attacker's cell; both groups turn to fight.
@@ -477,7 +488,7 @@ func soldier_rects(scene) -> Array:
 			var at := _soldier_point(scene,track,soldier)
 			var facing: float = soldier.face if soldier.face != 0 else track.facing
 			if soldier.board.is_empty() and soldier.plant >= 0: rects.append(Poses.bounds(at,facing,Poses.PLANT,soldier.plant,track.actor.side))
-			else: rects.append(Rect2(at+Vector2(-4,-13),Vector2(8,13))) # source: standing rig, 13 px tall, ~8 wide with its rifle.
+			else: rects.append(Rect2(at+Vector2(-4,-13),Vector2(8,12))) # source: standing rig, 13 px tall, ~8 wide with its rifle; boots may meet a label below.
 	return rects
 
 
@@ -523,11 +534,56 @@ func draw(scene, art) -> void:
 		var entry: Dictionary = charges.get("%d/%d" % [charge.side,charge.slot],{"placed":true,"lit":true})
 		if entry.placed: items.append({"at":Geometry.roof_point(scene,charge.side,charge.slot),"charge":entry})
 	# Farther first; a man falling is drawn in front of the comrades standing at his depth.
+	for track in tracks.values():
+		for soldier in track.soldiers: _draw_ladder(scene,track,soldier)
 	items.sort_custom(func(a,b): return _depth(a) < _depth(b))
 	for item in items:
 		if item.has("body"): _draw_body(scene,art,item.at,item.body)
 		elif item.has("charge"): _draw_box(scene,item.at,item.charge.lit)
 		else: _draw_soldier(scene,art,item.at,item.track,item.soldier)
+
+
+# A ladder up the end of the wagon being climbed, there only while someone climbs
+# it: one rail on the wagon's end edge (where the climbers' hands are) and a
+# rung every RUNG, which is also the climb frame's step. Iron colour from the wagon.
+func _draw_ladder(scene, track: Dictionary, soldier: Dictionary) -> void:
+	var board: Dictionary = soldier.board
+	if board.is_empty() or board.hop or board.wagon < 0: return
+	if board.t < board.run-0.15 or board.t > board.run+board.climb+board.rise*MANTLE_HOLD: return
+	var out := signf(board.off)
+	var edge: float = _place(scene,track.roof,soldier.cell,_offset(track,soldier)).x+board.ladder
+	var top: float = Geometry.drawn_y(scene,track.roof,board.wagon,edge-out*LAND)
+	var low: float = _roof_y(scene,track.roof,board.wagon,edge-out*LAND,0.0)+board.height # where the climb starts
+	var iron := _iron(scene,track.roof,board.wagon)
+	scene.draw_rect(Rect2(edge+(0.0 if out > 0 else -0.5),top,0.5,low-top),iron) # rail on the hull end
+	var y := low
+	while y > top:
+		scene.draw_rect(Rect2(edge if out > 0 else edge-2.5,y-0.25,2.5,0.5),iron) # rungs stand out toward the climber
+		y -= RUNG
+
+
+# The wagon's own iron: its most common dark, opaque colour (cached per sprite).
+var _irons := {}
+func _iron(scene, roof: int, index: int) -> Color:
+	var texture: Texture2D = Geometry.wagon(scene,roof,index).texture
+	var key: int = texture.get_rid().get_id()
+	if _irons.has(key): return _irons[key]
+	var image := texture.get_image()
+	var counts := {}
+	for y in range(0,image.get_height(),2):
+		for x in range(0,image.get_width(),2):
+			var colour := image.get_pixel(x,y)
+			if colour.a < 0.9 or colour.s > 0.3 or colour.get_luminance() > 0.3 or colour.get_luminance() < 0.05: continue
+			var bucket := Color(snappedf(colour.r,0.04),snappedf(colour.g,0.04),snappedf(colour.b,0.04))
+			counts[bucket] = counts.get(bucket,0)+1
+	var best := Color("#2a2a30")
+	var most := 0
+	for bucket in counts:
+		if counts[bucket] > most:
+			most = counts[bucket]
+			best = bucket
+	_irons[key] = best
+	return best
 
 
 func _depth(item: Dictionary) -> float:
@@ -543,41 +599,35 @@ func _draw_soldier(scene, art, at: Vector2, track: Dictionary, soldier: Dictiona
 		art.draw_pose(scene,art.pose_for(actor),at+Vector2(0,bob),facing,colour)
 		return
 	var stance := stance_of(scene,track,soldier)
-	if stance.mix < 1.0:
-		var faded := colour
-		faded.a *= 1.0-stance.mix
-		Rig.draw(scene,scene.world_transform,actor.side,at,facing,stance.rig,faded)
-		# The planter carries the box until he sets it down.
-		if soldier.plant < 0 and not soldier.task.is_empty() and not charges.get(soldier.task.key,{"placed":true}).placed:
-			var low := minf(stance.rig.crouch,1.0)
-			_draw_box(scene,at+Vector2(facing*(2.0+1.5*low),-5.5+3.5*low),false)
-	if soldier.plant >= 0 and soldier.board.is_empty() and not charges.get(soldier.task.key,{"placed":true}).placed:
-		_draw_box(scene,at+Vector2(facing*(Poses.BOX_REACH[0]+BOX_HALF),0),false) # carried to where it is set down
-	if stance.mix > 0.0:
-		colour.a *= stance.mix
+	var carrying: bool = not soldier.task.is_empty() and not charges.get(soldier.task.key,{"placed":true}).placed
+	if stance.sprite.frame >= 0:
 		Poses.draw_frame(scene,scene.world_transform,actor.side,at,facing,stance.sprite.family,stance.sprite.frame,colour)
+		if carrying and soldier.board.is_empty(): _draw_box(scene,at+Vector2(facing*(Poses.BOX_REACH[0]+BOX_HALF),0),false) # carried to where it is set down
+		return
+	Rig.draw(scene,scene.world_transform,actor.side,at,facing,stance.rig,colour)
+	if carrying: # the planter carries the box until he sets it down
+		var low := minf(stance.rig.crouch,1.0)
+		_draw_box(scene,at+Vector2(facing*(2.0+1.5*low),-5.5+3.5*low),false)
 
 
-# How a trooper is posed: the rig layer, the sprite layer and the sprite's weight
-# "mix" while the two cross-fade. The rig's feet centroid and the sprite's pivot
-# are both the soldier's point, so a switch moves nothing but the pose.
+# How a trooper is posed: the rig pose and the sprite frame (frame -1: none, the
+# rig is drawn). The rig's feet centroid and the sprite's pivot are both the
+# soldier's point, and the rig crouch is chosen to match the sprite's height, so
+# switching between them moves nothing and changes the height by under a pixel.
 func stance_of(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 	var climb := 0.0
 	var crouch: float = soldier.crouch
 	var amp: float = soldier.amp
 	var sprite := {"family":Poses.PLANT,"frame":soldier.plant}
-	var mix: float = soldier.plant_mix
 	if not soldier.board.is_empty():
 		var board := _board_pose(scene,track,soldier)
 		climb = board.climb
 		crouch = board.crouch
 		if board.amp >= 0: amp = board.amp
 		sprite = {"family":Poses.CLIMB,"frame":board.frame}
-		mix = board.mix
-	if sprite.frame < 0: mix = 0.0
 	var strike: float = 1.0-soldier.strike/STRIKE if soldier.strike > 0 else 0.0
 	var rig := Rig.pose(soldier.phase,amp,0.32*amp*(1.0-climb),crouch,strike,soldier.recoil/RECOIL,climb,soldier.breath)
-	return {"rig":rig,"sprite":sprite,"mix":mix}
+	return {"rig":rig,"sprite":sprite}
 
 
 # Sprite of a fall at u of DEATH: [family, frame]; the last frame lands at IMPACT and lies.
@@ -596,10 +646,23 @@ func _draw_body(scene, art, at: Vector2, body: Dictionary) -> void:
 		var fall := death_frame(body.kind,(body.t-body.delay)/DEATH)
 		Poses.draw_frame(scene,scene.world_transform,body.side,at,body.facing,fall[0],fall[1],colour)
 		return
-	var rig: Dictionary
-	if not body.fall: rig = Rig.pose(0,0,0,0,0,0,0,body.breath)
-	else: rig = Rig.pose(0,0,0,0.2,0,0.6,0,body.breath) # wounded, still standing his turn
-	Rig.draw(scene,scene.world_transform,body.side,at,body.facing,rig,colour)
+	Rig.draw(scene,scene.world_transform,body.side,at,body.facing,body_rig(body),colour)
+
+
+# A body that has not started falling stands: unhurt (fading) or wounded, waiting
+# his turn, crouched to the height of the fall's first frame.
+func body_rig(body: Dictionary) -> Dictionary:
+	if not body.fall: return Rig.pose(0,0,0,0,0,0,0,body.breath)
+	var first := death_frame(body.kind,0.0)
+	return Rig.pose(0,0,0,_matched(body.side,Poses.top(first[0],first[1],body.side)),0,0,0,body.breath)
+
+
+# Rig crouch whose silhouette top equals a sprite's (cached).
+var _matches := {}
+func _matched(side: int, top: float) -> float:
+	var key := "%d/%.2f" % [side,top]
+	if not _matches.has(key): _matches[key] = Rig.crouch_for_top(top,side)
+	return _matches[key]
 
 
 # Dynamite box: dark crate, iron straps, fuse; a lit fuse sputters.

@@ -43,18 +43,26 @@ func planted(scene, track: Dictionary, soldier: Dictionary) -> Dictionary:
 			result[leg] = {"x":at.x+track.facing*rig.feet[leg].x/Rig.PER,"stance":floori((soldier.phase+PI*leg)/TAU)}
 	return result
 
-# Worst jump at a rig/sprite switch: while both layers show, the distance between
-# the rig's feet centroid and the sprite's pivot, and how far the soldier's point moved.
-func track_jump(jumps: Dictionary, last_at: Dictionary, name: String, motion, scene, track: Dictionary, soldier: Dictionary) -> void:
+# Rig/sprite switches are hard cuts: at each one record how far the rig's top and
+# its feet centroid are from the sprite's, and how far the soldier's point moved
+# since the previous frame (logical px).
+func track_jump(jumps: Dictionary, last: Dictionary, name: String, motion, scene, track: Dictionary, soldier: Dictionary) -> void:
 	var stance: Dictionary = motion.stance_of(scene,track,soldier)
 	var at: Vector2 = motion._soldier_point(scene,track,soldier)
-	var mixed: bool = stance.mix > 0.0 and stance.mix < 1.0
-	if mixed or last_at.get(name+"/mixed",false):
-		var step: float = at.distance_to(last_at[name]) if last_at.has(name) else 0.0
-		var gap: float = Rig.support(stance.rig).length() if mixed else 0.0
-		jumps[name] = maxf(jumps.get(name,0.0),maxf(gap,step))
-	last_at[name] = at
-	last_at[name+"/mixed"] = mixed
+	var active: bool = stance.sprite.frame >= 0
+	if last.has(name+"/active") and last[name+"/active"] != active:
+		var side: int = track.actor.side
+		var sprite_top: float = Poses.top(stance.sprite.family,stance.sprite.frame if active else last[name+"/frame"],side)
+		jumps[name+"/top"] = maxf(jumps.get(name+"/top",0.0),absf(Rig.top(stance.rig,side)-sprite_top))
+		jumps[name+"/feet"] = maxf(jumps.get(name+"/feet",0.0),Rig.support(stance.rig).length())
+		jumps[name+"/step"] = maxf(jumps.get(name+"/step",0.0),at.distance_to(last[name]))
+		jumps[name+"/count"] = jumps.get(name+"/count",0)+1
+	last[name] = at
+	last[name+"/active"] = active
+	if active: last[name+"/frame"] = stance.sprite.frame
+
+func worst(jumps: Dictionary, name: String) -> float:
+	return maxf(jumps.get(name+"/top",INF),maxf(jumps.get(name+"/feet",INF),jumps.get(name+"/step",INF)))
 
 func run() -> void:
 	var scene = Scene.new()
@@ -139,7 +147,7 @@ func run() -> void:
 	var knelt := false
 	var carried := false
 	var frames_seen := {}
-	var covered := false
+	var clashes := 0
 	var jumps := {} # worst rig/sprite switch jump per transition, logical px
 	var last_at := {}
 	for frame in 50*3:
@@ -149,47 +157,58 @@ func run() -> void:
 		if motion.charges.has(key) and not motion.charges[key].placed: carried = true
 		if soldier.plant >= 0: frames_seen[soldier.plant] = true
 		track_jump(jumps,last_at,"kneel",motion,scene,motion.tracks[planter.id],soldier)
-		if not model.charges.is_empty():
-			# The fuse counter covers no soldier and no other label (wagon tags), whichever side the planter kneels.
-			var charge: Dictionary = model.charges[0]
-			var label := scene.charge_label(charge)
-			var rect: Rect2 = scene.label_rect(label.point,label.text,5,label.anchor)
-			for other in scene.wagon_tag_rects()+motion.soldier_rects(scene):
-				if rect.intersects(other): covered = true
+		if not model.charges.is_empty(): clashes += scene.layout_clashes()
 	check(carried and knelt,"planter carries the box and kneels")
-	check(jumps.get("kneel",INF) <= 0.5,"stand to kneel and back switch within 0.5px (%.2f)" % jumps.get("kneel",-1.0))
-	check(frames_seen.has(0) and frames_seen.has(1) and not covered,"plant sprites kneel then light, counter clear of soldiers and wagon tags")
-	# Facing the other way the counter moves to the other side of the box.
-	var there: Dictionary = {"side":1,"slot":30,"fuse":5}
-	var anchor_right: float = scene.charge_label(there).anchor
-	motion.tracks[planter.id].soldiers[0].task = {"key":"1/30","t":0.0,"arrived":true}
-	motion.tracks[planter.id].soldiers[0].plant = 0
-	motion.tracks[planter.id].soldiers[0].face = -1.0
-	check(anchor_right == 0.0 and scene.charge_label(there).anchor == 1.0,"counter flips to the side away from a planter on its right")
+	check(jumps.get("kneel/count",0) == 2 and worst(jumps,"kneel") <= 1.0,"stand to kneel and back switch within 1px (top %.2f feet %.2f step %.2f)" % [jumps.get("kneel/top",-1.0),jumps.get("kneel/feet",-1.0),jumps.get("kneel/step",-1.0)])
+	check(frames_seen.has(0) and frames_seen.has(1) and clashes == 0,"plant sprites kneel then light; counter and count labels clear of soldiers, wagon tags, roof bodies and each other (%d clashes)" % clashes)
+	# The counter knows which side its planter kneels, and takes the first free spot of its list, else the least covered.
+	var kneeler: Dictionary = motion.tracks[planter.id].soldiers[0]
+	kneeler.task = {"key":key,"t":0.0,"arrived":true}
+	kneeler.plant = 0
+	var faces := []
+	for face in [1.0,-1.0]:
+		kneeler.face = face
+		faces.append(motion.planter_facing(model.charges[0]))
+	check(faces == [1.0,-1.0],"counter placement knows which side the planter kneels (%s)" % [faces])
+	var blocker := [Rect2(10,40,10,10)]
+	var near := {"point":Vector2(12,45),"text":"2","anchor":0.0,"size":4}
+	var half := {"point":Vector2(5,45),"text":"2","anchor":0.0,"size":4}
+	var clear := {"point":Vector2(100,45),"text":"2","anchor":0.0,"size":4}
+	check(scene._free_spot([near,clear],blocker) == clear and scene._free_spot([near,half],blocker) == half,"label takes the first free spot, else the least covered")
 	motion.tracks[planter.id].soldiers[0].plant = -1
 	motion.tracks[planter.id].soldiers[0].task = {}
 	motion.tracks[planter.id].soldiers[0].face = 0.0
 	check(motion.charges.has(key) and motion.charges[key].placed and motion.charges[key].lit,"box set down and fuse lit")
 	check(motion.tracks[planter.id].soldiers[0].shift.length() < 0.01,"planter back in his place")
+	# Crowded box: two big groups stand at the charge; its counter stays within reach and clear of them.
+	model.add_actor(0,30,-1,4,false,1,8)
+	model.add_actor(0,31,-1,4,false,1,8)
+	var crowd := 0
+	for frame in 50*2:
+		motion.step(scene)
+		crowd += scene.layout_clashes()
+	check(crowd == 0,"crowded charge: counter within reach, clear of soldiers and labels (%d clashes)" % crowd)
 	# A group wiped out in melee falls one man after another.
 	var doomed = model.add_actor(0,8,1,3,false,-1,8)
 	motion.step(scene)
 	var stood := []
 	for soldier in motion.tracks[doomed.id].soldiers: stood.append(motion._soldier_point(scene,motion.tracks[doomed.id],soldier))
-	var support := 0.0
-	for soldier in motion.tracks[doomed.id].soldiers: support = maxf(support,Rig.support(motion.stance_of(scene,motion.tracks[doomed.id],soldier).rig).length())
 	model.actors.erase(doomed)
 	motion.melee({"kind":"melee","x":40,"y":6})
 	var start: int = motion.bodies.size()
 	motion.step(scene)
 	var falls: Array = motion.bodies.slice(start).filter(func(body): return body.fall)
 	# Alive to first fall frame: each body starts where a soldier stood, and the rig's feet centroid is that point.
-	var death_jump := support
+	var death_jump := 0.0
 	for body in falls:
+		var first := Motion.death_frame(body.kind,0.0)
+		var wounded: Dictionary = motion.body_rig(body)
+		death_jump = maxf(death_jump,maxf(absf(Rig.top(wounded,body.side)-Poses.top(first[0],first[1],body.side)),Rig.support(wounded).length()))
+
 		var nearest := INF
 		for point in stood: nearest = minf(nearest,point.distance_to(motion._place(scene,body.roof,body.cell,body.offset)))
 		death_jump = maxf(death_jump,nearest)
-	check(death_jump <= 0.5,"alive to death frame 0 within 0.5px (%.2f)" % death_jump)
+	check(death_jump <= 1.0,"alive to death frame 0 within 1px (%.2f)" % death_jump)
 	# A man with comrades ahead falls back, with comrades behind falls forward.
 	var pair := {"facing":1.0,"roof":-1,"actor":{"mammoth":false},"soldiers":[]}
 	for slot in [0,2]: pair.soldiers.append(motion._soldier(Vector2.ZERO,slot))
@@ -208,10 +227,11 @@ func run() -> void:
 			previous_frame = fall[1]
 		check(monotonic and Motion.death_frame(kind,0.0)[1] == 0 and Motion.death_frame(kind,1.0)[1] == Poses.count(Motion.death_frame(kind,1.0)[0])-1,"fall %d plays every sprite frame in order" % kind)
 	# Boarding: a field group entering a roof climbs instead of appearing there.
-	var boarder = model.add_actor(0,14,6,2,false,-1,8)
+	var column: int = (model.center_offset()+160)/16+6 # a cell under a wagon of the player's train, as the review fixture
+	var boarder = model.add_actor(0,column,6,2,false,-1,8)
 	motion.step(scene)
 	boarder.roof = 0
-	boarder.x = model.roof_cell(0,14)
+	boarder.x = model.roof_cell(0,column)
 	boarder.y = -1
 	motion.step(scene)
 	var climbing: Dictionary = motion.tracks[boarder.id].soldiers[0]
@@ -220,16 +240,28 @@ func run() -> void:
 	var rungs := {}
 	var climb_jumps := {}
 	var last_climb := {}
+	var arrival_clashes := 0
+	var landing_gap := 0.0
+	var landing_samples := 0
 	for frame in 50*3:
 		motion.step(scene)
+		arrival_clashes += scene.layout_clashes()
 		var rider: Dictionary = motion.tracks[boarder.id].soldiers[0]
 		track_jump(climb_jumps,last_climb,"climb",motion,scene,motion.tracks[boarder.id],rider)
-		if not rider.board.is_empty(): rungs[motion._board_pose(scene,motion.tracks[boarder.id],rider).frame] = true
-	check(climb_jumps.get("climb",INF) <= 0.5,"run, climb, mantle and stand switch within 0.5px (%.2f)" % climb_jumps.get("climb",-1.0))
+		if not rider.board.is_empty():
+			var pose: Dictionary = motion._board_pose(scene,motion.tracks[boarder.id],rider)
+			rungs[pose.frame] = true
+			if rider.board.t >= rider.board.run+rider.board.climb+rider.board.rise-0.045 and rider.board.wagon >= 0: # last mantle frames: feet on the drawn roof
+				var land_x: float = motion._place(scene,0,rider.cell,motion._offset(motion.tracks[boarder.id],rider)).x+rider.board.land
+				landing_samples += 1
+				landing_gap = maxf(landing_gap,absf(pose.at.y-preload("res://scripts/tactical_effects_geometry.gd").drawn_y(scene,0,rider.board.wagon,land_x)))
+	check(climb_jumps.get("climb/count",0) == 2 and worst(climb_jumps,"climb") <= 1.0,"run, climb, mantle and stand switch within 1px (top %.2f feet %.2f step %.2f)" % [climb_jumps.get("climb/top",-1.0),climb_jumps.get("climb/feet",-1.0),climb_jumps.get("climb/step",-1.0)])
+	check(landing_samples > 0 and landing_gap < 0.01,"mantle lands exactly on the drawn roof silhouette (%.3f px)" % landing_gap)
+	check(arrival_clashes == 0,"labels clear of soldiers, wagon bodies and each other through the roof arrival (%d clashes)" % arrival_clashes)
 	check(rungs.has(0) and rungs.has(1) and rungs.has(2) and rungs.has(3) and rungs.has(Motion.MANTLE),"climb cycles four rung frames then mantles (%s)" % [rungs.keys()])
 	check(motion.tracks[boarder.id].soldiers[0].board.is_empty() and motion.point(scene,boarder).y < low-10,"climb ends on the roof (%s, %.1f -> %.1f)" % [motion.tracks[boarder.id].soldiers[0].board,low,motion.point(scene,boarder).y])
 	if failures.is_empty():
-		print("continuity (logical px): kneel %.2f, climb %.2f, death %.2f" % [jumps.get("kneel",-1.0),climb_jumps.get("climb",-1.0),death_jump])
+		print("switch mismatch, logical px (top/feet/step): kneel %.2f/%.2f/%.2f, climb %.2f/%.2f/%.2f, death %.2f" % [jumps.get("kneel/top",-1.0),jumps.get("kneel/feet",-1.0),jumps.get("kneel/step",-1.0),climb_jumps.get("climb/top",-1.0),climb_jumps.get("climb/feet",-1.0),climb_jumps.get("climb/step",-1.0),death_jump])
 		print("PASS: sprint-then-wait, planted feet, facing, soldiers per strength, melee, staggered sprite deaths, kneeling plant sprites with a clear counter, dynamite set and lit, ladder climb sprites, merge fade, model untouched")
 	else:
 		for failure in failures: push_error(failure)
