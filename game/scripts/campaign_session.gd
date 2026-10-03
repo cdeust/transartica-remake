@@ -19,8 +19,9 @@ func attach(owner_app) -> void:
 	screen.menu_selected.connect(_menu_choice)
 
 
-func before_entry(cell: Vector2i) -> bool:
-	var event: Dictionary = state.prepare_entry(cell, app.journey.heading, app.wagons, app.network)
+func before_entry(cell: Vector2i, approach_heading: int = 0) -> bool:
+	var heading: int = app.journey.heading if approach_heading == 0 else approach_heading
+	var event: Dictionary = state.prepare_entry(cell, heading, app.wagons, app.network)
 	if event.is_empty():
 		return state.ending.is_empty() and before_fauna(cell)
 	if event.get("reverse", false):

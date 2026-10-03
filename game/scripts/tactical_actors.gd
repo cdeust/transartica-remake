@@ -60,7 +60,8 @@ static func update(state, actor: Dictionary) -> void:
 			melee(state, actor, target)
 		return
 	if free_cells(state, x, y, actor.mammoth, actor.id):
-		#0x21dc player infantry skips every other scan, enemy infantry every fourth.
+		# WDECOR1417/150a use counters8549/8548;173e..1773 advances them
+		# after every complete scan, independently of faction.
 		var period := (2 if actor.mammoth else 4) if actor.side == 1 else (1 if actor.mammoth else 2)
 		if state.sweep % period == 0:
 			actor.x = x
@@ -102,9 +103,10 @@ static func _enemy_direction(state, actor: Dictionary) -> void:
 				state.add_actor(1, slot, -1, amount, false, 0, 2 if state.rnd(3) != 0 else 6)
 				actor.count -= amount
 
-static func roof_sweep(state) -> void:
-	#0x1722/179a: sweep one train roof per field pass, descending slot order.
-	var roof := 0 if state.scan_side == 1 else 1
+static func roof_sweep(state, roof := -1) -> void:
+	# WDECOR1722/179a: both roofs per field pass, descending slot order.
+	# The default retains explicit single-roof fixture callers.
+	if roof < 0: roof = 0 if state.scan_side == 1 else 1
 	for charge in state.charges:
 		if charge.side != roof:
 			continue

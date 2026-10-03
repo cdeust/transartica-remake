@@ -108,6 +108,24 @@ The Urga engine needs a readable twin-stack/beak/plow silhouette at its distant 
 
 ## Correction du propriétaire pendant les fixes, 2 octobre 2026
 
+Mask correction, 2 October: "les masques sont tres approximatifs, on doit mieux
+calquer aux elements". Generated or coarse geometric silhouettes are not an
+accepted selection matte. Trace the actual source edges, inspect each subject
+at enlarged scale with its mask superposed, and retain source-coordinate
+registration evidence before declaring the mask ready.
+
+Owner correction: "et pourquoi t'etre arreter en chemin ?". Passing hover/input
+tests is not a stopping criterion after a visual rejection. Finish the contour
+review for every requested object, fix observed spill/occlusion errors, then
+report functional verification separately from visual findings.
+
+Interactive wagon clarification, 2 October: "all of them should have the same
+surbrillance layer that the chaufferie is having" binds wagon masks to the
+registered selection mattes and `object_hover.gdshader` already used by the
+engine room. Give every existing interactive subject in the boudoir and
+General Quarters the same golden hover treatment; do not substitute animation
+cutout layers or a new highlight style.
+
 « Tu dois garder ceci etant les animations de motion design d'opus » : corriger
 les coordonnées, caches et transformations sans remplacer les animations,
 assets, shaders, recettes d'effets ou cadences d'Opus. Vérifier leur identité
@@ -146,3 +164,67 @@ The owner reports animation bugs and requests Opus motion-design help. Freeze
 production changes for the handoff. State-isolation tests cannot establish
 motion quality; inspect complete native firing and ignition sequences before
 claiming artistic acceptance.
+- Correction propriétaire du 2 octobre 2026 : un dessin pixel à la main (ASCII) par Claude « ne respecte pas la DA du tout ». Pour les poses de personnages, ne pas improviser un style : demander à Codex de générer dans le rendu exact de la planche de référence, puis découper et intégrer.
+- Correction masques du 2 octobre 2026 : ne pas figer l’intérieur d’un polygone approximatif comme premier plan certain. Vérifier chaque bord sur l’image source agrandie, notamment les bottes devant le sol et les vêtements devant les meubles. Une segmentation automatique et des tests fonctionnels ne prouvent pas la précision du contour.
+- Nouvelle correction propriétaire : abandonner les masques obtenus par détection de contours pour les interactions des wagons. Produire des découpes raster des objets et personnages sur fond transparent, examiner leur superposition au décor source, puis utiliser leur transparence pour la surbrillance. Les essais de masques précédents sont refusés ; leurs tests verts ne constituent pas une validation artistique.
+
+- Correction du 2 octobre 2026 : une réparation des hooks doit supprimer les résolutions de dépendances et les délais inutiles dans les événements. Préparer le runtime pendant la mise à jour ; vérifier les commandes et conserver les autorisations natives existantes. Si la revue automatique refuse une nouvelle autorisation, rapporter son périmètre exact sans contourner ce refus.
+
+- Correction du2octobre2026 : les réparations de Codex doivent être installées au niveau du compte utilisateur, comme Claude Code, et vérifiées depuis plusieurs dépôts. Les preuves conservées dans un projet ne doivent pas devenir une configuration limitée à ce projet.
+
+- Correction du2octobre2026 : « tant que je vois un seul hook failed » signifie zéro échec de hook dans un cycle Codex natif. Les tests directs et le statut trusted ne suffisent pas. Le JSON de SessionStart doit être validé par le parseur natif, y compris pour les plugins de nettoyage et de statusline.
+
+- Reprise du 3 octobre : les découpes imagegen peuvent conserver des franges colorées et altérer les pixels même avec une demande de préservation. Ne pas les déclarer fidèles ; mesurer la registration et examiner les bords avant activation. Les SVG précédents restent refusés.
+
+- Revue propriétaire du 3 octobre : les six autres découpes sont acceptées ; seules la table du quartier général et le revolver restent à reprendre. Préserver les six couches acceptées, ne pas les régénérer sans nouveau défaut signalé.
+
+### Voyage, retour propriétaire du 3 octobre 2026
+
+Les anciennes suites vertes ne prouvent pas le parcours visible. Vérifier avec les entrées du jeu que les aiguillages répondent, que l'arrivée correspond à la gare et que le train reste visible. Les commandes illustrées de frein et de direction doivent exposer leur état effectif ; une illustration statique ou une flèche sans état lisible ne suffit pas.
+
+Le propriétaire précise que l'agent doit jouer et inspecter les images lui-même. Pour chaque gare, jouer une approche avant et arrière, répondre aux écrans par les commandes natives et vérifier le train visible. Une position ou une pose disponible ne prouve pas que la locomotive tient dans le cadre. Vérifier ses limites alpha réelles, en conservant le zoom et les dimensions des wagons.
+
+Les fenêtres Godot natives doivent être testées successivement. Une autre fenêtre peut déclencher la pause normale de perte de focus. Compter les cycles réellement effectués et reprendre par la touche du joueur avant d'attribuer un arrêt à la simulation.
+
+Correction propriétaire du 3 octobre : les approches préparées ne prouvent pas une partie continue. Ne pas présenter leurs captures comme une campagne jouée ni annoncer une validation exhaustive. Lancer la scène normale, utiliser les commandes du joueur, conserver les captures et le journal de cette même partie. Les étapes non parcourues restent non validées ; la durée de contenu attendue de 10 à 20 heures reste à mesurer.
+
+La partie normale a reproduit un train disparu en marche arrière malgré une position de tête valide. Vérifier les six véhicules dessinés sur les rails ordinaires, avant tout masque de gare. Les contacts des wagons doivent disposer d'un historique connecté suffisant après chaque reconstruction du trajet.
+
+Pour les reprises automatiques, attendre le nouveau processus et l'écran visible. Des données de ville sous une introduction ou OPTIONS ne prouvent pas que les commandes atteignent la ville. Le diagnostic de touches bloquées a été retiré après réussite du dispatcher d'origine ; conserver seulement la correction de synchronisation du pilote.
+
+Les illustrations modernes du commerce ne doivent pas être réduites en textures de48×16 avant réagrandissement. Préserver leurs pixels source et appliquer la taille prévue au moment de l'affichage. Comparer une capture réelle avant/après ; la présence du fichier moderne ne suffit pas.
+## Clics de voyage, 3 octobre 2026
+
+Une commande de clic envoyée ne prouve pas que l'aiguillage a changé. Dans le
+pilote natif, vérifier la tuile sélectionnée avant de reprendre la conduite.
+Une répétition réussie ne suffit pas à expliquer un échec intermittent précédent.
+## Contrat complet, correction du propriétaire du 3 octobre 2026
+
+Ne pas terminer après un parcours ciblé quand le contrat exige la campagne entière.
+Continuer la partie jouée, corriger les bugs rencontrés et livrer après chaque acte
+entièrement validé. Les limites d'une preuve sont à déclarer pendant le travail ;
+elles ne remplacent pas le travail restant.
+
+- Pilotage natif3Oct : ne pas réutiliser la position d’un article depuis une ancienne liste. Les stocks et l’ordre affiché peuvent changer pendant le voyage. Inspecter la capture courante et vérifier le nom/prix/quantité dans le détail avant OK. Résoudre les boutons après chaque transition de menu, jamais depuis l’état de l’écran précédent.
+
+- Pilotage natif3Oct : la pause du voyage ne suspend pas le combat tactique. Au premier écran combat, lire la pause tactique puis utiliser P avant de diagnostiquer. Archiver chaque vraie sauvegarde F5 en privé avant que la suivante l’écrase. Une défaite pendant un diagnostic se reprend uniquement depuis une sauvegarde gagnée ; ne jamais reconstruire ressources/positions/RNG.
+
+- Combat tactique : ne pas confondre signe de traitement du script WDECOR et appartenance à un camp. Vérifier les deux compteurs de mouvement sur plusieurs passages complets ; un ordre reçu sans déplacement doit échouer dans une régression issue de la vraie sauvegarde et être rejoué visuellement après correction.
+
+- Aiguillages : cadrer la prochaine décision de voie avant TIME phase1, pas uniquement les sprites du train. Sur un convoi acheté long, vérifier un vrai détour avec caméra fixe, clic visible avant engagement, arrière puis avant. Ne pas attribuer un ancien clic perdu à cette cause sans sa trace.
+# Parcours alternatifs, correction propriétaire3 octobre2026
+
+Une campagne réussie sur un trajet choisi ne prouve pas que les autres chemins
+fonctionnent. Vérifier les détours et demi-tours, les approches d'aiguillages
+depuis plusieurs branches, le refus et le manque de ressources des travaux,
+les compositions de train et les sauvegardes interrompues. Distinguer les
+fixtures des modèles des parcours réellement joués ; conserver les cas
+encore ouverts dans la matrice de validation.
+
+## Release et limites physiques, 4 octobre2026
+
+Ne jamais placer une mutation ou restauration dans assert : Godot release
+ignore son expression. Vérifier le même parcours avec un runtime release
+et des vérifications explicites. Au contact arrière physique, appliquer
+les règles originales de préentrée sur la cellule et le cap rencontrés
+avant de classifier une gare ou un obstacle.

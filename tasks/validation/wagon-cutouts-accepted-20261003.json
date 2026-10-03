@@ -1,0 +1,346 @@
+{
+  "schema": 1,
+  "provenance": "tasks/wagon-cutouts-resume-20261003.md#acceptation-artistique",
+  "owner_acceptance": {
+    "six_other_cutouts": "Le reste semble ok",
+    "local_table_and_revolver": "bon comme ca"
+  },
+  "contract": "Seven owner-accepted PNG identities and the source-registered book correction; native interaction/render checks remain mandatory. Book owner acceptance is pending.",
+  "known_accepted_differences": [
+    {
+      "file": "quarters-stoup.png",
+      "pixel": [
+        73,
+        720
+      ],
+      "alpha": 253,
+      "meaning": "Pipe exclusion absent in accepted layer."
+    },
+    {
+      "file": "quarters-operator.png",
+      "pixel": [
+        200,
+        770
+      ],
+      "alpha": 251,
+      "meaning": "Boot retained with partial alpha."
+    },
+    {
+      "file": "quarters-operator.png",
+      "pixel": [
+        256,
+        698
+      ],
+      "alpha": 252,
+      "meaning": "Rear boot retained with partial alpha."
+    },
+    {
+      "file": "boudoir-book.png",
+      "pixel": [
+        1350,
+        634
+      ],
+      "alpha": 253,
+      "meaning": "Wood exclusion absent in accepted layer."
+    },
+    {
+      "file": "boudoir-kolotov.png",
+      "pixel": [
+        364,
+        419
+      ],
+      "alpha": 23,
+      "meaning": "Wood beside neck retains a faint accepted fringe."
+    }
+  ],
+  "entries": [
+    {
+      "path": "res://assets/boudoir/cutouts/boudoir-book.png",
+      "sha256": "cb021ca36f1847f3c5b2f12373a504156d78e4026d91ea4ebc62522e7ce9a88b",
+      "size": [
+        1828,
+        860
+      ],
+      "source_scene": "res://assets/boudoir/captain-boudoir.png",
+      "exact_source_rgb": true,
+      "exterior_pixels": [
+        [
+          0,
+          0
+        ],
+        [
+          900,
+          610
+        ],
+        [
+          950,
+          700
+        ],
+        [
+          850,
+          710
+        ],
+        [
+          1200,
+          830
+        ]
+      ],
+      "measured_points": [
+        {
+          "pixel": [
+            1350,
+            634
+          ],
+          "alpha": 0
+        },
+        {
+          "pixel": [
+            1430,
+            630
+          ],
+          "alpha": 255
+        }
+      ],
+      "source_scene_sha256": "59ce602841c297c87c9b989ba86e00d3c1508b4c1324c2f52e5e7a2256ff738f",
+      "acceptance_status": "source-registered correction; native highlight inspected by agent; owner artistic review pending",
+      "supersession_reason": "Owner: Il faudra revoir le mask du livre, c'est le seul qui est casse.",
+      "candidate": {
+        "sha256": "cb021ca36f1847f3c5b2f12373a504156d78e4026d91ea4ebc62522e7ce9a88b",
+        "exact_source_rgb": true,
+        "size": [
+          1828,
+          860
+        ],
+        "alpha_bounds_inclusive": [
+          1017,
+          623,
+          1627,
+          824
+        ],
+        "inspection_report": "tasks/validation/boudoir-book-local-inspection-20261003.json"
+      },
+      "previous_baseline": {
+        "sha256": "dabeab39d38bcc6473457c4d407135b3b5ddbe7f1a8ddad989c67ccd9194683a",
+        "measured_points": [
+          {
+            "pixel": [
+              1350,
+              634
+            ],
+            "alpha": 253
+          },
+          {
+            "pixel": [
+              1430,
+              630
+            ],
+            "alpha": 253
+          }
+        ],
+        "status": "superseded by owner book defect report"
+      },
+      "native_evidence": "tasks/validation/wagon-hover-boudoir-13-20261002.png"
+    },
+    {
+      "path": "res://assets/boudoir/cutouts/boudoir-kolotov.png",
+      "sha256": "1dcc4f972239366642d671067d1fd337d9cec93f5d45ebf983f18d1da808282a",
+      "size": [
+        1828,
+        860
+      ],
+      "source_scene": "res://assets/boudoir/captain-boudoir.png",
+      "exact_source_rgb": false,
+      "exterior_pixels": [
+        [
+          0,
+          0
+        ]
+      ],
+      "measured_points": [
+        {
+          "pixel": [
+            364,
+            419
+          ],
+          "alpha": 23
+        },
+        {
+          "pixel": [
+            422,
+            488
+          ],
+          "alpha": 253
+        }
+      ],
+      "source_scene_sha256": "59ce602841c297c87c9b989ba86e00d3c1508b4c1324c2f52e5e7a2256ff738f"
+    },
+    {
+      "path": "res://assets/boudoir/cutouts/boudoir-revolver.png",
+      "sha256": "7582ab1915386c80f7f5947b1f824c485175297f8a2f56d3a736f36ee7cac4c9",
+      "size": [
+        1828,
+        860
+      ],
+      "source_scene": "res://assets/boudoir/captain-boudoir.png",
+      "exact_source_rgb": true,
+      "exterior_pixels": [
+        [
+          0,
+          0
+        ]
+      ],
+      "measured_points": [],
+      "source_scene_sha256": "59ce602841c297c87c9b989ba86e00d3c1508b4c1324c2f52e5e7a2256ff738f"
+    },
+    {
+      "path": "res://assets/boudoir/cutouts/boudoir-stoup.png",
+      "sha256": "66ebd213b73fb897e21ab4edd7689eb253ec7d6c05b48e7cd1260b134844ab43",
+      "size": [
+        1828,
+        860
+      ],
+      "source_scene": "res://assets/boudoir/captain-boudoir.png",
+      "exact_source_rgb": false,
+      "exterior_pixels": [
+        [
+          0,
+          0
+        ]
+      ],
+      "measured_points": [],
+      "source_scene_sha256": "59ce602841c297c87c9b989ba86e00d3c1508b4c1324c2f52e5e7a2256ff738f"
+    },
+    {
+      "path": "res://assets/boudoir/cutouts/quarters-map.png",
+      "sha256": "87bc6c56e50200438ae0f13b03da00e7ac5d715dcfaad0f00ecd7ee987100b13",
+      "size": [
+        1821,
+        864
+      ],
+      "source_scene": "res://assets/boudoir/general-quarters.png",
+      "exact_source_rgb": true,
+      "exterior_pixels": [
+        [
+          0,
+          0
+        ]
+      ],
+      "measured_points": [
+        {
+          "pixel": [
+            1195,
+            575
+          ],
+          "alpha": 255
+        }
+      ],
+      "source_scene_sha256": "36ed4c9742a5ce98323f022fcec53e498783bd60a0756ed72c355ddde9b9e536"
+    },
+    {
+      "path": "res://assets/boudoir/cutouts/quarters-officer.png",
+      "sha256": "8b4bd21c8b5c515e7fa5df0c2cf15fc0fc398b131afc5fb237b6e2a12e0db9bb",
+      "size": [
+        1821,
+        864
+      ],
+      "source_scene": "res://assets/boudoir/general-quarters.png",
+      "exact_source_rgb": false,
+      "exterior_pixels": [
+        [
+          0,
+          0
+        ]
+      ],
+      "measured_points": [
+        {
+          "pixel": [
+            1458,
+            822
+          ],
+          "alpha": 0
+        },
+        {
+          "pixel": [
+            1500,
+            810
+          ],
+          "alpha": 253
+        }
+      ],
+      "source_scene_sha256": "36ed4c9742a5ce98323f022fcec53e498783bd60a0756ed72c355ddde9b9e536"
+    },
+    {
+      "path": "res://assets/boudoir/cutouts/quarters-operator.png",
+      "sha256": "a2647c01d041e7da5cb4fa24294d281ad046243938ab441c0937dff4ccd1a004",
+      "size": [
+        1821,
+        864
+      ],
+      "source_scene": "res://assets/boudoir/general-quarters.png",
+      "exact_source_rgb": false,
+      "exterior_pixels": [
+        [
+          0,
+          0
+        ]
+      ],
+      "measured_points": [
+        {
+          "pixel": [
+            200,
+            770
+          ],
+          "alpha": 251
+        },
+        {
+          "pixel": [
+            256,
+            698
+          ],
+          "alpha": 252
+        },
+        {
+          "pixel": [
+            175,
+            772
+          ],
+          "alpha": 0
+        }
+      ],
+      "source_scene_sha256": "36ed4c9742a5ce98323f022fcec53e498783bd60a0756ed72c355ddde9b9e536"
+    },
+    {
+      "path": "res://assets/boudoir/cutouts/quarters-stoup.png",
+      "sha256": "1e23e213d467e5fcf2d4c02afb26ee696fcfb27d6350e1f3515a09b9a2d3578b",
+      "size": [
+        1821,
+        864
+      ],
+      "source_scene": "res://assets/boudoir/general-quarters.png",
+      "exact_source_rgb": false,
+      "exterior_pixels": [
+        [
+          0,
+          0
+        ]
+      ],
+      "measured_points": [
+        {
+          "pixel": [
+            73,
+            720
+          ],
+          "alpha": 253
+        },
+        {
+          "pixel": [
+            100,
+            820
+          ],
+          "alpha": 253
+        }
+      ],
+      "source_scene_sha256": "36ed4c9742a5ce98323f022fcec53e498783bd60a0756ed72c355ddde9b9e536"
+    }
+  ]
+}

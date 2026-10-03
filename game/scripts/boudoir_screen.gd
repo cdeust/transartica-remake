@@ -5,6 +5,13 @@ extends "res://scripts/original_screen.gd"
 const InventoryPage = preload("res://scripts/inventory_page.gd")
 const SaveBook = preload("res://scripts/save_book.gd")
 const Actions = preload("res://scripts/boudoir_actions.gd")
+const Hover = preload("res://scripts/wagon_hover.gd")
+const MASKS := {
+	10: "res://assets/boudoir/cutouts/boudoir-stoup.png",
+	11: "res://assets/boudoir/cutouts/boudoir-kolotov.png",
+	12: "res://assets/boudoir/cutouts/boudoir-revolver.png",
+	13: "res://assets/boudoir/cutouts/boudoir-book.png",
+}
 # source: measured object silhouettes in the authored ECS-layout scene texture.
 const REGIONS := {10: Rect2(0.03, 0.77, 0.075, 0.17), 11: Rect2(0.10, 0.32, 0.28, 0.66), # source: measured authored scene silhouettes.
 	12: Rect2(0.455, 0.79, 0.10, 0.15), 13: Rect2(0.57, 0.74, 0.30, 0.24)} # source: authored revolver and book extents.
@@ -14,11 +21,17 @@ signal action_requested(code: int)
 var inventory
 var book
 var _art: Texture2D
+var hover_layer: Hover
 
 
 func _ready() -> void:
 	super._ready()
 	_art = load("res://assets/boudoir/captain-boudoir.png")
+	hover_layer = Hover.new()
+	hover_layer.configure(MASKS)
+	add_child(hover_layer)
+	mouse_exited.connect(hover_layer.clear)
+	visibility_changed.connect(hover_layer.clear)
 	inventory = InventoryPage.new()
 	inventory.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(inventory)
@@ -38,6 +51,8 @@ func art_rect() -> Rect2:
 func _draw() -> void:
 	if _art != null:
 		draw_texture_rect(_art, art_rect(), false)
+	if hover_layer != null:
+		hover_layer.fit_to(art_rect())
 
 
 func show_room() -> void:
@@ -48,6 +63,8 @@ func show_room() -> void:
 func close_sheet() -> void:
 	inventory.hide()
 	book.close_book()
+	if hover_layer != null:
+		hover_layer.clear()
 
 
 func blocks_simulation() -> bool:
@@ -56,6 +73,7 @@ func blocks_simulation() -> bool:
 
 func activate(code: int) -> void:
 	if code in REGIONS:
+		hover_layer.clear()
 		action_requested.emit(code)
 
 
@@ -72,9 +90,11 @@ func hotspot_at(point: Vector2) -> int:
 
 func _gui_input(event: InputEvent) -> void:
 	if blocks_simulation():
+		hover_layer.clear()
 		return
 	if event is InputEventMouseMotion:
 		var code := hotspot_at(event.position)
+		hover_layer.select(code)
 		tooltip_text = HINTS.get(code, "")
 		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if code else Control.CURSOR_ARROW
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:

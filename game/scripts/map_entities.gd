@@ -105,3 +105,15 @@ func draw_player_heading(view) -> void:
 	var points := PackedVector2Array([tip - direction * 12.0 + side * 7.0, tip, tip - direction * 12.0 - side * 7.0])
 	view.draw_polyline(points, Color("#17242b"), 7.0, true)
 	view.draw_polyline(points, Color("#ffe4a5"), 3.0, true)
+	var heading: String = preload("res://scripts/train_journey.gd").HEADING_NAMES.get(view.journey.heading,"")
+	var caption := "%s · %s" % ["REVERSE" if view.journey.reverse else "FORWARD",heading]
+	var font := ThemeDB.fallback_font
+	var extent := font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14)
+	# Owner3Oct playback: the heading caption must not hide the reversing
+	# locomotive. Keep it beside vertical rails and above horizontal rails.
+	var anchor := tip-Vector2(extent.x*0.5,extent.y+24.0)
+	if absf(direction.y) > absf(direction.x):
+		anchor = tip+Vector2(24.0,-extent.y*0.5)
+	var label: Rect2 = view._clamp_label_box(Rect2(anchor,extent+Vector2(8,6)))
+	view.draw_rect(label,Color("#17242b"))
+	view.draw_string(font,label.position+Vector2(4,font.get_ascent(14)+3),caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("#ffe4a5"))

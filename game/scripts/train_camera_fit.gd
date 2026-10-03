@@ -37,3 +37,54 @@ static func projected_bounds(view, bounds: Rect2i) -> Rect2:
 	for corner in corners.slice(1):
 		result = result.expand(view._project(corner))
 	return result
+
+
+static func center_camera(view, position: Vector2) -> void:
+	var middle := position
+	if view.journey != null:
+		var lag := maxf(0.0, view.journey.distance_travelled() - view._visual_arc) if view._visual_initialized else 0.0
+		var sample: Dictionary = view.journey.sample_behind(view.consist.length_world() * view.train_renderer.WAGON_CELL_RATIO * 0.5 + lag)
+		if sample.ok:
+			middle = sample.position
+	view.camera_world = middle + Vector2(0.5, 0.5)
+	view.offset = Vector2.ZERO
+	view.zoom = view._effective_zoom()
+
+
+# Fixed camera: recenter only when the train leaves the viewport.
+static func keep_train_in_view(view) -> void:
+	if view.inspecting_map or view.size.x <= 0.0 or view.size.y <= 0.0 or view.journey == null:
+		return
+	var lag := maxf(0.0, view.journey.distance_travelled() - view._visual_arc)
+	var bounds: Rect2 = _with_next_decision(view,view.train_renderer.screen_bounds(view, view.journey, view.consist, lag))
+	var viewport := Rect2(Vector2.ZERO, view.size)
+	# Source: FIDELITE.md, constant visible size during travel. A train larger
+	# than the viewport must be clipped, never shrunk; frame its nose instead.
+	if bounds.size.x > view.size.x or bounds.size.y > view.size.y:
+		# Native terminal captures3Oct show that an in-frame contact can still
+		# clip the locomotive's alpha bounds. Frame its real rigid sprite.
+		var locomotive := {"vehicles":[view.consist.vehicles[0]]}
+		var locomotive_bounds: Rect2 = view.train_renderer.screen_bounds(view,view.journey,locomotive,lag)
+		var decision_bounds := _with_next_decision(view,locomotive_bounds)
+		# At a manually enlarged scale both may not physically fit. Preserve
+		# the rigid locomotive rather than change the owner's chosen zoom.
+		if decision_bounds.size.x <= view.size.x and decision_bounds.size.y <= view.size.y:
+			locomotive_bounds = decision_bounds
+		if not viewport.encloses(locomotive_bounds):
+			view.offset += view.size*0.5-locomotive_bounds.get_center()
+		return
+	if viewport.encloses(bounds):
+		return
+	center_camera(view,view._visual_position)
+	bounds = _with_next_decision(view,view.train_renderer.screen_bounds(view, view.journey, view.consist, lag))
+	view.offset += view.size * 0.5 - bounds.get_center()
+
+
+static func _with_next_decision(view, bounds: Rect2) -> Rect2:
+	# Native6350: a13-wagon convoy hid switch88,16 until its TIME phase1 turn.
+	# TIME0x14bd decides before the cell center; CARTE0x123f clicks that center.
+	# Frame the next cell's click point as well as the train, at fixed scale.
+	if view.journey.has_method("next_cell"):
+		var point: Vector2 = view._world_to_screen(Vector2(view.journey.next_cell())+Vector2(0.5,0.5))
+		return bounds.merge(Rect2(point,Vector2.ZERO))
+	return bounds

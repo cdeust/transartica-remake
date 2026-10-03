@@ -21,12 +21,20 @@ signal movie_finished
 
 func _ready() -> void:
 	super._ready()
+	# Native Rome1588: the underlying city button otherwise consumes Return.
+	focus_mode = Control.FOCUS_ALL
+	visibility_changed.connect(_claim_focus)
 	for name in ["urga", "oslo", "mausoleum", "sun-overcast", "sun-restored", "whale", "slope"]:
 		_art[name] = load("res://assets/campaign/%s.png" % name)
 	for name in ["wolf", "mole"]:
 		_art[name] = load("res://assets/campaign/%s-ambush.png" % name)
 	_finale_art.load_art()
 	hide()
+
+
+func _claim_focus() -> void:
+	if is_visible_in_tree():
+		grab_focus()
 
 
 func present(name: String, message: Array, code := false, ask := false) -> void:
@@ -92,18 +100,34 @@ func restore_movie(value: Dictionary) -> void:
 		_resume_audio()
 
 
+func is_quarters_scene() -> bool:
+	return scene in ["crew", "", "spy_pickup", "sabotage_confirm"]
+
+
+func scene_art_rect() -> Rect2:
+	var bounds := canvas_rect()
+	if is_quarters_scene():
+		# TRAIN background and shared YODA panel boundary: captain-crew.md,
+		# panel-layout.md. Match GeneralQuarters' 320x149 room exactly.
+		bounds.size.y *= preload("res://scripts/original_panel.gd").STRIP.position.y / CANVAS.y
+	return bounds
+
+
 func _draw() -> void:
 	if scene == "sun-restored":
 		_finale_art.draw_on(self, finale)
 		return
-	draw_rect(Rect2(Vector2.ZERO, size), Color.BLACK)
+	# TEXTEK 0x273f..2774 replaces only the bottom41 lines for room notices.
+	# Keep the underlying train bar at149..158; it is not part of that banner.
+	if not is_quarters_scene():
+		draw_rect(Rect2(Vector2.ZERO, size), Color.BLACK)
 	var key := "whale" if scene.begins_with("whale") else scene
 	if key == "sun":
 		key = "sun-overcast"
 	if _art.has(key):
 		draw_texture_rect(_art[key], canvas_rect(), false)
-	elif scene in ["crew", "", "spy_pickup", "sabotage_confirm"]:
-		draw_texture_rect(load("res://assets/boudoir/general-quarters.png"), canvas_rect(), false)
+	elif is_quarters_scene():
+		draw_texture_rect(load("res://assets/boudoir/general-quarters.png"), scene_art_rect(), false)
 	if scene == "earth":
 		draw_texture_rect(load("res://assets/interface/mort-earth.png"), canvas_rect(), false)
 		return

@@ -23,6 +23,7 @@ var _ok: Button
 var _ok_result := false
 var _pending_cell := Vector2i(-1, -1)
 var _pending_code := 0
+var last_cell := Vector2i(-1,-1)
 var countdown := 0
 var _result_lines: Array = []
 
@@ -57,6 +58,7 @@ func load_texts(project_root: String) -> bool:
 
 # A new game/legacy-save restore must discard an old accepted closing action.
 func reset() -> void:
+	last_cell = Vector2i(-1,-1)
 	kind = ""
 	_ok_result = false
 	_pending_cell = Vector2i(-1, -1)
@@ -77,7 +79,8 @@ func reset() -> void:
 
 
 func ask(network) -> bool:
-	kind = TrackWorks.kind_for(network.tile(journey.next_cell()))
+	last_cell = journey.obstacle_cell()
+	kind = TrackWorks.kind_for(network.tile(last_cell))
 	if kind.is_empty():
 		return false
 	_pending_cell = Vector2i(-1, -1)
@@ -114,7 +117,7 @@ func _accept() -> void:
 		_show(lines, false)
 		return
 	var used := TrackWorks.consume_rails(wagons, TrackWorks.rails_needed(kind, rng))
-	_pending_cell = journey.next_cell()
+	_pending_cell = journey.obstacle_cell()
 	_pending_code = journey.network.tile(_pending_cell)
 	var report := TrackWorks.work_report(kind, wagons)
 	countdown = int(report.ticks)
@@ -187,6 +190,7 @@ func restore(value: Variant) -> bool:
 		return false
 	var cell := Vector2i(int(value.cell[0]), int(value.cell[1]))
 	kind = value.kind
+	last_cell = cell if journey.network.in_bounds(cell) else journey.obstacle_cell()
 	_pending_cell = cell
 	_pending_code = int(value.get("code", 0))
 	countdown = int(value.countdown)

@@ -80,7 +80,8 @@ func run() -> void:
 	check(model.plant(actor.id,1),"real charge planted")
 	for sweep in 5: # source: reproduction's source charge countdown
 		model.scan_side = 0
-		model.scan = model.columns*7-1
+		# WDECOR170d/179a scans the enemy roof upon reaching field row6.
+		model.scan = model.columns*6-1
 		scene._physics_process(model.STEP_SECONDS)
 	check(model.trains[1][7].health == 0,"source charge actually destroyed enemy wagon7")
 	var wreck: Dictionary = Geometry.wagon(scene,1,7)

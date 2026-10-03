@@ -42,7 +42,7 @@ func blocks_simulation() -> bool:
 
 
 func handle_boundary() -> bool:
-	var cell: Vector2i = app.journey.next_cell()
+	var cell: Vector2i = app.journey.boundary_cell()
 	var code: int = app.network.tile(cell)
 	if code == 78:
 		var details: Dictionary = app.world.ask_mine(cell)

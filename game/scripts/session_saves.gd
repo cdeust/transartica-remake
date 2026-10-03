@@ -117,6 +117,10 @@ static func _commit(app, parsed: Dictionary, base: Dictionary, extra: Dictionary
 	app.engine.train_mass = app.wagons.mass()
 	app.world_view.consist.derive_from_wagons(app.wagons)
 	app.world_view._visual_initialized = false
+	# A restored modal pauses before the travel view's next update. Synchronize
+	# its transient arc now, or drawing samples the old session's route lag.
+	# Source: earned7190 native reload7206; test_restore_physical_stop.gd.
+	app.world_view._snap_visual_position(app.journey.fractional_position())
 	restore_chart(app, parsed)
 	app._city_panel.hide()
 	Extensions.commit(app, extra)

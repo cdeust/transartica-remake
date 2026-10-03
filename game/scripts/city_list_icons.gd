@@ -52,13 +52,13 @@ func wagon_for(kind: int) -> Texture2D:
 
 
 static func fitted(image: Image) -> Texture2D:
-	# Preserve source aspect inside one row allocation; padding avoids ItemList
-	# forcing different silhouettes into the same aspect ratio.
-	var factor := minf(float(FOOTPRINT.x)/image.get_width(),float(FOOTPRINT.y)/image.get_height())
-	var extent := Vector2i(maxi(1,roundi(image.get_width()*factor)),maxi(1,roundi(image.get_height()*factor)))
-	image.resize(extent.x,extent.y,Image.INTERPOLATE_NEAREST)
+	# Native IN SALAH capture130,3Oct: shrinking to48x16 then enlarging4.5x
+	# loses the authored detail. Keep every source pixel; ItemList owns display
+	# size, while proportional transparent padding owns the shared row aspect.
+	var factor := ceili(maxf(float(image.get_width())/FOOTPRINT.x,float(image.get_height())/FOOTPRINT.y))
+	var extent := FOOTPRINT * factor
 	image.convert(Image.FORMAT_RGBA8)
-	var canvas := Image.create(FOOTPRINT.x,FOOTPRINT.y,false,Image.FORMAT_RGBA8)
+	var canvas := Image.create(extent.x,extent.y,false,Image.FORMAT_RGBA8)
 	canvas.fill(Color.TRANSPARENT)
-	canvas.blit_rect(image,Rect2i(Vector2i.ZERO,extent),(FOOTPRINT-extent)/2)
+	canvas.blit_rect(image,Rect2i(Vector2i.ZERO,image.get_size()),(extent-image.get_size())/2)
 	return ImageTexture.create_from_image(canvas)

@@ -239,7 +239,8 @@ func _new_journey() -> void:
 
 
 func refresh() -> void:
-	panel.visible = not app.works_dialog.visible
+	# Owner3Oct: works retain the same authored panel as the other scenes.
+	panel.visible = true
 	panel.map_context = app._modal.visible or overview.visible
 	panel.overview_context = overview.visible
 	panel.refresh()

@@ -33,17 +33,18 @@ static func _unhandled_key_input(app, event: InputEvent) -> void:
 	if app._boudoir_session.handle_key(event,mapped):
 		app.get_viewport().set_input_as_handled()
 		return
+	# GRANADA native play1375: commerce owns Escape before the general map close.
+	if app._city_panel.visible:
+		# Layout keycode: the - and + keys differ between QWERTY and AZERTY.
+		if app._city_panel.handle_key(event.keycode):
+			app.get_viewport().set_input_as_handled()
+		return
 	if event.physical_keycode == KEY_ESCAPE:
 		app._modal.hide()
 		app.room_controls.show_help = false
 		app.room_controls.show_instruments = false
 		app.instruments.hide()
 		app.get_viewport().set_input_as_handled()
-		return
-	if app._city_panel.visible:
-		# Layout keycode: the - and + keys differ between QWERTY and AZERTY.
-		if app._city_panel.handle_key(event.keycode):
-			app.get_viewport().set_input_as_handled()
 		return
 	match mapped.physical_keycode:
 		KEY_L: app.room_controls.activate("lignite")

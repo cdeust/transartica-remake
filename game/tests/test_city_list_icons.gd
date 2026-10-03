@@ -26,7 +26,7 @@ func _run() -> void:
 	check(panel.list_icons.goods.size() == Trade.GOODS_KINDS,"all source goods IDs have authored atlas icons")
 	for kind in range(1,Trade.GOODS_KINDS+1):
 		var icon: Texture2D = panel.list_icons.goods_for(kind)
-		check(icon != null and icon.get_size() == Vector2(panel.list_icons.FOOTPRINT),"goods%d keeps padded source-width footprint" % kind)
+		check(icon != null and is_equal_approx(icon.get_width()/float(icon.get_height()),3.0),"goods%d keeps row aspect without discarding resolution" % kind)
 		if icon != null:
 			check(icon.get_image().get_used_rect().has_area(),"goods%d icon has visible authored pixels" % kind)
 	for kind in range(1,26):
@@ -39,7 +39,7 @@ func _run() -> void:
 		var row: Array = panel._rows[index]
 		check(panel._list.get_item_icon(index) == panel.list_icons.goods_for(row[0]),"goods row keeps its original ID")
 		check(panel._list.get_item_text(index) == "%s  %d" % [app.trade.goods_name(row[0]),row[1]],"goods text/stock remain unchanged")
-	await capture("city-goods-icons-native-20261001.png")
+	await capture("continuous-play-20261003/goods-after.png")
 	panel._list.select(0)
 	panel._list.grab_focus()
 	await key(KEY_RIGHT)
@@ -48,7 +48,7 @@ func _run() -> void:
 	panel.start_workshop()
 	for index in panel._rows.size():
 		check(panel._list.get_item_icon(index) == panel.list_icons.wagon_for(panel._rows[index][0]),"workshop row preserves source wagon type")
-	await capture("city-wagon-icons-native-20261001.png")
+	await capture("continuous-play-20261003/wagons-after.png")
 	panel._list.select(0)
 	panel._list.grab_focus()
 	await key(KEY_RIGHT)

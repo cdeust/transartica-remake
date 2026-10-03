@@ -153,7 +153,7 @@ func _on_works_finished(repaired: bool) -> void:
 	if works_dialog.kind.is_empty():
 		status_label.text = "Turned back · heading %s." % journey.heading_name()
 		return
-	var ahead: Vector2i = journey.next_cell()
+	var ahead: Vector2i = works_dialog.last_cell
 	status_label.text = ("Track repaired at (%d, %d)." if repaired else "Still blocked at (%d, %d).") % [ahead.x, ahead.y]
 	world_view.queue_redraw()
 

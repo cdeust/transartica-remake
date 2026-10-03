@@ -41,6 +41,11 @@ static func ports_for_code(code: int) -> Array[Vector2]:
 		return none
 	match code:
 		2: return [Vector2(-0.5, 0), Vector2(0.5, 0)]
+		# Source: CARTE resources34..37; reference-private/validation/station-source-ports-20261003.png.
+		34: return [Vector2(-0.5,0)]
+		35: return [Vector2(0.5,0)]
+		36: return [Vector2(0,0.5)]
+		37: return [Vector2(0,-0.5)]
 		3: return [Vector2(0, -0.5), Vector2(0, 0.5)]
 		4: return [Vector2(0.5, -0.5), Vector2(-0.5, 0.5)]
 		5: return [Vector2(-0.5, -0.5), Vector2(0.5, 0.5)]

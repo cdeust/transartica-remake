@@ -202,17 +202,47 @@ func _tile_code(x: int, y: int) -> int:
 
 func _draw_rail_tile(x: int, y: int) -> void:
 	var code: int = _tile_code(x, y)
+	# Registered obstacle atlas already contains its exact rail ports/gauge.
+	if terrain.obstacles.handles_rail(code):
+		return
 	var ports: Array[Vector2] = RailGlyphsScript.ports_for_code(code)
 	if ports.is_empty():
 		if code > 0:
 			map_entities.draw_city_tile(self, Vector2i(x, y), code)
 		return
 	var center := _world_to_screen(Vector2(x + 0.5, y + 0.5))
+	var endpoints: Array[Vector2] = []
 	for port in ports:
 		var world_port := Vector2(x + 0.5, y + 0.5) + port
-		_draw_rail_segment(center, _world_to_screen(world_port))
+		endpoints.append(_world_to_screen(world_port))
+	for segment in rail_art.tile_segments(center, endpoints):
+		_draw_rail_segment(segment[0], segment[1])
+	if endpoints.size() == 2:
+		_draw_rail_join(endpoints[0], center, endpoints[1])
+	elif endpoints.size() == 3 and code >= 18 and code <= 33:
+		var facing: int = RailNetworkScript.SWITCH_RULES[code - code % 2][0]
+		var entry := -Vector2(RailNetworkScript.DELTAS[facing]) * 0.5
+		var incoming: int = ports.find(entry)
+		if incoming >= 0:
+			for index in endpoints.size():
+				if index != incoming:
+					_draw_rail_join(endpoints[incoming], center, endpoints[index])
+	if code in [34,35,36,37]:
+		# Source terminal geometry: CARTE resources34..37. The authored buffer
+		# makes TIME's stopping port visible without changing its position.
+		var direction: Vector2 = ports[0].normalized()
+		var side := direction.orthogonal()
+		var buffer := center-direction*12.0*_effective_zoom()
+		draw_line(buffer-side*12.0*_effective_zoom(),buffer+side*12.0*_effective_zoom(),CITY_MARK,maxf(3.0,7.0*_effective_zoom()),true)
+		draw_rect(Rect2(center-Vector2.ONE*16.0*_effective_zoom(),Vector2.ONE*32.0*_effective_zoom()),CITY_MARK,false,2.0)
 	if ports.size() == 3 and code >= 18 and code <= 33:
 		_draw_switch_state(x, y, code, ports, center)
+
+
+func _draw_rail_join(start: Vector2, center: Vector2, finish: Vector2) -> void:
+	for rail in rail_art.joined_rails(start, center, finish, rail_art.TRACK_GAUGE * _effective_zoom() / 2):
+		draw_polyline(rail, TRACK_DARK, 3.0 * _effective_zoom(), true)
+		draw_polyline(rail, TRACK_METAL, 1.1 * _effective_zoom(), true)
 
 
 # Straight ports are [0] and [1]; [2] diverges (rail_glyphs.gd). Even code = straight,
@@ -300,7 +330,10 @@ func update_train() -> void:
 	var actual := _current_journey_position()
 	var arc: float = journey.distance_travelled() if journey != null else 0.0
 	var moved := not _visual_initialized or not is_equal_approx(_arc_to, arc)
-	var reset_or_jump: bool = (journey != null and journey.reverse) or not _visual_initialized or arc < _arc_to or _visual_to.distance_to(actual) > 1.5
+	# Hidden travel continues in the engine room. Keeping its last displayed
+	# pose would reopen the map at an old station with a growing interpolation
+	# backlog; only a visible map has a segment to animate (owner3Oct playback).
+	var reset_or_jump: bool = not is_visible_in_tree() or (journey != null and journey.reverse) or not _visual_initialized or arc < _arc_to or _visual_to.distance_to(actual) > 1.5
 	if reset_or_jump:
 		_snap_visual_position(actual)
 	elif moved:
@@ -365,37 +398,12 @@ func center_on_train() -> void:
 
 
 func _center_camera(position: Vector2) -> void:
-	var middle := position
-	if journey != null:
-		var lag := maxf(0.0, journey.distance_travelled() - _visual_arc) if _visual_initialized else 0.0
-		var sample: Dictionary = journey.sample_behind(consist.length_world() * train_renderer.WAGON_CELL_RATIO * 0.5 + lag)
-		if sample.ok:
-			middle = sample.position
-	camera_world = middle + Vector2(0.5, 0.5)
-	offset = Vector2.ZERO
-	zoom = _effective_zoom()
+	preload("res://scripts/train_camera_fit.gd").center_camera(self,position)
 
 
-# Fixed camera: recenter only when the train leaves the viewport.
+# Fixed camera and fixed zoom; move its frame only when the sprite is clipped.
 func _keep_train_in_view() -> void:
-	if inspecting_map or size.x <= 0.0 or size.y <= 0.0 or journey == null:
-		return
-	var lag := maxf(0.0, journey.distance_travelled() - _visual_arc)
-	var bounds: Rect2 = train_renderer.screen_bounds(self, journey, consist, lag)
-	var viewport := Rect2(Vector2.ZERO, size)
-	# Source: FIDELITE.md, constant visible size during travel. A train larger
-	# than the viewport must be clipped, never shrunk; frame its nose instead.
-	if bounds.size.x > size.x or bounds.size.y > size.y:
-		var nose := _visual_position + Vector2(0.5, 0.5)
-		if not viewport.has_point(_world_to_screen(nose)):
-			camera_world = nose
-			offset = Vector2.ZERO
-		return
-	if viewport.encloses(bounds):
-		return
-	_center_camera(_visual_position)
-	bounds = train_renderer.screen_bounds(self, journey, consist, lag)
-	offset += size * 0.5 - bounds.get_center()
+	preload("res://scripts/train_camera_fit.gd").keep_train_in_view(self)
 
 
 func _snap_visual_position(position: Vector2) -> void:
@@ -483,7 +491,7 @@ func _load_texture(path: String) -> Texture2D:
 
 
 func _finish_pointer_gesture(point: Vector2) -> void:
-	if _left_held and not _dragging and point.distance_to(_press_origin) < DRAG_THRESHOLD and _city_at(point) < 0:
+	if _left_held and not _dragging and point.distance_to(_press_origin) < DRAG_THRESHOLD:
 		var world := _screen_to_world(point)
 		if toggle_switch_at(Vector2i(floori(world.x), floori(world.y))):
 			_left_held = false

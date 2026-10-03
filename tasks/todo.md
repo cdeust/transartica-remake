@@ -1,5 +1,14 @@
 # Historical user review — 27 September (see current completion run below)
 
+## Reprise des interactions : véritables découpes, 2 octobre 2026
+
+- [ ] Remplacer les huit masques de contours refusés par des découpes raster transparentes des sujets source.
+- [ ] Examiner chaque découpe et sa registration sur le décor ; corriger les fragments de mobilier conservés.
+- [ ] Brancher la surbrillance sur la transparence des découpes, puis vérifier le rendu natif et les interactions.
+- [ ] Montrer les découpes et les surbrillances au propriétaire avant le commit demandé.
+
+Les anciens essais par détection de contours sont refusés. Leur suite verte ne valide pas les découpes demandées. Aucun commit des masques n'a été effectué.
+
 - [ ] Refaire le bandeau avec les mêmes informations, dans la qualité des scènes de wagons. Le grossissement des pixels originaux est rejeté.
 - [x] Ajouter un indicateur du sens de marche sur la carte détaillée.
 - [ ] Refaire le terrain cartographique et les éléments de décor : rendu courant rejeté.
@@ -16,6 +25,47 @@ Bandeau ECS privé et reprise : [validation](validation/map-places-20260927.md).
 - [ ] Vérifier les captures natives, relire, pousser et nettoyer.
 
 # État du projet et travail restant
+
+## Interactive wagon masks — 2 October 2026
+
+- [x] Bind boudoir and General Quarters artwork to existing actions and masks.
+- [x] Confirm hover highlight; create eight masks with the existing chaufferie shader.
+- [x] Rework all source contours after renewed rejection: correct measured vertices and preserve outer clothing/object edges.
+- [x] Inspect source registration, preserve metadata and prepare handoff.
+- [x] Native highlight/resize/modal tests and full boudoir input regression pass.
+- [x] Repeat enlarged source/shader review of all eight masks; six contour regressions fail before and pass after.
+- [x] Open corrected gallery with fresh native captures for owner review before commit.
+- [ ] Commit masks after this requested visual review.
+- [ ] Owner's artistic acceptance in game.
+
+## Missing trooper poses for Opus — 2 October 2026
+
+- [x] Bind request to `handoff-trooper-poses-codex-20261002.md` and the supplied v2 soldier sheet.
+- [x] Generate both color variants: five climb/mantle, three plant, five forward death and four backward death frames.
+- [x] Generate the two additional passing run frames per variant.
+- [x] Inspect pose completeness; measure alpha, preserve prompts/hashes in actor manifest.
+- [x] Deliver generated sheets for Opus to cut and integrate, with remaining alpha/scale limits stated.
+- [ ] Normalize alpha and exact source scale if user chooses local bitmap finalization; otherwise Opus owns those steps.
+
+Contract and inventory: [wagon masks](wagon-masks-20261002.md).
+Review: [eight source/overlay comparisons](../output/wagon-masks-20261002/index.html).
+
+## Actor sprite design for Opus — 2 October 2026
+
+- [x] Inventory live actor types, source actions, projection and current sprite limits.
+- [x] Produce original design sheets for troopers, wolves, mammoths and spies.
+- [x] Specify readable silhouettes, animation states, pivots and event attachments.
+- [x] Inspect delivered sheets and prepare Opus handoff with unresolved production checks.
+
+Owner request: help design sprites with Noita-inspired animation; Opus finalizes.
+This pass supplies design references. Runtime animation and artistic acceptance
+remain subsequent work. Existing motion design stays preserved.
+
+Review: [Opus handoff](handoff-actor-sprites-opus-20261002.md) and
+[four-sheet gallery](../output/imagegen/actors-20261002/index.html).
+Generated pose concepts are inspected; exact frame geometry, clean alpha,
+missing headings/actions and game-size pixel polish remain for finalization.
+No runtime source change, animation acceptance, commit or publication in this pass.
 
 ## Completion run — 1 October 2026
 
@@ -338,4 +388,94 @@ Preuves : `validation/opus-combat-motion-20261001.mp4` (×2), `validation/opus-r
 - [x] Vérifier que les assets, shaders, animations et rythmes d'Opus sont conservés.
 
 Reproductions natives rouges avant et vertes après. [Rapport des corrections](combat-regression-fixes-20261001.md).
-Branche locale fix/combat-regressions basée sur main6dca252 ; aucun push dans cette tâche.
+Corrections publiées sur main le 2 octobre au commit `3f8efc62622764856a351076c3b19a083466b220`, SHA distant vérifié.
+Nettoyage protégé : liens privés non suivis et aucune PR liée au worktree de corrections.
+[Preuve de publication et nettoyage](validation/combat-fixes-push-20261002.md).
+
+## Mammoth howdah fall sheets for Opus — 2 October 2026
+
+- [x] Read fall handoff and inspect all six mammoth references and trooper direction.
+- [x] Inspect mounted howdahs: visible colored forms are seat backs/cushions; no human head or limbs identified.
+- [x] Generate separate howdah/debris and rider-fall sheets in blue and olive.
+- [x] Measure PNG alpha and SHA256; append exact prompts and update gallery/handoff.
+- [x] Verify deliverable files and document production limitations.
+
+Scope: generated source sheets and documentation only; no runtime changes or Git mutations.
+
+Review: [fall delivery](handoff-mammoth-howdah-fall-codex-20261002.md), four generated source sheets. Solid alpha, exact grids, source scale and pivots are not normalized; no integration or artistic acceptance claimed.
+
+## Réparation des hooks Codex — 2 octobre 2026
+
+- [x] Vérifier l’inventaire natif et reproduire les échecs de dépendances.
+- [x] Corriger le démarrage Hypermnesia et sa reprise SessionEnd ;134 tests ciblés passent.
+- [x] Aligner la configuration installée ; inventorier les28 hooks dans les quatre dépôts.
+- [x] Approuver globalement les11hooks Hypermnesia après autorisation du propriétaire et capturer leurs événements natifs.
+- [ ] Atteindre zéroHookfailed : disk-hygiene et statusline corrigés ; approbation native du nouveau hook statusline en attente.
+- [x] Commiter et partager les corrections : Cortex PR658, Session Optimizer PR56, SHA distants vérifiés.
+- [x] Conserver les résultats et nettoyer les captures et tests temporaires.
+
+Revue : [réparation Codex](codex-hooks-repair-20261002.md). Deux démarrages directs réussis en7,302s puis1,057s ; livraison native encore non prouvée.
+
+- [x] Autorisation statusline globale reçue et appliquée via /hooks ; nouvelle session native : 20 hooks réussis, zéro failed observé. PreCompact et sous-agents restent non vérifiés. Les deux PR ont leurs checks verts.
+
+## Reprise masques et jeu, 3 octobre 2026
+
+- [x] Retrouver les huit SVG refusés et les découpes non intégrées.
+- [ ] Nettoyer les franges colorées et le décor résiduel des découpes transparentes ; examiner la registration.
+- [ ] Brancher les découpes raster et leur alpha sur la surbrillance des deux intérieurs.
+- [ ] Vérifier captures natives, clics et navigation ; laisser l’acceptation artistique ouverte.
+- [ ] Reproduire puis corriger les dysfonctionnements indiqués par le propriétaire, sans remplacer les effets d’Opus.
+
+Reprise du 3 octobre : huit PNG candidats générés, cinq défauts natifs reproduits. Référence native des surbrillances et parcours boudoir passent ; les SVG refusés restent actifs jusqu’à correction des PNG. Finition raster locale et reproduction des dysfonctionnements attendent les réponses du propriétaire. Voir wagon-cutouts-resume-20261003.md.
+
+Revue des découpes du 3 octobre : propriétaire valide six couches ; table/carte du quartier général et revolver refusés. Ne retoucher que ces deux éléments. Activation et contrôle natif des couches acceptées restent à faire.
+
+- [x] Corriger localement table/revolver après autorisation ; RGB source et alpha binaire vérifiés indépendamment.
+- [x] Brancher les huit PNG et vérifier le parcours boudoir natif.
+- [ ] Revue artistique finale table/revolver ; cinq assertions strictes des autres couches inchangées restent rouges.
+
+- [x] Acceptation artistique des huit découpes reçue : « bon comme ca », 3 octobre. Version conservée.
+- [x] Recevoir les dysfonctionnements précis du voyage et les reproduire par les entrées du jeu.
+
+## Boucle de voyage signalée par le propriétaire, 3 octobre 2026
+
+- [x] Reproduire par les entrées du jeu : aiguillages ignorés, invitation de ville avant la gare et train hors champ.
+- [x] Corriger les causes dans le trajet, l'arrivée et la caméra en conservant les règles ECS et les effets d'Opus.
+- [x] Afficher l'état effectif du frein et le sens de marche dans les commandes du bas.
+- [x] Vérifier un trajet natif avec aiguillage, arrivée, départ et événement de campagne ; enregistrer les résultats et limites.
+
+Revue : [voyage, gares et commandes](travel-regressions-20261003.md).85 sites/170 approches natives avant/arrière réussissent ; les45 villes fixes et les nomades sont couverts. Seize suites ciblées passent. Les planches des arrivées et terminus ont été inspectées. Les essais utilisent des approches préparées sur la carte source ; une partie native continue de toute la campagne et une release Windows stable ne sont pas établies.
+
+## Partie continue et acceptation du jeu, correction du 3 octobre
+
+- [x] Lancer la scène normale et démarrer une nouvelle partie par son interface.
+- [x] Conduire depuis le départ réel : chauffe, régulateur, frein, sens et aiguillages, avec captures.
+- [x] Entrer à In Salah, repartir jusqu'à Taoudeni et acheter une unité de sel dans cette même partie.
+- [ ] Parcourir les événements et objectifs de campagne sans injection de position, ressources ou progression.
+- [ ] Vérifier sauvegarde et reprise de cette partie, puis la fin et les fonctionnalités restantes.
+- [ ] Documenter chaque étape observée, les défauts, le temps réel et le temps du jeu. La validation exhaustive reste ouverte.
+
+- [x] Corriger la disparition réelle en marche arrière ; enregistrer le test échouant avant et réussissant après.
+- [x] Rejouer un parcours depuis START jusqu'à In Salah en avant puis en arrière, par les seules commandes du joueur.
+- [x] Fournir le scénario rejouable avec synchronisation d'écran, timings et reprise de sauvegarde.
+- [x] Corriger la réduction des dessins modernes du commerce ; vérifier16 marchandises et25 wagons, puis inspecter Taoudeni en jeu.
+- [ ] Expliquer le clic d'aiguillage perdu dans la répétition : tuile18 inchangée, attente expirée. Le pilote vérifie maintenant la sélection avant de démarrer ; deux parcours suivants passent, sans preuve de la cause du clic perdu.
+
+Revue : [parties natives et procédure de reprise](validation/continuous-play-20261003/README.md). Le scénario START prend192,43 secondes réelles. La reprise de la partie à Taoudeni prend11,83 secondes. Ces mesures concernent ces parcours ; la durée de contenu et la campagne complète restent non validées.
+## Contrat de playthrough complet et releases par acte, 3 octobre 2026
+
+Le propriétaire rappelle que la campagne doit être entièrement jouée par l'agent.
+Un parcours ciblé n'autorise pas l'arrêt du travail. Chaque bug rencontré est
+corrigé, puis le parcours reprend depuis la sauvegarde gagnée. Les tests du modèle
+et la vérification visuelle sont exigés ensemble. Les actes ci-dessous sont des
+jalons de livraison tirés des gates ECS, pas de nouveaux chapitres de l'histoire.
+
+- [ ] Acte1 : économie et équipement gagnés, travaux, foreuse de Rum, rencontre d'Urga par le trajet réel. Sauvegarde/reprise et release locale testée.
+- [ ] Acte2 : recrutement et envoi de l'espion, voyage au Mausolée et lecture du document. Sauvegarde/reprise et release locale testée.
+- [ ] Acte3 : harpon, baleine, Oslo et code, sabotage confirmé de la centrale. Sauvegarde/reprise et release locale testée.
+- [ ] Acte4 : préparation du convoi, accès secret, Himalaya, Minotaure et finale jusqu'à OPTIONS. Sauvegarde/reprise et release locale testée.
+- [ ] Couverture restante : chaque gare/ville en avant et en arrière par les commandes, commerce et événements rencontrés ; aucun bug ouvert avant clôture.
+- [ ] Pour chaque release : tests applicables verts, captures inspectées, manifeste des changements et preuve du lancement du paquet sur la plateforme annoncée.
+
+Reprise : sauvegarde native CONTINUE obtenue après l'achat de sel à Taoudeni.
+Le journal du voyage depuis START et les sauvegardes privées restent conservés.

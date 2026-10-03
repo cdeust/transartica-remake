@@ -26,7 +26,7 @@ static func advance(app) -> void:
 		app.world.before_entry(app.journey.next_cell())
 		if app.campaign.before_entry(app.journey.next_cell()):
 			return
-	app.journey.advance(app.engine.speed)
+	preload("res://scripts/reverse_contact_stop.gd").advance(app.world_view, app.journey, app.engine.speed)
 	if app.encounters.advance(old_cell):
 		return
 	app.world_view.visit_cell(app.journey.position)
@@ -42,6 +42,25 @@ static func advance(app) -> void:
 static func _handle_boundary(app, was_blocked: bool) -> void:
 	if was_blocked:
 		return
+	# The reverse-leading rear contact can reach a source gate before TIME's
+	# locomotive cell. Run the same pre-entry rules at that actual contact:
+	# TIME0x1c31..1c75 (drill), CampaignState.prepare_entry (secret gates).
+	if app.journey.physical_obstacle != Vector2i(-1,-1):
+		var cell: Vector2i = app.journey.boundary_cell()
+		app.world.before_entry(cell)
+		if app.campaign.before_entry(cell, app.journey.physical_heading):
+			return
+		if app.network.entry_boundary(cell).is_empty():
+			app.journey.physical_obstacle = Vector2i(-1,-1)
+			app.journey.physical_heading = 0
+			app.journey.blocked = false
+			app.journey.stop_reason = ""
+			app.world_view.update_train()
+			return
+	# Arrival pauses the visual clock in this same callback. Finish its final
+	# rail segment before any station/dialog takes ownership (owner3Oct).
+	app.world_view._snap_visual_position(app.journey.fractional_position())
+	app.world_view.update_train()
 	if app._world_session.handle_boundary():
 		return
 	var station: int = app.journey.station_result()

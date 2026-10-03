@@ -83,3 +83,11 @@ Le message 5 (`yoda 0x190` → `0x18b9`) fait le même demi-tour et remet aussi 
   la ville et après départ) ; fenêtre native `game/tests/review_station_arrival.gd`, captures
   `tasks/validation/station-arrival-bhopal.png`, `station-departure-emerging.png`,
   `station-departure-leaving.png`. Les 10 suites Godot passent. Exports non reconstruits.
+
+## Vérification du 3 octobre 2026
+
+Le diagnostic des ressources CARTE34..37 révèle leur demi-voie extérieure : 34 ouest, 35 est, 36 sud, 37 nord. Les rasters de référence restent dans `reference-private/validation/station-source-ports-20261003.png`. Ils ne décodent pas l'intérieur d'une gare. La case droite masquée décidée le26 septembre reste une adaptation de présentation. En marche arrière, cette même case suffit à garder le contact arrière de la locomotive disponible au port d'arrêt, sans autoriser TIME à traverser la gare.
+
+Le relevé natif couvre les75 cases de la carte initiale et10 sites révélés par les écritures de campagne :85 sites,170 approches préparées avant/arrière. Il contrôle les45 villes fixes ; les nomades (ville 45) sont joués séparément dans les deux sens. Les notices de terminus sont acquittées avant inspection de la carte et inversion par le joueur. Le39,32 devient un passage lors de la révélation Hima, conformément à TIME0x1fc8. Les deux terminus 150,41/42 se font face sans accès extérieur : leurs essais locaux ne prouvent pas un parcours depuis le réseau principal.
+
+Résultats, commandes et limites : `tasks/travel-regressions-20261003.md`. Les limites historiques ci-dessus décrivent l'état du26 septembre ; consulter `world-completion.md` et les tests actuels pour les handlers portés depuis.

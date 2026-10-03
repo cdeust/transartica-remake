@@ -2,14 +2,18 @@ shader_type canvas_item;
 render_mode unshaded;
 // source: authored registered selection matte, output/imagegen/engineer-mask-prompt.txt.
 // Godot4.5 CanvasItem shader reference: TEXTURE_PIXEL_SIZE, UV, COLOR.
+// source: Godot CanvasItem texture RGBA; wagon cutouts use alpha, engine-room mattes red.
+uniform bool coverage_from_alpha = false;
 uniform vec4 clip_bounds = vec4(0.0, 0.0, 1.0, 1.0);
 void fragment() {
-	float center = texture(TEXTURE, UV).r;
+	vec4 sample_color = texture(TEXTURE, UV);
+	float center = coverage_from_alpha ? sample_color.a : sample_color.r;
 	vec2 step_size = TEXTURE_PIXEL_SIZE;
 	float surround = 0.0;
 	for (int x = -1; x <= 1; x++) {
 		for (int y = -1; y <= 1; y++) {
-			surround = max(surround, texture(TEXTURE, UV + vec2(float(x), float(y)) * step_size).r);
+			vec4 neighbour = texture(TEXTURE, UV + vec2(float(x), float(y)) * step_size);
+			surround = max(surround, coverage_from_alpha ? neighbour.a : neighbour.r);
 		}
 	}
 	float edge = max(0.0, surround - center);

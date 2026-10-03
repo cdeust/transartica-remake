@@ -1,0 +1,147 @@
+{
+  "file": "obstacles-master.png",
+  "source_sha256": "bb2942a78ed9a9892f0cca7cceda3ce0729dccd6154bd7304a42cdc5151ea174",
+  "coordinate_contract": "rail_ports are crop-relative source pixel coordinates; gauge is rail-head center separation; top and bottom crops split at measured empty y480 gutter, preserving NS rail ends above nominal y512",
+  "frames": [
+    {
+      "name": "crevasse-ew-broken",
+      "codes": [
+        67
+      ],
+      "region": [
+        0,
+        0,
+        512,
+        480
+      ],
+      "rail_ports": [
+        [
+          32,
+          236
+        ],
+        [
+          483,
+          236
+        ]
+      ],
+      "rail_gauge": 30
+    },
+    {
+      "name": "crevasse-ew-repaired",
+      "codes": [
+        63
+      ],
+      "region": [
+        512,
+        0,
+        512,
+        480
+      ],
+      "rail_ports": [
+        [
+          23,
+          236
+        ],
+        [
+          481,
+          236
+        ]
+      ],
+      "rail_gauge": 30
+    },
+    {
+      "name": "lake-ew-broken",
+      "codes": [
+        -116,
+        114
+      ],
+      "region": [
+        1024,
+        0,
+        512,
+        480
+      ],
+      "rail_ports": [
+        [
+          23,
+          236
+        ],
+        [
+          483,
+          236
+        ]
+      ],
+      "rail_gauge": 30
+    },
+    {
+      "name": "crevasse-ns-broken",
+      "codes": [
+        69
+      ],
+      "region": [
+        0,
+        480,
+        512,
+        544
+      ],
+      "rail_ports": [
+        [
+          260.5,
+          13
+        ],
+        [
+          260.5,
+          484
+        ]
+      ],
+      "rail_gauge": 35
+    },
+    {
+      "name": "crevasse-ns-repaired",
+      "codes": [
+        64
+      ],
+      "region": [
+        512,
+        480,
+        512,
+        544
+      ],
+      "rail_ports": [
+        [
+          250,
+          14
+        ],
+        [
+          250,
+          484
+        ]
+      ],
+      "rail_gauge": 36
+    },
+    {
+      "name": "lake-ew-repaired",
+      "codes": [
+        -121,
+        -117
+      ],
+      "region": [
+        1024,
+        480,
+        512,
+        544
+      ],
+      "rail_ports": [
+        [
+          2,
+          245.5
+        ],
+        [
+          486,
+          245.5
+        ]
+      ],
+      "rail_gauge": 29
+    }
+  ]
+}

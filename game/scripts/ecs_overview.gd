@@ -100,6 +100,7 @@ func _draw() -> void:
 		draw_set_transform(Vector2.ZERO,0,size/CANVAS)
 		chart.draw(self)
 		draw_set_transform(Vector2.ZERO)
+		chart.draw_labels(self,size/CANVAS)
 	if journey == null:
 		return
 	draw_set_transform(Vector2.ZERO, 0, size / CANVAS)

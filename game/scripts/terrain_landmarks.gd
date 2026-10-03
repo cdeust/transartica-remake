@@ -3,7 +3,8 @@ extends RefCounted
 # Source roles: city_backdrop.SCENES, world-terrain.md resources65/71..79/133.
 const REGIONS := [Rect2(11,75,360,325),Rect2(377,128,345,274),
 	Rect2(731,8,340,386),Rect2(1078,128,370,275),Rect2(0,402,372,305),
-	Rect2(377,407,350,308),Rect2(730,400,348,314),Rect2(1090,425,358,294)]
+	Rect2(377,407,350,308),Rect2(730,400,348,314),Rect2(1090,425,358,294),
+	Rect2(11,720,360,315),Rect2(377,720,345,315),Rect2(730,720,348,315),Rect2(1090,720,358,315)]
 const CITY_ART := {1:0,2:1,3:2,4:4,5:3,6:5}
 var master: Texture2D
 
@@ -18,6 +19,10 @@ func draw_tile(view, cell: Vector2i, resource: int, bounds: Rect2) -> bool:
 		index = 6
 	elif resource == 133:
 		index = 2
+	elif resource in [80,147]:
+		index = 11 # source: inspected CARTE resources show a vertical passage in ice.
+	elif resource in [77,81,82,83,84,85,148]:
+		index = 8 # source: inspected CARTE snow/ice relief, not guessed buildings.
 	elif resource == 71:
 		index = _town(view,cell)
 		bounds.size *= Vector2(3,2)
