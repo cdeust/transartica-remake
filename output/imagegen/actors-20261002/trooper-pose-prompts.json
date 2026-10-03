@@ -1,0 +1,100 @@
+{
+  "generator": "built-in image_gen",
+  "transparent_background": true,
+  "reference": "troopers-concept-v2.png",
+  "source_reference_sha256": "036edbc49926760e3b17b41fc08decf0530172327b3fbbe0081921d914c3a45d",
+  "prompts": {
+    "climb": "Use case: stylized-concept. Generate a NEW climbing sprite sheet. Two reference images have STRICTLY DIFFERENT roles.\nIMAGE1 is the SOLE authoritative ART, CHARACTER, COLOR and SCALE reference: troopers-concept-v2. Copy its exact soldier identity and its strongly BLOCKY pixel art: large square pixel clusters, square stepped dark outlines, flat limited-palette pixel patches, angular boots/gloves, angular coat seams, harsh pixel shadow boundaries. The face, ushanka with white badge, huge cream fur collar, long coat, muted blue player and olive enemy red armband, rifle and proportions must match IMAGE1. No smoothly rounded outlines, smooth gradients, painterly texture, anti-aliased curves, vector cartoon, soft shading, or rounded blob gloves. Do NOT take art style from image2.\nIMAGE2 is ONLY POSE and LAYOUT reference; it is too smooth and must be redrawn in IMAGE1's exact square-pixel render. Preserve its five distinct actions and two-by-five arrangement.\nExactly TWO rows by FIVE equal cells, TEN full sprites. Blue top, olive enemy bottom. Same native standing body scale as IMAGE1 about336px; keep anatomical size across compressed/extended poses, leave complete bodies inside cells. Right-facing side profile.\nColumns: 1 one arm reaching overhead with one knee raised and other leg down; 2 compressed climb pull with both hands high and both knees bent; 3 upright climb pull with both hands at chest/shoulder height and NO arm above head; 4 full upward extension with BOTH arms overhead and legs lengthened; 5 roof mantle, torso leans forward RIGHT, BOTH hands pushing on an invisible roof lip, one knee tucked up and other leg hangs. All rifles SLUNG on backs, hands free. Distinct silhouettes exactly as image2.\nGenuinely transparent background, solid opaque interior colors. No original dark cloudy background, no ladder/roof scenery, no labels/grid, no halo. Pixel-art characters only. IMAGE1 rendering takes precedence over image2's smoothed drawing.",
+    "plant": "Use case: stylized-concept. Generate a NEW trooper planting-charge sprite sheet. Two references have distinct roles. IMAGE1 (troopers-concept-v2) is the SOLE authority for exact soldier identity, colors, anatomical scale and BLOCKY PIXEL ART: square stepped black outlines, large square pixel clusters, angular gloves/boots/coat seams, flat limited palette, hard shadow boundaries. Same blue player top and olive enemy red armband bottom, ushanka white badge, white fur collar, long coat, dark gloves/boots, rifle slung behind back. NO rounded vector or painterly shading. IMAGE2 is ONLY a rough guide to three ACTION STATES and two-by-three layout; its forward-hunched torso is WRONG and must NOT be copied.\nExactly two rows of THREE equal cells, SIX full poses. Same soldier scale as IMAGE1 about336px standing, consistent anatomy, common floor baseline. Right-facing profile, full bodies/boxes contained.\nColumn1 PLACING: live alert soldier on ONE knee. Grounded knee DIRECTLY UNDER PELVIS. Spine and STERNUM VERTICAL. SHOULDERS DIRECTLY ABOVE HIPS, head directly above shoulders. Upright kneeling torso like sitting tall, NOT leaning forward. Forward opposite knee is raised with boot planted. Small wooden dynamite box sits CLOSE to the forward knee/boot, so ONLY ARMS extend down/forward to touch it. Torso must stay vertical, don't stretch the whole body to the box.\nColumn2 IGNITION: same tall vertical kneel, shoulders above hips, head alert, one arm reaches a SHORT distance forward/down to light the box's fuse with a match, other hand on raised knee. Tiny fuse flame, no large glow. Torso remains VERTICAL.\nColumn3 RETREAT: soldier rises into tall upright half-standing stance, torso no forward lean, hips move LEFT away from the box on the RIGHT. Rear foot visibly reaches BACKWARD LEFT, forward foot remains facing right nearer box. Clearly stepping backward, not running forward. Arms withdrawn, head looks right toward box.\nMatching poses for both colors. Do not depict slump, dying posture, both knees crouched or bent-down spine. Genuine transparent empty background, solid interior color alpha, no clouds/backdrop/halo, no labels/grid, no explosion. Priority: vertical sternum over hips in columns1-2, backward-left retreat in3, square pixel render from IMAGE1.",
+    "death_backward": "Use case: stylized-concept. Generate a NEW backward-death sprite sheet. Two reference images have STRICTLY DIFFERENT roles.\nIMAGE1 is the SOLE authoritative ART, CHARACTER, COLOR and SCALE reference: troopers-concept-v2. Copy its exact soldier identity and its strongly BLOCKY pixel art: large square pixel clusters, square stepped dark outlines, flat limited-palette pixel patches, angular boots/gloves, angular coat seams, harsh pixel shadow boundaries. Face, ushanka with white badge, huge cream fur collar, long coat, muted blue player and olive enemy red armband, rifle and proportions must match IMAGE1. No smoothly rounded outlines, smooth gradients, painterly texture, anti-aliased curves, vector cartoon, soft shading, or rounded blob gloves. Do NOT take art style from image2.\nIMAGE2 is ONLY POSE and LAYOUT reference; it is too smooth and must be redrawn in IMAGE1's exact square-pixel render. Preserve its four distinct articulated actions and two-by-four arrangement.\nExactly TWO rows by FOUR equal cells, EIGHT full sprites. Blue top, olive enemy bottom. Same native standing body scale as IMAGE1 about336px, same anatomical length across all poses. Generous cells for entire prone body and rifle; no clipping.\nColumns: 1 thrown backward LEFT, torso arches left with knees and elbows bent, rifle flying separately right; 2 stagger backward LEFT, retreating foot left, flexed knees, hands forward, no rigid rotation; 3 sits down hard, buttocks on floor, knees forward RIGHT, one hand braces behind left, clearly seated; 4 lying on BACK, head LEFT, legs RIGHT, one knee bent upwards, rifle separately on ground by feet. Match exactly image2 pose semantics but replace its smooth render.\nGenuinely transparent background, solid opaque interior colors. No original dark cloudy background, no blood/gore, no labels/grid, no halo. Pixel-art characters only. IMAGE1 rendering takes precedence over image2's smoothed drawing.",
+    "death_forward": "Use case: precise-object-edit. Make this exact forward-death trooper sheet production ready by correcting ONLY alpha. Remove ALL dark clouds/gradient/background, alpha exactly0 throughout the empty canvas. Make all soldier colors, coat, face, fur, black gloves/boots/outlines and all rifles fully SOLID OPAQUE with alpha exactly255. Binary alpha PNG, no translucent sprite interior, no glow/halo. Preserve the exact ten poses (five blue top, five olive bottom), their body flexion, anatomy, colors, scale, proportions, cells and placement, including detached rifles in columns2-5. Do not simplify into rotated rigid bodies. No labels/grid or new backdrop.",
+    "run_passing": "Use case: precise-object-edit. Make this exact run passing trooper sheet production ready by correcting ONLY alpha. Remove ALL dark clouds/gradient/background, alpha exactly0 throughout the empty canvas. Make all soldier colors, coat, face, fur, black gloves/boots/outlines and rifles fully SOLID OPAQUE with alpha exactly255. Binary alpha PNG, no translucent sprite interior, no glow/halo. Preserve the exact four passing-run poses (two blue top, two olive bottom), their body anatomy, same soldier colors, scale, proportions and cell placement. Do not turn them into long strides. No labels/grid or new backdrop."
+  },
+  "calls": [
+    {
+      "promptKey": "climb",
+      "asset": "trooper-climb-mantle-generated.png",
+      "transparent_background": true,
+      "generatedSource": "/Users/cdeust/.codex/generated_images/01a0fb7b-5e21-7a93-83b5-f59b91420b7d/exec-5e7425ea-4fcc-4015-a070-4603f65731dc.png",
+      "generatedSha256": "dc9387530eecab567a11f9d9d1b4e594293b1425b42a9c1ef27b2117e3abb611",
+      "references": [
+        {
+          "file": "output/imagegen/actors-20261002/troopers-concept-v2.png",
+          "role": "art and character reference",
+          "sha256": "036edbc49926760e3b17b41fc08decf0530172327b3fbbe0081921d914c3a45d"
+        },
+        {
+          "file": "/Users/cdeust/.codex/generated_images/01a0fb7b-5e21-7a93-83b5-f59b91420b7d/exec-922e7f77-1693-43c7-9c9e-40c6ac032a4e.png",
+          "role": "pose and layout reference only",
+          "sha256": "dea7c0d3575136356436e69f37beda5306e0c07ea0caf9440ed7eb05f7eaa968"
+        }
+      ]
+    },
+    {
+      "promptKey": "plant",
+      "asset": "trooper-plant-generated.png",
+      "transparent_background": true,
+      "generatedSource": "/Users/cdeust/.codex/generated_images/01a0fb7b-5e21-7a93-83b5-f59b91420b7d/exec-f61907b2-278b-4735-a022-2600fb8b24dc.png",
+      "generatedSha256": "714310d9e19a6fc6e364520367c75bb761d61db19bea9c863a127249e8177eb0",
+      "references": [
+        {
+          "file": "output/imagegen/actors-20261002/troopers-concept-v2.png",
+          "role": "art and character reference",
+          "sha256": "036edbc49926760e3b17b41fc08decf0530172327b3fbbe0081921d914c3a45d"
+        },
+        {
+          "file": "/Users/cdeust/.codex/generated_images/01a0fb7b-5e21-7a93-83b5-f59b91420b7d/exec-5f7af17f-2944-4faa-b09d-eb847c5b60c1.png",
+          "role": "pose and layout reference only",
+          "sha256": "088961d3ecff47eea214e1094fea8dfec6876e9fcb7bb3966723dd1443cb39a7"
+        }
+      ]
+    },
+    {
+      "promptKey": "death_backward",
+      "asset": "trooper-death-backward-generated.png",
+      "transparent_background": true,
+      "generatedSource": "/Users/cdeust/.codex/generated_images/01a0fb7b-5e21-7a93-83b5-f59b91420b7d/exec-ebb343ae-c5cc-4780-8703-bc7806cdf0bb.png",
+      "generatedSha256": "c786d34c07c141b0220c37f10fd43b7fb456972a4d11ab6ca0441e113006a69f",
+      "references": [
+        {
+          "file": "output/imagegen/actors-20261002/troopers-concept-v2.png",
+          "role": "art and character reference",
+          "sha256": "036edbc49926760e3b17b41fc08decf0530172327b3fbbe0081921d914c3a45d"
+        },
+        {
+          "file": "/Users/cdeust/.codex/generated_images/01a0fb7b-5e21-7a93-83b5-f59b91420b7d/exec-088b31de-119a-4a36-a7a0-69394b9be04c.png",
+          "role": "pose and layout reference only",
+          "sha256": "82cddd1985b39d08a197c54963d41c236bb651625957feb79b130c8386acc66d"
+        }
+      ]
+    },
+    {
+      "promptKey": "death_forward",
+      "asset": "trooper-death-forward-generated.png",
+      "transparent_background": true,
+      "generatedSource": "/Users/cdeust/.codex/generated_images/01a0fb7b-5e21-7a93-83b5-f59b91420b7d/exec-1197598b-0fa4-44ea-909d-5f7586b8a1d8.png",
+      "generatedSha256": "912d4a245aa03eeaedf5b1e6ff6e458957936dc0bc248fa4357691f5c4ab24d3",
+      "references": [
+        {
+          "file": "/Users/cdeust/.codex/generated_images/01a0fb7b-5e21-7a93-83b5-f59b91420b7d/exec-93c32975-15a5-404c-9587-3d3d56f21a35.png",
+          "role": "prior generated pose sheet, alpha edit target",
+          "sha256": "ddc709bf1b573145cfafde4faeb263c7b306a8a4745821bfb8fba764af09341b"
+        }
+      ]
+    },
+    {
+      "promptKey": "run_passing",
+      "asset": "trooper-run-passing-generated.png",
+      "transparent_background": true,
+      "generatedSource": "/Users/cdeust/.codex/generated_images/01a0fb7b-5e21-7a93-83b5-f59b91420b7d/exec-ee16b105-ee11-4e38-9b2a-385395291ce6.png",
+      "generatedSha256": "f305709bbb1c71908c2e67aa31e22da8313ba7228b4150f2237bed63decdba61",
+      "references": [
+        {
+          "file": "/Users/cdeust/.codex/generated_images/01a0fb7b-5e21-7a93-83b5-f59b91420b7d/exec-601dd7d4-5c84-4864-860a-e8cf21bff4ea.png",
+          "role": "prior generated pose sheet, alpha edit target",
+          "sha256": "020d7147b9f1e5632bcb1edcd8d2819209669bf30e5da3a92fcb069f34c8cd72"
+        }
+      ]
+    }
+  ]
+}

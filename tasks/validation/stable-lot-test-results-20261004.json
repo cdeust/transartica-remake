@@ -1,0 +1,112 @@
+[
+  {
+    "test": "test_train_route_history",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_original_panel",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_camera_switch_ahead",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_authored_overview",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_composition_arrows",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_overview_materials",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_reverse_continuity",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_works_commit",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_infantry_live_scan",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_travel_world",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_terrain_obstacles",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_train_journey",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_panel_works_modal",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_travel_terrain",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_rail_art_registration",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_clock_quality",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_city_icon_resolution",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_ecs_panel",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_tactical_combat",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_camera_scale",
+    "runtime": "headless",
+    "ok": true
+  },
+  {
+    "test": "test_tactical_registration",
+    "runtime": "native",
+    "ok": true
+  },
+  {
+    "test": "test_city_list_icons",
+    "runtime": "native",
+    "ok": true
+  }
+]

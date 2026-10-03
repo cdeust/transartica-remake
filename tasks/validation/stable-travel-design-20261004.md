@@ -39,3 +39,21 @@ release Windows native n’est validée dans ce lot. La nouvelle correction
 du livre a été inspectée par l’agent ; sa revue artistique propriétaire reste
 ouverte. Le test tactique exige le moteur natif : tentative headless expirée,
 puis exécution native réussie.
+
+## Intégration distante
+
+La tête distante f50c3cd contient23 commits d’animations de combat depuis
+la base locale3f8efc6. Les conflits de cadence ont été résolus en retenant
+l’implémentation distante, équivalente aux corrections de ce lot. Les
+assets et rythmes Opus restent conservés. Deux documents locaux de handoff
+diffèrent du distant : restaurés comme modifications non indexées, sans
+publication ni suppression. L’intégration impose une extraction mécanique
+de tactical_actor_motion.gd (913 lignes) pour satisfaire le contrôle
+de taille ; validation du comportement après extraction requise.
+
+Extraction vérifiée indépendamment contre le SHA source distant :52
+signatures,31 wrappers, constantes et état conservés ; corps des fonctions
+identiques après substitution du receveur et annotations de type.
+Tests natifs de registration et mouvement réussis après intégration, sans
+erreur de script. Le test vérifie notamment le modèle inchangé, les appuis,
+les morts, la dynamite, les échelles et le démontage des cavaliers.

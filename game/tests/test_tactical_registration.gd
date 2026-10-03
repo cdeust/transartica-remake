@@ -79,8 +79,7 @@ func run() -> void:
 	var actor = model.add_actor(0,29,-1,5,false,1,8)
 	check(model.plant(actor.id,1),"real charge planted")
 	for sweep in 5: # source: reproduction's source charge countdown
-		model.scan_side = 0
-		# WDECOR170d/179a scans the enemy roof upon reaching field row6.
+		#0x1713: roof1 (enemy train) is swept as the scan enters row6.
 		model.scan = model.columns*6-1
 		scene._physics_process(model.STEP_SECONDS)
 	check(model.trains[1][7].health == 0,"source charge actually destroyed enemy wagon7")

@@ -36,8 +36,7 @@ func run() -> void:
 	var actor = model.add_actor(0,29,-1,5,false,1,8)
 	assert(model.plant(actor.id,1))
 	for sweep in 5:
-		model.scan_side = 0
-		model.scan = model.columns*7-1
+		model.scan = model.columns*6-1
 		scene._physics_process(Combat.STEP_SECONDS)
 	assert(model.trains[1][7].health == 0)
 	await capture("dynamite-destruction")

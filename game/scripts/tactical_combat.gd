@@ -152,22 +152,21 @@ func step() -> void:
 	Weapons.enemy_ai(self)
 	Weapons.run(self)
 	#0x0244,1389: scan max(columns/4,40) cells each tick, not all actors each frame.
+	#0x13a1/173e: byte8375 is the pass parity carried by the cell sign (processed
+	# marker), not a side; both sides are updated on every pass.
 	for cell in maxi(columns / 4, 40):
 		var actor = actor_at(scan % columns, scan / columns)
-		# WDECOR1390..13b3: sign marks processing, not faction. Both factions
-		# participate in each scan; filtering by side stranded player infantry
-		# on odd sweeps, where its every-other-scan movement always skipped.
 		if actor != null and actor.processed != sweep:
 			actor.processed = sweep
 			Actors.update(self, actor)
 		scan += 1
-		# WDECOR170d..17b0 visits enemy roof at row6, player roof at row7.
-		if scan == columns*6:
-			Actors.roof_sweep(self,1)
+		#0x1713: cswitch2 base-6 (ALIS opcodes.c) sweeps roof1 entering row6, roof0 at wrap.
+		if scan == columns * 6:
+			Actors.roof_sweep(self, 1)
 		if scan >= columns * 7:
 			scan = 0
-			Actors.roof_sweep(self,0)
-			scan_side = 1 - scan_side
+			Actors.roof_sweep(self, 0)
+			scan_side = 1 - scan_side # byte8375 pass parity, kept for saves.
 			sweep += 1
 	actors = actors.filter(func(actor): return actor.count > 0)
 	# Emit each completed tick before the next step clears its event array.

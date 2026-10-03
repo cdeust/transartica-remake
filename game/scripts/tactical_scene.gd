@@ -11,7 +11,6 @@ var camera := 0.0
 var paused := false
 var textures := {}
 var texture_bounds := {}
-var actor_art = preload("res://scripts/tactical_actor_art.gd").new()
 var wagon_art = preload("res://scripts/tactical_wagon_art.gd").new()
 var effects: Array = []
 var edge_scroll := 0
@@ -21,6 +20,7 @@ var lights: Array = []
 var audio
 var living = preload("res://scripts/living_effects.gd").new()
 var weapon_motion = preload("res://scripts/tactical_weapon_motion.gd").new()
+var actor_motion = preload("res://scripts/tactical_actor_motion.gd").new()
 var _visual_frame := false
 var _visual_delta := 0.0
 var _visual_cursor := 0.0
@@ -74,6 +74,9 @@ func open_battle(value) -> void:
 		lights.clear()
 		living.clear()
 		weapon_motion.clear()
+		actor_motion.clear()
+		_kept.clear() # label spots belong to the battle that placed them
+		_shown.clear()
 	state = value
 	show()
 	queue_redraw()
@@ -87,6 +90,8 @@ func _source_audio(offset: int) -> void:
 func _presentation_event(event: Dictionary) -> void:
 	var point: Vector2 = EffectGeometry.event_point(self,event)
 	var direction := Vector2(0,1 if event.get("side",0) == 0 else -1)
+	if event.kind == "melee":
+		actor_motion.melee(event)
 	if event.kind in ["machinegun","cannon"]:
 		weapon_motion.fire(event.side,event.wagon,event.kind)
 		point = weapon_motion.mount(self,event.side,event.wagon,event.kind == "machinegun").muzzle
@@ -115,6 +120,8 @@ func _visual_step() -> void:
 	# Fraction from the50Hz visual clock, so emitters never see display-rate remainders.
 	_steps_since_tick += 1
 	_clock_fraction = clampf(_steps_since_tick*living.STEP*pace/state.STEP_SECONDS,0.0,1.0)
+	actor_motion.step(self)
+	ease_labels()
 	for landing in weapon_motion.settle(self): # dust and grit where a fallen gun lands
 		var base: Vector2 = weapon_motion.mount(self,landing.side,landing.wagon,true).base
 		living.add("dust",base+Vector2(camera,0),Vector2.UP,clampf(landing.speed/3.0,0.4,1.0))
@@ -186,11 +193,10 @@ func _draw() -> void:
 	_draw_ground()
 	_train(0, 63)
 	_train(1, 192)
-	for actor in state.actors:
-		_actor(actor)
-	for charge in state.charges:
-		var point := EffectGeometry.roof_point(self,charge.side,charge.slot)
-		_label(point,"●%d" % charge.fuse,5)
+	actor_motion.draw(self) # live groups plus fading removals
+	var layout := layout_labels()
+	for actor in state.actors: _actor(actor)
+	for label in layout.charges+layout.counts: _label(label.shown,label.text,label.size,label.anchor)
 	for effect in effects:
 		_effect(effect)
 	# World-position effects remain registered while the combat camera scrolls.
@@ -228,16 +234,166 @@ func _status(value: String) -> void:
 	draw_rect(Rect2(0,94,320,10), Color(0.03,0.06,0.08,0.8))
 	text_at(Vector2(3,101), value, 5)
 
-func _label(point: Vector2, value: String, font_size: int) -> void:
-	# Authored dark backing keeps health/count readouts legible on snow and smoke.
+# Where this frame's labels go. Each is the first spot of a short preference list
+# whose backing rectangle covers no soldier, wagon body, wagon tag or label placed
+# before it; none free: the least covered. A label keeps its spot while that stays
+# clear and moves only when it clashes, easing there (ease_labels) so it never
+# jumps. Charge counters first (beside the box, away from the man kneeling at it,
+# then the other side, then a smaller font, then up to LABEL_REACH above it, never
+# farther), then each group's count (below its feet, else beside or above the group).
+# Returns each label's "point" (where it settles) and "shown" (where it is drawn).
+const LABEL_GAP := 0.75 # source: authored, logical px kept clear around a label.
+const LABEL_REACH := 16.0 # source: authored, logical px; highest a charge counter goes above its box.
+const LABEL_EASE := 1.0 # source: authored, logical px a label may move per visual step.
+var _kept := {} # label key -> {"offset","size","anchor"}: the spot it keeps while clear
+var _shown := {} # label key -> offset from its base where it is drawn
+func layout_labels() -> Dictionary:
+	var avoid := wagon_tag_rects()+actor_motion.soldier_rects(self)+wagon_body_rects()
+	var layout := {"charges":[],"counts":[]}
+	for charge in state.charges:
+		var home := EffectGeometry.roof_point(self,charge.side,charge.slot)
+		var left_first := actor_motion.planter_facing(charge) < 0
+		var options := []
+		for lift in [-9.0,-LABEL_REACH]: # 9 clears a kneeling man, 16 a standing one
+			for size in [5,4]:
+				for turn in 2:
+					var left := (turn == 0) == left_first
+					var offset := Vector2(-2.0 if left else 0.0,lift)
+					options.append({"point":home+offset,"offset":offset,"text":"●%d" % charge.fuse,"anchor":1.0 if left else 0.0,"size":size})
+		layout.charges.append(_settle("c%d/%d" % [charge.side,charge.slot],home,options,avoid))
+	for actor in state.actors:
+		if actor_motion.label_hidden(actor): continue
+		var feet := actor_motion.point(self,actor)
+		var offsets := [Vector2(-4,4),Vector2(2,4),Vector2(-6,-4),Vector2(7,-4),Vector2(-12,-4),Vector2(13,-4),Vector2(-4,11),Vector2(2,11),Vector2(-12,11),Vector2(13,11)] # below, then beside, then farther below (a second group at the same feet)
+		for lift in [-16.0,-22.0,-28.0,-34.0]: # then above the heads, sliding sideways
+			for slide in [-3.0,4.0,-10.0,11.0,-17.0,18.0]: offsets.append(Vector2(slide,lift))
+		var options := []
+		for offset in offsets:
+			var left: bool = offset.x == -6 or offset.x == -12 # beside, growing leftwards
+			options.append({"point":feet+offset,"offset":offset,"text":str(actor.count),"anchor":1.0 if left else 0.0,"size":4})
+		layout.counts.append(_settle("a%d" % actor.id,feet,options,avoid))
+	return layout
+
+# The spot a label settles on: its kept one while still clear, else the first free.
+func _settle(key: String, base: Vector2, options: Array, avoid: Array) -> Dictionary:
+	var spot: Dictionary = {}
+	if _kept.has(key):
+		var kept: Dictionary = _kept[key]
+		var same: Dictionary = options[0].duplicate()
+		same.offset = kept.offset
+		same.point = base+kept.offset
+		same.anchor = kept.anchor
+		same.size = kept.size
+		if _cover(same,avoid) == 0.0: spot = same
+	if spot.is_empty(): spot = _free_spot(options,avoid)
+	_kept[key] = {"offset":spot.offset,"size":spot.size,"anchor":spot.anchor}
+	avoid.append(label_rect(spot.point,spot.text,spot.size,spot.anchor))
+	spot = spot.duplicate()
+	spot.key = key
+	spot.base = base
+	spot.shown = base+_shown.get(key,spot.offset)
+	return spot
+
+# One visual step of the labels: settle them, then move each drawn label at most
+# LABEL_EASE toward its spot, taking the step (toward it, up, down, sideways or
+# staying) that covers the least and then gets closest, so it slides around the
+# soldiers instead of across them.
+func ease_labels() -> void:
+	var layout := layout_labels()
+	var avoid := wagon_tag_rects()+actor_motion.soldier_rects(self)+wagon_body_rects()
+	var shown := {}
+	for label in layout.charges+layout.counts:
+		var here: Vector2 = _shown.get(label.key,label.offset)
+		var steps := [here.move_toward(label.offset,LABEL_EASE),here,here+Vector2(0,-LABEL_EASE),here+Vector2(0,LABEL_EASE),here+Vector2(-LABEL_EASE,0),here+Vector2(LABEL_EASE,0)]
+		var best: Vector2 = steps[0]
+		var cost := INF
+		for step in steps:
+			var option := {"point":label.base+step,"text":label.text,"anchor":label.anchor,"size":label.size}
+			var value: float = _cover(option,avoid)*1000.0+step.distance_to(label.offset)
+			if value < cost:
+				cost = value
+				best = step
+		shown[label.key] = best
+		avoid.append(label_rect(label.base+best,label.text,label.size,label.anchor))
+	_shown = shown
+
+# Overlaps among this frame's labels and the soldiers, wagon tags and wagon
+# bodies (a charge counter may not touch a soldier; a count label may meet
+# boots), plus charge counters farther than LABEL_REACH from their box. 0 is clean.
+func layout_clashes() -> int:
+	var layout := layout_labels()
+	var rects := []
+	for label in layout.charges+layout.counts: rects.append(label_rect(label.point,label.text,label.size,label.anchor))
+	var clashes := 0
+	for index in rects.size():
+		for other in rects.slice(index+1)+wagon_tag_rects()+wagon_body_rects():
+			if rects[index].grow(LABEL_GAP).intersects(other): clashes += 1
+	for index in layout.charges.size():
+		for other in actor_motion.soldier_rects(self):
+			if rects[index].grow(LABEL_GAP).intersects(other): clashes += 1
+		var home := EffectGeometry.roof_point(self,state.charges[index].side,state.charges[index].slot)
+		if home.y-layout.charges[index].point.y > LABEL_REACH+0.01 or absf(layout.charges[index].point.x-home.x) > LABEL_REACH: clashes += 1
+	return clashes
+
+func _free_spot(options: Array, avoid: Array) -> Dictionary:
+	var best: Dictionary = options[0]
+	var least := INF
+	for option in options:
+		var covered := _cover(option,avoid)
+		if covered < least:
+			least = covered
+			best = option
+		if covered == 0.0: break
+	return best
+
+# How much of the obstacles a label's backing rectangle (with its gap) covers;
+# 1000 and up when it leaves the canvas below the HUD bar.
+func _cover(option: Dictionary, avoid: Array) -> float:
+	var rect := label_rect(option.point,option.text,option.size,option.anchor).grow(LABEL_GAP)
+	var covered := 0.0 if Rect2(Vector2(0,22),Vector2(320,178)).encloses(rect.grow(-LABEL_GAP)) else 1000.0 # source: canvas below the HUD bar (88 px at x4).
+	for other in avoid:
+		if rect.intersects(other): covered += rect.intersection(other).get_area()
+	return covered
+
+# The wagons' bodies below their roof line (logical px), where no label fits.
+func wagon_body_rects() -> Array:
+	var rects := []
+	for side in 2:
+		for index in state.trains[side].size():
+			if state.trains[side][index].class == state.Setup.LOCOMOTIVE_COMPANION: continue
+			var rect: Rect2 = EffectGeometry.wagon(self,side,index).rect
+			var roof := EffectGeometry.surface_y(self,side,index,rect.get_center().x)
+			rects.append(Rect2(rect.position.x,roof,rect.size.x,rect.end.y-roof))
+	return rects
+
+# Wagon tags drawn over the player's train (logical px).
+func wagon_tag_rects() -> Array:
+	var rects := []
+	var source_index := 0
+	for index in state.trains[0].size():
+		if state.trains[0][index].class == state.Setup.LOCOMOTIVE_COMPANION: continue
+		source_index += 1
+		rects.append(label_rect(Vector2(EffectGeometry.wagon(self,0,index).rect.position.x+2,32),"%d:%d" % [source_index,state.trains[0][index].health],4))
+	return rects
+
+# Backing rectangle of a label (logical px); anchor 0 starts the text at point,
+# 1 ends it there, so a charge's counter can sit away from the man kneeling at it.
+func label_rect(point: Vector2, value: String, font_size: int, anchor := 0.0) -> Rect2:
 	var factor := canvas_rect().size.x / CANVAS.x
 	var pixels := maxi(1, roundi(font_size * factor))
 	var width := ThemeDB.fallback_font.get_string_size(value,HORIZONTAL_ALIGNMENT_LEFT,-1,pixels).x / factor
-	draw_rect(Rect2(point-Vector2(1,font_size+1),Vector2(width+2,font_size+3)),Color(0.03,0.06,0.08,0.9))
+	return Rect2(point-Vector2(1+anchor*width,font_size+1),Vector2(width+2,font_size+3))
+
+func _label(point: Vector2, value: String, font_size: int, anchor := 0.0) -> void:
+	# Authored dark backing keeps health/count readouts legible on snow and smoke.
+	var factor := canvas_rect().size.x / CANVAS.x
+	var pixels := maxi(1, roundi(font_size * factor))
+	var rect := label_rect(point,value,font_size,anchor)
+	draw_rect(rect,Color(0.03,0.06,0.08,0.9))
 	# Keep output-pixel glyphs while restoring the shaken world transform.
 	# OriginalScreen.text_at resets that transform after every world label.
 	draw_set_transform(Vector2.ZERO)
-	draw_string(ThemeDB.fallback_font,world_transform*point,value,HORIZONTAL_ALIGNMENT_LEFT,-1,pixels,GOLD)
+	draw_string(ThemeDB.fallback_font,world_transform*Vector2(rect.position.x+1,point.y),value,HORIZONTAL_ALIGNMENT_LEFT,-1,pixels,GOLD)
 	draw_set_transform_matrix(world_transform)
 
 func _train(side: int, _baseline: float) -> void:
@@ -270,13 +426,11 @@ func _enemy_type(kind: int) -> int:
 	return classes.get(kind,25)
 
 func _actor(actor: Dictionary) -> void:
-	var point := EffectGeometry.roof_point(self,actor.roof,actor.x) if actor.roof >= 0 else _field_point(actor.x,actor.y)
-	actor_art.draw_actor(self,actor,point)
-	_label(point+Vector2(-4,4),str(actor.count),4)
+	var point: Vector2 = actor_motion.point(self,actor)
 	if actor.id == selected_actor:
 		draw_line(point+Vector2(-6,6),point+Vector2(6,6),GOLD,1)
 
-func _field_point(x: int,y: int) -> Vector2:
+func _field_point(x: float,y: float) -> Vector2:
 	return Vector2(x*16-state.center_offset()-camera+8,61+96-y*16+16)
 
 func _roof_point(side: int,slot: int) -> Vector2:
@@ -316,7 +470,7 @@ func _gui_input(event: InputEvent) -> void:
 	for actor in state.actors:
 		if actor.side != 0:
 			continue
-		var actor_point := EffectGeometry.roof_point(self,actor.roof,actor.x) if actor.roof>=0 else _field_point(actor.x,actor.y)
+		var actor_point: Vector2 = actor_motion.point(self,actor)
 		if Rect2(actor_point-Vector2(12,22),Vector2(24,28)).has_point(point):
 			selected_actor = actor.id
 			selected_wagon = -1

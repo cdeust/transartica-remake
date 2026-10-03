@@ -1,0 +1,105 @@
+{
+  "file": "game/assets/combat/mammoth-poses.png",
+  "sha256": "6fe08450d5c33d4b0181f2fdfd4d75836a6d1b0ac660318cb446748a312c521c",
+  "table": {
+    "file": "game/scripts/tactical_mammoth_frames.gd",
+    "sha256": "5796b3c2c97728f2bb776a51f3d4af31e59a069b57e27f8a6b34b7f039e9e170",
+    "generated_by": "game/tools/build_mammoth_poses.gd"
+  },
+  "sources": [
+    {
+      "file": "output/imagegen/actors-20261002/mammoth-bare-generated.png",
+      "sha256": "77d7b5a51ec7028de5d2f34a0b13a47fdb435616fd1856d8d324bb2d8829cb27"
+    },
+    {
+      "file": "output/imagegen/actors-20261002/mammoth-player-howdah-generated.png",
+      "sha256": "0b988366416c94423e8c8b43c897a6318c79bb2e0cdbb14b40c6dae7315e37a1"
+    },
+    {
+      "file": "output/imagegen/actors-20261002/mammoth-enemy-howdah-generated.png",
+      "sha256": "f063e336a0a5545d65c77968f492732e82678795f1bb91158bc4cfab2f8e8317"
+    },
+    {
+      "file": "output/imagegen/actors-20261002/mammoth-player-riders-generated.png",
+      "sha256": "dd5769175db7c68f48771b73c59b717ef8da312895407269e69623a67914c733"
+    },
+    {
+      "file": "output/imagegen/actors-20261002/mammoth-enemy-riders-generated.png",
+      "sha256": "dc5e21a74f8fcb7f58139711379d6c6f244d50a91483c1a93b250654c69b0c94"
+    },
+    {
+      "file": "output/imagegen/actors-20261002/mammoth-dismount-generated.png",
+      "sha256": "737c4a6cf07649921a0e2dcb1ef8c8206580a0e8412f562605dd8eb8ee90e9b1"
+    }
+  ],
+  "prompts": "output/imagegen/actors-20261002/mammoth-pose-prompts.json",
+  "builder": "game/tools/build_mammoth_poses.gd",
+  "renderer": [
+    "game/scripts/tactical_mammoth_poses.gd",
+    "game/scripts/tactical_mammoth_motion.gd",
+    "game/scripts/tactical_actor_motion.gd"
+  ],
+  "swap_v2_sheets": "edit the SHEETS constant of game/tools/build_mammoth_poses.gd (same cell order assumed), rerun the builder, then `Godot --headless --path game --import` and compare .godot/imported/mammoth-poses.png-*.md5 with md5 of the atlas",
+  "frames": {
+    "bare": "walk 8, stop 2, melee 4, hit 2, death 8",
+    "player_howdah": "walk 8, stop 2, melee 4, hit 2, death 5 (box and gun included; baked rider silhouettes remain until the -v2 empty sheets)",
+    "enemy_howdah": "same, olive",
+    "riders": "spotter and gunner parts per frame, blue and olive; death 2-5 are merged pairs",
+    "dismount": "5 frames per side (stand, leg over, hang, drop, land), rim fragments cut away"
+  },
+  "scales_texel_per_source_px": {
+    "bare": 0.438,
+    "enemy": 0.402,
+    "player": 0.4188,
+    "dismount": 0.1683,
+    "riders": 0.2399
+  },
+  "scale_method": {
+    "bare": "stop frame bbox height 184 src px = 20.15 logical px, the height of the former pose 8 drawn at the 28 logical px limit (410x295 source); frame is then 28.1 px wide",
+    "howdah": "mean over the 8 walk frames of sqrt(tusk area) ratio to the bare sheet (tusk = largest warm cream blob): player 0.956, enemy 0.918",
+    "dismount": "head-matched to the trooper rig: head height (face bottom to hood top) 62 src px on troopers-concept-v2 x 0.1548 = 9.6 texels; dismount sheet 57 src px -> 0.1683 (standing soldier 11.4 logical px)",
+    "riders": "same head height: gunner of the riders sheet 40 src px -> 0.2399 (the earlier x1.33 was 5.5% larger). Body-matched would be x0.75: tasks/validation/mammoth-rider-scale-20261002.png"
+  },
+  "pivots": "x = mass centre of the frame plus the stopped frame's hoof-minus-mass offset; y = sole (common ground line); GROUND lines of the builder print each frame's gap to its row's median sole",
+  "stride": {
+    "per_frame_logical_px": [
+      [
+        0.424,
+        0.424,
+        0.424,
+        0.424,
+        0.424,
+        0.424,
+        0.424,
+        0.424
+      ],
+      [
+        0.766,
+        0.766,
+        0.766,
+        0.766,
+        0.766,
+        0.766,
+        0.766,
+        0.766
+      ],
+      [
+        0.622,
+        0.622,
+        0.622,
+        0.622,
+        0.622,
+        0.622,
+        0.622,
+        0.622
+      ]
+    ],
+    "note": "per frame change the pair of planted hooves nearest the mean advance is matched; each frame is drawn shifted so the matched hoof keeps its world x (builder WOBBLE: body bob up to 0.54/0.91/0.67 px bare/player/enemy), body advances at the mean (3.4/6.1/5.0 px per cycle). Measured by test_tactical_actor_motion: 0.00 px planted-hoof move on every frame change (113 in the walk, 24/24 table transitions)."
+  },
+  "status": "first integration; not owner-accepted",
+  "known_limits": [
+    "rider fall: ballistic (g 200, lift 24 px/s, drift 11 px/s), the single faller lies as the trooper's lying sprite; death of the beast with riders launches them from the tilting howdah",
+    "gait: stride 3.4-6.1 px per cycle at 14 px/s plays 2-4 cycles/s (Codex's frames do not encode a longer stride)",
+    "howdah sheets: the empty rear seat has a dark cushion/seat-back lump; Codex says no rider silhouettes remain, no -v2"
+  ]
+}

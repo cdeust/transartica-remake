@@ -86,6 +86,16 @@ New changes remain local; no publication or merge is authorized.
 - [x] Complete final exact-tree test inventory, independent review and code gates.
 - [x] Execute rebuilt macOS application and retain evidence.
 - [ ] Execute Windows package on Windows; export alone is insufficient.
+- [x] Tactical cadence: byte8375 is pass parity, not side (0x13a1/173e); player
+  infantry was frozen, mammoths half speed. Both roofs swept per pass (0x1713,
+  ALIS cswitch2 index=value+base); roof steps on 8548, fuses five passes.
+- [ ] Reported "commanded player mammoth did not move": not reproduced. Scene
+  path (livestock deploy, Down) moved it 5→0 within10s pre-fix and in2.5s
+  post-fix. Faithful silent no-ops: Up/click above at y5 (0x1f27 y>=6 bound)
+  and S (split) on a mammoth. Needs the owner's exact steps.
+- Note: eight suites (campaign_fauna, campaign_visuals, city_list_icons,
+  game_boot, key_bindings, launcher, restore_city, startup_intro) hang under
+  --headless; run them with a window.
 - [x] Finish owner-scoped cleanup, preserving unpublished/concurrent work.
 
 Current proof: campaign-route-cleanup-native-after-20261001.log, source route
@@ -479,3 +489,39 @@ jalons de livraison tirés des gates ECS, pas de nouveaux chapitres de l'histoir
 
 Reprise : sauvegarde native CONTINUE obtenue après l'achat de sel à Taoudeni.
 Le journal du voyage depuis START et les sauvegardes privées restent conservés.
+
+Branche locale fix/combat-regressions basée sur main6dca252 ; aucun push dans cette tâche.
+
+### Mouvement de présentation des acteurs, 2 octobre 2026 — non accepté artistiquement
+
+- [x] Glissement continu entre cases à la période source mesurée (passe = 7×colonnes / max(colonnes/4,40) ticks ; 1, 2 ou 4 passes par case selon camp et type). Avant : saut de 16 px toutes les 1,1–4,5 s.
+- [x] Foulée (rebond), arrêt sur appui, orientation selon le déplacement (miroir), accroupissement à la pose de dynamite (poses 2/6 mesurées), fente et éclair en mêlée, fondu de disparition sans retarder la perte d'effectif ; saut sans glissade aux discontinuités (embarquement, restauration, fusion).
+- [x] Miroir : un rectangle à largeur négative ne déplace pas sa position ; corrigé et vérifié par capture native (`test_tactical_actor_mirror`), clic et sélection sur le corps affiché.
+- [x] Modèle intact : modèle piloté par la scène identique au modèle nu (`test_tactical_actor_motion`). Suite complète 68 PASS.
+- [ ] Orientation : l'original dessine les acteurs au sol en tuiles (cputmap98) et ceux des toits en sprites 10+case ; son orientation n'est pas décodée. Le miroir est une présentation provisoire, pas une preuve des huit caps.
+- [x] Retour du propriétaire (2 octobre) : « pas un sprite qui glisse avec 4 images ». Remplacé par un rig procédural découpé dans le soldat debout de Codex (`assets/combat/trooper-rig.png`, outil `game/tools/build_trooper_rig.gd`) : buste avec bras et fusil, deux pans de manteau, bottes ; jambes en cinématique inverse vers des pieds plantés (glissement mesuré < 0,05 px pendant l'appui).
+- [x] Choix du propriétaire : sprint puis attente (case franchie en ~0,8 s, freinage sur la case, attente du pas source), plusieurs soldats visibles par groupe (jusqu'à 4).
+- [x] Mêlée : coups et reculs ; chaque perte fait tomber un soldat, un par un (0,3 s d'écart), selon trois chutes (à la renverse, effondrement en avant, titubement puis chute) ; un camarade vient combler le rang ; les corps restent 3 s.
+- [x] Dynamite : le meneur court à la case, caisse en main, s'agenouille, pose, allume (mèche qui crépite), se relève et revient.
+- [x] Embarquement : course jusqu'à l'échelle en bout de wagon, escalade, rétablissement, course sur le toit ; les hommes transférés au toit ennemi partent de leur groupe d'origine.
+- [ ] Revue du propriétaire en lecture native : cadence, taille, chutes, dynamite, montée. Vues avant/arrière absentes (miroir provisoire). Mammouths sans rig.
+- [ ] Mammouths, loups, espions : hors de cette étape (planche mammouth à simplifier ; loups et espions hors effectif tactique).
+
+Preuves : `validation/actor-motion-glide-20261002.mp4` (avant correction du miroir), `validation/actor-motion-troopers-20261002.mp4` (atlas à 4 images, rejeté), `validation/trooper-rig-20261002.mp4` (rig en combat, 8 s), `validation/trooper-actions-20261002.mp4` (morts, dynamite, montée mises en scène, modèle figé).
+
+## Sprite-animated mammoths — 2 October 2026 (branch feat/mammoth-motion)
+
+First integration of Codex's mammoth sheets; not owner-accepted. Builder
+`game/tools/build_mammoth_poses.gd` (helpers `mammoth_sheets.gd`) writes
+`game/assets/combat/mammoth-poses.png` and the generated table
+`game/scripts/tactical_mammoth_frames.gd`; hashes, scales and measurements in
+`output/imagegen/actors-20261002/mammoth-poses-runtime.json`; recording and close-ups in
+`tasks/validation/mammoth-actions-20261002.mp4`, `mammoth-actions-contact-20261002.png`,
+`mammoth-closeups-20261002.png`.
+
+- [x] Walk 8 frames driven by distance (stepped, hooves still while a frame shows), stop, melee, hit, death (8 bare / 5 howdah), rider layer min(count-1, 2), blue and olive.
+- [x] Dismount of riders stepping off a howdah (stand, leg over, hang, drop, land) before the run to the wagon; review fixture lands them on a wagon, not the locomotive.
+- [ ] Owner acceptance of the mammoth sprites (scale, gait speed, rider size).
+- [x] No `-v2` sheets: Codex confirms the howdah sheets hold no rider silhouettes (seat backs only).
+- [ ] Howdah and rider fall physics (the rider death frames are authored arcs of the merged pairs).
+- [ ] `tactical_actor_motion.gd` is 830 lines (740 before this work): split boarding, dynamite and drawing out of it; `tactical_actor_art.gd` now has no runtime caller (mirror test and review script only).
