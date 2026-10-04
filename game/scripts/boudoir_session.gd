@@ -73,6 +73,9 @@ func open_panel(name: String) -> bool:
 		return true
 	if name not in ["boudoir", "journal", "quarters", "options", "overview"]:
 		return false
+	if name == "overview" and not overview.visible:
+		# Source: tasks/validation/common-map-access-20261004.md, return to caller.
+		last_room = "map" if app._modal.visible else "boudoir" if view.visible else "quarters" if quarters.visible else "room"
 	leave()
 	match name:
 		"boudoir", "journal":
@@ -134,7 +137,7 @@ func handle_key(input: InputEventKey, canonical: InputEventKey = null) -> bool:
 			return false
 	elif quarters.visible or overview.visible:
 		if command.physical_keycode == KEY_ESCAPE:
-			app._open_panel("room")
+			app._open_panel(last_room if overview.visible else "room")
 		elif command.physical_keycode == KEY_M:
 			app._open_panel("map")
 		elif command.physical_keycode == KEY_J:
@@ -167,7 +170,7 @@ func _panel_action(code: int) -> void:
 		city_suspended = true
 	match code:
 		1:
-			app._open_panel(last_room if overview.visible else "overview" if app._modal.visible else "map")
+			app._open_panel(last_room if overview.visible else "map" if panel.reference_pixels and not app._modal.visible else "overview")
 		2:
 			# YODA 0x47c/0x57d, persisted calendar factor; cadence applied by main.
 			app.calendar.factor = 3 if app.calendar.factor == 1 else 1

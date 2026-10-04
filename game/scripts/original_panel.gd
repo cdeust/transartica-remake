@@ -98,7 +98,7 @@ func hotspot_at(point: Vector2) -> int:
 	for code in COMMON:
 		if COMMON[code].has_point(logical):
 			return code
-	var contextual: Dictionary = MAP_COMMANDS if map_context else WAGON_COMMANDS
+	var contextual: Dictionary = contextual_commands()
 	for code in contextual:
 		if contextual[code].has_point(logical):
 			return code
@@ -111,9 +111,16 @@ func _has_point(point: Vector2) -> bool:
 
 
 func activate(code: int) -> void:
-	var contextual: Dictionary = MAP_COMMANDS if map_context else WAGON_COMMANDS
+	var contextual: Dictionary = contextual_commands()
 	if COMMON.has(code) or contextual.has(code):
 		requested.emit(code)
+
+
+func contextual_commands() -> Dictionary:
+	# Source: tasks/validation/common-map-access-20261004.md, owner room access.
+	if map_context:
+		return MAP_COMMANDS
+	return WAGON_COMMANDS if reference_pixels else {4: MAP_COMMANDS[4], 1: MAP_COMMANDS[1]}
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -167,11 +174,12 @@ func _draw() -> void:
 	draw_set_transform(frame.position, 0.0, Vector2.ONE * scale_factor)
 	if not map_context:
 		# Cover controls inactive in wagon context with the authored blank plate.
-		for code in [1, 3, 5]:
+		for code in [3, 5]:
 			draw_texture_rect_region(_texture, MAP_COMMANDS[code], Rect2(758, 434, 207, 120))
 	draw_set_transform(Vector2.ZERO)
 	if app != null:
 		_draw_clock()
+		_draw_map_commands()
 		if map_context:
 			_draw_driving_states()
 		_draw_readouts()
@@ -397,8 +405,6 @@ func _draw_map_commands() -> void:
 	# supplies the roles: overall map / return, reverser, STOP. The detailed-map
 	# image remains baked into the plate. Preserve atlas aspect ratio in each slot.
 	_draw_command_icon(4 if overview_context else 1, MAP_COMMANDS[1])
-	_draw_command_icon(2, MAP_COMMANDS[3])
-	_draw_command_icon(3, MAP_COMMANDS[5])
 
 
 func _draw_command_icon(index: int, slot: Rect2) -> void:

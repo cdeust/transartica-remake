@@ -13,6 +13,7 @@ var entering_code := false
 var question := false
 var menu: Array[String] = []
 var _art: Dictionary = {}
+const Choice = preload("res://scripts/brass_choice.gd")
 var finale := preload("res://scripts/finale_sequence.gd").new()
 var _finale_art := preload("res://scripts/finale_art.gd").new()
 var _finale_audio: AudioStreamPlayer
@@ -21,6 +22,7 @@ signal movie_finished
 
 func _ready() -> void:
 	super._ready()
+	mouse_exited.connect(queue_redraw)
 	# Native Rome1588: the underlying city button otherwise consumes Return.
 	focus_mode = Control.FOCUS_ALL
 	visibility_changed.connect(_claim_focus)
@@ -146,7 +148,8 @@ func _draw() -> void:
 	begin_canvas()
 	if not menu.is_empty():
 		for index in menu.size():
-			centered(57 + index * 25, "%d  %s" % [index + 1, menu[index]])
+			var band := Rect2(0,44+index*25,320,25) # existing menu input band.
+			Choice.draw(self,Rect2(64,band.position.y,192,20),band,"%d  %s" % [index+1,menu[index]],has_focus() and index == 0)
 	else:
 		draw_rect(Rect2(0, 159, 320, 41), Color.BLACK)
 		for index in lines.size():
@@ -154,7 +157,9 @@ func _draw() -> void:
 	if entering_code:
 		centered(137, input_code + "_")
 	if question:
-		centered(145, "NO                         OK") # TEXTEK resource11 source obstacles-unknowns§2.
+		# TEXTEK resource11 NO/OK; existing click partition remains x160.
+		Choice.draw(self,Rect2(24,130,112,19),Rect2(0,0,160,200),"NO")
+		Choice.draw(self,Rect2(184,130,112,19),Rect2(160,0,160,200),"OK",has_focus())
 	draw_set_transform(Vector2.ZERO)
 
 
@@ -187,6 +192,7 @@ func handle_key(event: InputEventKey) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	Choice.refresh(self,event)
 	if not event is InputEventMouseButton or not event.pressed:
 		return
 	if scene == "sun-restored" and finale.tick < finale.LAST:

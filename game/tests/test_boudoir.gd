@@ -155,7 +155,7 @@ func _navigation_and_revolver() -> void:
 	_check(not app.world_view.inspecting_map, "detailed map icon returns to train")
 	await _click_logical(Vector2(211, 168))
 	await _click_logical(Vector2(211, 168))
-	_check(not app.boudoir.visible and not app._modal.visible and not app._boudoir_session.overview.visible, "map return remembers engine after Esc")
+	_check(not app.boudoir.visible and app._modal.visible and not app._boudoir_session.overview.visible, "overview returns to its detailed-map caller")
 	await _click_logical(Vector2(130, 168))
 	_check(app.boudoir.visible, "upper right wagon icon opens boudoir")
 	await _click_logical(Vector2(96, 186))

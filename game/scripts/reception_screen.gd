@@ -2,6 +2,7 @@ extends "res://scripts/original_screen.gd"
 
 # OPTION resource15: same five-plaque screen, original loading outside the book.
 const SaveBook = preload("res://scripts/save_book.gd")
+const Choice = preload("res://scripts/brass_choice.gd")
 signal start_requested
 signal load_requested(slot_name: String)
 signal combat_requested
@@ -21,6 +22,7 @@ const PLAQUES := {"start": Rect2(95, 50, 128, 68), "load": Rect2(191, 126, 128, 
 
 func _ready() -> void:
 	super._ready()
+	mouse_exited.connect(queue_redraw)
 	if ResourceLoader.exists("res://assets/interface/reception.png"):
 		_art = load("res://assets/interface/reception.png")
 	loader = SaveBook.new()
@@ -42,9 +44,12 @@ func _draw() -> void:
 	if _art != null:
 		draw_texture_rect(_art, canvas_rect(), false)
 	begin_canvas()
-	text_at(Vector2(204, 61), "AUTO" if automatic_combat else "MANUAL")
-	text_at(Vector2(40, 61), "LEVEL %d" % difficulty)
-	text_at(Vector2(40, 184), "ON" if music_enabled else "OFF") # authored baseline inside source music plaque126..194.
+	# Label cards stay inside the original plaques; artwork and input rectangles stay intact.
+	Choice.draw(self,Rect2(199,48,112,18),PLAQUES.combat,"AUTO" if automatic_combat else "MANUAL")
+	Choice.draw(self,Rect2(8,48,112,18),PLAQUES.level,"LEVEL %d" % difficulty)
+	Choice.draw(self,Rect2(8,171,112,18),PLAQUES.music,"ON" if music_enabled else "OFF")
+	if has_focus():
+		draw_rect(PLAQUES.start,GOLD,false) # Enter already activates the original start plaque.
 	draw_set_transform(Vector2.ZERO)
 
 
@@ -57,6 +62,7 @@ func handle_key(event: InputEventKey) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	Choice.refresh(self,event)
 	if loader.visible:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
