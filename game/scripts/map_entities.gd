@@ -95,25 +95,69 @@ func _draw_cities(view) -> void:
 func draw_player_heading(view) -> void:
 	if view.journey == null:
 		return
-	# Owner correction27Sep: the detailed map must show the direction of travel.
+	# Owner visibility contract; native raw10361 measured665/1232 hero pixels
+	# covered by the old cue. Use the same drawn convoy bounds, including lag.
 	var direction := Vector2(Rails.DELTAS.get(view.journey.heading, Vector2i.ZERO)).normalized()
 	if direction == Vector2.ZERO:
 		return
 	var center: Vector2 = view._world_to_screen(view._visual_position + Vector2(0.5, 0.5))
-	var tip := center + direction * 32.0 # Authored screen-space cue, invariant under map zoom.
-	var side := direction.orthogonal()
-	var points := PackedVector2Array([tip - direction * 12.0 + side * 7.0, tip, tip - direction * 12.0 - side * 7.0])
-	view.draw_polyline(points, Color("#17242b"), 7.0, true)
-	view.draw_polyline(points, Color("#ffe4a5"), 3.0, true)
 	var heading: String = preload("res://scripts/train_journey.gd").HEADING_NAMES.get(view.journey.heading,"")
 	var caption := "%s · %s" % ["REVERSE" if view.journey.reverse else "FORWARD",heading]
 	var font := ThemeDB.fallback_font
 	var extent := font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14)
-	# Owner3Oct playback: the heading caption must not hide the reversing
-	# locomotive. Keep it beside vertical rails and above horizontal rails.
+	var lag: float = maxf(0,view.journey.distance_travelled()-view._visual_arc) if view._visual_initialized else 0.0
+	var occupied: Rect2 = view.train_renderer.screen_bounds(view,view.journey,view.consist,lag)
+	var layout: Dictionary = heading_overlay_layout(center,direction,extent,occupied,Rect2(Vector2.ZERO,view.size))
+	if not layout.points.is_empty():
+		view.draw_polyline(layout.points, Color("#17242b"), 7.0, true)
+		view.draw_polyline(layout.points, Color("#ffe4a5"), 3.0, true)
+	var label: Rect2 = layout.label
+	if label.has_area():
+		view.draw_rect(label,Color("#17242b"))
+		view.draw_string(font,label.position+Vector2(4,font.get_ascent(14)+3),caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("#ffe4a5"))
+
+
+static func heading_overlay_layout(center: Vector2, direction: Vector2, extent: Vector2, occupied: Rect2, viewport: Rect2) -> Dictionary:
+	# Keep the existing authored cue dimensions/gap; translate only the overlay.
+	var tip := center + direction * 32.0
+	var side := direction.orthogonal()
+	var points := PackedVector2Array([tip-direction*12.0+side*7.0,tip,tip-direction*12.0-side*7.0])
+	var arrow := Rect2(points[0],Vector2.ZERO)
+	for point in points: arrow=arrow.expand(point)
+	arrow=arrow.grow(7.0) # Existing outer stroke, conservatively include antialiasing.
+	var safe_arrow := _clear_overlay_box(arrow,occupied,viewport)
+	if safe_arrow.has_area():
+		var shift := safe_arrow.position-arrow.position
+		for index in points.size(): points[index]+=shift
+	else:
+		points=PackedVector2Array()
 	var anchor := tip-Vector2(extent.x*0.5,extent.y+24.0)
-	if absf(direction.y) > absf(direction.x):
-		anchor = tip+Vector2(24.0,-extent.y*0.5)
-	var label: Rect2 = view._clamp_label_box(Rect2(anchor,extent+Vector2(8,6)))
-	view.draw_rect(label,Color("#17242b"))
-	view.draw_string(font,label.position+Vector2(4,font.get_ascent(14)+3),caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("#ffe4a5"))
+	if absf(direction.y)>absf(direction.x): anchor=tip+Vector2(24.0,-extent.y*0.5)
+	var label := _clear_overlay_box(Rect2(anchor,extent+Vector2(8,6)),occupied,viewport)
+	return {"points":points,"arrow":safe_arrow,"label":label}
+
+
+static func _clear_overlay_box(preferred: Rect2, occupied: Rect2, viewport: Rect2) -> Rect2:
+	if preferred.size.x>viewport.size.x or preferred.size.y>viewport.size.y: return Rect2()
+	var candidates: Array[Vector2] = [preferred.position]
+	if occupied.has_area():
+		# Existing24px caption gap is shared by the arrow to separate the cue
+		# from the drawn convoy; no change to vehicle geometry or camera.
+		candidates.append(Vector2(occupied.position.x-preferred.size.x-24.0,preferred.position.y))
+		candidates.append(Vector2(occupied.end.x+24.0,preferred.position.y))
+		candidates.append(Vector2(preferred.position.x,occupied.position.y-preferred.size.y-24.0))
+		candidates.append(Vector2(preferred.position.x,occupied.end.y+24.0))
+	for corner in [viewport.position,Vector2(viewport.end.x-preferred.size.x,viewport.position.y),viewport.end-preferred.size,Vector2(viewport.position.x,viewport.end.y-preferred.size.y)]:
+		candidates.append(corner)
+	var best := Rect2()
+	var distance := INF
+	for candidate in candidates:
+		var rect := Rect2(candidate.clamp(viewport.position,viewport.end-preferred.size),preferred.size)
+		if occupied.has_area() and rect.intersects(occupied): continue
+		var travel := rect.position.distance_squared_to(preferred.position)
+		if travel<distance:
+			best=rect
+			distance=travel
+	# No overlay can fit when the occupied bounds cover the viewport. Leave
+	# the separate direction instrument visible rather than painting the train.
+	return best
