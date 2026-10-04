@@ -232,3 +232,82 @@ avant de classifier une gare ou un obstacle.
 ## Surveillance de chauffe native, 4 octobre2026
 
 Une chauffe réelle ne doit jamais être laissée en arrière-plan sans observation et arrêt sur nouvel écran. Pendant la chauffe8656, un ennemi a ouvert le combat ; pause seulement8657 et défaite8662. Surveiller par scénario répété, conserver les captures et reprendre une sauvegarde gagnée par OPTIONS. Le pilote doit anticiper la production du cycle suivant depuis la chaleur et la consommation source ; attendre simplement vapeur≤1500 a laissé la réserve atteindre0 à8648. Le jeu et son RNG restent intacts.
+
+## Reversal itinerary phase, 4 October 2026
+
+Use the actual saved journey phase when planning after reversal. YODA's phase
+transform can return to the turn phase, so an already selected switch can turn
+the heading again. Pause, reverse through the control, F5, replan from that
+earned save, prepare switches, then resume. A pilot's wrong prediction does not
+prove the game ignored an aiguillage. Evidence: native9875..9923 and
+planner-reversal-phase-fix-20261004.md. Keep save test doubles synchronized with
+production presentation callbacks and assert the restored visual position.
+
+## Underground passages, owner correction 4 October 2026
+
+Campaign and map acceptance includes underground shortcut entrances and exits,
+the higher risks of those passages, and a slightly transparent train while it
+is underground. Do not treat rail connectivity alone as underground rendering.
+Trace the original tile and risk rules, then verify entry, subterranean travel
+and emergence in both directions using the native game.
+
+## Clickable labels, owner correction 4 October 2026
+
+Campaign choice and confirmation labels need opaque readable backing and a
+visible frame over detailed room artwork. Apply the same presentation to
+OPTIONS status controls and KEYS while retaining the original art and exact
+input regions. Verify both rendering and clicks outside the new visual card
+but inside the historical hitbox; a readable screenshot alone does not prove
+input compatibility. See evidence/brass-choices-20261004.md.
+
+## Native heading overlay visibility (4 October 2026)
+
+- A valid pose, texture and draw command do not prove visibility. Earned
+  raw10361 showed1232 hero pixels alone; the heading cue changed665 of them.
+  Compare train-only and cue-only native captures before claiming absence.
+- Place both arrow and caption outside the actual drawn convoy bounds at
+  the same lag. Verify viewport fitting without changing train geometry.
+  Evidence: tasks/reverse-locomotive-visibility-20261004.md.
+
+## Reverse partial station contact (4 October 2026)
+
+- Station emergence can legitimately hide wagons. Its incomplete-footprint
+  guard must still refuse a newly encountered physical station, works or
+  special site using the same classes as the full-footprint guard. Native
+  10646..10738 lost 20 contacts to 1 because only hidden -115 was checked.
+- Classify pauses from the native screen and saved boundary first: 10736
+  was a Turin city arrival, not demonstrated focus loss. Proof and regression:
+  tasks/reverse-incomplete-boundary-fix-20261004.md.
+
+- Physical contact diagnostics are transient. Clear the refused-cell marker
+  before the initial solve: a ports-only failure may leave the previous
+  station marker untouched. Regression includes stale31,37 on the legitimate
+  nine-contact departure footprint; it must keep moving until fresh refusal.
+
+
+### Reverse leading endpoint,4October2026
+
+Check every contact across reversal before diagnosing a misplaced consist.
+The last wagon leads when reversing; it can leave a tunnel before the locomotive
+and occupy the next branch. Native11194/11195 preserves all21contacts; source21
+at49,39 explains11437/11447. Do not reverse sampler sign or move the train
+behind its locomotive to make an incorrect visual expectation fit.
+
+
+### City wrapper and plain waypoints,4October2026
+
+Stop player_travel when the earned paused map reaches its coordinate target,
+even when no city menu exists. Native10904 reached a tunnel mouth; restarting
+that completed leg drove outside its itinerary. tests/test_player_travel.py
+checks one driver invocation and prohibits all native inputs in the fixture.
+
+### Reverse occupied switch commands,4October2026
+
+Capture the exact occupied branch before a real switch command changes parity,
+and persist that contact proof until the convoy clears its outgoing port.
+Do not give arbitrary legacy render history authority over logical turns.
+Earned7087 contains a historical turnout10,1 incompatible with its accepted
+live crevasse approach; the broad guide broke that existing regression.
+The narrow command latch preserves earned11437 late-switch contacts and
+keeps early unoccupied switches effective. See
+tasks/reverse-occupied-switch-20261004.md for before/after prepared evidence.

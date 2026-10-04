@@ -6,6 +6,13 @@ extends RefCounted
 static func advance(app) -> void:
 	if app.engine.event_pending:
 		return
+	# A pre-entry modal suspends the physical special-site handler before its
+	# classification/release. Dismissal resumes that same contact even though
+	# it was already blocked, before TIME may advance or handle another cell.
+	if app.journey.blocked and app.journey.physical_obstacle != Vector2i(-1,-1) and (app.journey.stop_reason == "special site" or app.journey.physical_spy_handled):
+		if app.campaign.state.pending.is_empty():
+			_handle_boundary(app,false)
+		return
 	# TIME re-checks the cell once the brake is released (obstacles-unknowns.md §1).
 	if app.journey.at_obstacle() and not app.engine.brake and not app.works_dialog.visible:
 		app.journey.resume_after_works()
@@ -48,9 +55,15 @@ static func _handle_boundary(app, was_blocked: bool) -> void:
 	if app.journey.physical_obstacle != Vector2i(-1,-1):
 		var cell: Vector2i = app.journey.boundary_cell()
 		app.world.before_entry(cell)
-		if app.campaign.before_entry(cell, app.journey.physical_heading):
+		if app.campaign.before_entry(cell, app.journey.physical_heading, app.journey.physical_spy_handled):
+			if app.campaign.state.pending.get("scene") == "spy_pickup":
+				app.journey.physical_spy_handled = true
 			return
-		if app.network.entry_boundary(cell).is_empty():
+		app.journey.physical_spy_handled = false
+		# A hidden record may decode to a station or works, not only clear rail.
+		# Dispatch the revealed kind at this same physical contact.
+		app.journey.stop_reason = app.network.entry_boundary(cell)
+		if app.journey.stop_reason.is_empty():
 			app.journey.physical_obstacle = Vector2i(-1,-1)
 			app.journey.physical_heading = 0
 			app.journey.blocked = false

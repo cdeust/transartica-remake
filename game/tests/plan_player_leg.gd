@@ -33,7 +33,7 @@ func _initialize() -> void:
 	planner.campaign = campaign
 	planner.wagons = wagons
 	var position := Vector2i(saved.journey.position[0],saved.journey.position[1])
-	var route: Array = planner.plan(position,int(saved.journey.heading),Vector2i(int(target[0]),int(target[1])))
+	var route: Array = planner.plan(position,int(saved.journey.heading),Vector2i(int(target[0]),int(target[1])),int(saved.journey.phase))
 	var result: Array = []
 	for action: Dictionary in route:
 		var record := action.duplicate()

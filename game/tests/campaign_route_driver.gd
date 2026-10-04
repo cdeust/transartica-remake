@@ -61,7 +61,7 @@ func travel(target: Vector2i, city: int) -> bool:
 			return _fail("Cannot depart current boundary " + journey.stop_reason)
 	engine.brake = false
 	current_city = -1
-	var route: Array = planner.plan(journey.position,journey.heading,target)
+	var route: Array = planner.plan(journey.position,journey.heading,target,journey.phase)
 	if route.is_empty():
 		return _fail("No supplied-resource route to %s; frontier %s" % [target,planner.frontiers])
 	for action in route:

@@ -30,6 +30,8 @@ var stop_reason := ""
 var physical_obstacle := Vector2i(-1,-1)
 var _render_refused_cell := Vector2i(-1,-1)
 var physical_heading := 0
+# source: YODA0x2713 refusal retains posted spy; resume this entry after its answer.
+var physical_spy_handled := false
 var _render_refused_heading := 0
 var _path = TrainPathScript.new()
 var incoming_heading := START_HEADING
@@ -40,6 +42,7 @@ var _render_cursor := 0.0
 var _render_origin := 0.0 # Offset keeps arc coordinates stable when history is prepended.
 var _render_end_cell := Vector2i.ZERO
 var _render_end_heading := START_HEADING
+var reverse_switches: Dictionary = {} # source: occupied-switch continuity, owner4Oct.
 
 
 func advance(speed: int) -> void:
@@ -90,6 +93,7 @@ func reverse_direction() -> bool:
 		_render_end_heading = network.turn(position, heading) if phase == 0 and network != null else heading
 		_render_path.append_tile(position, incoming_heading, _render_end_heading)
 	reverse = not reverse
+	if not reverse: reverse_switches.clear()
 	heading = 10 - heading
 	incoming_heading = heading
 	phase = absi(phase - 2) - 1
@@ -98,6 +102,7 @@ func reverse_direction() -> bool:
 	stop_reason = ""
 	physical_obstacle = Vector2i(-1,-1)
 	physical_heading = 0
+	physical_spy_handled = false
 	# Logical route must follow its new heading, but rendering keeps its old route.
 	_path_cell = Vector2i(-1, -1)
 	return true
@@ -116,6 +121,7 @@ func resume_after_works() -> bool:
 	if physical_obstacle != Vector2i(-1,-1) and network.entry_boundary(physical_obstacle).is_empty():
 		physical_obstacle = Vector2i(-1,-1)
 		physical_heading = 0
+		physical_spy_handled = false
 	return true
 
 
@@ -150,6 +156,7 @@ func depart_from_station() -> bool:
 	position = station - RailNetworkScript.DELTAS[toward_station]
 	heading = toward_station
 	# Station emergence starts fresh (station-arrival.md, owner26Sep).
+	reverse_switches.clear()
 	_render_path.clear()
 	_render_cursor = 0.0
 	_render_origin = 0.0
@@ -162,6 +169,7 @@ func depart_from_station() -> bool:
 	stop_reason = ""
 	physical_obstacle = Vector2i(-1,-1)
 	physical_heading = 0
+	physical_spy_handled = false
 	# Presentation (owner choice, 26 September 2026): the convoy leaves the
 	# station behind the locomotive. The station tile has no decoded rail
 	# interior geometry, so one straight hidden cell stands in for it; wagons further
@@ -282,6 +290,7 @@ func _ensure_path() -> void:
 
 
 func reset() -> void:
+	reverse_switches.clear()
 	reverse = false
 	_render_path.clear()
 	_render_cursor = 0.0
@@ -294,6 +303,7 @@ func reset() -> void:
 	stop_reason = ""
 	physical_obstacle = Vector2i(-1,-1)
 	physical_heading = 0
+	physical_spy_handled = false
 	incoming_heading = START_HEADING
 	_path_cell = Vector2i(-1, -1)
 	_path.clear()
@@ -305,7 +315,9 @@ func snapshot() -> Dictionary:
 		"version": JOURNEY_VERSION,
 		"physical_obstacle": [physical_obstacle.x,physical_obstacle.y],
 		"physical_heading": physical_heading,
+		"physical_spy_handled": physical_spy_handled,
 		"reverse": reverse,
+		"reverse_switches": reverse_switches.duplicate(),
 		"render_path": _render_path.snapshot(),
 		"render_cursor": _render_cursor,
 		"render_origin": _render_origin,
@@ -326,6 +338,8 @@ func restore(data: Variant) -> bool:
 	if not _valid_snapshot(data): return false
 	var candidate_position: Variant = _parse_position(data.position)
 	var obstacle := Vector2i(-1,-1)
+	var spy_handled: Variant = data.get("physical_spy_handled",false)
+	if not spy_handled is bool: return false
 	if int(data.version) >= 6:
 		var raw: Variant = data.get("physical_obstacle")
 		if not raw is Array or raw.size() != 2: return false
@@ -333,9 +347,12 @@ func restore(data: Variant) -> bool:
 		if not (_is_int_in_range(raw[0],-1,-1) and _is_int_in_range(raw[1],-1,-1)):
 			var parsed: Variant = _parse_position(raw)
 			if parsed == null or data.get("reverse",false) != true: return false
-			if data.blocked and data.get("stop_reason","") not in [RailNetworkScript.OBSTACLE_REASON,"station"]: return false
+			# source: RailNetwork.entry_boundary; physical pre-entry can suspend
+			# before a hidden record is revealed or before its event is handled.
+			if data.blocked and data.get("stop_reason","") not in [RailNetworkScript.OBSTACLE_REASON,"station","special site","event site"]: return false
 			if not _is_int_in_range(data.get("physical_heading"),1,9) or int(data.physical_heading)==5: return false
 			obstacle = parsed
+	if spy_handled and obstacle == Vector2i(-1,-1): return false
 	var reason := ""
 	if int(data.version) >= 2:
 		if not data.has("stop_reason") or typeof(data.stop_reason) != TYPE_STRING:
@@ -354,8 +371,21 @@ func restore(data: Variant) -> bool:
 			return false
 	var renderer := _restore_renderer(data)
 	if renderer.is_empty(): return false
+	var switches: Variant = data.get("reverse_switches",{})
+	if not switches is Dictionary: return false
+	for key in switches:
+		if not key is String: return false
+		var parts: PackedStringArray = key.split(",")
+		if parts.size()!=2 or not parts[0].is_valid_int() or not parts[1].is_valid_int(): return false
+		var cell := Vector2i(int(parts[0]),int(parts[1]))
+		if key != "%d,%d" % [cell.x,cell.y] or network==null or not network.is_switch(cell): return false
+		if not _is_int_in_range(switches[key],1,9) or int(switches[key])==5: return false
+		var index: int = renderer.path.points.find(Vector2(cell))
+		if index<1 or renderer.path.points[index-1] != Vector2(cell)+Vector2(RailNetworkScript.DELTAS[int(switches[key])])*0.5: return false
+		if not data.get("reverse",false): return false
 	# Version 1 blocked only at the old x=33 trial boundary, which is ordinary track now.
 	_render_path = renderer.path
+	reverse_switches = switches.duplicate()
 	reverse = data.get("reverse", false)
 	_render_cursor = float(data.get("render_cursor", 0.0))
 	_render_origin = float(data.get("render_origin", 0.0))
@@ -369,6 +399,7 @@ func restore(data: Variant) -> bool:
 	stop_reason = reason
 	physical_obstacle = obstacle
 	physical_heading = int(data.get("physical_heading",0))
+	physical_spy_handled = spy_handled
 	_path_cell = Vector2i(-1, -1)
 	if int(data.version) >= 3:
 		_path = restored_path

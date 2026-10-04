@@ -56,11 +56,13 @@ func message(id: int, epitaph := false) -> Array[String]:
 
 
 # TIME0x1b9d called before station/obstacle dispatch. Reveal only matching -115.
-func prepare_entry(cell: Vector2i, heading: int, wagons, network) -> Dictionary:
+func prepare_entry(cell: Vector2i, heading: int, wagons, network, after_spy: bool = false) -> Dictionary:
 	if not pending.is_empty() or not ending.is_empty():
 		return pending
 	var spy := posted_at(cell)
-	if spy >= 0:
+	# YODA0x2713..2731 returns from NO without removing the posted spy. A
+	# suspended physical entry continues after that answer, once per contact.
+	if spy >= 0 and not after_spy:
 		return _event("spy_pickup", [21], {"spy": spy})
 	var code: int = network.tile(cell)
 	if cell.x > 38 and cell.x < 59 and cell.y > 19 and cell.y < 34:

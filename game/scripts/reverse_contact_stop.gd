@@ -16,20 +16,38 @@ static func advance(view, journey, speed: int) -> void:
 		return
 	var renderer = view.train_renderer
 	var count: int = view.consist.vehicles.size()
+	# A ports-only refusal may not write this transient marker. Classify only
+	# a contact refused by the current solve, never a previous draw/visit.
+	journey._render_refused_cell = Vector2i(-1,-1)
 	# Station emergence legitimately has hidden vehicles. It does not establish
 	# a full occupied rail footprint from which an approach can be measured.
-	if renderer.poses(view,journey,view.consist,0.0).size() != count:
+	var occupied: Array = renderer.poses(view,journey,view.consist,0.0)
+	if occupied.size() != count:
+		# Emergence may hide wagons in the original station. That does not
+		# authorize continuing into a newly refused station/works/special site.
+		# Earned10646..10738 otherwise shrinks20contacts to1 before arrival.
+		var missing: Vector2i = journey._render_refused_cell
+		if _is_physical_boundary(journey,missing):
+			journey.physical_obstacle = missing
+			journey.physical_heading = journey._render_refused_heading
+			journey.blocked = true
+			journey.stop_reason = journey.network.entry_boundary(missing)
+			return
 		journey.advance(speed)
 		return
+	# Chord searches can predict rails ahead of the leading contact. Discard
+	# that unoccupied forecast before consulting live switches for this step.
+	preload("res://scripts/reverse_switch_contact.gd").retire(journey)
+	if not occupied.is_empty() and not journey.reverse_switches.is_empty():
+		Render._retain_reverse_occupied_path(journey,occupied[-1].rear_distance)
 	var before: Dictionary = journey.snapshot()
 	journey._render_refused_cell = Vector2i(-1,-1)
 	journey.advance(speed)
 	if renderer.poses(view,journey,view.consist,0.0).size() == count:
 		return
 	var cell: Vector2i = journey._render_refused_cell
-	var reason: String = journey.network.entry_boundary(cell)
 	var approach: int = journey._render_refused_heading
-	if Works.kind_for(journey.network.tile(cell)).is_empty() and reason != "station":
+	if not _is_physical_boundary(journey,cell):
 		return
 	if not _restore_or_stop(journey,before,cell,approach,"initial"):
 		return
@@ -70,3 +88,12 @@ static func _restore_or_stop(journey, snapshot: Dictionary, cell: Vector2i, appr
 	journey.stop_reason = journey.network.entry_boundary(cell)
 	push_error("Reverse contact stop could not restore %s snapshot; travel blocked" % stage)
 	return false
+
+
+static func _is_physical_boundary(journey, cell: Vector2i) -> bool:
+	# Share the accepted boundary classes for full and incomplete footprints.
+	# A station-emergence seed ends inside its origin; there is no refused
+	# station contact there. Only the solver's actual refused cell is handled.
+	if cell == Vector2i(-1,-1): return false
+	var reason: String = journey.network.entry_boundary(cell)
+	return not Works.kind_for(journey.network.tile(cell)).is_empty() or reason in ["station","special site"]

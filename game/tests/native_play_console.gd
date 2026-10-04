@@ -98,7 +98,8 @@ func _record(id: int, label: String) -> void:
 	var controls: Array = []
 	_visible_controls(app, controls)
 	var lag: float = maxf(0.0,app.journey.distance_travelled()-app.world_view._visual_arc)
-	var rendered: int = app.world_view.train_renderer.poses(app.world_view,app.journey,app.world_view.consist,lag).size()
+	var rendered_poses: Array = app.world_view.train_renderer.poses(app.world_view,app.journey,app.world_view.consist,lag)
+	var rendered: int = rendered_poses.size()
 	# Read-only contact evidence for the owner-approved reverse obstacle stop.
 	var contacts: Array = []
 	for pose in app.world_view.train_renderer.poses(app.world_view,app.journey,app.world_view.consist,0.0):
@@ -118,6 +119,8 @@ func _record(id: int, label: String) -> void:
 		"logical_head":str(app.journey._logical_fractional_position()),
 		"phase":app.journey.phase,"distance_ticks":app.journey.distance_ticks,
 		"vehicle_contacts":contacts,
+		"vehicle_frames":_frame_diagnostics(rendered_poses),
+		"render_lag":lag,"visual_arc":app.world_view._visual_arc,
 		"obstacle_cell":str(app.journey.obstacle_cell()) if app.journey.has_method("obstacle_cell") else str(app.journey.next_cell()),
 		"view_rect":str(app.world_view.get_global_rect()),"zoom":app.world_view.zoom,
 		"following_train":app.world_view.following_train,"inspecting_map":app.world_view.inspecting_map,
@@ -133,6 +136,42 @@ func _record(id: int, label: String) -> void:
 	latest.close()
 	DirAccess.rename_absolute(DIRECTORY+"state.tmp",DIRECTORY+"state.json")
 	print("NATIVE_PLAY ", id, " ", label, " ", state.position, " cycles=", state.cycles)
+
+func _frame_diagnostics(poses: Array) -> Array:
+	# Observe the same frame selection, registration and tint as Renderer.draw.
+	# This records availability and geometry; pose counts do not prove pixels.
+	var result: Array = []
+	var view = app.world_view
+	var renderer = view.train_renderer
+	for pose in poses:
+		var frame: Dictionary = renderer.frame_for(pose.kind)
+		var item := {"pose_kind":pose.kind,"frame_available":not frame.is_empty(),
+			"front_screen":str(view._world_to_screen(pose.front + Vector2(0.5,0.5))),
+			"rear_screen":str(view._world_to_screen(pose.rear + Vector2(0.5,0.5))),
+			"texel_scale":renderer.texel_scale(view)}
+		if not frame.is_empty():
+			var texture: Texture2D = frame.get("texture")
+			item["frame_kind"] = pose.kind
+			item["texture_available"] = texture != null
+			if texture != null:
+				item["texture_class"] = texture.get_class()
+				item["texture_size"] = str(texture.get_size())
+				item["texture_path"] = texture.resource_path
+				if texture is AtlasTexture:
+					item["atlas_region"] = str(texture.region)
+					item["atlas_available"] = texture.atlas != null
+					if texture.atlas != null:
+						item["atlas_path"] = texture.atlas.resource_path
+						item["atlas_size"] = str(texture.atlas.get_size())
+			item["draw_rect"] = str(frame.get("draw_rect",frame.get("bounds")))
+			item["frame_front"] = str(frame.get("front"))
+			item["frame_rear"] = str(frame.get("rear"))
+			var cell := Vector2i(Vector2(pose.rail_midpoint).round())
+			var code: int = view._tile_code(cell.x,cell.y)
+			item["tint_tile"] = code
+			item["tint"] = str(preload("res://scripts/underground_visual.gd").train_tint(code,renderer.underground_alpha))
+		result.append(item)
+	return result
 
 func _capture_zero(prefix: String, id: int, rendered: int) -> void:
 	if rendered != 0 or _screen() != "map": return

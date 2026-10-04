@@ -1,0 +1,189 @@
+{
+  "file": "underground-mouths.png",
+  "sha256": "3257c10443d3c9dc1832c29d1e373808a00d0079b4202b009aa7d65cebab3427",
+  "dimensions": [
+    2014,
+    781
+  ],
+  "method": "Inspected rail highlight corridors; opaque RGB range100..205, chroma<25; gauge is cross-section separation projected perpendicular to mouth rail axis. Registration point deliberately at measured cross-section, not an extrapolated stub end. Gate anchors are authored registration landmarks inspected in the generated art, not source gameplay coordinates. Atlas regions clip only the external stub beyond this measured section, preventing overlap into the neighboring surface rail cell.",
+  "frames": [
+    {
+      "code": 53,
+      "region": [
+        0,
+        0,
+        671,
+        650
+      ],
+      "mouth_anchor": [
+        307,
+        466
+      ],
+      "rail_endpoint": [
+        309.75,
+        650.0
+      ],
+      "rail_gauge": 70.49212743756968,
+      "measurement": {
+        "axis": "y",
+        "coordinate": 650,
+        "corridors": [
+          [
+            265,
+            285
+          ],
+          [
+            334,
+            355
+          ]
+        ],
+        "selected_highlight_coordinates": [
+          [
+            272,
+            274,
+            275,
+            277
+          ],
+          [
+            343,
+            344,
+            345,
+            346,
+            347
+          ]
+        ],
+        "centroids": [
+          [
+            274.5,
+            650
+          ],
+          [
+            345.0,
+            650
+          ]
+        ]
+      }
+    },
+    {
+      "code": 54,
+      "region": [
+        750,
+        0,
+        593,
+        781
+      ],
+      "mouth_anchor": [
+        177,
+        464
+      ],
+      "rail_endpoint": [
+        0,
+        493.60714285714283
+      ],
+      "rail_gauge": 57.41657167669566,
+      "measurement": {
+        "axis": "x",
+        "coordinate": 750,
+        "corridors": [
+          [
+            450,
+            480
+          ],
+          [
+            510,
+            537
+          ]
+        ],
+        "selected_highlight_coordinates": [
+          [
+            456,
+            457,
+            458,
+            459,
+            460,
+            469,
+            470,
+            471,
+            472,
+            473
+          ],
+          [
+            514,
+            515,
+            516,
+            526,
+            528,
+            529,
+            531
+          ]
+        ],
+        "centroids": [
+          [
+            750,
+            464.5
+          ],
+          [
+            750,
+            522.7142857142857
+          ]
+        ]
+      }
+    },
+    {
+      "code": 58,
+      "region": [
+        1343,
+        0,
+        602,
+        781
+      ],
+      "mouth_anchor": [
+        430,
+        454
+      ],
+      "rail_endpoint": [
+        602.0,
+        512.875
+      ],
+      "rail_gauge": 54.164714805450096,
+      "measurement": {
+        "axis": "x",
+        "coordinate": 1945,
+        "corridors": [
+          [
+            480,
+            492
+          ],
+          [
+            536,
+            548
+          ]
+        ],
+        "selected_highlight_coordinates": [
+          [
+            482,
+            484,
+            485,
+            486
+          ],
+          [
+            539,
+            541,
+            542,
+            544
+          ]
+        ],
+        "centroids": [
+          [
+            1945,
+            484.25
+          ],
+          [
+            1945,
+            541.5
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -10,12 +10,14 @@ var mountains: Texture2D
 var water = preload("res://scripts/terrain_water_art.gd").new()
 var landmarks = preload("res://scripts/terrain_landmarks.gd").new()
 var obstacles = preload("res://scripts/terrain_obstacles.gd").new()
+var portals = preload("res://scripts/terrain_portals.gd").new()
 
 
 func load_art() -> bool:
 	textures.clear()
 	landmarks.load_art()
 	obstacles.load_art()
+	portals.load_art()
 	water.load_art()
 	forest = load(ART_ROOT + "forest-master.png") as Texture2D
 	mountains = load(ART_ROOT + "mountains-master.png") as Texture2D
@@ -33,6 +35,8 @@ static func resource_code(code: int) -> int:
 
 func draw_tile(view, cell: Vector2i, code: int) -> bool:
 	var resource := resource_code(code)
+	if portals.draw_tile(view,cell,code):
+		return true
 	var origin: Vector2 = view._world_to_screen(Vector2(cell))
 	var extent: Vector2 = view._world_to_screen(Vector2(cell) + Vector2.ONE) - origin
 	if obstacles.draw_tile(view,cell,code):

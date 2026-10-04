@@ -5,7 +5,6 @@ Source: owner3Oct repeatable native actions contract; play_player_leg.py and
 plan_player_leg.gd. Stop for every unfamiliar city, dialog or game event.
 """
 import argparse
-import subprocess
 from pathlib import Path
 
 import native_play as pilot
@@ -13,11 +12,7 @@ import play_player_leg as leg
 
 
 def plan(path, target):
-    subprocess.run([
-        str(pilot.ROOT / ".toolchain/Godot.app/Contents/MacOS/Godot"),
-        "--headless", "--path", str(pilot.ROOT / "game"),
-        "--script", "res://tests/plan_player_leg.gd", "--",
-        str(pilot.CONSOLE / "save.json"), target, str(path.resolve())], check=True)
+    leg.plan_from_save(path, target)
 
 
 def continue_travel(path, target, destination, transit):
@@ -41,6 +36,12 @@ def continue_travel(path, target, destination, transit):
             print("PLAYER_STOP", observed["screen"], flush=True)
             return
         leg.drive(path)
+        reached = pilot.state()
+        # Native10904: using this city wrapper for a mouth waypoint repeated
+        # the completed leg. Stop on the earned paused map instead of resuming.
+        if reached["screen"] == "map" and leg.position(reached) == tuple(map(int, target.split(","))):
+            print("PLAYER_STOP", "waypoint", target, flush=True)
+            return
 
 
 if __name__ == "__main__":

@@ -93,7 +93,16 @@ static func _stage_base(app, parsed: Dictionary) -> Dictionary:
 	# PR7 deliberately requires locomotive history: the initial source position
 	# can have an incomplete trailing branch; rejecting it would reject new games.
 	# Full-route rendering still refuses to invent missing wagon geometry.
-	if not base.journey.sample_behind(consist.LENGTHS.locomotive).ok and not base.journey.history_starts_in_station():
+	var locomotive_history: bool = base.journey.sample_behind(consist.LENGTHS.locomotive).ok
+	if not locomotive_history:
+		# source: TrainRenderer's authored chord (complete-train-scale.md), not
+		# the nominal atlas length. Earned10361 has a complete rigid locomotive
+		# while hidden future rail correctly refuses the nominal1-cell sample.
+		var renderer = app.world_view.get("train_renderer")
+		if renderer != null and app.world_view.has_method("_project"):
+			var poses: Array = renderer.poses(app.world_view,base.journey,consist,0.0)
+			locomotive_history = not poses.is_empty() and poses[0].kind == "locomotive"
+	if not locomotive_history and not base.journey.history_starts_in_station():
 		return {"ok": false, "notice": "This save cannot recover wagon positions. Current journey kept; saved file unchanged."}
 	return base
 

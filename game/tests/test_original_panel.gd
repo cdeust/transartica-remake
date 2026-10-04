@@ -27,8 +27,8 @@ func _run() -> void:
 		panel.map_context = false
 		for code in points:
 			_click(panel, points[code], code)
-		_click(panel, Vector2(177, 169), 1)
-		_click(panel, Vector2(210, 169), 0)
+		_click(panel, Vector2(177, 169), 1 if panel.reference_pixels else 4)
+		_click(panel, Vector2(210, 169), 0 if panel.reference_pixels else 1)
 		_click(panel, Vector2(177, 189), 0)
 		_click(panel, Vector2(210, 189), 0)
 		panel.map_context = true

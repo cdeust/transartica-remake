@@ -3,6 +3,10 @@ extends RefCounted
 const Rails = preload("res://scripts/rail_network.gd")
 const Consist = preload("res://scripts/train_consist.gd")
 const MANIFEST := "res://assets/travel/vehicles-overhead.json"
+const Underground = preload("res://scripts/underground_visual.gd")
+# Source: owner4Oct native0.75/0.85 comparison, underground-rendering.md;
+# authored transparency strength, not an original simulation constant.
+var underground_alpha := 0.75
 
 # Overhead view (owner decision, 26 September 2026): one rigid top-down drawing
 # per vehicle, at a
@@ -162,7 +166,8 @@ func poses(view, journey, consist, lag: float) -> Array[Dictionary]:
 		var rear_position: Vector2 = rear_search.position
 		var middle: Dictionary = journey.sample_behind((distance + rear_search.distance) * 0.5)
 		var heading := _heading_for(front.position - rear_position, middle.heading if middle.ok else front.heading)
-		result.append({"kind": kind, "front": front.position, "rear": rear_position, "center": (front.position + rear_position) * 0.5, "heading": heading})
+		result.append({"kind": kind, "front": front.position, "rear": rear_position, "center": (front.position + rear_position) * 0.5, "heading": heading,
+			"rail_midpoint": middle.position if middle.ok else (front.position + rear_position) * 0.5, "rear_distance": rear_search.distance})
 		distance = rear_search.distance
 	return result
 
@@ -194,7 +199,8 @@ func draw(view, journey, consist, lag: float) -> void:
 		var rear: Vector2 = view._world_to_screen(vehicle.rear + Vector2(0.5, 0.5))
 		var rotation := (front - rear).angle() - PI * 0.5 if not (front - rear).is_zero_approx() else 0.0
 		view.draw_set_transform_matrix(registration(frame, (front + rear) * 0.5, rotation, scale))
-		draw_frame(view,frame)
+		var cell := Vector2i(Vector2(vehicle.rail_midpoint).round())
+		draw_frame(view,frame,Underground.train_tint(view._tile_code(cell.x,cell.y),underground_alpha))
 	view.draw_set_transform_matrix(Transform2D.IDENTITY)
 
 

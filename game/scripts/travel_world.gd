@@ -202,6 +202,8 @@ func _tile_code(x: int, y: int) -> int:
 
 func _draw_rail_tile(x: int, y: int) -> void:
 	var code: int = _tile_code(x, y)
+	if terrain.portals.handles_rail(code):
+		return # Source mouths own embedded rails; underground uses dotted alignment.
 	# Registered obstacle atlas already contains its exact rail ports/gauge.
 	if terrain.obstacles.handles_rail(code):
 		return
@@ -501,8 +503,10 @@ func _finish_pointer_gesture(point: Vector2) -> void:
 
 # CARTE 0x123f..0x1270: clicking a switch on the map flips its parity.
 func toggle_switch_at(cell: Vector2i) -> bool:
-	if network == null or not _cell_is_visible(cell.x, cell.y) or not network.toggle_switch(cell):
+	if network == null or not _cell_is_visible(cell.x, cell.y) or not network.is_switch(cell):
 		return false
+	preload("res://scripts/reverse_switch_contact.gd").capture(self,cell)
+	if not network.toggle_switch(cell): return false
 	switch_toggled.emit(cell)
 	queue_redraw()
 	return true

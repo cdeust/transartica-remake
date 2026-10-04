@@ -14,6 +14,14 @@ class Chart extends Control:
 	var offset := Vector2.ZERO
 	var selected_city := -1
 	var _visual_initialized := false
+	var _visual_position := Vector2.ZERO
+	var snap_calls := 0
+	# Presentation-only stand-in for TravelWorldView's restore synchronization;
+	# source: session_saves.gd _commit and travel_world.gd _snap_visual_position.
+	func _snap_visual_position(position: Vector2) -> void:
+		_visual_position = position
+		_visual_initialized = true
+		snap_calls += 1
 	func visit_cell(_cell: Vector2i) -> void:pass
 	func _refresh_discovery_mask() -> void:pass
 	func fit_discovered() -> void:pass
@@ -100,6 +108,9 @@ static func reload_disk(driver, data, path: String) -> Dictionary:
 	driver.trace.append("LEGACY SAVE CONTROL: missing commerce RNG retains fresh process state; current save must restore earned RNG")
 	var loaded := Saves.restore(host,path)
 	if loaded.ok:
+		if host.world_view.snap_calls != 2 or not host.world_view._visual_initialized or not host.world_view._visual_position.is_equal_approx(host.journey.fractional_position()):
+			host.dispose()
+			return {"ok":false,"notice":"Both disk restores must synchronize the chart to the restored journey"}
 		driver.campaign = host.campaign.state
 		driver.planner.campaign = host.campaign.state
 		driver.enemies = host.encounters.enemies

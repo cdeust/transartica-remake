@@ -19,9 +19,9 @@ func attach(owner_app) -> void:
 	screen.menu_selected.connect(_menu_choice)
 
 
-func before_entry(cell: Vector2i, approach_heading: int = 0) -> bool:
+func before_entry(cell: Vector2i, approach_heading: int = 0, after_spy: bool = false) -> bool:
 	var heading: int = app.journey.heading if approach_heading == 0 else approach_heading
-	var event: Dictionary = state.prepare_entry(cell, heading, app.wagons, app.network)
+	var event: Dictionary = state.prepare_entry(cell, heading, app.wagons, app.network, after_spy)
 	if event.is_empty():
 		return state.ending.is_empty() and before_fauna(cell)
 	if event.get("reverse", false):
@@ -63,7 +63,11 @@ func _show_page() -> void:
 		screen.present("manual_quiz", Quiz.lines(event, state.data), true)
 		return
 	var lines: Array[String] = []
-	if event.get("scene") in ["wolf", "mole"]:
+	if event.get("scene") == "sabotage_confirm":
+		# Authored clarification: CARTE0x27f9..281d uses image238/form2/action33,
+		# not a TEXTEK question. Preserve the action while restoring its context.
+		lines = ["ORDER THIS SPY TO USE DYNAMITE HERE?"]
+	elif event.get("scene") in ["wolf", "mole"]:
 		for line in _ambush_page():
 			lines.append(str(line))
 	elif event.has("epitaph") and event.scene == "death":
@@ -242,7 +246,14 @@ func restore(value: Variant) -> bool:
 	_car_missile = value.car_missile
 	_messages = state.pending.get("messages", []).duplicate()
 	if screen != null:
+		# Legacy opened sabotage saves kept the old empty presentation; rebuild
+		# only its lines after validation, preserving every other saved UI field.
+		var repair_question: bool = value.presentation.scene == "sabotage_confirm" and value.presentation.lines.is_empty()
+		if repair_question:
+			_show_page()
 		for key in value.presentation:
+			if repair_question and key == "lines":
+				continue
 			if key in ["lines", "menu"]:
 				var strings: Array[String] = []
 				for line in value.presentation[key]:

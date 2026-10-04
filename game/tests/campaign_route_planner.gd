@@ -5,6 +5,7 @@ extends RefCounted
 const Rails = preload("res://scripts/rail_network.gd")
 const Works = preload("res://scripts/track_works.gd")
 const Glyphs = preload("res://scripts/rail_glyphs.gd")
+const Journey = preload("res://scripts/train_journey.gd")
 var network
 var campaign
 var wagons
@@ -32,8 +33,8 @@ func _code(cell: Vector2i) -> int:
 	return code
 
 
-func plan(position: Vector2i, heading: int, target: Vector2i) -> Array:
-	var start := Vector3i(position.x,position.y,heading)
+func plan(position: Vector2i, heading: int, target: Vector2i, phase: int = 0) -> Array:
+	var start := _state(position, heading, phase)
 	var queue: Array[Vector3i] = [start]
 	var parents := {start: {}}
 	_parents = parents
@@ -45,7 +46,8 @@ func plan(position: Vector2i, heading: int, target: Vector2i) -> Array:
 		cursor += 1
 		var cell := Vector2i(state.x,state.y)
 		var incoming := state.z % 16
-		var skip_turn := state.z >= 16
+		var current_phase := int(state.z / 16) - 1
+		var skip_turn := current_phase >= Journey.TURN_PHASE
 		var source_code: int = network.tile(cell)
 		var effective := _code(cell)
 		var alternatives := [effective]
@@ -68,11 +70,11 @@ func plan(position: Vector2i, heading: int, target: Vector2i) -> Array:
 				if not harpoon:
 					frontiers[candidate] = "whale requires harpoon or another route"
 					continue
-			var action := {"cell":cell,"heading":incoming,"switch":choice if Rails.is_switch_code(choice) else 0,"next":candidate,"outgoing":outgoing}
+			var action := {"cell":cell,"heading":incoming,"phase":current_phase,"switch":choice if Rails.is_switch_code(choice) else 0,"next":candidate,"outgoing":outgoing}
 			if candidate == target:
 				return _route(parents,state,action)
 			if next_code >= 34 and next_code <= 37 or next_code == 65:
-				var reversed := Vector3i(cell.x,cell.y,10-outgoing)
+				var reversed := _state(cell,10-outgoing,0)
 				action.station = candidate
 				_enqueue(reversed,state,action)
 				continue
@@ -90,12 +92,17 @@ func plan(position: Vector2i, heading: int, target: Vector2i) -> Array:
 			if next_code == -120:
 				frontiers[candidate] = next_code
 				continue
-			_enqueue(Vector3i(candidate.x,candidate.y,outgoing),state,action)
-		# Manual reverse is source-supported. It skips the already-completed turn
-		# phase at this cell (TrainJourney.reverse_direction phase0->phase1).
-		if not skip_turn:
-			_enqueue(Vector3i(cell.x,cell.y,16+10-incoming),state,{"reverse":true,"cell":cell})
+			_enqueue(_state(candidate,outgoing,0),state,action)
+		# YODA reversal preserves the source phase transform. TIME turns only
+		# when the remaining phases include phase1; phase1->0 must turn again.
+		var reversed_phase := absi(current_phase - 2) - 1
+		_enqueue(_state(cell,10-incoming,reversed_phase),state,{"reverse":true,"cell":cell,"phase_before":current_phase,"phase_after":reversed_phase})
 	return []
+
+
+func _state(position: Vector2i, heading: int, phase: int) -> Vector3i:
+	# Four heading bits leave distinct search states for source phases -1..2.
+	return Vector3i(position.x,position.y,heading + 16 * (phase + 1))
 
 
 func _enqueue(next: Vector3i, previous: Vector3i, action: Dictionary) -> void:

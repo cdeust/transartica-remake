@@ -6,6 +6,7 @@ aid only. No model step, position/resource write or campaign outcome is injected
 """
 import argparse
 import json
+import subprocess
 import time
 from pathlib import Path
 
@@ -57,13 +58,26 @@ def fire(observed, label, train_mass):
     return action(label, inputs) if inputs else observed
 
 
-def select_switches(route, cursor, observed, label):
+def switch_targets(route, cursor):
     targets = {}
     for upcoming in route[cursor:]:
         if upcoming.get("reverse"):
             break
         if upcoming.get("switch") and tuple(upcoming["cell"]) not in targets:
             targets[tuple(upcoming["cell"])] = upcoming["switch"]
+    return targets
+
+
+def switch_needed(route, cursor, observed):
+    targets = switch_targets(route, cursor)
+    return any(targets.get(tuple(s["cell"]), s["tile"]) != s["tile"]
+               for s in observed["switches"])
+
+
+def select_switches(route, cursor, observed, label):
+    if not observed["paused"]:
+        raise RuntimeError("Prepare switches while paused, then resume")
+    targets = switch_targets(route, cursor)
     for visible in observed["switches"]:
         desired = targets.get(tuple(visible["cell"]))
         if desired is not None and desired != visible["tile"]:
@@ -86,13 +100,37 @@ def advance_cursor(route, cursor, observed):
 
 def reverse_here(observed, label):
     observed = pause(observed, label + "-pause")
-    action(label, [{"click": [799, 852]}, {"key": "F5"}],
+    return action(label, [{"click": [799, 852]}, {"key": "F5"}],
            expect={"paused": True, "reverse": not observed["reverse"]})
-    return action(label + "-continue", [{"key": "Space"}], expect={"paused": False})
+
+
+def plan_from_save(path, target):
+    # Read actual F5 phase; TIME/YODA reversals can return to the turn phase.
+    # Evidence: native9875..9898, phase1->0 made switch23 turn heading6->3.
+    subprocess.run([
+        str(pilot.ROOT / ".toolchain/Godot.app/Contents/MacOS/Godot"),
+        "--headless", "--path", str(pilot.ROOT / "game"),
+        "--script", "res://tests/plan_player_leg.gd", "--",
+        str(pilot.CONSOLE / "save.json"), target, str(path.resolve())], check=True)
 
 
 def checkpoint(path, cursor, observed):
     path.write_text(json.dumps({"cursor": cursor, "state": observed}, indent=2) + "\n")
+
+
+def replan_and_resume(path, target, observed, label):
+    # Native10354..10356: hidden Hima switch appears only on entry. The turn
+    # may execute before the input arrives; replan from the actual paused phase.
+    pause(observed, label + "-pause")
+    observed = action(label + "-save", [{"key": "F5"}], expect={"paused": True})
+    plan_from_save(path, target)
+    route = json.loads(path.read_text())
+    if not route:
+        raise RuntimeError("No itinerary from the actual paused save")
+    select_switches(route, 0, observed, label + "-switch")
+    observed = action(label + "-continue", [{"key": "Space"}],
+                      expect={"paused": False})
+    return route, observed
 
 
 def drive(path):
@@ -100,6 +138,7 @@ def drive(path):
     if not route:
         raise RuntimeError("No itinerary: keep the native game paused")
     name = path.stem
+    target = ",".join(map(str, route[-1]["next"]))
     progress = path.with_suffix(".progress.json")
     cursor = 0
     observed = pilot.state()
@@ -134,8 +173,11 @@ def drive(path):
         cursor = advance_cursor(route, cursor, observed)
         if route[cursor].get("reverse"):
             observed = reverse_here(observed, name + "-reverse")
-            cursor += 1
-        observed = select_switches(route, cursor, observed, name + "-switch")
+            route, observed = replan_and_resume(path, target, observed, name + "-reverse")
+            cursor = 0
+        elif switch_needed(route, cursor, observed):
+            route, observed = replan_and_resume(path, target, observed, name + "-prepare")
+            cursor = 0
         observed = fire(observed, name + "-stoke", train_mass)
         if observed["paused"]:
             raise RuntimeError("Unexpected pause: inspect native window before continuing")

@@ -480,7 +480,7 @@ corrigé, puis le parcours reprend depuis la sauvegarde gagnée. Les tests du mo
 et la vérification visuelle sont exigés ensemble. Les actes ci-dessous sont des
 jalons de livraison tirés des gates ECS, pas de nouveaux chapitres de l'histoire.
 
-- [ ] Acte1 : économie et équipement gagnés, travaux, foreuse de Rum, rencontre d'Urga par le trajet réel. Sauvegarde/reprise et release locale testée.
+- [x] Acte1 : économie et équipement gagnés, travaux, foreuse de Rum, rencontre d'Urga par le trajet réel. Sauvegarde/reprise et release macOS locale testée (8504,8517,8671 ; lot442da70).
 - [ ] Acte2 : recrutement et envoi de l'espion, voyage au Mausolée et lecture du document. Sauvegarde/reprise et release locale testée.
 - [ ] Acte3 : harpon, baleine, Oslo et code, sabotage confirmé de la centrale. Sauvegarde/reprise et release locale testée.
 - [ ] Acte4 : préparation du convoi, accès secret, Himalaya, Minotaure et finale jusqu'à OPTIONS. Sauvegarde/reprise et release locale testée.
@@ -532,6 +532,65 @@ First integration of Codex's mammoth sheets; not owner-accepted. Builder
 - [x] Chargement de cette sauvegarde dans le package macOS corrigé8517 ; audio importé restauré.
 - [x] Comparaison native de neige depuis sauvegarde acquise8655 ; compteur7812 visible au centre.
 - [x] Mine19,47 par route alternative réelle via Tunis : ressources,165 anthracite crédités, reprise du résultat sans doublon et fermeture9003. Mine40,38 interrompue par combat perdu, conservé au journal.
-- [ ] Nouvelle release locale regroupant audio, berges, neige et extraction après cette validation.
+- [x] Release macOS locale regroupant audio, berges, neige et extraction, SHA0989213d095d03d998a397b7f301c112e419df4272ca103cdfaa9df4cba4492b ; code publié442da70.
 
 Lot précédent poussé sur main fc4e91d. La campagne complète et la couverture avant/arrière restent ouvertes. La défaite8662 après chauffe sans surveillance est conservée ; reprise prévue depuis NOMADS8655.
+
+## Native continuation, 4 October 2026
+
+- [x] Reach Berlin through real Bayreuth arrival, dialogues and departure.
+- [x] Recruit a spy into the earned Gdansk spy wagon.
+- [x] Send the spy, wait at a stopped train, and sabotage the central post.
+- [x] Repair blank sabotage confirmation; rebuild macOS and visually check NO/OK.
+- [x] Correct reversal phase in the read-only itinerary aid and prepare switches before resume.
+- [x] Repair the modeled campaign save fixture and rerun both full routes.
+- [ ] Reach Mausoleum for its clue and continue Oslo/whale/finale natively.
+- [ ] Complete alternate campaign paths and all station forward/reverse coverage.
+
+The current native run has not reached the ending. The modeled complete routes
+do not replace this outstanding requirement. Native evidence10019..10137 and
+`evidence/sabotage-confirmation.md`; itinerary proof in
+`planner-reversal-phase-fix-20261004.md`.
+
+## Underground passages reported missing, 4 October 2026
+
+- [x] Trace source entrance/exit glyphs, shortcuts and underground risk rules.
+- [x] Integrate six mouths and per-wagon underground tint; alpha0.75 chosen from valid prepared native comparisons. Player traversal acceptance remains below.
+- [ ] Play real entry/traversal/exit forward and reverse; preserve replay timings.
+- [ ] Check risk behavior with reproducible source comparisons and earned saves.
+
+Owner observed no modeled underground passages. This is an open campaign and
+visual acceptance requirement, not satisfied by ordinary connected rail tiles.
+
+## Shared control corrections, 4 October 2026
+
+Owner music direction: retain current original score during gameplay repairs;
+an orchestral remake is deferred until later. Current score is not the accepted
+final musical direction. Do not spend this validation phase replacing music.
+
+- [x] Frame spy choices, sabotage NO/OK, OPTIONS labels and KEYS.
+- [x] Expose overall map in engine, quarters and boudoir; return to actual caller.
+- [x] Tests, source/craft gates and actual macOS viewport clicks inspected10468..10498.
+- [x] Publish isolated verified lot2d0a92c9c90968cd9c31589bd256ca2b2eb2346d; remote SHA confirmed.
+
+Native reverse raw10361 restores, but its attempted alternative route stops
+at the actual terminus51,23 (10462..10464), not the Mausoleum53,32. No success
+claim for this route. Draw diagnostics isolated heading-arrow and caption occlusion of the locomotive.
+The correction is published as356bd49; native10582 shows the visible locomotive
+and separated direction cue. Underground reverse traversal and the campaign
+ending remain required. Native10904..11194 proves forward passage51,39 to113,58
+and full emergence of all21vehicles at132,63 (cycles9233..9518).
+
+
+Native underground pair51,39↔113,58 passed forward10904..11194 and
+reverse11195..11447 with21rendered vehicles and preserved reversal contacts.
+Root inspected full emergence captures11194/11447. Other two passage pairs,
+Mole Men encounters and occupied-switch changes remain open.
+
+
+- [x] Reproduce and correct late occupied switch49,39; original prepared contact
+  divergence26.900955→0.0, source-compatible regressions and review pass.
+- [x] Verify rebuilt macOS actual toggle11454, movement11455..11470 and normal
+  named-book reload11473 with21contacts preserved.
+- [x] Stop completed waypoint transit automation without restarting its leg;
+  six detached Python protocol tests pass.

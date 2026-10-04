@@ -53,11 +53,19 @@ static func _extend_backing_path(journey) -> bool:
 	for candidate in RailNetworkScript.DELTAS:
 		if Vector2(RailNetworkScript.DELTAS[candidate]) == -delta:
 			travel_heading = candidate
+	# Occupied-path trimming can leave the upcoming center as its first node.
+	# Its incoming half is retained; only the unoccupied outgoing half is live.
+	var starts_at_center: bool = start == start.round()
+	if starts_at_center: cell = Vector2i(start)
 	var station_interior: bool = cell == journey.next_cell() and journey.network.tile(cell) in [34,35,36,37]
 	if travel_heading == 0 or (not journey.network.entry_boundary(cell).is_empty() and not station_interior):
 		journey._render_refused_cell = cell
 		journey._render_refused_heading = travel_heading
 		return false
+	if starts_at_center:
+		var outgoing: int = journey.network.turn(cell,travel_heading)
+		_prepend_render(journey,PackedVector2Array([start+Vector2(RailNetworkScript.DELTAS[outgoing])*0.5]))
+		return true
 	if station_interior:
 		# Shared one-cell hidden station interior already used for departure
 		# (station-arrival.md, owner26Sep). Backing puts the trailing locomotive
@@ -75,12 +83,20 @@ static func _extend_backing_path(journey) -> bool:
 
 
 static func _reroute_backing_turn(journey) -> void:
-	# Keep the occupied tail, replacing only the untraversed prefix at the
-	# source turn phase. A seeded historical switch cannot choose future travel.
+	# Only a measured command latch gives occupied history turn authority.
+	# Legacy history retains source point turns (see earned7087 regression).
 	var center := Vector2(journey.position)
 	var index: int = journey._render_path.points.find(center)
 	if index < 0:
 		return
+	if not journey.reverse_switches.is_empty() and index > 0:
+		var outgoing: Vector2 = (journey._render_path.points[index-1]-center).sign()
+		for candidate in RailNetworkScript.DELTAS:
+			if Vector2(RailNetworkScript.DELTAS[candidate]) == outgoing:
+				var key := "%d,%d" % [journey.position.x,journey.position.y]
+				if candidate == journey.heading or journey.reverse_switches.get(key,0)==candidate:
+					journey.heading = candidate
+					return
 	var removed := 0.0
 	for step in range(index):
 		removed += journey._render_path.points[step].distance_to(journey._render_path.points[step+1])
@@ -88,8 +104,24 @@ static func _reroute_backing_turn(journey) -> void:
 	journey._render_path.length -= removed
 	journey._render_cursor -= removed
 	journey._render_origin -= removed
-	_prepend_render(journey, PackedVector2Array([center+Vector2(RailNetworkScript.DELTAS[journey.heading])*0.5]))
+	_prepend_render(journey,PackedVector2Array([center+Vector2(RailNetworkScript.DELTAS[journey.heading])*0.5]))
 	journey._render_cursor = maxf(0.0,journey._render_cursor)
+
+
+static func _retain_reverse_occupied_path(journey, rear_distance: float) -> void:
+	# Retain the node just ahead of the exact solved rear contact. All saved
+	# nodes stay on source half-cell ports; no interpolated save geometry.
+	var target: float = journey._render_cursor-rear_distance
+	var arc := 0.0
+	for index in range(1,journey._render_path.points.size()):
+		var segment: float = journey._render_path.points[index-1].distance_to(journey._render_path.points[index])
+		if arc+segment >= target:
+			journey._render_path.points = journey._render_path.points.slice(index-1)
+			journey._render_path.length -= arc
+			journey._render_cursor -= arc
+			journey._render_origin -= arc
+			return
+		arc += segment
 
 
 
