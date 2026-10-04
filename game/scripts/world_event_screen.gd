@@ -9,6 +9,7 @@ signal dismissed
 
 var mode := "mine"
 var question := true
+var _mine_phase := ""
 var report: Dictionary = {}
 var lines: Array = []
 var _scene: Texture2D
@@ -23,6 +24,7 @@ func _ready() -> void:
 
 func open_mine(details: Dictionary) -> void:
 	report = details.duplicate()
+	_mine_phase = ""
 	mode = "mine"
 	question = true
 	lines = ["YOU COME ACROSS A MINE", "PROSPECT?"]
@@ -39,6 +41,7 @@ func show_mine() -> void:
 
 # Text72 plaque,41 available resources,42 result. Source TEXTEK click464c.
 func show_mine_phase(world) -> void:
+	_mine_phase = world.mine_phase
 	show_mine()
 	if world.mine_phase == "resources":
 		lines = ["AVAILABLE RESOURCES:", "%d SLAVE(S)" % world.mine_resources.slaves,
@@ -70,7 +73,8 @@ func _physics_process(delta: float) -> void:
 	var app = get_parent()
 	if app != null and app.get("_boudoir_session") != null and app._boudoir_session.reception.visible:
 		return
-	var working: bool = not question
+	# Owner5Oct: mine information screens do not display worksite plumes.
+	var working: bool = not question and (mode != "mine" or _mine_phase == "result")
 	var accepted: Variant = get("_ok_result")
 	if accepted != null: working = accepted and int(get("countdown")) > 0
 	ambience.advance(delta,mode,working)

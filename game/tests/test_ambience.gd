@@ -7,6 +7,7 @@ const Enemies = preload("res://scripts/enemy_trains.gd")
 const Rocket = preload("res://scripts/rocket_living_effects.gd")
 const Worksite = preload("res://scripts/worksite_ambience.gd")
 var checks := 0
+var errors: Array[String] = []
 
 
 func _init() -> void:
@@ -14,7 +15,9 @@ func _init() -> void:
 
 
 func check(value: bool, label: String) -> void:
-	assert(value,label)
+	if not value:
+		errors.append(label)
+		push_error(label)
 	checks += 1
 
 
@@ -49,5 +52,21 @@ func run() -> void:
 	check(work.effects.emitters.size() == 2,"accepted works dust and sparks")
 	work.advance(0.02,"crevasse",false)
 	check(work.effects.emitters.is_empty(),"inactive work clears old work bursts")
+	# Owner5Oct: static mine plaques must not imply locomotive/worksite smoke.
+	var screen = preload("res://scripts/world_event_screen.gd").new()
+	screen.report = {"ore":"ANTHRACITE", "year":2714, "wealth":20}
+	var mine = {"mine_phase":"plaque", "mine_resources":{"slaves":60,"mammoths":0,"cranes":1}, "mine_quantity":903}
+	screen.show_mine_phase(mine)
+	screen._physics_process(1.0)
+	check(screen.ambience.effects.emitters.is_empty(),"static mine plaque emits no work dust")
+	mine.mine_phase = "resources"
+	screen.show_mine_phase(mine)
+	screen._physics_process(1.0)
+	check(screen.ambience.effects.emitters.is_empty(),"resource list emits no work dust")
+	mine.mine_phase = "result"
+	screen.show_mine_phase(mine)
+	screen._physics_process(1.0)
+	check(not screen.ambience.effects.emitters.is_empty(),"actual extraction retains work dust")
+	screen.free()
 	print("PASS: ambience ",checks," source isolation and phase checks")
-	quit(0)
+	quit(0 if errors.is_empty() else 1)
