@@ -68,7 +68,7 @@ func draw(view) -> void:
 		var angle := direction.angle() - PI * 0.5
 		view.draw_set_transform_matrix(view.train_renderer.registration(frame, center, angle, scale))
 		# One locomotive symbol: no inferred enemy consist, troop count or strength.
-		view.draw_texture(frame.texture, Vector2.ZERO)
+		view.train_renderer.draw_frame(view, frame, Color.WHITE)
 	view.draw_set_transform_matrix(Transform2D.IDENTITY)
 
 
