@@ -13,6 +13,7 @@ const CELL := 16 # WDECOR0x00c2; seven rows, four roof cells per64px wagon.
 const DIRECTIONS := [Vector2i(0,-1), Vector2i(1,-1), Vector2i(1,0), Vector2i(1,1), Vector2i(0,1), Vector2i(-1,1), Vector2i(-1,0), Vector2i(-1,-1), Vector2i.ZERO]
 var trains: Array = [[], []]
 var offsets: Array = [0, 0]
+var camera_offset := 0 # WDECOR4fca: camera8376 minus field center8378.
 var velocities: Array = [0, 0]
 var actors: Array = []
 var charges: Array = []
@@ -35,6 +36,7 @@ var initial_pools := {}
 var remainder := 0.0
 
 func begin(wagons, strength: int, source_rng: RandomNumberGenerator) -> void:
+	camera_offset = 0
 	rng.seed = source_rng.seed
 	rng.state = source_rng.state
 	original = wagons.wagons.duplicate(true)
@@ -203,7 +205,7 @@ func check_end() -> void:
 
 func snapshot() -> Dictionary:
 	var data := {}
-	for key in ["trains", "offsets", "velocities", "actors", "charges", "aggressiveness", "columns", "scan", "scan_side", "sweep", "ai_wagon", "ai_wait", "ai_direction", "ticks", "next_id", "outcome", "settled", "original", "initial_pools", "remainder"]:
+	for key in ["trains", "offsets", "camera_offset", "velocities", "actors", "charges", "aggressiveness", "columns", "scan", "scan_side", "sweep", "ai_wagon", "ai_wait", "ai_direction", "ticks", "next_id", "outcome", "settled", "original", "initial_pools", "remainder"]:
 		data[key] = get(key)
 	data.version = 1
 	data.seed = str(rng.seed)
@@ -215,7 +217,8 @@ func restore(data: Variant) -> bool:
 		return false
 	for key in snapshot():
 		if key not in ["version", "seed", "state"]:
-			set(key, data[key] if key == "remainder" else preload("res://scripts/tactical_restore.gd").normalize(data[key]))
+			var value = data.get(key, 0) if key == "camera_offset" else data[key]
+			set(key, value if key == "remainder" else preload("res://scripts/tactical_restore.gd").normalize(value))
 	rng.seed = int(data.seed)
 	rng.state = int(data.state)
 	return true

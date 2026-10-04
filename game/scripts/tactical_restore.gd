@@ -27,6 +27,10 @@ static func valid(data: Variant) -> bool:
 	for key in bounds:
 		if not integer(data.get(key), bounds[key][0], bounds[key][1]):
 			return false
+	# Optional for legacy saves; WDECOR4c32..4c68 bounds minus center0203.
+	var camera_limit: int = data.columns * 16 / 2 - 160
+	if data.has("camera_offset") and not integer(data.camera_offset, -camera_limit, camera_limit):
+		return false
 	if data.scan >= data.columns * 7 or not data.get("settled") is bool:
 		return false
 	if not (data.get("remainder") is float or data.get("remainder") is int) or not is_finite(data.remainder) or absf(data.remainder) > 1:

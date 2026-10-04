@@ -57,14 +57,15 @@ static func enemy_ai(state) -> void:
 
 static func run(state) -> void:
 	#0x17b4: every enemy weapon;0x5001: only six visible player slots.
+	#4fca/4feb: visibility follows camera scrolling, not a fixed world band.
+	var first_player_slot: int = (state.offsets[0] - state.camera_offset) / 64
 	for side in [1, 0]:
 		for index in state.trains[side].size():
 			var car: Dictionary = state.trains[side][index]
 			if car.health <= 0 or car.reload <= 0:
 				continue
 			if side == 0:
-				var screen_x: int = 288 + state.offsets[0] - index * 64
-				if screen_x < -64 or screen_x > 320:
+				if index < first_player_slot or index > first_player_slot + 5: #5420.
 					continue
 			var reload: int = car.reload
 			# WDECOR51eb/5640: machine-gun sound at12;52df/5715 cannon at23.

@@ -7,7 +7,13 @@ var state
 var selected_actor := -1
 var selected_wagon := -1
 var group_size := 1
-var camera := 0.0
+var camera := 0.0:
+	set(value):
+		camera = value
+		if state != null:
+			# WDECOR4c32..4c68 clamps the camera to the field before choosing slots.
+			camera = clampf(value, -state.center_offset(), state.center_offset())
+			state.camera_offset = int(camera)
 var paused := false
 var textures := {}
 var texture_bounds := {}
@@ -78,6 +84,7 @@ func open_battle(value) -> void:
 		_kept.clear() # label spots belong to the battle that placed them
 		_shown.clear()
 	state = value
+	camera = value.camera_offset
 	show()
 	queue_redraw()
 
