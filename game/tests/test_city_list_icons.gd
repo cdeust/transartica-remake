@@ -38,8 +38,8 @@ func _run() -> void:
 	for index in panel._rows.size():
 		var row: Array = panel._rows[index]
 		check(panel._list.get_item_icon(index) == panel.list_icons.goods_for(row[0]),"goods row keeps its original ID")
-		check(panel._list.get_item_text(index) == "%s  %d" % [app.trade.goods_name(row[0]),row[1]],"goods text/stock remain unchanged")
-	await capture("continuous-play-20261003/goods-after.png")
+		check(panel._list.get_item_text(index) == "%s\n%d" % [app.trade.goods_name(row[0]),row[1]],"complete goods name and stock occupy separate lines")
+	await capture("city-list-quantity-20261005/goods-after.png")
 	panel._list.select(0)
 	panel._list.grab_focus()
 	await key(KEY_RIGHT)
@@ -48,7 +48,7 @@ func _run() -> void:
 	panel.start_workshop()
 	for index in panel._rows.size():
 		check(panel._list.get_item_icon(index) == panel.list_icons.wagon_for(panel._rows[index][0]),"workshop row preserves source wagon type")
-	await capture("continuous-play-20261003/wagons-after.png")
+	await capture("city-list-quantity-20261005/wagons-after.png")
 	panel._list.select(0)
 	panel._list.grab_focus()
 	await key(KEY_RIGHT)

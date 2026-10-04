@@ -120,6 +120,7 @@ func _layout() -> void:
 	# Source-width icon footprint; list scrolling and detail placement are UI adaptation.
 	_list.fixed_icon_size = Vector2i(list_icons.FOOTPRINT * scale_factor)
 	_list.add_theme_font_size_override("font_size", maxi(7, roundi(5.0 * scale_factor)))
+	_fit_list_font()
 	_detail.position = Vector2(4, 77) * scale_factor
 	_detail.size = Vector2(312, 29) * scale_factor
 	_place(_notice, Rect2(7, 125, 306, 22))
@@ -137,6 +138,24 @@ func _place(control: Control, logical: Rect2) -> void:
 	var rect: Rect2 = backdrop.screen_rect(logical)
 	control.position = rect.position
 	control.size = rect.size
+
+
+func _fit_list_font() -> void:
+	# Owner4Oct Turin11592: preserve whole name and whole quantity on separate
+	# lines. Measure actual theme font/column and spacing, never split digits.
+	var font := _list.get_theme_font("font")
+	var pixels := _list.get_theme_font_size("font_size")
+	var available := maxi(1,_list.fixed_column_width-2*_list.get_theme_constant("h_separation"))
+	var labels: Array = []
+	if trade != null and not trade.data.is_empty():
+		labels.append_array(trade.data.goods_names)
+		labels.append_array(trade.data.wagon_names)
+	for index in _list.item_count:
+		labels.append_array(_list.get_item_text(index).split("\n"))
+	for label in labels:
+		while pixels > 1 and font.get_string_size(str(label),HORIZONTAL_ALIGNMENT_LEFT,-1,pixels).x > available:
+			pixels -= 1 # Same measured fitting approach as OriginalPanel readouts.
+	_list.add_theme_font_size_override("font_size",pixels)
 
 
 func _transaction_visibility() -> void:
@@ -271,7 +290,8 @@ func start_workshop() -> void:
 	_rows = trade.workshop_list(city)
 	_list.clear()
 	for row in _rows:
-		_list.add_item("%s  %d" % [trade.wagon_name(row[0]), row[1]],list_icons.wagon_for(row[0]))
+		_list.add_item("%s\n%d" % [trade.wagon_name(row[0]), row[1]],list_icons.wagon_for(row[0]))
+	_fit_list_font()
 	_menu.hide()
 	_list.show()
 	_trade_box.show()
@@ -291,9 +311,10 @@ func _fill_list() -> void:
 	_rows = trade.goods_list(city, _mode, wagons)
 	_list.clear()
 	for row in _rows:
-		_list.add_item("%s  %d" % [trade.goods_name(row[0]), row[1]],list_icons.goods_for(row[0]))
+		_list.add_item("%s\n%d" % [trade.goods_name(row[0]), row[1]],list_icons.goods_for(row[0]))
 		if row[0] == previous:
 			_list.select(_list.item_count - 1)
+	_fit_list_font()
 
 
 # glieu 0x464..0x4a9: picking goods loads its prices and restarts at zero.
