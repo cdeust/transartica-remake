@@ -76,7 +76,7 @@ func play_track(key: String, guard_preference := true) -> bool:
 	if entry.get("cycle", false):
 		playback.loop_mode = AudioStreamWAV.LOOP_FORWARD
 		playback.loop_begin = int(entry.get("loop_begin", 0))
-		playback.loop_end = int(entry.get("loop_end", playback.data.size() / 2))
+		playback.loop_end = int(entry.get("loop_end", roundi(playback.get_length() * playback.mix_rate)))
 	music.stream = playback
 	_elapsed = 0.0
 	_fade_remaining = 0
@@ -148,9 +148,7 @@ func stop_effects() -> void:
 func _wave(filename: String) -> AudioStreamWAV:
 	if not _cache.has(filename):
 		var path := "res://private-data/audio/" + filename
-		if not FileAccess.file_exists(path):
-			return null
-		_cache[filename] = AudioStreamWAV.load_from_file(path)
+		_cache[filename] = preload("res://scripts/source_audio_resource.gd").wave(path)
 	return _cache[filename]
 
 
@@ -177,8 +175,10 @@ func validate_snapshot(data: Variant) -> bool:
 			return false
 	if data.get("version") != 1 or not data.get("track") is String:
 		return false
-	if not data.track.is_empty() and not music_manifest.get("tracks", {}).has(data.track):
-		return false
+	if not data.track.is_empty():
+		var entry: Dictionary = music_manifest.get("tracks", {}).get(data.track, {})
+		if entry.is_empty() or _wave(entry.file) == null:
+			return false
 	var elapsed: Variant = data.get("elapsed")
 	return (elapsed is float or elapsed is int) and is_finite(float(elapsed)) and elapsed >= 0
 
@@ -192,10 +192,13 @@ func restore(data: Dictionary) -> bool:
 	_alternate = data.alternate
 	current_track = data.track
 	if not current_track.is_empty():
-		play_track(current_track, false)
+		if not play_track(current_track, false):
+			return false
 		var entry: Dictionary = music_manifest.tracks[current_track]
 		var stream: AudioStreamWAV = music.stream
-		var length: float = float(stream.data.size()) / (stream.mix_rate * 2)
+		# Imported QOA and raw PCM have different byte counts for the same duration.
+		# Evidence: exported-audio-20261004.md compares the actual release resource.
+		var length: float = stream.get_length()
 		music.seek(_score_position(entry, float(data.elapsed), length,stream.mix_rate))
 	_elapsed = float(data.elapsed)
 	return true

@@ -18,7 +18,7 @@ static func snapshot(coordinator) -> Dictionary:
 	if not value.workshop.visible:
 		value.workshop.confirmation = false
 		value.workshop.moving = -1
-	value.text_accumulator = coordinator.text_accumulator if (coordinator.app.works_dialog.visible or (coordinator.app.get("roamers") != null and coordinator.app.roamers.pending == "hunt_result")) else 0.0
+	value.text_accumulator = coordinator.text_accumulator if (coordinator.app.world.mine_phase == "result" or coordinator.app.works_dialog.visible or (coordinator.app.get("roamers") != null and coordinator.app.roamers.pending == "hunt_result")) else 0.0
 	return value.duplicate(true)
 
 static func validate(value: Variant, world, works: Dictionary, seconds_per_cycle: float, roamers = null) -> bool:
@@ -27,7 +27,7 @@ static func validate(value: Variant, world, works: Dictionary, seconds_per_cycle
 	var accumulator: Variant = value.get("text_accumulator")
 	if not number(accumulator) or accumulator < 0 or accumulator >= seconds_per_cycle/TEXT_TICKS_PER_CYCLE:
 		return false
-	if not works.visible and (roamers == null or roamers.pending != "hunt_result") and accumulator != 0:
+	if world.mine_phase != "result" and not works.visible and (roamers == null or roamers.pending != "hunt_result") and accumulator != 0:
 		return false
 	return _mine(value.get("mine"),world) and _workshop(value.get("workshop"),world.management)
 
@@ -68,6 +68,8 @@ static func _workshop(value: Variant, management) -> bool:
 static func restore(coordinator, value: Dictionary) -> void:
 	for key in empty_snapshot().mine:
 		coordinator.mine_screen.set(key,value.mine[key].duplicate(true) if value.mine[key] is Dictionary or value.mine[key] is Array else value.mine[key])
+	if coordinator.app.world.mine_accepted:
+		coordinator.mine_screen.show_mine_phase(coordinator.app.world)
 	coordinator.mine_screen._load_scene()
 	coordinator.mine_screen.queue_redraw()
 	for key in empty_snapshot().workshop:

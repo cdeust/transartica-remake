@@ -29,7 +29,9 @@ func _run() -> void:
 	app._world_session.handle_boundary()
 	app._world_session._answer_mine(true)
 	_check(app.network.tile(cell) == 78 and app.world.mine_accepted, "YES waits for dismissal")
-	app._world_session._close_mine()
+	app._world_session._close_mine() # plaque -> resources
+	app._world_session._close_mine() # resources -> credited result
+	app._world_session._close_mine() # result -> closed
 	_check(app.network.tile(cell) == 79 and not app.journey.blocked and app.journey.heading == 4, "dismiss commits mine and reverse exactly once")
 	var heading: int = app.journey.heading
 	app._world_session._close_mine()

@@ -5,7 +5,7 @@
 Resource associations are inspected CARTE images65..151 (world-terrain.md).
 """
 from pathlib import Path
-from math import sin, cos, pi
+import hashlib
 from PIL import Image, ImageDraw
 import random
 
@@ -43,10 +43,68 @@ def mountain(i):
     grain(im,i);return im
 
 
+# source: CARTE palette5..8 bounds/openings measured in private map-resources.json.
+# Modern polygons below preserve only those semantic limits, never source pixels.
+SHORE_OPENINGS = {
+    106: {"E": (2,11)},
+    107: {"E": (7,16), "S": (10,16), "W": (2,12)},
+    108: {"E": (7,16), "S": (0,16), "W": (7,16)},
+    109: {"S": (0,11), "W": (6,16)},
+    110: {"N": (5,16), "E": (0,13)},
+    111: {"N": (0,16), "E": (0,14), "W": (0,13)},
+    112: {"N": (0,11), "W": (0,14)},
+    113: {"E": (1,16), "S": (13,16)},
+    114: {"E": (2,11), "S": (0,6), "W": (1,16)},
+    115: {"W": (1,11)},
+    134: {},
+    135: {"N": (3,15), "E": (3,6), "S": (3,15), "W": (3,11)},
+    136: {"N": (1,13), "E": (2,10), "S": (1,13), "W": (2,10)},
+    137: {"N": (5,15)},
+    138: {"E": (1,16), "S": (3,16)},
+    139: {"N": (1,14), "E": (2,11), "S": (1,14), "W": (1,15)},
+    140: {"N": (3,15), "S": (4,15)},
+    149: {"E": (6,7)},
+}
+SOURCE_CELL = 16  # source: CARTE resource106..149 width and height.
+# source: authored contours registered to the measured openings and water bounds
+# in map-resources.json. Interior vertex choices are new artwork, not pixel traces.
+CORRECTED_SHAPES = {
+    106: [(96,12),(60,12),(24,24),(12,42),(24,60),(60,66),(96,66)],
+    107: [(0,12),(24,12),(48,24),(70,42),(96,42),(96,96),(60,96),(48,76),(0,72)],
+    108: [(0,42),(28,48),(48,42),(70,48),(96,42),(96,96),(0,96)],
+    109: [(0,36),(54,36),(90,54),(78,76),(66,96),(0,96)],
+    110: [(30,0),(96,0),(96,78),(66,78),(42,60),(30,36)],
+    111: [(0,0),(96,0),(96,84),(70,78),(48,84),(24,72),(0,78)],
+    112: [(0,0),(66,0),(84,30),(90,54),(60,78),(0,84)],
+    113: [(96,6),(60,6),(30,18),(12,36),(30,60),(66,84),(78,96),(96,96)],
+    114: [(0,6),(42,6),(72,12),(96,12),(96,66),(66,66),(42,84),(36,96),(0,96)],
+    115: [(0,6),(36,6),(60,24),(66,48),(48,66),(30,78),(0,66)],
+    135: [(18,0),(90,0),(96,18),(96,36),(78,54),(90,96),(18,96),(12,78),(0,66),(0,18)],
+    136: [(6,0),(78,0),(96,12),(96,60),(78,96),(6,96),(0,60),(0,12)],
+    137: [(30,0),(90,0),(90,48),(78,66),(54,84),(18,72),(6,42),(18,18)],
+    138: [(96,6),(78,6),(54,24),(30,48),(12,72),(18,96),(96,96)],
+    139: [(6,0),(84,0),(96,12),(96,66),(84,96),(6,96),(0,90),(0,6)],
+    140: [(18,0),(90,0),(90,30),(78,60),(90,96),(24,96),(12,72),(18,42)],
+    149: [(96,36),(78,24),(42,18),(12,30),(6,48),(24,72),(48,78),(78,66),(90,48),(96,42)],
+}
+
+def register_shore_edges(im, code):
+    """Register modern water openings to measured source border intervals."""
+    scale = S // SOURCE_CELL
+    for side in "NESW":
+        opening = SHORE_OPENINGS[code].get(side)
+        for position in range(S):
+            point = {"N": (position,0), "E": (S-1,position),
+                     "S": (position,S-1), "W": (0,position)}[side]
+            water = opening and opening[0]*scale <= position < opening[1]*scale
+            im.putpixel(point, (*bytes.fromhex(P["water"][1:]),255) if water else (0,0,0,0))
+    return im
+
+
 def lake(i):
     im=Image.new('RGBA',(S,S));d=ImageDraw.Draw(im)
     # Individual shore compositions preserve the original tile's lake association.
-    shape={106:[(30,0),(96,0),(96,96),(31,96),(5,57),(9,20)],107:[(0,0),(65,0),(96,32),(96,96),(0,96)],108:[(0,0),(96,0),(96,96),(0,96)],109:[(0,0),(60,0),(95,27),(75,51),(95,71),(74,96),(0,96)],110:[(34,0),(96,0),(96,96),(31,96),(3,54)],111:[(0,0),(96,0),(96,96),(0,96)],112:[(0,0),(54,0),(88,20),(96,49),(75,79),(44,96),(0,96)],113:[(30,0),(96,0),(96,96),(39,96),(9,70),(22,43),(0,18)],114:[(0,0),(96,0),(96,80),(28,96),(0,84)],115:[(0,0),(96,0),(82,33),(96,52),(67,74),(32,70),(0,96)]}.get(i,[(10,22),(47,8),(85,22),(95,53),(75,81),(28,91),(2,57)])
+    shape = CORRECTED_SHAPES[i]
     d.polygon(shape,fill=P['water'])
     for a,b in zip(shape,shape[1:]+shape[:1]):
         if (a[0]==b[0] and a[0] in (0,96)) or (a[1]==b[1] and a[1] in (0,96)):continue
@@ -58,7 +116,24 @@ def lake(i):
     for pts in [[(8,45),(22,39),(34,43),(49,35)],[(65,8),(62,28),(69,38),(61,50)]]:
         for a,b in zip(pts,pts[1:]):
             if mask.getpixel(a)[3] and mask.getpixel(b)[3]:d.line((a,b),fill=P['blue'])
+    if i in SHORE_OPENINGS:
+        register_shore_edges(im, i)
     return im
+
+
+def oasis():
+    """Authored vegetation and enclosed pool; source134 has green palms/basin."""
+    im = Image.new("RGBA", (S,S)); d = ImageDraw.Draw(im)
+    # source: palette14/15 vegetation and blue water bbox(1,6)..(14,13),
+    # inspected map-resources134; new leaves/shore shapes are presentation.
+    d.ellipse((6,36,84,78), fill=P["water"])
+    d.arc((6,36,84,78), 0, 360, fill=P["blue"], width=3)
+    for x,y in [(18,27),(38,22),(58,25),(73,32),(21,46),(67,51)]:
+        d.line((x,y,x+3,y+18), fill=P["warm"], width=3)
+        for dx,dy in [(-10,4),(-7,-5),(0,-8),(8,-4),(11,4)]:
+            d.line((x,y,x+dx,y+dy), fill=P["pine"], width=4)
+            d.line((x,y,x+dx,y+dy), fill=P["pinehi"], width=2)
+    return register_shore_edges(im, 134)
 
 
 def forest(i):
@@ -124,26 +199,35 @@ def city(i):
     grain(im,i);return im
 
 
-# Low contrast coherent wind-polished snow; no invented world landmarks.
-ground=Image.new('RGB',(256,256));pix=ground.load()
-for y in range(256):
- for x in range(256):
-    ridge=sin(x*2*pi/256+y*2*pi/128)*4+cos(y*2*pi/256)*3
-    step=int(ridge)//2*2
-    pix[x,y]=(181+step,199+step,202+step)
-d=ImageDraw.Draw(ground);r=random.Random(2714)
-for _ in range(260):
-    x=r.randrange(256);y=r.randrange(256);length=r.randrange(5,24)
-    shade=r.choice([(172,191,196),(186,203,205),(190,207,207)])
-    for dx in range(length):
-        xx=(x+dx)%256;yy=(y+dx//7)%256
-        d.point((xx,yy),fill=shade)
-        if dx<length//2:d.point((xx,(yy+1)%256),fill=shade)
-ground.save(OUT/'snow-material.png')
-for i in [65,*range(71,86),*range(86,116),*range(116,141),142,143,144,145,146,147,148,149]:
-    if 86<=i<=105 or i in (142,143,144,145,146):im=mountain(i)
-    elif 106<=i<=115 or i in (134,135,136,137,138,139,140,149):im=lake(i)
-    elif 116<=i<=132:im=forest(i)
-    else:im=city(i)
-    im.save(OUT/f'{i}.png')
-print(f'Authored {len(list(OUT.glob("*.png")))} terrain/material textures')
+# source: image_gen output 4 October2026, unedited1254px square; provenance
+# and full prompt: assets/travel/terrain/snow-master-provenance.md.
+SNOW_MASTER_SHA256 = "e4889d41b250181b99ae20f8e678133edac056dcb5092f6e514dfc6677c91b41"
+
+
+def verify_snow_master():
+    """Retain committed artwork byte-identically; never regenerate its pixels."""
+    path = OUT / "snow-master.png"
+    if hashlib.sha256(path.read_bytes()).hexdigest() != SNOW_MASTER_SHA256:
+        raise ValueError("Committed snow master differs from its documented image_gen output")
+    return path
+
+
+def build(codes=None):
+    if codes is None:
+        verify_snow_master()
+    selected = codes if codes is not None else [65,*range(71,86),*range(86,116),*range(116,141),142,143,144,145,146,147,148,149]
+    for i in selected:
+        if 86<=i<=105 or i in (142,143,144,145,146):im=mountain(i)
+        elif i == 134:im=oasis()
+        elif 106<=i<=115 or i in (135,136,137,138,139,140,149):im=lake(i)
+        elif 116<=i<=132:im=forest(i)
+        else:im=city(i)
+        im.save(OUT/f'{i}.png')
+    print(f'Authored {len(list(OUT.glob("*.png")))} terrain/material textures')
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--codes", nargs="+", type=int, help="Rebuild only these authored resources; retain snow and other artwork")
+    build(parser.parse_args().codes)

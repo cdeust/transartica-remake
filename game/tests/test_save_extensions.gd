@@ -76,7 +76,7 @@ func _test_mine(app) -> void:
 		app._world_session.mine_screen.hide()
 		check_restore(app,snapshot,"mine question/accepted plaque resumes")
 		check(app._world_session.mine_screen.visible and app._world_session.mine_screen.question != accepted,"mine question matches deferred prospect state")
-	check(app.world.close_mine(),"restored accepted mine closes once")
+	check(app.world.advance_mine() and app.world.advance_mine() and app.world.close_mine(),"restored accepted mine extracts then closes once")
 	check(not app.world.close_mine(),"restored prospect cannot repeat")
 	app._world_session.mine_screen.hide()
 

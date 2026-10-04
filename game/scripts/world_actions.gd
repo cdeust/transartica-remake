@@ -3,6 +3,7 @@ extends RefCounted
 # MIT. Session-owned world effects, YODA mine handlers and TIME pre-entry drill.
 # source: tasks/evidence/mines.md, obstacles.md; verified listings 2026-09-30.
 const MineTable = preload("res://scripts/mines.gd")
+const Extraction = preload("res://scripts/mine_extraction.gd")
 const Management = preload("res://scripts/train_management.gd")
 
 var journey
@@ -14,6 +15,10 @@ var mines = MineTable.new()
 var management = Management.new()
 var pending_mine := -1
 var mine_accepted := false
+var mine_phase := ""
+var mine_resources: Dictionary = {}
+var mine_quantity := 0
+var mine_countdown := 0
 var last_mine_day := 0
 var visited_cities: Array[int] = []
 
@@ -60,6 +65,10 @@ func ask_mine(cell: Vector2i) -> Dictionary:
 		return {}
 	pending_mine = slot
 	mine_accepted = false
+	mine_phase = "question"
+	mine_resources = {}
+	mine_quantity = 0
+	mine_countdown = 0
 	engine.brake = true
 	engine.speed = 0
 	var record: Array = mines.records[slot]
@@ -73,13 +82,41 @@ func answer_mine(accept: bool) -> bool:
 		return false
 	if not accept:
 		pending_mine = -1
+		mine_phase = ""
 		return true
 	mine_accepted = true
+	mine_phase = "plaque"
 	return true
 
 
-func close_mine() -> bool:
+# TEXTEK click72 ->41 ->42. Credit happens on entry to42, once per transaction.
+func advance_mine() -> bool:
 	if pending_mine < 0 or not mine_accepted:
+		return false
+	if mine_phase == "plaque":
+		mine_resources = Extraction.resources(wagons.wagons)
+		mine_phase = "resources"
+		return true
+	if mine_phase == "resources":
+		var record: Array = mines.records[pending_mine]
+		mine_quantity = Extraction.calculate(wagons.wagons,mine_resources,int(record[3]),engine.lignite,engine.anthracite)
+		if MineTable.is_anthracite(record):
+			engine.anthracite = Extraction.credited_total(engine.anthracite,mine_quantity)
+		else:
+			engine.lignite = Extraction.credited_total(engine.lignite,mine_quantity)
+		mine_countdown = 60 # TEXTEK0x12eb, signed byte.
+		mine_phase = "result"
+		return true
+	return false
+
+# TEXTEK45c8 tests <0, but45e6 only calls while >0: expiry never normalizes
+# the mine's fast clock. Click cleanup4641/4646 does that, without auto-close.
+func mine_text_tick() -> void:
+	if mine_phase == "result" and mine_countdown > 0:
+		mine_countdown -= 1
+
+func close_mine() -> bool:
+	if pending_mine < 0 or not mine_accepted or mine_phase != "result":
 		return false
 	var before := mines.snapshot()
 	var writes := mines.prospect(pending_mine, true)
@@ -88,6 +125,10 @@ func close_mine() -> bool:
 		return false
 	pending_mine = -1
 	mine_accepted = false
+	mine_phase = ""
+	mine_resources = {}
+	mine_quantity = 0
+	mine_countdown = 0
 	# YODA scene -22 ->0x9ee ->0x18e3; brake remains on.
 	journey.reverse_direction()
 	engine.speed = 0
@@ -112,6 +153,7 @@ func visit_city(city: int) -> void:
 func snapshot() -> Dictionary:
 	return {"mines": mines.snapshot(), "last_mine_day": last_mine_day,
 		"pending_mine": pending_mine, "mine_accepted": mine_accepted,
+		"mine_phase":mine_phase,"mine_resources":mine_resources.duplicate(),"mine_quantity":mine_quantity,"mine_countdown":mine_countdown,
 		"visited_cities": visited_cities.duplicate()}
 
 
@@ -124,6 +166,30 @@ func restore(value: Variant) -> bool:
 	if value.last_mine_day < 0 or int(value.last_mine_day) % 3 != 0 or value.pending_mine < -1 or value.pending_mine >= MineTable.SLOT_COUNT:
 		return false
 	if value.mine_accepted and value.pending_mine < 0:
+		return false
+	var phase_fields := ["mine_phase","mine_resources","mine_quantity","mine_countdown"]
+	var present := 0
+	for key in phase_fields:
+		if value.has(key): present += 1
+	if present != 0 and present != phase_fields.size():
+		return false
+	# Legacy accepted scenes have not credited coal; resume at their old plaque.
+	var phase: Variant = value.get("mine_phase", "plaque" if value.mine_accepted else "question" if value.pending_mine >= 0 else "")
+	var crew: Variant = value.get("mine_resources",{})
+	var quantity: Variant = value.get("mine_quantity",0)
+	var countdown: Variant = value.get("mine_countdown",0)
+	if not phase is String or not crew is Dictionary or not Extraction.integer(quantity,-32768,32767) or not Extraction.integer(countdown,0,60):
+		return false
+	if phase not in ["","question","plaque","resources","result"] or (phase == "") != (value.pending_mine < 0):
+		return false
+	if value.pending_mine >= 0 and value.mine_accepted != (phase != "question"):
+		return false
+	if phase in ["resources","result"]:
+		if not Extraction.valid_resources(crew):
+			return false
+	elif not crew.is_empty():
+		return false
+	if phase != "result" and (quantity != 0 or countdown != 0):
 		return false
 	var restored = MineTable.new()
 	if not restored.restore(value.get("mines")):
@@ -144,5 +210,9 @@ func restore(value: Variant) -> bool:
 	last_mine_day = int(value.last_mine_day)
 	pending_mine = int(value.pending_mine)
 	mine_accepted = value.mine_accepted
+	mine_phase = phase
+	mine_resources = crew.duplicate()
+	mine_quantity = int(quantity)
+	mine_countdown = int(countdown)
 	visited_cities = cities
 	return true

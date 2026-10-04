@@ -70,7 +70,7 @@ func _test_mines(world, network) -> void:
 	world.ask_mine(cell)
 	_check(world.answer_mine(true) and network.tile(cell) == 78, "YES waits for scene close")
 	var pending: Dictionary = world.snapshot()
-	_check(world.restore(pending) and world.close_mine(), "pending scene save resumes at close")
+	_check(world.restore(pending) and world.advance_mine() and world.advance_mine() and world.close_mine(), "pending scene save resumes through extraction before close")
 	_check(network.tile(cell) == 79 and world.mines.records[0][3] == -1, "close writes depleted mine and wealth sentinel")
 	_check(not world.close_mine(), "close cannot repeat reversal")
 	_check(network.restore(saved_network) and world.restore(saved_world), "map and mine table restore together")

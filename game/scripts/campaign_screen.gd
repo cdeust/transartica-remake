@@ -80,12 +80,13 @@ func _process(delta: float) -> void:
 
 func _resume_audio() -> void:
 	var path := "res://private-data/finale.wav"
-	if not FileAccess.file_exists(path):
+	var stream := preload("res://scripts/source_audio_resource.gd").wave(path)
+	if stream == null:
 		return
 	if _finale_audio == null:
 		_finale_audio = AudioStreamPlayer.new()
 		add_child(_finale_audio)
-	_finale_audio.stream = AudioStreamWAV.load_from_file(path)
+	_finale_audio.stream = stream
 	_finale_audio.play((finale.tick + finale.remainder) / finale.HZ)
 
 

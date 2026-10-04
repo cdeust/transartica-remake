@@ -31,18 +31,25 @@ def pause(observed, label):
 
 def fire(observed, label, train_mass):
     inputs = []
-    # Original driving threshold1500/cap32000: campaign-route-driver.gd.
-    if observed["steam"] <= 1500:
+    # TIME0x215..0x27a: forecast one unfuelled boiler/drive cycle from the
+    # observed heat and mass. Start reheating before stored pressure runs out.
+    # Evidence: native8645..8650 reached zero reserve under the old1500-only rule.
+    resistance = (train_mass + (train_mass // 100) ** 2) // 2
+    divisor = 32000 // resistance
+    speed = observed["speed"]
+    consumption = (speed + speed * (speed // 10)) // divisor
+    heat = observed["heat"]
+    transfer = heat // 100 + 1 if heat else 0
+    production = transfer * 100 if heat - transfer > 100 else 0
+    # The1500 starting threshold and32000 clamp belong to EngineState._drive.
+    if observed["steam"] <= 1500 or production < consumption:
         for key, fuel, rate in [("L", "lignite", "lignite_rate"),
                                 ("A", "anthracite", "anthracite_rate")]:
             if observed[fuel] > 0 and observed[rate] == 0:
                 inputs.append({"key": key})
     # TIME0x215..0x27a consumes steam after the32000 boiler clamp.
     # Source: tasks/evidence/locomotive-rules.md and engine_state._drive.
-    resistance = (train_mass + (train_mass // 100) ** 2) // 2
-    divisor = 32000 // resistance
-    speed = observed["speed"]
-    ceiling = 32000 - (speed + speed * (speed // 10)) // divisor
+    ceiling = 32000 - consumption
     for key, fuel, rate in [("L", "lignite", "lignite_rate"),
                             ("A", "anthracite", "anthracite_rate")]:
         if (observed["steam"] >= ceiling or observed[fuel] == 0) and observed[rate]:

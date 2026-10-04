@@ -525,3 +525,13 @@ First integration of Codex's mammoth sheets; not owner-accepted. Builder
 - [x] No `-v2` sheets: Codex confirms the howdah sheets hold no rider silhouettes (seat backs only).
 - [ ] Howdah and rider fall physics (the rider death frames are authored arcs of the merged pairs).
 - [ ] `tactical_actor_motion.gd` is 830 lines (740 before this work): split boarding, dynamite and drawing out of it; `tactical_actor_art.gd` now has no runtime caller (mirror test and review script only).
+
+### Continuation native, 4 octobre 2026
+
+- [x] Urga atteinte par le trajet réel, clé obtenue8504, sauvegarde8506/reprise8507.
+- [x] Chargement de cette sauvegarde dans le package macOS corrigé8517 ; audio importé restauré.
+- [x] Comparaison native de neige depuis sauvegarde acquise8655 ; compteur7812 visible au centre.
+- [x] Mine19,47 par route alternative réelle via Tunis : ressources,165 anthracite crédités, reprise du résultat sans doublon et fermeture9003. Mine40,38 interrompue par combat perdu, conservé au journal.
+- [ ] Nouvelle release locale regroupant audio, berges, neige et extraction après cette validation.
+
+Lot précédent poussé sur main fc4e91d. La campagne complète et la couverture avant/arrière restent ouvertes. La défaite8662 après chauffe sans surveillance est conservée ; reprise prévue depuis NOMADS8655.

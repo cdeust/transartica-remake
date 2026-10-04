@@ -1,7 +1,7 @@
 extends "res://scripts/world_view.gd"
 class_name TravelWorldView
 
-const ICE_FIELD_PATH := "res://assets/travel/terrain/snow-material.png" # source: authored wind-polished snow material.
+const ICE_FIELD_PATH := "res://assets/travel/terrain/snow-master.png" # source: snow-master-provenance.md, unedited authored image_gen output.
 const GROUND_SHADER_PATH := "res://shaders/travel_ground.gdshader"
 const RailNetworkScript = preload("res://scripts/rail_network.gd")
 const TRAVEL_MIN_ZOOM := 0.001 # source: authored inspection floor permits complete long consists in a 320px viewport.

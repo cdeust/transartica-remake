@@ -105,6 +105,7 @@ func _record(id: int, label: String) -> void:
 		contacts.append({"kind":pose.kind,"front":[pose.front.x,pose.front.y],"rear":[pose.rear.x,pose.rear.y]})
 	_capture_zero(prefix,id,rendered)
 	var state := {"id":id,"label":label,"process_id":OS.get_process_id(),"wall_seconds":(Time.get_ticks_msec()-started)/1000.0,
+		"release":not OS.is_debug_build(),"audio":app.game_audio.snapshot(),"music_playing":app.game_audio.music.playing,
 		"position":str(app.journey.position),"heading":app.journey.heading,"reverse":app.journey.reverse,
 		"blocked":app.journey.blocked,"cycles":app.engine.cycles,"paused":app.session.paused,
 		"combat_paused":app.encounters.manual_scene.paused,
@@ -148,6 +149,10 @@ func _screen() -> String:
 	if app.encounters.manual_scene.visible: return "combat"
 	if app.encounters.report.visible: return "combat-report"
 	if app.campaign.screen.visible: return "campaign-" + app.campaign.screen.scene
+	# Native8650: a nomad question pauses and hides the map, but is not the engine.
+	if app._world_session.roamer_screen.visible: return "world-" + app.roamers.pending
+	if app._world_session.mine_screen.visible: return "world-mine"
+	if app._world_session.workshop.visible: return "world-workshop"
 	if app.works_dialog.visible: return "works"
 	if app._city_panel.visible: return "city-trade" if app._city_panel._trade_box.visible else "city"
 	if app._boudoir_session.overview.visible: return "overview"

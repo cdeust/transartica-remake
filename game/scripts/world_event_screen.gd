@@ -37,6 +37,17 @@ func show_mine() -> void:
 	queue_redraw()
 
 
+# Text72 plaque,41 available resources,42 result. Source TEXTEK click464c.
+func show_mine_phase(world) -> void:
+	show_mine()
+	if world.mine_phase == "resources":
+		lines = ["AVAILABLE RESOURCES:", "%d SLAVE(S)" % world.mine_resources.slaves,
+			"%d MAMMOTH(S)  %d CRANE(S)" % [world.mine_resources.mammoths,world.mine_resources.cranes]]
+	elif world.mine_phase == "result":
+		lines = ["RESULT OF WORKINGS", "%d BAKS OF %s" % [world.mine_quantity,report.ore]]
+	queue_redraw()
+
+
 func open_works(work_kind: String, text_lines: Array, is_question: bool) -> void:
 	mode = work_kind
 	question = is_question

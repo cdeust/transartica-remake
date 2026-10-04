@@ -228,3 +228,7 @@ ignore son expression. Vérifier le même parcours avec un runtime release
 et des vérifications explicites. Au contact arrière physique, appliquer
 les règles originales de préentrée sur la cellule et le cap rencontrés
 avant de classifier une gare ou un obstacle.
+
+## Surveillance de chauffe native, 4 octobre2026
+
+Une chauffe réelle ne doit jamais être laissée en arrière-plan sans observation et arrêt sur nouvel écran. Pendant la chauffe8656, un ennemi a ouvert le combat ; pause seulement8657 et défaite8662. Surveiller par scénario répété, conserver les captures et reprendre une sauvegarde gagnée par OPTIONS. Le pilote doit anticiper la production du cycle suivant depuis la chaleur et la consommation source ; attendre simplement vapeur≤1500 a laissé la réserve atteindre0 à8648. Le jeu et son RNG restent intacts.

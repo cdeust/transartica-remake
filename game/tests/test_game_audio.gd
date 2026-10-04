@@ -86,6 +86,10 @@ func run() -> void:
 	var broken: Dictionary = saved.duplicate()
 	broken.track = "unknown"
 	check(not audio.restore(broken) and audio.snapshot() == saved, "invalid audio restore is atomic")
+	var track: Dictionary = audio.music_manifest.tracks[saved.track].duplicate()
+	audio.music_manifest.tracks[saved.track].file = "missing-exported-track.wav"
+	check(not audio.restore(saved) and audio.snapshot() == saved, "missing packaged score is rejected before audio reset")
+	audio.music_manifest.tracks[saved.track] = track
 	check(not audio.toggle_music() and not audio.music.playing, "music setting stops original score")
 	check(audio.toggle_music() and audio._elapsed == 0, "music reenable restarts PCM and envelope together")
 	check(audio.restore(saved) and audio.current_track == saved.track, "music save resumes source selection")

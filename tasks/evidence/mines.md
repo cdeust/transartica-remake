@@ -11,7 +11,8 @@ unrelated instruction byte-offsets. Real readers: `yoda.json` (creation/depletio
 legend icon), and `textek.json`/`texte.json`/`texted.json` (three language builds of the same
 UI text, identical instruction shape: "OPEN/CLOSED \<ORE\> MINE" atlas legend, a
 "DISCOVERY OF A MINE"/"CLOSURE OF A MINE" bulletin, and the prospected mine's own
-"\<ORE\> MINE OF THE YEAR 2714" plaque). `glieu.json`'s and `room.json`'s hits on the substring
+"\<ORE\> MINE OF THE YEAR 2714" plaque). The text scripts also contain the
+resource-granting extraction handler (§6), missed by the earlier display-only interpretation. `glieu.json`'s and `room.json`'s hits on the substring
 `6082` are confirmed to be coincidental byte-offset matches, not `omaintc[24706]` reads — the
 structural scan finds zero hits in either file.
 
@@ -144,7 +145,7 @@ mines** — matches `obstacles.md`'s "conditions: aucune" row.
   - `main+0x614b = 1` (shared story/event flag, as in depletion).
   - `record[3] = -1` (wealth forced negative; the next depletion tick's `field[3] < 1` test
     is already true, so this is a "confirm depleted" sentinel, not a second write path).
-  - **No wagon, cargo, or goods write of any kind occurs on this path.**
+  - **The YODA close path itself writes no cargo; TEXTEK has already credited coal before this close (§6).**
 - **NO** (`L0x20b == 1`) → falls straight through to `0x2593`/`0x2599`: clears the brake flag
   only. No map write, no record write, no scene change (matches the general NO behavior
   documented in `obstacles-unknowns.md` §1). The mine stays tile `78`; the question is asked
@@ -163,45 +164,59 @@ it without re-deriving the format. `CARTE.FIC` ships **no** pre-placed tile `78`
 freshly-created record on a normal day-1 start; the width mismatch (§1) is real but unreachable
 until at least one mine has been created.
 
-**Post-answer tail: partial.** Both YES (`0x2611`) and the shared default case (`0x25de`)
-converge on `YODA 0x2687`, which unconditionally jumps to `0x811` — a routine shared by every
-question scene in the game (entity cleanup, then `cswitch2 main+0x2faa` dispatching on the
-*current scene/game-mode state*, not on the mine's own question code, to one of 33 targets;
-three of those targets are `0x975`, which `obstacles-unknowns.md` §1 already identifies as the
-reversal call). `obstacles.md`'s row for tile 78 states "Fin: demi-tour" (reversal); this decode
-is **consistent with** that claim (reversal is one of the reachable targets) but does not
-independently pin down which `main+0x2faa` value the mine scene leaves behind, so it is not
-re-derived here — cite `obstacles.md`'s existing claim, and treat the reversal-after-YES
-behavior as inherited from the shared YODA scene-close path (owned by whichever agent
-integrates `rail_network.gd`/`travel_*.gd` with this table), not something `mines.gd` decides.
+**Post-answer tail: resolved (4 October 2026).** YES negates question22 and
+YODA0x0de9 explicitly stores−22 into main0x2faa. After the text72→41→42 flow
+(§6),62c0 becomes0 and YODA writes tile79/wealth−1 before0x2687→0x811. The
+cswitch2 at0x817 adds33 to−22, selecting target index11,0x9ee. That routine
+unloads MINE and calls0x18e3 for reversal, leaving brakes engaged.
 
-## 6. Mine exploitation ("what does mining actually give you"): **decoded — no resource path exists**
+## 6. Mine exploitation: corrected from original TEXTEK handlers (4 October 2026)
 
-`mine.alis` (`reference-private/observations/listings-20260927/mine.json`, only 19
-instructions) is a **pure palette/background selection scene**: it reads one flag
-(`L0x0c`, presumably ore kind) and selects between two background palettes, then sleeps and
-exits. No wagon, goods, or economy write anywhere in it.
+The earlier conclusion "no resource path exists" was false. It classified TEXTEK
+as display-only and scanned mine-record readers without following their dynamic
+click transitions. A structural scan of all listing operands for economy fields
+0x2fb6 and0x2fc8 identifies actual credits in TEXTEK, reproduced in TEXTE and TEXTED.
+MINE has only19 palette instructions; that does not establish absence in TEXTEK.
 
-The structural `omaintc[24706]` scan (§0) found every other reader of `main[0x6082]` to be
-display code: `carte.json 0x2536` draws map-legend icons (open/closed mine glyph, no state
-write); `textek.json`/`texte.json`/`texted.json` draw the atlas legend line, the
-discovery/closure bulletin, and the mine's own name plaque (§0) — all read-only against the
-record, none write to it or to any wagon/goods field.
+YODA0x259a..25ba opens scene−22 and sends text72 with the mine slot. TEXTEK0x464c
+click dispatch changes72→41 at0x4679, then41→42 at0x4670;0x46e1 returns to the
+text dispatcher0x84. Text41 (0xfbe) sums slaves from wagon types5/6 field3,
+mammoths type7 field3 and counts cranes type16 with statefield1<3. Text42
+(0x10fb..12df) calculates and credits extraction:
 
-**Conclusion**: prospecting a mine (§4 YES) has exactly one effect — the map/record write
-above. There is no decoded formula for lignite/anthracite quantity, no slave/mammoth/crane
-term, and no wagon interaction for mines specifically. The "wealth index" (`field[3]`) is
-consumed purely as a countdown to depletion; nothing reads it to produce goods. `DOSSIER.md`'s
-manual description ("mines exploited with slaves, mammoths and cranes") matches the *track
-works* mechanic (`track_works.gd`, crevasse/lake/destroyed track — genuinely rails+slaves,
-sped up by mammoths/cranes), not the mine tile itself. This is the same discrepancy
-`obstacles.md` already flagged for track works generally; it is now confirmed to extend to
-mines: the manual's mental model and the bytecode do not match for mine exploitation, and no
-undecoded resource-formula code exists to reconcile them. **Owner decision required before any
-resource-granting behavior is added** (per `FIDELITE.md`); this port implements only the
-decoded map/record effect.
+- Capacity adds5000 per coal wagon type21 whose statefield1!=3, with signed-word
+  overflow. If the accumulated capacity is negative, replace it with32000.
+- Free capacity is the signed word capacity−(anthracite+lignite).
+- Work is the signed word slaves+30×mammoths, then +150 if at least one crane.
+- Negative mine wealth becomes0; otherwise use record[3]. Quantity is the signed
+  word `(wealth+1)*(integer(work/5)+1)`. Negative quantity becomes30000, then
+  quantity is capped by free capacity. There is no additional clamp to zero.
+- Negative signed creation day selects anthracite: main0x2fc8 +=quantity at0x1263.
+  Otherwise lignite: main0x2fb6 +=quantity at0x12bb. The resulting signed-word
+  total is replaced with31000 if negative or>31000.
 
-## 7. Not ported (owned elsewhere or out of scope)
+Word stores/adds are confirmed in ALIS storenames.c:sdirw and addnames.c:adirw/
+amainw; integer division is opernames.c:odiv. The constants above are bytecode
+operands, not estimated gameplay values. Crew counts are captured at text41;
+capacity and current coal are read on entry to42. Credit occurs before dismissal.
+
+Text42 sets main0x2fce=1, clock factor3 and countdown60 (0x12df..12eb). TEXTEK
+0x45e6..462d calls0x45c8 only while the counter is positive.0x45c8 tests
+negative after decrement; the reachable zero therefore never normalizes the
+clock. Click cleanup0x4641/4646 restores normal clock. Click remains necessary. ALIS script.c initializes each
+script's wait_cycles=1; the remake reuses its existing provisional TEXTEK host
+scheduler,48 ticks per engine cycle. Original elapsed wall duration is unmeasured.
+
+After result dismissal,62c0 becomes0; YODA0x25c2 continues to0x25e2, marks tile79
+and wealth−1. Scene−22 selects0x9ee in0x811; it calls0x18e3 to reverse, leaving
+brakes engaged. Main0x2faa is explicitly set to−22 in0x0de9 after YES.
+
+The remake now persists question/plaque/resources/result phases with the captured
+crew and result. It credits only on resources→result, closes only from result,
+and restores legacy accepted scenes at the uncredited plaque. Prepared production
+fixtures verify phase persistence; they do not prove native earned campaign play.
+
+## 7. Historical integration handoff (27 September 2026)
 
 - `TIME 0x2509` slot lookup, message dispatch, and the tile-78 approach hook itself — belongs
   to `rail_network.gd`/`travel_*.gd` integration (see report to orchestrator).
@@ -211,7 +226,7 @@ decoded map/record effect.
 - The post-YES reversal (`YODA 0x2687`→`0x811`, §5) — inherited from the shared scene-close
   dispatch, not decided by this table.
 
-## 8. `rail_network.gd` integration surface (for the owning agent, not applied here)
+## 8. Historical `rail_network.gd` integration handoff (27 September 2026)
 
 `RailNetwork.restore()`'s `_is_saved_change(original, value)` needs new branches for the map
 writes this table produces, precisely:

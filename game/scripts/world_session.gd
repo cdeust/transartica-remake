@@ -82,7 +82,7 @@ func _answer_mine(accept: bool) -> void:
 	if not app.world.answer_mine(accept):
 		return
 	if accept:
-		mine_screen.show_mine()
+		mine_screen.show_mine_phase(app.world)
 		preload("res://scripts/game_audio_routes.gd").worksite(app)
 	else:
 		mine_screen.hide()
@@ -90,9 +90,17 @@ func _answer_mine(accept: bool) -> void:
 
 
 func _close_mine() -> void:
+	if app.world.advance_mine():
+		mine_screen.show_mine_phase(app.world)
+		if app.world.mine_phase == "result":
+			text_accumulator = 0.0
+			app.calendar.factor = 3 # TEXTEK0x12df..12eb.
+		return
 	if not app.world.close_mine():
 		return
 	mine_screen.hide()
+	app.calendar.factor = 1
+	text_accumulator = 0.0
 	app.session.paused = false
 	app.world_view.update_train()
 	preload("res://scripts/game_audio_routes.gd").journey(app)
@@ -124,6 +132,13 @@ func handle_key(event: InputEventKey) -> bool:
 
 
 func advance_text(delta: float) -> void:
+	if mine_screen.visible and app.world.mine_phase == "result":
+		var interval: float = app.session.seconds_per_cycle / TEXT_TICKS_PER_CYCLE
+		text_accumulator += delta
+		while text_accumulator >= interval:
+			text_accumulator -= interval
+			app.world.mine_text_tick()
+		return
 	if roamer_screen.visible and app.roamers.pending == "hunt_result":
 		var interval: float = app.session.seconds_per_cycle / TEXT_TICKS_PER_CYCLE
 		text_accumulator += delta

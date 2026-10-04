@@ -1,0 +1,9 @@
+# Exported audio restoration, 4 October 2026
+
+The actual macOS release exported from fc4e91d starts normally with no save, but the earned Urga8507 save crashes during audio restoration. Read-only stage markers pass all base/extension validation and reach SessionSaves._commit → Extensions.commit_audio → GameAudio.restore. play_track returns false; music.stream is null; dereferencing stream.data causes SIGBUS. Development playback has raw WAV files and therefore did not expose this failure.
+
+A probe executed in that same release binary reports raw_exists=false, ResourceLoader.exists=true, AudioStreamWAV format3, bytes3110712, mix_rate44100, get_length174.3 seconds for music-bojeu2-0.wav. The raw source contains7686630 frames at44100Hz, also174.3 seconds. The PCK holds the imported .sample and .wav.import, not the raw WAV. Byte-count/PCM16 duration is consequently invalid for imported audio.
+
+Correction: retain raw-file loading when available; otherwise load the imported resource through ResourceLoader. Use the stream duration API for score positioning. Reject missing saved scores during staging and guard playback before accessing the stream. The finale uses the same loader because it had the same raw-file-only assumption. Source loop markers, preferences, frequencies and elapsed clocks remain unchanged.
+
+Validation after correction: test_game_audio passes with real native output; test_audio_session passes snapshot atomicity and schema coverage. The actual macOS release loads the earned URGA save through OPTIONS at input8517, preserving campaign, journey, network, wagons, session, world and trade RNG. Source and craftsmanship checks pass without findings. This audio defect is resolved; full campaign acceptance remains open. Private traces and probe JSON are in .cache/act1-artifact; original audio and saved game remain private.
