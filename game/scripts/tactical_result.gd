@@ -16,6 +16,8 @@ static func commit(state, wagons, engine, spies: Array = []) -> Dictionary:
 		return result
 	_write_player(state, wagons, result)
 	Outcome.apply_destruction(wagons, engine, spies, state.rng)
+	# WDECOR5aa5..5bdf: capture draws precede coal5be2 and workers5cab.
+	_capture(state, wagons, result)
 	var coal_before: int = engine.lignite
 	Outcome.win_coal(wagons, engine, state.trains[1].size(), state.rng)
 	result.coal_gained = engine.lignite - coal_before
@@ -24,7 +26,6 @@ static func commit(state, wagons, engine, spies: Array = []) -> Dictionary:
 	#605a/6067: final reports include losses from insufficient intact capacity.
 	result.soldiers_lost = state.initial_pools.soldiers-state.survivors.soldiers
 	result.mammoths_lost = state.initial_pools.mammoths-state.survivors.mammoths
-	_capture(state, wagons, result)
 	engine.train_mass = wagons.mass()
 	return result
 
