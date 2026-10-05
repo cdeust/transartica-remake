@@ -89,11 +89,13 @@ static func _reroute_backing_turn(journey) -> void:
 	var index: int = journey._render_path.points.find(center)
 	if index < 0:
 		return
-	if not journey.reverse_switches.is_empty() and index > 0:
+	if index > 0:
 		var outgoing: Vector2 = (journey._render_path.points[index-1]-center).sign()
 		for candidate in RailNetworkScript.DELTAS:
 			if Vector2(RailNetworkScript.DELTAS[candidate]) == outgoing:
 				var key := "%d,%d" % [journey.position.x,journey.position.y]
+				# Matching geometry needs no reconstruction. Keep the occupied
+				# branch even without a command latch; this cannot alter TIME.
 				if candidate == journey.heading or journey.reverse_switches.get(key,0)==candidate:
 					journey.heading = candidate
 					return

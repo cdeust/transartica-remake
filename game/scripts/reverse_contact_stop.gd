@@ -38,7 +38,7 @@ static func advance(view, journey, speed: int) -> void:
 	# Chord searches can predict rails ahead of the leading contact. Discard
 	# that unoccupied forecast before consulting live switches for this step.
 	preload("res://scripts/reverse_switch_contact.gd").retire(journey)
-	if not occupied.is_empty() and not journey.reverse_switches.is_empty():
+	if not occupied.is_empty():
 		Render._retain_reverse_occupied_path(journey,occupied[-1].rear_distance)
 	var before: Dictionary = journey.snapshot()
 	journey._render_refused_cell = Vector2i(-1,-1)

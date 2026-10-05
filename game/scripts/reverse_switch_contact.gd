@@ -6,7 +6,9 @@ static func capture(view, cell: Vector2i) -> void:
 	var journey = view.journey
 	if journey==null or not journey.reverse: return
 	var poses: Array = view.train_renderer.poses(view,journey,view.consist,0)
-	if poses.is_empty() or poses.size()!=view.consist.vehicles.size(): return
+	# A switch inside the solved prefix is occupied even when later vehicles
+	# are still hidden. Do not infer anything beyond the last known rear.
+	if poses.is_empty(): return
 	var index: int = journey._render_path.points.find(Vector2(cell))
 	if index<1 or index+1>=journey._render_path.points.size(): return
 	var arc := 0.0
