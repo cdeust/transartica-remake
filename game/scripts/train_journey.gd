@@ -387,7 +387,7 @@ func restore(data: Variant) -> bool:
 	_render_path = renderer.path
 	reverse_switches = switches.duplicate()
 	reverse = data.get("reverse", false)
-	_render_cursor = float(data.get("render_cursor", 0.0))
+	_render_cursor = renderer.cursor
 	_render_origin = float(data.get("render_origin", 0.0))
 	_render_end_cell = renderer.end
 	_render_end_heading = int(data.get("render_end_heading", START_HEADING))
@@ -436,6 +436,7 @@ func _is_int_in_range(value: Variant, minimum: int, maximum: int) -> bool:
 func _restore_renderer(data: Dictionary) -> Dictionary:
 	var render_candidate = TrainPathScript.new()
 	var render_end := Vector2i.ZERO
+	var cursor := 0.0
 	if int(data.version) >= 4:
 		if not data.get("reverse") is bool or not data.get("render_path") is Array:
 			return {}
@@ -449,13 +450,19 @@ func _restore_renderer(data: Dictionary) -> Dictionary:
 			return {}
 		if not is_finite(float(data.render_cursor)) or float(data.render_cursor) < 0.0:
 			return {}
+		cursor = float(data.render_cursor)
 		if (int(data.version) >= 5 or data.has("render_origin")) and (not typeof(data.get("render_origin")) in [TYPE_INT,TYPE_FLOAT] or not is_finite(float(data.render_origin))):
 			return {}
 		if not data.render_path.is_empty():
 			var end := Vector2(render_end) + Vector2(RailNetworkScript.DELTAS[int(data.render_end_heading)]) * 0.5
-			if not render_candidate.restore(data.render_path, end) or float(data.render_cursor) > render_candidate.length:
+			if not render_candidate.restore(data.render_path, end):
 				return {}
-	return {"path":render_candidate,"end":render_end}
+			# Earned Turin11591: accumulated arc exceeds its recomputed sum by
+			# 4e-14 cells. Godot4.5 @GlobalScope.is_equal_approx handles rounding.
+			if cursor > render_candidate.length and not is_equal_approx(cursor,render_candidate.length):
+				return {}
+			cursor = minf(cursor,render_candidate.length)
+	return {"path":render_candidate,"end":render_end,"cursor":cursor}
 
 
 func _valid_snapshot(data: Variant) -> bool:
