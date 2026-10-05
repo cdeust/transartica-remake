@@ -61,7 +61,10 @@ static func run(state) -> void:
 	#4fca/4feb: visibility follows camera scrolling, not a fixed world band.
 	var first_player_slot: int = (state.offsets[0] - state.camera_offset) / 64
 	for side in [1, 0]:
-		for index in state.trains[side].size():
+		# WDECOR17b4/1979 descends enemy slots;5001..5420 ascends player slots.
+		var count: int = state.trains[side].size()
+		var slots := range(count-1,-1,-1) if side == 1 else range(count)
+		for index in slots:
 			var car: Dictionary = state.trains[side][index]
 			if car.health <= 0 or car.reload <= 0:
 				continue

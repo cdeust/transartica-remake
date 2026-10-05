@@ -70,14 +70,16 @@ static func _destroy_tender(engine, rng: RandomNumberGenerator) -> void:
 		engine.lignite = 0
 
 
-# wdecor 0x59f0-0x5a2f: a destroyed SPY wagon kills spies aboard (state 1 in
-# main[0x5d84], 15 fields cleared each). This codebase does not yet model the
-# full 20-slot/15-field spy record (captain-crew.md §4); city_trade.gd's
-# spy_slots is a simplified 0/1 "aboard" array, which is what is cleared here.
-static func _destroy_spy_wagon(spy_slots: Array) -> void:
-	for i in spy_slots.size():
+# WDECOR59f0..5a69: scan slots0..19, clearing only aboard records.
+#5a35 decrements the signed quantity byte even for non-aboard slots.
+# Quantity0 therefore underflows and scans all20 slots; preserve this oddity.
+# campaign_spies.sync_recruits clears each complete15-field record before advance.
+static func _destroy_spy_wagon(spy_slots: Array, quantity: int) -> void:
+	for i in mini(20,spy_slots.size()): # source: WDECOR5a60 slot limit19.
 		if spy_slots[i] == 1:
 			spy_slots[i] = 0
+		quantity = ((quantity-1+128)&255)-128 # source: ALIS signed amaintc byte.
+		if quantity == 0: break # source: WDECOR5a43..5a56.
 
 
 # wdecor 0x5963-0x5a87: apply per-type destruction effects, then clear goods
@@ -89,7 +91,7 @@ static func apply_destruction(wagons, engine, spy_slots: Array, rng: RandomNumbe
 		if wagon[Wagons.TYPE] == Setup.TYPE_TENDER:
 			_destroy_tender(engine, rng)
 		elif wagon[Wagons.TYPE] == Setup.TYPE_SPY:
-			_destroy_spy_wagon(spy_slots)
+			_destroy_spy_wagon(spy_slots,wagon[Wagons.QUANTITY])
 		wagon[Wagons.QUANTITY] = 0
 		wagon[Wagons.GOODS] = 0
 
