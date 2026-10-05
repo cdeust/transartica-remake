@@ -115,15 +115,18 @@ func _layout() -> void:
 	_place(_transaction_controls, Rect2(20, 23, 280, 14))
 	_place(_trade_box, Backdrop.PICTURE)
 	_list.position = Vector2(4, 3) * scale_factor
-	_list.size = Vector2(312, 72) * scale_factor
+	_list.size = Vector2(312, 62) * scale_factor
 	_list.fixed_column_width = maxi(1, roundi(_list.size.x / 5.0) - 2)
 	# Source-width icon footprint; list scrolling and detail placement are UI adaptation.
 	_list.fixed_icon_size = Vector2i(list_icons.FOOTPRINT * scale_factor)
 	_list.add_theme_font_size_override("font_size", maxi(7, roundi(5.0 * scale_factor)))
 	_fit_list_font()
-	_detail.position = Vector2(4, 77) * scale_factor
+	# Paris33126: native three-line detail occupied116..145 while refusal125..147
+	# overlapped it. Reserve106..135 for detail and139..147 for the single-line
+	# notices, measured at1440x900/1280x800 by test_city_refusal_layout.gd.
+	_detail.position = Vector2(4, 67) * scale_factor
 	_detail.size = Vector2(312, 29) * scale_factor
-	_place(_notice, Rect2(7, 125, 306, 22))
+	_place(_notice, Rect2(7, 139, 306, 8))
 	for label in [_detail, _notice, _quantity_label]:
 		label.add_theme_font_size_override("font_size", maxi(7, roundi(5.0 * scale_factor)))
 	_quantity_label.custom_minimum_size.x = 18.0 * scale_factor
