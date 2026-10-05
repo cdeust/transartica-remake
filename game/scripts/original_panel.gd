@@ -414,7 +414,8 @@ func _draw_command_icon(index: int, slot: Rect2) -> void:
 	var side := minf(available.size.x, available.size.y)
 	var destination := Rect2(available.get_center() - Vector2.ONE * side / 2.0, Vector2.ONE * side)
 	var source := Rect2((index % 3) * 512, (index / 3) * 512, 512, 512)
-	draw_texture_rect_region(_icon_atlas, destination, source)
+	# Native city32034: _draw resets its transform before these HUD commands.
+	draw_texture_rect_region(_icon_atlas, screen_rect(destination), source)
 
 
 # Source: ECS scroll bounds x14/x304, composition startx300,y153.5;
