@@ -15,7 +15,9 @@ def plan(path, target):
     leg.plan_from_save(path, target)
 
 
-def continue_travel(path, target, destination, transit):
+def continue_travel(path, target, destination, options):
+    transit = options["transit"]
+    regulator = options["regulator"]
     while True:
         observed = pilot.state()
         if observed["screen"] == "city":
@@ -35,7 +37,7 @@ def continue_travel(path, target, destination, transit):
         if observed["screen"] != "map":
             print("PLAYER_STOP", observed["screen"], flush=True)
             return
-        leg.drive(path)
+        leg.drive(path) if regulator == 300 else leg.drive(path, regulator)
         reached = pilot.state()
         # Native10904: using this city wrapper for a mouth waypoint repeated
         # the completed leg. Stop on the earned paused map instead of resuming.
@@ -50,9 +52,12 @@ if __name__ == "__main__":
     parser.add_argument("target")
     parser.add_argument("destination")
     parser.add_argument("--transit", nargs="*", default=[])
+    parser.add_argument("--regulator", type=int, choices=range(15,301,15), default=300,
+                        help="Player regulator target; original arrows step by15")
     args = parser.parse_args()
     try:
-        continue_travel(args.route, args.target, args.destination, args.transit)
+        continue_travel(args.route, args.target, args.destination,
+                        {"transit": args.transit, "regulator": args.regulator})
     except BaseException:
         observed = leg.action("observe-travel-failure", [])
         if observed["screen"] in ["map", "engine", "combat"]:

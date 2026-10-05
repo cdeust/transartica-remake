@@ -10,6 +10,8 @@ var network
 var campaign
 var wagons
 var frontiers: Dictionary = {}
+# Operator restriction for a native leg; no gameplay turn/port rule changes.
+var allow_midtrack_reverse := true
 var _parents: Dictionary
 var _queue: Array[Vector3i]
 
@@ -96,7 +98,8 @@ func plan(position: Vector2i, heading: int, target: Vector2i, phase: int = 0) ->
 		# YODA reversal preserves the source phase transform. TIME turns only
 		# when the remaining phases include phase1; phase1->0 must turn again.
 		var reversed_phase := absi(current_phase - 2) - 1
-		_enqueue(_state(cell,10-incoming,reversed_phase),state,{"reverse":true,"cell":cell,"phase_before":current_phase,"phase_after":reversed_phase})
+		if allow_midtrack_reverse:
+			_enqueue(_state(cell,10-incoming,reversed_phase),state,{"reverse":true,"cell":cell,"phase_before":current_phase,"phase_after":reversed_phase})
 	return []
 
 

@@ -6,8 +6,8 @@ extends SceneTree
 
 func _initialize() -> void:
 	var arguments := OS.get_cmdline_user_args()
-	if arguments.size() != 3:
-		push_error("Usage: -- SAVE_JSON TARGET_X,TARGET_Y OUTPUT_JSON")
+	if arguments.size() not in [3,4] or (arguments.size() == 4 and arguments[3] != "forward-only"):
+		push_error("Usage: -- SAVE_JSON TARGET_X,TARGET_Y OUTPUT_JSON [forward-only]")
 		quit(1)
 		return
 	var saved = JSON.parse_string(FileAccess.get_file_as_string(arguments[0]))
@@ -29,6 +29,7 @@ func _initialize() -> void:
 		return
 	campaign.load_data()
 	var planner = preload("res://tests/campaign_route_planner.gd").new()
+	planner.allow_midtrack_reverse = arguments.size() == 3
 	planner.network = network
 	planner.campaign = campaign
 	planner.wagons = wagons

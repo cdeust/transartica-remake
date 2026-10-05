@@ -18,9 +18,21 @@ class CompletedWaypoint(unittest.TestCase):
              patch.object(travel.pilot, "send", side_effect=AssertionError("No native input")), \
              patch.object(travel.leg, "drive") as drive, \
              contextlib.redirect_stdout(io.StringIO()) as output:
-            travel.continue_travel(Path("detached.json"), "51,39", "not-a-city", [])
+            travel.continue_travel(Path("detached.json"), "51,39", "not-a-city",
+                                   {"transit": [], "regulator": 300})
         drive.assert_called_once_with(Path("detached.json"))
         self.assertEqual(output.getvalue(), "PLAYER_STOP waypoint 51,39\n")
+
+    def test_options_pass_regulator_to_driver(self):
+        before = {"screen": "map", "paused": True, "position": "(113, 58)"}
+        after = {"screen": "map", "paused": True, "position": "(51, 39)"}
+        with patch.object(travel.pilot, "state", side_effect=[before, after]), \
+             patch.object(travel.pilot, "send", side_effect=AssertionError("No native input")), \
+             patch.object(travel.leg, "drive") as drive, \
+             contextlib.redirect_stdout(io.StringIO()):
+            travel.continue_travel(Path("detached.json"), "51,39", "not-a-city",
+                                   {"transit": [], "regulator": 60})
+        drive.assert_called_once_with(Path("detached.json"), 60)
 
 
 if __name__ == "__main__":
