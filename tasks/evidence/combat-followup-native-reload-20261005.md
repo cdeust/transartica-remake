@@ -1,6 +1,6 @@
 # Native reload after combat rule audit
 
-Published origin/main:8c3e3e5e2156025e9fa0e66a6782bbc670558c84. DEBUG macOS export ZIP:200604884 bytes, SHA256a8383f80a8c1146cf0a7960f6b4fb691ad9828bcf502a8ce6c74ee6010e2ac5a. Code signature verification passed; the exact bundle launched with the native viewport harness.
+Published origin/main:8c3e3e5e2156025e9fa0e66a6782bbc670558c84. DEBUG macOS export ZIP:200604884 bytes, SHA256a8383f80a8c1146cf0a7960f6b4fb691ad9828bcf502a8ce6c74ee6010e2ac5a. Code signature verification passed; the exact bundle launched with the native viewport controls.
 
 Normal save-book OMSKQF reload41614 restores acquired41605 at159,11. Every serialized block compares equal, including journey, calendar, stocks, army, encounters and campaign. No source state was edited. The app remains paused for the next actual travel leg.
 
