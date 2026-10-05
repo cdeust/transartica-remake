@@ -75,7 +75,10 @@ func plan(position: Vector2i, heading: int, target: Vector2i, phase: int = 0) ->
 			var action := {"cell":cell,"heading":incoming,"phase":current_phase,"switch":choice if Rails.is_switch_code(choice) else 0,"next":candidate,"outgoing":outgoing}
 			if candidate == target:
 				return _route(parents,state,action)
-			if next_code >= 34 and next_code <= 37 or next_code == 65:
+			# Source: YODA mine(-22)->9ee->18e3 and workshop exit reverse;
+			# world_actions.close_mine/world_session._close_workshop implement these.
+			# This is an event-exit projection; the native pilot verifies rear contacts.
+			if next_code >= 34 and next_code <= 37 or next_code in [65,78]:
 				var reversed := _state(cell,10-outgoing,0)
 				action.station = candidate
 				_enqueue(reversed,state,action)
