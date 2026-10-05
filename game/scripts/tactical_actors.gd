@@ -1,5 +1,6 @@
 extends RefCounted
 # MIT. WDECOR33 field/roof actions; primary offsets cited at each rule.
+const Survivors = preload("res://scripts/tactical_survivors.gd")
 
 static func free_cells(state, x: int, y: int, mammoth: bool, ignore: int = -1) -> bool:
 	var span := 2 if mammoth else 1
@@ -15,24 +16,72 @@ static func order(state, actor: Dictionary, direction: int, amount: int) -> bool
 	if amount <= 0:
 		actor.direction = direction
 		return true
-	if amount > actor.count or amount > 30 or actor.mammoth:
+	if amount > actor.count or amount > (31 if actor.mammoth else 30):
 		return false
 	var vector: Vector2i = state.DIRECTIONS[direction]
+	if actor.mammoth:
+		# WDECOR0x2e87..2f06: riders dismount outside the beast's2x2 footprint.
+		vector = [Vector2i(0,-1), Vector2i(2,-1), Vector2i(2,0), Vector2i(2,2), Vector2i(0,2), Vector2i(-1,2), Vector2i(-1,0), Vector2i(-1,-1), Vector2i.ZERO][direction]
 	var x: int = actor.x + vector.x
 	var y: int = actor.y + vector.y
+	if actor.mammoth and actor.roof < 0:
+		if x < 0 or x >= state.columns:
+			return false
+		#0x2fa2..3138: explicit rider commands board from the original x, not diagonal x.
+		if y < 0 or y >= 7:
+			var roof := 1 if y < 0 else 0
+			var slot: int = state.roof_cell(roof, actor.x)
+			#0x3051 permits slot0 for explicit orders, unlike automatic boarding.
+			if slot < 0 or slot >= state.trains[roof].size() * 4 or state.actor_at(slot, -1, roof) != null:
+				return false
+			for charge in state.charges:
+				if charge.side == roof and charge.slot == slot and charge.owner == 0:
+					return false
+			#0x30a3..30c2: leave one when count>1; a solitary rider may transfer.
+			var riders: int = actor.count - 1 if amount == actor.count and actor.count > 1 else amount
+			var boarded = state.add_actor(actor.side, slot, -1, riders, false, roof, 8)
+			boarded.processed = state.sweep # WDECOR0x30ce writes neg(pass).
+			actor.count -= riders
+			actor.processed = state.sweep #0x30f6.
+			if actor.count == 0:
+				state.actors.erase(actor)
+			_defuse(state, boarded)
+			return true
+		#0x32c1..3431: partial selection dismounts; whole selection orders the beast.
+		if amount == actor.count or direction == 8:
+			actor.direction = direction
+			return true
+		#0x32d8/32f1 write the destination directly, without a casualty routine.
+		var displaced = state.actor_at(x, y)
+		# Source32d8 overwrites one cell, not the whole beast's2x2 footprint.
+		# Beast-cell overwrites remain unsupported; preserve the state transactionally.
+		if displaced != null and displaced.mammoth:
+			return false
+		if displaced != null:
+			state.actors.erase(displaced)
+		var dismounted = state.add_actor(actor.side, x, y, amount, false, -1, direction)
+		dismounted.processed = state.sweep # WDECOR0x32d8 writes neg(pass).
+		actor.count -= amount
+		actor.processed = state.sweep #0x3326.
+		return true
 	var target = state.actor_at(x, y, actor.roof)
 	# WDECOR0x31f9,3244: merge limits31 mounted,30 infantry.
 	if target != null:
 		if target.side != actor.side or target.count + amount > (31 if target.mammoth else 30):
 			return false
 		target.count += amount
+		target.processed = state.sweep # WDECOR0x320b/3256.
 	elif actor.roof < 0:
 		if not free_cells(state, x, y, false):
 			return false
-		state.add_actor(actor.side, x, y, amount, false, -1, direction)
+		var split = state.add_actor(actor.side, x, y, amount, false, -1, direction)
+		split.processed = state.sweep #0x32d8.
 	else:
 		return false
 	actor.count -= amount
+	actor.processed = state.sweep #0x3283/333a.
+	if actor.count == 0:
+		state.actors.erase(actor) #0x32af clears the exhausted origin cell.
 	return true
 
 static func update(state, actor: Dictionary) -> void:
@@ -76,11 +125,19 @@ static func _collision(state, actor: Dictionary, x: int, y: int):
 	return null
 
 static func melee(state, attacker: Dictionary, defender: Dictionary) -> void:
-	# WDECOR0x2679/2843: survivors answer, divisor3 against a mammoth.
-	var damage: int = state.rnd(1 + attacker.count / (3 if defender.mammoth else 1))
-	defender.count = maxi(0, defender.count - damage)
+	# WDECOR0x2657/2668 to2679/2843; roof0x22e2/22f3 to2308/23c7:
+	# both strikes use original strengths, even after the first eliminates its target.
+	var attack_count: int = attacker.count
+	var defend_count: int = defender.count
+	var damage: int = state.rnd(1 + attack_count / (3 if defender.mammoth else 1))
+	defender.count = maxi(0, defend_count - damage)
 	if defender.count > 0:
-		attacker.count = maxi(0, attacker.count - state.rnd(1 + defender.count / (3 if attacker.mammoth else 1)))
+		defender.direction = (attacker.direction + 4) % 8 # WDECOR0x2731/2373.
+		defender.processed = state.sweep #0x2714/2376: counterstrike consumes its action.
+	attacker.count = maxi(0, attack_count - state.rnd(1 + defend_count / (3 if attacker.mammoth else 1)))
+	# WDECOR0x269a/26a1 and2864/286b debit persistent survivors through d90/da3.
+	Survivors.damage_actor(state, defender, defend_count)
+	Survivors.damage_actor(state, attacker, attack_count)
 	state.events.append({"kind": "melee", "x": attacker.x, "y": attacker.y})
 
 static func _enemy_direction(state, actor: Dictionary) -> void:
@@ -99,7 +156,8 @@ static func _enemy_direction(state, actor: Dictionary) -> void:
 		if slot > 0 and slot < state.trains[0].size() * 4 and state.actor_at(slot, -1, 0) == null:
 			var amount: int = state.rnd(actor.count) if actor.mammoth else actor.count
 			if amount > 0:
-				state.add_actor(1, slot, -1, amount, false, 0, 2 if state.rnd(3) != 0 else 6)
+				var boarded = state.add_actor(1, slot, -1, amount, false, 0, 2 if state.rnd(3) != 0 else 6)
+				boarded.processed = state.sweep # WDECOR0x12fc writes neg(pass).
 				actor.count -= amount
 
 static func roof_sweep(state, roof: int) -> void:
@@ -112,10 +170,13 @@ static func roof_sweep(state, roof: int) -> void:
 		if charge.fuse == 0:
 			preload("res://scripts/tactical_weapons.gd").destroy(state, roof, charge.slot / 4)
 	state.charges = state.charges.filter(func(charge): return charge.fuse > 0)
-	var roof_actors: Array = state.actors.filter(func(actor): return actor.roof == roof and actor.count > 0)
+	# WDECOR0x1990: descending scan stops before slot0, even after explicit boarding there.
+	var roof_actors: Array = state.actors.filter(func(actor): return actor.roof == roof and actor.count > 0 and actor.x > 0)
 	roof_actors.sort_custom(func(a, b): return a.x > b.x)
 	for actor in roof_actors:
-		_roof_move(state, actor)
+		if state.actors.has(actor) and actor.processed != state.sweep:
+			actor.processed = state.sweep # WDECOR0x19ea compares the roof count sign.
+			_roof_move(state, actor)
 
 static func _roof_move(state, actor: Dictionary) -> void:
 	if actor.side == 1 and actor.direction == 8:
@@ -130,10 +191,19 @@ static func _roof_move(state, actor: Dictionary) -> void:
 		if actor.side == 1:
 			actor.direction = 2 if delta > 0 else 6
 		return
+	# WDECOR0x1db4..1e25: own dynamite blocks; enemy groups reverse away.
+	for charge in state.charges:
+		if charge.side == actor.roof and charge.slot == next and charge.owner == actor.side:
+			if actor.side == 1:
+				actor.direction = 2 if delta > 0 else 6
+			return
 	var target = state.actor_at(next, -1, actor.roof, actor.id)
 	if target != null:
 		if target.side != actor.side:
 			melee(state, actor, target)
+		elif actor.side == 1 and actor.direction != target.direction:
+			# WDECOR0x2295..22e1: enemy groups facing different directions turn away.
+			actor.direction = 2 if delta > 0 else 6
 		return
 	#0x1bd6: steps into free or dynamite cells (0x1dce,1e22) wait while byte8548 is set.
 	if state.sweep % 2 != 0:
@@ -141,13 +211,26 @@ static func _roof_move(state, actor: Dictionary) -> void:
 	var previous: int = actor.x
 	actor.x = next
 	_defuse(state, actor)
-	#0x1c73: enemy plants when crossing wagons on player roof.
-	if actor.side == 1 and actor.roof == 0 and next / 4 != previous / 4 and state.rnd(100) < state.aggressiveness:
-		var slot := previous
-		if state.trains[0][next / 4].class in state.Setup.VITAL_CLASSES:
-			slot = next + delta
-		if slot > 0 and slot < state.trains[0].size() * 4 and state.actor_at(slot, -1, 0) == null:
-			state.charges.append({"side": 0, "slot": slot, "fuse": 5, "owner": 1})
+	if actor.side == 1 and actor.roof == 0:
+		# WDECOR0x1c73/1c8d and1d83: crossing rolls100; other steps roll2000.
+		var crossing: bool = next / 4 != previous / 4
+		if state.rnd(100 if crossing else 2000) < state.aggressiveness:
+			var slot := previous
+			if crossing and state.trains[0][next / 4].class in state.Setup.VITAL_CLASSES:
+				slot = next + delta
+			elif crossing:
+				#0x1d13..1d77 writes before later comparisons; later matches cannot undo it.
+				var neighbor = state.actor_at(previous - 1, -1, 0)
+				if neighbor != null and neighbor.side == actor.side and neighbor.direction == actor.direction:
+					return
+			if slot > 0 and slot < state.trains[0].size() * 4:
+				#0x1ce1/1d4a/1d92 overwrite the roof type without a casualty routine.
+				var displaced = state.actor_at(slot, -1, 0)
+				if displaced != null:
+					state.actors.erase(displaced)
+				#0x1cf8/1d59/1da1: writing the roof cell replaces any charge and resets its fuse.
+				state.charges = state.charges.filter(func(charge): return not (charge.side == 0 and charge.slot == slot))
+				state.charges.append({"side": 0, "slot": slot, "fuse": 5, "owner": 1})
 
 static func _defuse(state, actor: Dictionary) -> void:
 	#0x1db4: walking over opposing dynamite replaces its cell with the moving group.

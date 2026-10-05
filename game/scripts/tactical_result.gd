@@ -3,12 +3,13 @@ extends RefCounted
 const Outcome = preload("res://scripts/combat_outcome.gd")
 const Setup = preload("res://scripts/combat_setup.gd")
 const Wagons = preload("res://scripts/train_wagons.gd")
+const Survivors = preload("res://scripts/tactical_survivors.gd")
 
 static func commit(state, wagons, engine, spies: Array = []) -> Dictionary:
 	if state.outcome == 0 or state.settled:
 		return {}
 	state.settled = true
-	var pools: Dictionary = state.pools(0)
+	var pools: Dictionary = state.survivors #8528/8530; distinct from army strength.
 	var result := {"won": state.outcome == 1, "soldiers_lost": state.initial_pools.soldiers - pools.soldiers, "mammoths_lost": state.initial_pools.mammoths - pools.mammoths, "coal_gained": 0, "slaves_gained": 0, "wagons_captured": 0, "captured": [], "scrapped_indices": []}
 	if state.outcome == 2:
 		result.epitaph_id = 105
@@ -19,13 +20,10 @@ static func commit(state, wagons, engine, spies: Array = []) -> Dictionary:
 	Outcome.win_coal(wagons, engine, state.trains[1].size(), state.rng)
 	result.coal_gained = engine.lignite - coal_before
 	result.slaves_gained = Outcome.win_slaves(wagons, state.trains[1].size(), state.rng)
-	# Existing quantities remain aboard; distribute only deployed survivors.
-	var deployed := {"soldiers": 0, "mammoths": 0}
-	for actor in state.actors:
-		if actor.side == 0:
-			deployed["mammoths" if actor.mammoth else "soldiers"] += actor.count
-	Outcome.win_survivors(wagons, deployed.soldiers)
-	Outcome.win_mammoths(wagons, deployed.mammoths)
+	Survivors.redistribute(state,wagons)
+	#605a/6067: final reports include losses from insufficient intact capacity.
+	result.soldiers_lost = state.initial_pools.soldiers-state.survivors.soldiers
+	result.mammoths_lost = state.initial_pools.mammoths-state.survivors.mammoths
 	_capture(state, wagons, result)
 	engine.train_mass = wagons.mass()
 	return result

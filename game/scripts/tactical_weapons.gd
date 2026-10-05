@@ -1,6 +1,7 @@
 extends RefCounted
 # MIT. WDECOR0x0deb train movement,0x0f49 AI,0x17b4/5001 weapons.
 const Setup = preload("res://scripts/combat_setup.gd")
+const Survivors = preload("res://scripts/tactical_survivors.gd")
 
 static func move_trains(state) -> void:
 	for side in 2:
@@ -110,34 +111,44 @@ static func _machine_gun(state, side: int, index: int) -> void:
 		var target = state.actor_at(column, row)
 		if target == null:
 			continue
+		var before_count: int = target.count
 		if target.mammoth:
 			if state.rnd(3) != 0:
 				target.count = maxi(0, target.count - state.rnd(3))
 		else:
 			target.count = maxi(0, target.count - state.rnd(10 if target.side == 0 else 7) - 1)
+		Survivors.damage_actor(state,target,before_count) # WDECOR0x0d90..0x0dc7.
 		state.events.append({"kind": "shot", "x": target.x, "y": target.y})
 		return #0x5258/1843 first occupied cell, friendly fire preserved.
 
 static func destroy(state, side: int, index: int) -> void:
 	state.audio_cue_requested.emit(0x60f5) # WDECORccb→60e7 wagon destruction.
 	var car: Dictionary = state.trains[side][index]
-	#0x0ae4/0b25/0c10: destroying either engine half also clears its partner.
+	#0x0ae4/0b25/0c10/0c4b: engine halves and enemy tender clear their partner.
 	var linked := -1
 	if car.class == Setup.LOCOMOTIVE and index + 1 < state.trains[side].size():
 		linked = index + 1
 	elif car.class == Setup.LOCOMOTIVE_COMPANION and index > 0:
 		linked = index - 1
+	elif side == 1 and car.class == Setup.TENDER and index > 0:
+		linked = index - 1 #0x0c4b..0c82: enemy coal wagon disables its engine.
 	if linked >= 0:
+		Survivors.destroy_wagon(state,state.trains[side][linked],side)
 		state.trains[side][linked].health = 0
 		state.trains[side][linked].quantity = 0
 		state.trains[side][linked].reload = 0
 		for actor in state.actors:
 			if actor.roof == side and actor.x / 4 == linked:
+				var before_count: int = actor.count
 				actor.count = 0
+				Survivors.damage_actor(state,actor,before_count) #0x0d01..0x0d16.
+	Survivors.destroy_wagon(state,car,side)
 	car.health = 0
 	car.quantity = 0
 	car.reload = 0
 	for actor in state.actors:
 		if actor.roof == side and actor.x / 4 == index:
+			var before_count: int = actor.count
 			actor.count = 0
+			Survivors.damage_actor(state,actor,before_count) #0x0d01..0x0d16.
 	state.events.append({"kind": "destroy", "side": side, "wagon": index})

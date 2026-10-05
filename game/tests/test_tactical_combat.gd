@@ -75,6 +75,8 @@ func _actors() -> void:
 	check(state.trains[1][2].health==3,"dynamite survives four roof sweeps")
 	Actors.roof_sweep(state,1)
 	check(state.trains[1][2].health==0,"fifth roof sweep destroys target wagon")
+	# Isolate the defender from seeded roof crews and their consumed scan actions.
+	state.actors.clear()
 	var target=state.add_actor(1,12,-1,5,false,1,6)
 	state.charges=[{"side":1,"slot":13,"fuse":5,"owner":0}]
 	state.sweep=0
@@ -86,9 +88,8 @@ func _results() -> void:
 	state.check_end()
 	check(state.outcome==2,"GQ destruction defeats player despite troops")
 	var win=fresh()
-	for car in win.trains[1]:
-		if car.class!=Combat.Setup.MERCHANDISE: car.health=0;car.quantity=0
-	win.actors=[]
+	# Actual destruction updates the original army counters as well as hulls.
+	for index in win.trains[1].size(): Weapons.destroy(win,1,index)
 	win.check_end()
 	check(win.outcome==1,"enemy weapons/troops eliminated gives victory")
 	var wagons=Wagons.new()

@@ -61,8 +61,10 @@ func restore(value: Variant) -> bool:
 				return false
 			wagon.append(int(field))
 		# Signed byte fields of main[0x2e1a]; ranges from §4 of the city-scripts evidence.
+		# WDECOR5ec7..5ece signed survivor correction can underflow crew stocks.
+		var minimum_quantity := -128 if wagon[TYPE] in [23,24] else 0
 		if wagon[TYPE] < 1 or wagon[TYPE] > 25 or wagon[STATE] < 0 or wagon[STATE] > 3 \
-				or wagon[GOODS] < 0 or wagon[GOODS] > 16 or wagon[QUANTITY] < 0 or wagon[QUANTITY] > 127:
+				or wagon[GOODS] < 0 or wagon[GOODS] > 16 or wagon[QUANTITY] < minimum_quantity or wagon[QUANTITY] > 127:
 			return false
 		parsed.append(wagon)
 	wagons = parsed

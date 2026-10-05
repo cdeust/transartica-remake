@@ -481,7 +481,7 @@ func _gui_input(event: InputEvent) -> void:
 		if Rect2(actor_point-Vector2(12,22),Vector2(24,28)).has_point(point):
 			selected_actor = actor.id
 			selected_wagon = -1
-			group_size = mini(actor.count,30)
+			group_size = mini(actor.count,31 if actor.mammoth else 30) # WDECOR0x31f9/3244.
 			accept_event()
 			queue_redraw()
 			return
@@ -497,7 +497,7 @@ func _gui_input(event: InputEvent) -> void:
 			if actor.id == selected_actor:
 				var target := _field_point(actor.x,actor.y)
 				var vector := Vector2i(signi(roundi(point.x-target.x)), -signi(roundi(point.y-target.y)))
-				state.command(selected_actor,state.DIRECTIONS.find(vector))
+				state.command(selected_actor,state.DIRECTIONS.find(vector),group_size if actor.mammoth else 0)
 	accept_event()
 	queue_redraw()
 
@@ -511,7 +511,7 @@ func handle_key(event: InputEventKey) -> void:
 		KEY_P: paused = not paused
 		KEY_F5: save_requested.emit()
 		KEY_F6: paused=true; options_requested.emit()
-		KEY_EQUAL,KEY_KP_ADD: group_size=mini(30,group_size+1)
+		KEY_EQUAL,KEY_KP_ADD: group_size=mini(_group_limit(),group_size+1)
 		KEY_MINUS,KEY_KP_SUBTRACT: group_size=maxi(1,group_size-1)
 		KEY_ENTER: _activate_wagon()
 		KEY_Q: state.plant(selected_actor,-1)
@@ -524,6 +524,13 @@ func handle_key(event: InputEventKey) -> void:
 			for actor in state.actors:
 				if actor.id==selected_actor: state.command(selected_actor,actor.direction,group_size)
 	queue_redraw()
+
+func _group_limit() -> int:
+	# WDECOR0x31f9/3244: mounted groups allow31; ordinary infantry allows30.
+	for actor in state.actors:
+		if actor.id == selected_actor and actor.mammoth:
+			return 31
+	return 30
 
 func _activate_wagon() -> void:
 	if selected_wagon<0:
@@ -542,7 +549,11 @@ func _direction(key: int, diagonal: bool) -> void:
 	var direction: int = {KEY_UP:4,KEY_RIGHT:2,KEY_DOWN:0,KEY_LEFT:6}[key]
 	if diagonal:
 		direction=(direction+1)%8
-	state.command(selected_actor,direction)
+	# WDECOR0x379c calls2e5e with selected rider quantity; infantry keeps move arrows.
+	for actor in state.actors:
+		if actor.id == selected_actor:
+			state.command(selected_actor,direction,group_size if actor.mammoth else 0)
+			return
 
 func _impact_light(event: Dictionary) -> void:
 	if event.kind not in ["impact","destroy","shot"]:

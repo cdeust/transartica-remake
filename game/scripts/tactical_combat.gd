@@ -33,6 +33,8 @@ var outcome := 0 # WDECOR byte12: 0 pending,1 win,2 loss.
 var settled := false
 var original: Array = []
 var initial_pools := {}
+var survivors := {"soldiers":0,"mammoths":0} # WDECOR8528/8530, persistent own totals.
+var army_strength := [0,0] # WDECOR8538/215a: independent combat strengths.
 var remainder := 0.0
 
 func begin(wagons, strength: int, source_rng: RandomNumberGenerator) -> void:
@@ -41,6 +43,7 @@ func begin(wagons, strength: int, source_rng: RandomNumberGenerator) -> void:
 	rng.state = source_rng.state
 	original = wagons.wagons.duplicate(true)
 	initial_pools = preload("res://scripts/combat_outcome.gd").auto_resolve_pools(wagons)
+	survivors = {"soldiers":initial_pools.soldiers,"mammoths":initial_pools.mammoths}
 	trains = [Setup.player_roster(wagons), []]
 	var enemy: Dictionary = Setup.enemy_composition(strength, rng)
 	aggressiveness = enemy.aggressiveness
@@ -55,6 +58,7 @@ func begin(wagons, strength: int, source_rng: RandomNumberGenerator) -> void:
 	for slot in range(1, trains[1].size() * 4):
 		if rnd(400) < aggressiveness:
 			add_actor(1, slot, -1, rnd(enemy.b) + 1, false, 1, [2, 6, 8][rnd(3)])
+	army_strength = preload("res://scripts/tactical_survivors.gd").army({"trains":trains,"actors":actors})
 	source_rng.state = rng.state
 
 func rnd(bound: int) -> int:
@@ -194,10 +198,9 @@ func pools(side: int) -> Dictionary:
 
 func check_end() -> void:
 	var enemy := pools(1)
-	var player := pools(0)
-	if enemy.guns <= 0 and enemy.soldiers + enemy.mammoths <= 0:
+	if enemy.guns <= 0 and army_strength[1] <= 0:
 		outcome = 1 #0x0f09 win is checked first.
-	elif player.soldiers + player.mammoths <= 0:
+	elif army_strength[0] <= 0:
 		outcome = 2
 	for car in trains[0]:
 		if car.class in Setup.VITAL_CLASSES and car.health <= 0:
@@ -205,7 +208,7 @@ func check_end() -> void:
 
 func snapshot() -> Dictionary:
 	var data := {}
-	for key in ["trains", "offsets", "camera_offset", "velocities", "actors", "charges", "aggressiveness", "columns", "scan", "scan_side", "sweep", "ai_wagon", "ai_wait", "ai_direction", "ticks", "next_id", "outcome", "settled", "original", "initial_pools", "remainder"]:
+	for key in ["trains", "offsets", "camera_offset", "velocities", "actors", "charges", "aggressiveness", "columns", "scan", "scan_side", "sweep", "ai_wagon", "ai_wait", "ai_direction", "ticks", "next_id", "outcome", "settled", "original", "initial_pools", "survivors", "army_strength", "remainder"]:
 		data[key] = get(key)
 	data.version = 1
 	data.seed = str(rng.seed)
@@ -217,7 +220,12 @@ func restore(data: Variant) -> bool:
 		return false
 	for key in snapshot():
 		if key not in ["version", "seed", "state"]:
-			var value = data.get(key, 0) if key == "camera_offset" else data[key]
+			var value: Variant
+			match key:
+				"camera_offset": value = data.get(key,0)
+				"survivors": value = data.get(key,preload("res://scripts/tactical_survivors.gd").legacy(data))
+				"army_strength": value = data.get(key,preload("res://scripts/tactical_survivors.gd").army(data))
+				_: value = data[key]
 			set(key, value if key == "remainder" else preload("res://scripts/tactical_restore.gd").normalize(value))
 	rng.seed = int(data.seed)
 	rng.state = int(data.state)

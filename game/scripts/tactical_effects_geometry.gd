@@ -18,7 +18,15 @@ static func wagon(scene, side: int, index: int, original := false) -> Dictionary
 	var extent := used.size*factor
 	var x: float = 320+scene.shown_offset(side)-index*64-scene.camera
 	var baseline := 63.0 if side == 0 else 192.0
-	return {"texture":texture,"used":used,"factor":factor,"rect":Rect2(Vector2(x-width,baseline-extent.y),extent)}
+	# Source: combat_setup.player_roster WDECOR0614..0652 reserves companion25;
+	# enemy_composition WDECOR0723..072d puts real tender8 in slot1.
+	# Keep the authored engine scale; only the player reserves a companion slot.
+	# An enemy's real tender occupies the next slot, so the engine extends forward.
+	var span := width
+	if car.class == scene.state.Setup.LOCOMOTIVE:
+		var has_companion: bool = index+1 < scene.state.trains[side].size() and scene.state.trains[side][index+1].class == scene.state.Setup.LOCOMOTIVE_COMPANION
+		if not has_companion: span = 64.0
+	return {"texture":texture,"used":used,"factor":factor,"rect":Rect2(Vector2(x-span,baseline-extent.y),extent)}
 
 static func event_point(scene, event: Dictionary) -> Vector2:
 	if event.has("x"): return scene._field_point(event.x,event.y)
