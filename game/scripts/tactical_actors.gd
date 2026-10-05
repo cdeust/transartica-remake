@@ -18,6 +18,8 @@ static func order(state, actor: Dictionary, direction: int, amount: int) -> bool
 		return true
 	if amount > actor.count or amount > (31 if actor.mammoth else 30):
 		return false
+	if actor.roof >= 0:
+		return _roof_order(state, actor, direction, amount)
 	var vector: Vector2i = state.DIRECTIONS[direction]
 	if actor.mammoth:
 		# WDECOR0x2e87..2f06: riders dismount outside the beast's2x2 footprint.
@@ -65,6 +67,11 @@ static func order(state, actor: Dictionary, direction: int, amount: int) -> bool
 		actor.processed = state.sweep #0x3326.
 		return true
 	var target = state.actor_at(x, y, actor.roof)
+	# WDECOR0x32c1 to335b/338f:
+	# whole selections change direction; a friendly adjacent merge still takes priority.
+	if not actor.mammoth and (amount == actor.count or direction == 8) and (target == null or target.side != actor.side or direction == 8):
+		actor.direction = direction
+		return true
 	# WDECOR0x31f9,3244: merge limits31 mounted,30 infantry.
 	if target != null:
 		if target.side != actor.side or target.count + amount > (31 if target.mammoth else 30):
@@ -82,6 +89,52 @@ static func order(state, actor: Dictionary, direction: int, amount: int) -> bool
 	actor.processed = state.sweep #0x3283/333a.
 	if actor.count == 0:
 		state.actors.erase(actor) #0x32af clears the exhausted origin cell.
+	return true
+
+static func _roof_order(state, actor: Dictionary, direction: int, amount: int) -> bool:
+	# WDECOR0x4229..42ea: horizontal roof indexing is reversed from field x.
+	var vector: Vector2i = state.DIRECTIONS[direction]
+	var slot: int = actor.x - vector.x
+	if vector.y == 0:
+		var target = state.actor_at(slot, -1, actor.roof, actor.id)
+		if direction != 8 and target != null and target.side == actor.side:
+			if target.count + amount > 30:
+				return false
+			target.count += amount
+			target.processed = state.sweep #0x4361.
+		elif amount == actor.count or direction == 8:
+			actor.direction = direction #0x43d5 to4687/46a6: no immediate whole movement.
+			return true
+		else:
+			if slot < 0 or slot >= state.trains[actor.roof].size() * 4:
+				return false
+			#0x43f5/440e overwrite the destination roof cell directly.
+			if target != null:
+				state.actors.erase(target)
+			state.charges = state.charges.filter(func(charge): return not (charge.side == actor.roof and charge.slot == slot))
+			var split = state.add_actor(actor.side, slot, -1, amount, false, actor.roof, direction)
+			split.processed = state.sweep
+	elif (vector.y < 0 and actor.roof == 0) or (vector.y > 0 and actor.roof == 1):
+		#0x444c..44f8: outward orders use original roof slot, including diagonals.
+		var x: int = (state.offsets[actor.roof] + 304 + state.center_offset()) / 16 - actor.x
+		var y := 6 if actor.roof == 0 else 0
+		if x < 0 or x >= state.columns:
+			return false
+		var target = state.actor_at(x, y)
+		if target != null:
+			if target.side != actor.side or not target.mammoth or target.count + amount > 31:
+				return false
+			target.count += amount
+			target.processed = state.sweep #0x45b4.
+		else:
+			var dismounted = state.add_actor(actor.side, x, y, amount, false, -1, 8)
+			dismounted.processed = state.sweep #0x4591/45b4.
+	else:
+		return false
+	actor.count -= amount
+	actor.processed = state.sweep #0x438e/4423/45d4.
+	if actor.count == 0:
+		state.actors.erase(actor) #0x43ba/45f2.
 	return true
 
 static func update(state, actor: Dictionary) -> void:

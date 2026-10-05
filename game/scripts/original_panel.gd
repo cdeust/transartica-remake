@@ -13,6 +13,7 @@ const ART_SLICES := [
 ]
 const ART_PATH := "res://assets/interface/original-panel-v2.png"
 const ICON_ATLAS_PATH := "res://assets/interface/panel-icons.png"
+const LAUNCHER_ICON_PATH := "res://assets/interface/panel-launcher.png"
 const COMMON := {
 	2: Rect2(5, 164, 38, 29),
 	6: Rect2(80, 161, 33, 15),
@@ -50,6 +51,8 @@ var overview_context := false
 var app
 var _texture: Texture2D
 var _icon_atlas: Texture2D
+var _launcher_icon: Texture2D
+var _launcher_bounds := Rect2()
 var _last_state: Array = []
 
 
@@ -61,6 +64,11 @@ func _ready() -> void:
 		_texture = load(ART_PATH) as Texture2D
 	if ResourceLoader.exists(ICON_ATLAS_PATH):
 		_icon_atlas = load(ICON_ATLAS_PATH) as Texture2D
+	if ResourceLoader.exists(LAUNCHER_ICON_PATH):
+		_launcher_icon = load(LAUNCHER_ICON_PATH) as Texture2D
+		var pixels := _launcher_icon.get_image()
+		if pixels.is_compressed(): pixels.decompress()
+		_launcher_bounds = Rect2(pixels.get_used_rect())
 	mouse_exited.connect(_clear_hover)
 	resized.connect(queue_redraw)
 
@@ -326,7 +334,14 @@ func clock_counter_layout(cycles: int) -> Array[Dictionary]:
 		line.baseline.y=top+font.get_ascent(line.font_size)
 		top+=line.bounds.size.y
 		plate=line.bounds if plate.size==Vector2.ZERO else plate.merge(line.bounds)
-	for line in result: line.window=plate.grow(1.0).intersection(window)
+	# Place the compact readout below the ivory dial, on its lower brass rim.
+	# The measured face end is the boundary; the existing stroke leaves clearance.
+	var offset: float = face.end.y+clock.stroke-plate.position.y
+	for line in result:
+		line.bounds.position.y += offset
+		line.baseline.y += offset
+		line.window = Rect2(plate.position+Vector2(0,offset),plate.size).grow(1.0)
+
 	return result
 
 
@@ -335,18 +350,35 @@ func _draw_clock() -> void:
 	var font := ThemeDB.fallback_font
 	for numeral in layout.numerals:
 		draw_string(font,numeral.baseline,numeral.text,HORIZONTAL_ALIGNMENT_LEFT,-1,layout.font_size,ICON_INK)
-	for endpoint in [layout.hour_end,layout.minute_end]:
-		draw_line(layout.center,endpoint,ICON_INK,layout.stroke,true)
-		# Existing one-screen-pixel readout highlight, shared brass palette.
-		draw_line(layout.center,endpoint,READOUT_COLOR,1.0,true)
-	draw_circle(layout.center,layout.hub_radius,ICON_INK)
-	draw_circle(layout.center,layout.stroke,READOUT_COLOR)
+	_draw_clock_hand(layout.center, layout.hour_end, layout.hub_radius, layout.stroke)
+	_draw_clock_hand(layout.center, layout.minute_end, layout.stroke, layout.stroke)
+	# Turned brass cap, with the same dark rim and warm bevel as the panel.
+	draw_circle(layout.center, layout.hub_radius, ICON_INK)
+	draw_circle(layout.center, layout.stroke, READOUT_COLOR.darkened(0.3))
+	draw_arc(layout.center, layout.stroke, PI, TAU, 12, READOUT_COLOR, 1.0, true)
+	draw_circle(layout.center, 1.0, ICON_INK)
 	var counter := clock_counter_layout(app.engine.cycles)
 	if not counter.is_empty():
 		draw_rect(counter[0].window,ICON_INK)
 		draw_rect(counter[0].window,READOUT_COLOR,false,1.0)
 		for line in counter:
 			draw_string(font,line.baseline,line.text,HORIZONTAL_ALIGNMENT_LEFT,-1,line.font_size,READOUT_COLOR)
+
+
+func _draw_clock_hand(center: Vector2, tip: Vector2, half_width: float, bevel: float) -> void:
+	# Presentation adaptation requested5Oct: machined lancet, using the existing
+	# hand endpoint, dial stroke/hub dimensions and authored brass/ink palette.
+	var axis := (tip-center).normalized()
+	var side := axis.orthogonal()
+	var shoulder := tip-axis*half_width
+	var base := center-axis*half_width
+	var left := center+side*half_width
+	var right := center-side*half_width
+	var outline := PackedVector2Array([base,left,shoulder+side*bevel,tip,shoulder-side*bevel,right])
+	draw_colored_polygon(outline,ICON_INK)
+	draw_colored_polygon(PackedVector2Array([center,left,tip]),READOUT_COLOR.darkened(0.25))
+	draw_colored_polygon(PackedVector2Array([center,tip,right]),READOUT_COLOR.darkened(0.5))
+	draw_line(center+side*bevel,shoulder,READOUT_COLOR,1.0,true)
 
 
 func _draw_readouts() -> void:
@@ -460,18 +492,22 @@ func _draw_composition() -> void:
 	draw_set_transform_matrix(Transform2D.IDENTITY)
 
 
+func launcher_icon_rect() -> Rect2:
+	# Alpha-fit the side-elevation artwork uniformly into the same ECS slot.
+	var source: Rect2 = ART_SLICES[0][0]
+	var target: Rect2 = ART_SLICES[0][1]
+	# Measured blank train-button interior on the unchanged v2 raster.
+	var interior := Rect2(750,430,226,130)
+	var ratio := target.size/source.size
+	var slot := screen_rect(Rect2(target.position+(interior.position-source.position)*ratio,interior.size*ratio))
+	if _launcher_bounds.size == Vector2.ZERO: return Rect2()
+	var factor := minf(slot.size.x/_launcher_bounds.size.x,slot.size.y/_launcher_bounds.size.y)
+	var extent := _launcher_bounds.size*factor
+	return Rect2(slot.get_center()-extent/2.0,extent)
+
+
 func _draw_launcher() -> void:
-	# YODA0x7a4: authored launcher icon is exposed only after wagon13 is bought.
-	if not app.wagons.wagons.any(func(w): return int(w[0]) == 13):
-		return
-	var renderer = app.world_view.train_renderer
-	var kind: String = preload("res://scripts/train_consist.gd").TYPE_TO_KIND[13]
-	var vehicle: Dictionary = renderer.frame_for(kind)
-	if vehicle.is_empty():
-		return
-	var slot := screen_rect(COMMON[9].grow(-1))
-	var extent: Vector2 = vehicle.bounds.size
-	var scale := minf(slot.size.x/extent.y,slot.size.y/extent.x)
-	draw_set_transform_matrix(renderer.registration(vehicle,slot.get_center(),-PI/2,scale))
-	renderer.draw_frame(self,vehicle)
-	draw_set_transform_matrix(Transform2D.IDENTITY)
+	# YODA0x7a4: icon exposed only after wagon13 is bought; command9 unchanged.
+	if not app.wagons.wagons.any(func(w): return int(w[0]) == 13): return
+	if _launcher_icon == null: return
+	draw_texture_rect_region(_launcher_icon,launcher_icon_rect(),_launcher_bounds)

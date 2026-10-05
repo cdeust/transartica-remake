@@ -116,7 +116,12 @@ func _layout() -> void:
 	_place(_trade_box, Backdrop.PICTURE)
 	_list.position = Vector2(4, 3) * scale_factor
 	_list.size = Vector2(312, 62) * scale_factor
-	_list.fixed_column_width = maxi(1, roundi(_list.size.x / 5.0) - 2)
+	# Godot4.5 ItemList::_recompute_rects: panel margins and a horizontal
+	# separation per cell consume width. Reserve the scrollbar as well so
+	# commercial lists retain GLIEU's five columns when scrolling.
+	var panel_size := _list.get_theme_stylebox("panel").get_minimum_size()
+	var column_budget := _list.size.x-panel_size.x-_list.get_v_scroll_bar().get_minimum_size().x
+	_list.fixed_column_width = maxi(1, floori(column_budget/_list.max_columns)-maxi(0,_list.get_theme_constant("h_separation")))
 	# Source-width icon footprint; list scrolling and detail placement are UI adaptation.
 	_list.fixed_icon_size = Vector2i(list_icons.FOOTPRINT * scale_factor)
 	_list.add_theme_font_size_override("font_size", maxi(7, roundi(5.0 * scale_factor)))
@@ -158,7 +163,27 @@ func _fit_list_font() -> void:
 	for label in labels:
 		while pixels > 1 and font.get_string_size(str(label),HORIZONTAL_ALIGNMENT_LEFT,-1,pixels).x > available:
 			pixels -= 1 # Same measured fitting approach as OriginalPanel readouts.
+	if _workshop and _list.item_count > 0:
+		# NewPeking45797: the icon and both text lines must fit every workshop
+		# row above the reserved detail band. Match ItemList's shaped text and
+		# row spacing (Godot4.5 item_list.cpp1594..1639), not an estimated font.
+		var rows := ceili(float(_list.item_count)/_list.max_columns)
+		var height := _list.size.y-_list.get_theme_stylebox("panel").get_minimum_size().y
+		while pixels > 1 and _workshop_row_height(font,pixels)*rows > height:
+			pixels -= 1
 	_list.add_theme_font_size_override("font_size",pixels)
+
+
+func _workshop_row_height(font: Font, pixels: int) -> float:
+	var text_height := 0.0
+	for index in _list.item_count:
+		var paragraph := TextParagraph.new()
+		paragraph.add_string(_list.get_item_text(index),font,pixels)
+		paragraph.width = _list.fixed_column_width
+		paragraph.break_flags = TextServer.BREAK_MANDATORY|TextServer.BREAK_WORD_BOUND|TextServer.BREAK_GRAPHEME_BOUND|TextServer.BREAK_TRIM_START_EDGE_SPACES|TextServer.BREAK_TRIM_END_EDGE_SPACES
+		paragraph.max_lines_visible = _list.max_text_lines
+		text_height = maxf(text_height,paragraph.get_size().y)
+	return _list.fixed_icon_size.y*_list.icon_scale+_list.get_theme_constant("icon_margin")+text_height+_list.get_theme_constant("line_separation")*_list.max_text_lines+maxi(0,_list.get_theme_constant("v_separation"))
 
 
 func _transaction_visibility() -> void:
