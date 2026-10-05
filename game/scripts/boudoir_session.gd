@@ -286,6 +286,12 @@ func _inspect_map(cell: Vector2i) -> void:
 func _reverse_train() -> void:
 	if city_suspended:
 		return
+	var paused: bool = app.session.paused
+	if app.depart_from_terminus():
+		# source: FIDELITE.md owner4Oct; resume a dismissed/saved EOF like a city.
+		app.session.paused = paused
+		panel.refresh()
+		return
 	if app.journey.reverse_direction():
 		# YODA0x18e3 stops effective speed;0x18d8 releases the brake.
 		app.engine.speed = 0

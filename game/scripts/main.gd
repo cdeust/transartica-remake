@@ -151,6 +151,8 @@ func _build_works_dialog() -> void:
 func _on_works_finished(repaired: bool) -> void:
 	engine.train_mass = wagons.mass()
 	if works_dialog.kind.is_empty():
+		if depart_from_terminus():
+			return
 		status_label.text = "Turned back · heading %s." % journey.heading_name()
 		return
 	var ahead: Vector2i = works_dialog.last_cell
@@ -183,6 +185,14 @@ func _on_cargo_changed() -> void:
 	world_view.consist.derive_from_wagons(wagons)
 	world_view.update_train()
 	_update_status()
+
+
+func depart_from_terminus() -> bool:
+	# source: FIDELITE.md, owner4Oct authorizes city emergence at EOF stations.
+	if not journey.at_station() or journey.station_result() != -1:
+		return false
+	depart_from_city()
+	return true
 
 
 func depart_from_city() -> void:

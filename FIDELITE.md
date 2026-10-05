@@ -57,6 +57,12 @@ MIT est le choix pour le code créé dans ce projet. La provenance et les permis
 
 ## Adaptations confirmées : 26 septembre 2026
 
+Le 4 octobre 2026, le propriétaire autorise la même entrée et sortie masquées
+qu'en ville pour les impasses sans ville : « Oui pareil que pour les villes ».
+Le départ réutilise la gare source, sans ajouter de voie ni modifier marchandises,
+ressources ou histoire. Les wagons réapparaissent progressivement derrière la
+locomotive. Les demi-tours ordinaires conservent leurs contacts physiques.
+
 Le propriétaire demande un frein de service progressif, pour anticiper l'arrêt.
 Les scripts ECS arrêtent au prochain pas logique avec le levier : le comportement
 progressif du levier est donc une adaptation explicite du remake. Sa calibration
@@ -71,3 +77,7 @@ toutes les directions, y compris de face. Le gabarit doit rester identique ; le
 zoom ne doit pas changer automatiquement pendant un virage. Le raccourcissement
 perspectif était exclu dès le départ. Les prototypes ne satisfont pas encore
 cette exigence.
+
+## Carte du monde : prochaine passe visuelle, 5 octobre 2026
+
+Le propriétaire demande, après la fin du premier playthrough, une carte du monde à la qualité des visuels des villes. Les paysages doivent s'inspirer des villes alentours et constituer un relief cohérent, en conservant la géographie et les connexions ferroviaires originales. Cette passe est planifiée, pas encore réalisée ; le playthrough reste prioritaire.
