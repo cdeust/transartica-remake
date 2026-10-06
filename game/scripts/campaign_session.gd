@@ -40,6 +40,13 @@ func station(index: int) -> bool:
 
 
 func present(event: Dictionary) -> void:
+	if event.get("scene") == "sabotage_confirm":
+		var spy: Array = state.spies[int(event.spy)]
+		# CARTE0x27ae..27ce returns before image238/form2 for these records.
+		if spy[0] == 2 or spy[13] > 99:
+			state.dismiss()
+			app._open_panel("quarters")
+			return
 	app.engine.brake = true
 	app.engine.speed = 0
 	app.calendar.factor = 1 # YODA0x2318 scene prelude.
