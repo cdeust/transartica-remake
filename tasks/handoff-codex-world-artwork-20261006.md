@@ -56,3 +56,5 @@ Preuves : tasks/evidence/world-artwork-20261006.md, world-foreground-20261006.md
 La qualité artistique n'est pas déclarée acceptée : le relief paraît grossier au zoom rapproché, des anciens éléments restent superposés et les raccords régionaux sont atténués sans être parfaits. Claude peut maintenant présenter ces captures et recueillir l'avis visuel du propriétaire. Aucun message n'a été envoyé via Claude Desktop. La transmission utilise ce fichier demandé.
 
 Le ZIP macOS courant est builds/public-v1/Transartica-macOS-v1.zip ; les anciens dossiers extraits peuvent être périmés. Le candidat Windows est exporté et inspecté, mais son exécution sur Windows reste à vérifier avant publication v1.
+
+Publication vérifiée : commit281dd71dbc321d33d3d6bc005aad960973a79f0d poussé sur origin/main, puis confirmé par git ls-remote. Les cartes et la musique sont prêtes à être présentées par Claude depuis les chemins ci-dessus.

@@ -605,7 +605,7 @@ Owner requests these now while Windows runtime validation remains pending.
 - [x] Verify artwork native at snow, mountain, forest, lake and city approaches; check menu inputs and exact saved gameplay state.
 - [x] Verify exported macOS PCM, cue routing, looping, preference and save restoration.
 - [ ] Obtain artistic listening feedback on the new score.
-- [ ] Independently review, commit and push each stable owned change.
+- [x] Independently review, commit and push each stable owned change (281dd71, remote SHA verified).
 
 Review evidence will distinguish technical registration from artistic acceptance. Original sample libraries and decoded source geography remain private local inputs.
 
