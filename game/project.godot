@@ -12,6 +12,7 @@ config_version=5
 
 config/name="Transartica"
 run/main_scene="res://main.tscn"
+run/main_scene.public_release="res://public_boot.tscn"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 run/max_fps=60
 run/low_processor_mode=true
