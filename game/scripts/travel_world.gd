@@ -24,6 +24,7 @@ var encounters
 var wagons
 var map_entities = preload("res://scripts/travel_map_entities.gd").new()
 var terrain = preload("res://scripts/travel_terrain.gd").new()
+var cover = preload("res://scripts/travel_cover.gd").new()
 var inspecting_map := false
 var camera_world := Vector2(12.5, 62.5)
 var session
@@ -51,6 +52,7 @@ var visual_clock
 func _ready() -> void:
 	rail_art.load_art()
 	terrain.load_art()
+	cover.load_art()
 	# CARTE draws fixed terrain and towns independently of mobile perception.
 	discovery_enabled = false
 	super._ready()
@@ -176,10 +178,13 @@ func focus_city(index: int) -> void:
 func _draw() -> void:
 	_update_ground_shader()
 	terrain.draw(self)
+	cover.draw_floor(self)
 	_draw_rails()
 	map_entities.draw(self)
 	_draw_train()
 	living.draw(self)
+	cover.draw(self)
+	map_entities._draw_cities(self)
 	map_entities.draw_player_heading(self)
 
 

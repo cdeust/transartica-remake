@@ -75,6 +75,11 @@ func _test_mine(app)->void:
 	check(app.game_audio.snapshot()==before,"question does not select accepted-mine music")
 	app._world_session._answer_mine(true)
 	check(app.game_audio.current_track=="bolieu-2","accepted source mine starts worksite score")
+	# TEXTEK click72 ->41 ->42 precedes result cleanup; these are separate clicks.
+	app._world_session._close_mine()
+	check(app.world.mine_phase=="resources" and app.game_audio.current_track=="bolieu-2","mine plaque click advances resources without restarting score")
+	app._world_session._close_mine()
+	check(app.world.mine_phase=="result" and app.game_audio.current_track=="bolieu-2","mine resources click reaches credited result before departure")
 	app._world_session._close_mine()
 	check(app.game_audio.current_track in ["bojeu-0","bojeu-1"],"source mine close resumes next journey selection")
 	var closed:Dictionary=app.game_audio.snapshot()

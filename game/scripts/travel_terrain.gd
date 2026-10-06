@@ -11,10 +11,12 @@ var water = preload("res://scripts/terrain_water_art.gd").new()
 var landmarks = preload("res://scripts/terrain_landmarks.gd").new()
 var obstacles = preload("res://scripts/terrain_obstacles.gd").new()
 var portals = preload("res://scripts/terrain_portals.gd").new()
+var artwork = preload("res://scripts/world_artwork.gd").new()
 
 
 func load_art() -> bool:
 	textures.clear()
+	artwork.load_art()
 	landmarks.load_art()
 	obstacles.load_art()
 	portals.load_art()
@@ -35,6 +37,7 @@ static func resource_code(code: int) -> int:
 
 func draw_tile(view, cell: Vector2i, code: int) -> bool:
 	var resource := resource_code(code)
+	if "cover" in view and view.cover != null and view.cover.handles_mouth(cell,code): return true
 	if portals.draw_tile(view,cell,code):
 		return true
 	var origin: Vector2 = view._world_to_screen(Vector2(cell))
@@ -42,6 +45,9 @@ func draw_tile(view, cell: Vector2i, code: int) -> bool:
 	if obstacles.draw_tile(view,cell,code):
 		return true
 	if landmarks.draw_tile(view,cell,resource,Rect2(origin,extent)):
+		return true
+	# Painted relief replaces generic forest/mountain cells; exact water stays live.
+	if artwork.available() and artwork.covers_relief(cell,resource):
 		return true
 	var texture: Texture2D = textures.get(resource)
 	if texture == null:
@@ -68,6 +74,7 @@ func draw_tile(view, cell: Vector2i, code: int) -> bool:
 func draw(view) -> void:
 	if view.world_data == null:
 		return
+	artwork.draw_travel(view)
 	var cells: Rect2i = view._visible_world_bounds()
 	# Authored towns span source3x2 cells; include offscreen origins whose art is visible.
 	cells.position -= Vector2i(2,1)

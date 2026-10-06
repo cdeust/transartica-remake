@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "authorship": "Original score for Transartica; not historical soundtrack transcription",
+  "sample_library": "VSCO2 CE, CC0-1.0",
+  "tracks": {
+    "bojeu-0": {
+      "file": "res://assets/audio/orchestral/exploration.wav",
+      "cycle": true,
+      "duration_ticks": 32000,
+      "loop_begin": 1008000,
+      "loop_end": 2016000
+    },
+    "bojeu-1": {
+      "file": "res://assets/audio/orchestral/exploration.wav",
+      "cycle": true,
+      "duration_ticks": 32000,
+      "loop_begin": 1008000,
+      "loop_end": 2016000
+    },
+    "bojeu2-0": {
+      "file": "res://assets/audio/orchestral/exploration.wav",
+      "cycle": true,
+      "duration_ticks": 32000,
+      "loop_begin": 1008000,
+      "loop_end": 2016000
+    },
+    "bolieu-0": {
+      "file": "res://assets/audio/orchestral/cities.wav",
+      "cycle": false,
+      "duration_ticks": 1000,
+      "loop_begin": 1114105,
+      "loop_end": 2228210
+    },
+    "bolieu-1": {
+      "file": "res://assets/audio/orchestral/cities.wav",
+      "cycle": false,
+      "duration_ticks": 1000,
+      "loop_begin": 1114105,
+      "loop_end": 2228210
+    },
+    "bolieu-2": {
+      "file": "res://assets/audio/orchestral/worksite.wav",
+      "cycle": false,
+      "duration_ticks": 1000,
+      "loop_begin": 814154,
+      "loop_end": 1628308
+    },
+    "bolieu-3": {
+      "file": "res://assets/audio/orchestral/cities.wav",
+      "cycle": false,
+      "duration_ticks": 1000,
+      "loop_begin": 1114105,
+      "loop_end": 2228210
+    },
+    "bolost-0": {
+      "file": "res://assets/audio/orchestral/danger.wav",
+      "cycle": false,
+      "duration_ticks": 10000,
+      "loop_begin": 1282909,
+      "loop_end": 2565818
+    },
+    "bopres-0": {
+      "file": "res://assets/audio/orchestral/title.wav",
+      "cycle": true,
+      "duration_ticks": 10000,
+      "loop_begin": 920348,
+      "loop_end": 1840696
+    }
+  }
+}

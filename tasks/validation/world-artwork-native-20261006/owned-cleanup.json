@@ -1,0 +1,16 @@
+{
+  "removed": [
+    {
+      "path": ".cache/public-release/native-installed-data.zip",
+      "bytes": 35256027
+    }
+  ],
+  "native_processes_completed": true,
+  "owned_worktrees_created": 0,
+  "retained": [
+    "public candidate binaries",
+    "Claude native captures",
+    "composer sample inputs",
+    "other sessions worktrees and dirty files"
+  ]
+}

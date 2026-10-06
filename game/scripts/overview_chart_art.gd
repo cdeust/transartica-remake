@@ -8,11 +8,13 @@ const PATH := "res://private-data/overview-geometry.json"
 var frame: Texture2D
 var material: Texture2D
 var town_art: Texture2D
+var artwork = preload("res://scripts/world_artwork.gd").new()
 const TownArt = preload("res://scripts/terrain_landmarks.gd")
 const PAPER_FACE := Rect2(60,320,200,180) # Measured clock face; clock-quality20261003.
 var geometry: Dictionary = {}
 
 func load_art() -> void:
+	artwork.load_art(false) # Overview uses the finite master only.
 	frame=load("res://assets/interface/world-chart-frame.png") as Texture2D
 	var paper := AtlasTexture.new()
 	paper.atlas=load("res://assets/interface/original-panel-v2.png")
@@ -48,7 +50,8 @@ func available()->bool:return not geometry.is_empty()
 
 func draw(canvas:CanvasItem)->void:
 	canvas.draw_rect(Rect2(0,0,320,149),FIELD)
-	if material!=null:canvas.draw_texture_rect(material,Rect2(0,0,320,149),false,Color.WHITE)
+	if not artwork.draw_overview(canvas) and material!=null:
+		canvas.draw_texture_rect(material,Rect2(0,0,320,149),false,Color.WHITE)
 	for line in geometry.compartments:
 		canvas.draw_line(Vector2(line[0],line[1]),Vector2(line[2],line[3]),Color(BLUE,0.16),0.5)
 	for line in geometry.routes:

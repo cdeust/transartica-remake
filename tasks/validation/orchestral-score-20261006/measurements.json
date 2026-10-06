@@ -1,0 +1,107 @@
+{
+  "cities": {
+    "frames": 2228210,
+    "rate": 44100,
+    "duration_seconds": 50.52630385487528,
+    "peak_dbfs": -3.0003622493859567,
+    "rms_dbfs": -19.79991008505146,
+    "dc_pcm": [
+      -0.0035853891688844407,
+      0.004430013329084781
+    ],
+    "clipped_samples": 0,
+    "boundary_step_pcm": 864,
+    "normal_max_step_pcm": 4280,
+    "normal_99pct_step_pcm": 2207.0,
+    "periods_identical": false,
+    "final_pcm": [
+      0,
+      0
+    ],
+    "sha256": "ca8e1b07531b4458c770cefc8f6afb2236001cd76174c3d9783cc455f151ee00"
+  },
+  "danger": {
+    "frames": 2565818,
+    "rate": 44100,
+    "duration_seconds": 58.18181405895692,
+    "peak_dbfs": -3.0003622493859567,
+    "rms_dbfs": -17.591491973631626,
+    "dc_pcm": [
+      -0.0006578798652125755,
+      0.013772216111976765
+    ],
+    "clipped_samples": 0,
+    "boundary_step_pcm": 1687,
+    "normal_max_step_pcm": 4023,
+    "normal_99pct_step_pcm": 1502.0,
+    "periods_identical": false,
+    "final_pcm": [
+      0,
+      0
+    ],
+    "sha256": "29050fa672cff940b2d2e23a9def4c7cadec996835db0648a354cf04ade688b9"
+  },
+  "exploration": {
+    "frames": 2016000,
+    "rate": 44100,
+    "duration_seconds": 45.714285714285715,
+    "peak_dbfs": -3.0003622493859567,
+    "rms_dbfs": -18.94112338554566,
+    "dc_pcm": [
+      -0.0002886904761904762,
+      -0.00015773809523809523
+    ],
+    "clipped_samples": 0,
+    "boundary_step_pcm": 258,
+    "normal_max_step_pcm": 4538,
+    "normal_99pct_step_pcm": 2370.0,
+    "periods_identical": true,
+    "final_pcm": [
+      -1172,
+      143
+    ],
+    "sha256": "96a928dd0e6171076d3910cf4e006bb37bf8a899b9b84b200a4a63361b08906e"
+  },
+  "title": {
+    "frames": 1840696,
+    "rate": 44100,
+    "duration_seconds": 41.73913832199546,
+    "peak_dbfs": -3.0003622493859567,
+    "rms_dbfs": -18.071618446496608,
+    "dc_pcm": [
+      0.0008724960558397476,
+      0.0003064058377917918
+    ],
+    "clipped_samples": 0,
+    "boundary_step_pcm": 122,
+    "normal_max_step_pcm": 3329,
+    "normal_99pct_step_pcm": 1256.0,
+    "periods_identical": true,
+    "final_pcm": [
+      1827,
+      -777
+    ],
+    "sha256": "114299d6acfaf756ad751561cabff56a888d3bf270d4e7e0a696f55f35bcd461"
+  },
+  "worksite": {
+    "frames": 1628308,
+    "rate": 44100,
+    "duration_seconds": 36.92308390022676,
+    "peak_dbfs": -3.0003622493859567,
+    "rms_dbfs": -17.492733916730742,
+    "dc_pcm": [
+      0.01020998484316235,
+      0.016078653424290736
+    ],
+    "clipped_samples": 0,
+    "boundary_step_pcm": 4618,
+    "normal_max_step_pcm": 3030,
+    "normal_99pct_step_pcm": 1239.0,
+    "periods_identical": false,
+    "final_pcm": [
+      0,
+      0
+    ],
+    "sha256": "71d331ef166206e6c5225a80c7cdae0adb3d4cbdbcd68fdcea4c39c81cab7825"
+  }
+}

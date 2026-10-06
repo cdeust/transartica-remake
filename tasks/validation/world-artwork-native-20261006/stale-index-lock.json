@@ -1,0 +1,9 @@
+{
+  "observed_utc": 1791310086.651115,
+  "path": ".git/index.lock",
+  "mtime": 1791269506.4238925,
+  "bytes": 0,
+  "lsof_holders": [],
+  "running_git_writers": [],
+  "action": "preserve stale zero-byte lock outside .git before staging"
+}

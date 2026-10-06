@@ -1,0 +1,163 @@
+[
+  {
+    "group": "license",
+    "path": "LICENSE",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/LICENSE",
+    "sha256": "36ffd9dc085d529a7e60e1276d73ae5a030b020313e6c5408593a6ae2af39673",
+    "bytes": 6555
+  },
+  {
+    "group": "strings",
+    "path": "Strings/Violin Section/susVib/VlnEns_susVib_D3_v1.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Violin%20Section/susVib/VlnEns_susVib_D3_v1.wav",
+    "sha256": "583e660bc5daa4e094aef5fc014fbb92751040be8741ed7a16847306a1fe0a99",
+    "bytes": 2061808
+  },
+  {
+    "group": "strings",
+    "path": "Strings/Violin Section/susVib/VlnEns_susVib_C4_v1.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Violin%20Section/susVib/VlnEns_susVib_C4_v1.wav",
+    "sha256": "c07edd5b2119fa1da2207aba996961b50dd616f69bbcf2300ab271bc6c16239f",
+    "bytes": 2063320
+  },
+  {
+    "group": "strings",
+    "path": "Strings/Violin Section/susVib/VlnEns_susVib_G4_v1.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Violin%20Section/susVib/VlnEns_susVib_G4_v1.wav",
+    "sha256": "ed2a89cf254432d2af073699fa43ebfa16cfbc5552c7fc964a184fc434eaaa39",
+    "bytes": 2330236
+  },
+  {
+    "group": "cello",
+    "path": "Strings/Cello Section/susvib/susvib_C1_v1_1.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Cello%20Section/susvib/susvib_C1_v1_1.wav",
+    "sha256": "abdcea431f384e135c469b0f3e4ac2a437f282f521dc5bcbe22abc221536e8de",
+    "bytes": 2347376
+  },
+  {
+    "group": "cello",
+    "path": "Strings/Cello Section/susvib/susvib_D2_v1_1.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Cello%20Section/susvib/susvib_D2_v1_1.wav",
+    "sha256": "e8640dec9febc6e39fcf06b19d2c95a85d5ff8c38f13c9879e69f551eaf38ab8",
+    "bytes": 2550956
+  },
+  {
+    "group": "cello",
+    "path": "Strings/Cello Section/susvib/susvib_C3_v1_1.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Cello%20Section/susvib/susvib_C3_v1_1.wav",
+    "sha256": "a614ee7ca821b44660236e47b89620cf914ec6ad27a99bc0d9764f47dbe512e1",
+    "bytes": 2444174
+  },
+  {
+    "group": "horn",
+    "path": "Brass/F Horn/sus/MOHorn_sus_F2_v2_1.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Brass/F%20Horn/sus/MOHorn_sus_F2_v2_1.wav",
+    "sha256": "2e487a49c834ff2d76aff1c9755875fc03013bf202b949a5c5fe354d0c2123c2",
+    "bytes": 2558276
+  },
+  {
+    "group": "horn",
+    "path": "Brass/F Horn/sus/MOHorn_sus_C3_v2_1.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Brass/F%20Horn/sus/MOHorn_sus_C3_v2_1.wav",
+    "sha256": "c0c0b157dcde094c4417b7c165d645897cde9ea6d74247bbab0c0e75355e78c3",
+    "bytes": 2240888
+  },
+  {
+    "group": "horn",
+    "path": "Brass/F Horn/sus/MOHorn_sus_G1_v2_1.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Brass/F%20Horn/sus/MOHorn_sus_G1_v2_1.wav",
+    "sha256": "5f0c30569c0e6b77dc0d70a84cb13e1423dbc8bdbf6c47b54bd8a1f46518aa68",
+    "bytes": 1300556
+  },
+  {
+    "group": "flute",
+    "path": "Woodwinds/Flute/susvib/LDFlute_susvib_C4_v1_1.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Woodwinds/Flute/susvib/LDFlute_susvib_C4_v1_1.wav",
+    "sha256": "e88a0ff35e6b8c29fd88bc778a4c817d955b2c3a2934def97a7d093b72e2ae97",
+    "bytes": 2009832
+  },
+  {
+    "group": "flute",
+    "path": "Woodwinds/Flute/susvib/LDFlute_susvib_A4_v1_1.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Woodwinds/Flute/susvib/LDFlute_susvib_A4_v1_1.wav",
+    "sha256": "cf3c1c30943b8b8ef8b5b9ced89430c014987a037204098d002f86e424391ba9",
+    "bytes": 1942296
+  },
+  {
+    "group": "flute",
+    "path": "Woodwinds/Flute/susvib/LDFlute_susvib_C5_v1_1.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Woodwinds/Flute/susvib/LDFlute_susvib_C5_v1_1.wav",
+    "sha256": "ecb78c59069866ea7c3327594851827cd2f50c5d411aad422269a88e53614fbe",
+    "bytes": 1930938
+  },
+  {
+    "group": "harp",
+    "path": "Strings/Harp/KSHarp_C3_mf.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Harp/KSHarp_C3_mf.wav",
+    "sha256": "e5d232771704e140959819de8cf2a3e0ba49d021ca77354c42664ce4fce6d9f3",
+    "bytes": 1586172
+  },
+  {
+    "group": "harp",
+    "path": "Strings/Harp/KSHarp_D4_mf.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Harp/KSHarp_D4_mf.wav",
+    "sha256": "ebfde8aab4411019e37e3426f4dd88d6a52a38c2d0261d7f10ec63d8ff584dc7",
+    "bytes": 1921690
+  },
+  {
+    "group": "harp",
+    "path": "Strings/Harp/KSHarp_C5_mf.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Harp/KSHarp_C5_mf.wav",
+    "sha256": "7c8b862f6fd3f1442ed87537af976d84bda8c05a5b4900e8907d570b5202a517",
+    "bytes": 1237142
+  },
+  {
+    "group": "timpani",
+    "path": "Percussion/Timpani/Timpani3_Hit_v3_rr1_Sum.wav",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Percussion/Timpani/Timpani3_Hit_v3_rr1_Sum.wav",
+    "sha256": "46cd2ba3798f9e3a6be515b13dbc37d2ef65c82afb0d0e9e34121e4524bfcd3a",
+    "bytes": 1608252
+  },
+  {
+    "group": "mapping",
+    "path": "ViolinEnsSusVib.sfz",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/ViolinEnsSusVib.sfz",
+    "sha256": "4591e212cccf1cbcff0c78cf8429a8221bb0820b70cb7c8dd6685f470ace4eaa",
+    "bytes": 2538
+  },
+  {
+    "group": "mapping",
+    "path": "CelloEnsSusVib.sfz",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/CelloEnsSusVib.sfz",
+    "sha256": "276352639dda425dd12a4fdb3acdf545867fdb0ff4f89876319f4ec3cf12a19f",
+    "bytes": 2933
+  },
+  {
+    "group": "mapping",
+    "path": "FHornSus.sfz",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/FHornSus.sfz",
+    "sha256": "52a8ccef8baaf0dbea4b3e528b8096c89ffb5c8aafba2b69c4c38af1d64587a5",
+    "bytes": 3250
+  },
+  {
+    "group": "mapping",
+    "path": "FluteSusVib.sfz",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/FluteSusVib.sfz",
+    "sha256": "26b0dedaa483b6f7f4201d144673b26ab1d0e4585493a97815d03904319a0734",
+    "bytes": 1605
+  },
+  {
+    "group": "mapping",
+    "path": "Harp.sfz",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/Harp.sfz",
+    "sha256": "25b553eb756a94f833b1cc1239fe3e6dced3ebc83335bac95d05c951589f7da9",
+    "bytes": 2475
+  },
+  {
+    "group": "mapping",
+    "path": "Timpani.sfz",
+    "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/Timpani.sfz",
+    "sha256": "8debc0fa6da4344abb48b625cbaaa85ffcf3a7d0a946fe57ddbb16a49aab9fa5",
+    "bytes": 3415
+  }
+]

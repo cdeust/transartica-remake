@@ -594,3 +594,19 @@ Mole Men encounters and occupied-switch changes remain open.
   named-book reload11473 with21contacts preserved.
 - [x] Stop completed waypoint transit automation without restarting its leg;
   six detached Python protocol tests pass.
+
+## Artwork and orchestral score,6October2026
+
+Owner requests these now while Windows runtime validation remains pending.
+
+- [x] Author continuous world painting registered to the original160×73 geography and accepted city palette.
+- [x] Integrate the painting behind exterior rail/entity layers and into the menu overview, preserving source map interactions and incomplete routes.
+- [x] Compose and render an original sampled orchestral score with documented sample permission.
+- [x] Verify artwork native at snow, mountain, forest, lake and city approaches; check menu inputs and exact saved gameplay state.
+- [x] Verify exported macOS PCM, cue routing, looping, preference and save restoration.
+- [ ] Obtain artistic listening feedback on the new score.
+- [ ] Independently review, commit and push each stable owned change.
+
+Review evidence will distinguish technical registration from artistic acceptance. Original sample libraries and decoded source geography remain private local inputs.
+
+Technical native proof and Claude handoff: tasks/handoff-codex-world-artwork-20261006.md. Close-up sharpness, regional joins and retained relief remain visual acceptance items. Windows runtime and v1 publication remain pending.

@@ -1,0 +1,58 @@
+[
+	{
+		"changed_alpha_covered_train_pixels": 224,
+		"changed_train_bounds_pixels": 224,
+		"name": "mouth-53-61-51",
+		"network_unchanged": true,
+		"poses_unchanged": true,
+		"state_unchanged": true
+	},
+	{
+		"changed_alpha_covered_train_pixels": 199,
+		"changed_train_bounds_pixels": 199,
+		"name": "mouth-54-30-58",
+		"network_unchanged": true,
+		"poses_unchanged": true,
+		"state_unchanged": true
+	},
+	{
+		"changed_alpha_covered_train_pixels": 199,
+		"changed_train_bounds_pixels": 199,
+		"name": "mouth-54-51-39",
+		"network_unchanged": true,
+		"poses_unchanged": true,
+		"state_unchanged": true
+	},
+	{
+		"changed_alpha_covered_train_pixels": 221,
+		"changed_train_bounds_pixels": 221,
+		"name": "mouth-58-12-21",
+		"network_unchanged": true,
+		"poses_unchanged": true,
+		"state_unchanged": true
+	},
+	{
+		"changed_alpha_covered_train_pixels": 221,
+		"changed_train_bounds_pixels": 221,
+		"name": "mouth-58-105-23",
+		"network_unchanged": true,
+		"poses_unchanged": true,
+		"state_unchanged": true
+	},
+	{
+		"changed_alpha_covered_train_pixels": 221,
+		"changed_train_bounds_pixels": 221,
+		"name": "mouth-58-113-58",
+		"network_unchanged": true,
+		"poses_unchanged": true,
+		"state_unchanged": true
+	},
+	{
+		"changed_alpha_covered_train_pixels": 4785,
+		"changed_train_bounds_pixels": 43807,
+		"name": "forest-32-11",
+		"network_unchanged": true,
+		"poses_unchanged": true,
+		"state_unchanged": true
+	}
+]

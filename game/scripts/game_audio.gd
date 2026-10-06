@@ -35,6 +35,13 @@ func attach(app: Node) -> void:
 			var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 			if parsed is Dictionary:
 				set(pair[0], parsed)
+	# Authored orchestral score preserves the original cue keys and transitions.
+	# Sample provenance/render proof: orchestral-score-20261006.md.
+	var score_path := "res://assets/audio/orchestral/music.json"
+	if FileAccess.file_exists(score_path):
+		var score: Variant = JSON.parse_string(FileAccess.get_file_as_string(score_path))
+		if score is Dictionary and score.get("tracks") is Dictionary:
+			music_manifest = score
 
 
 func sample(script: String, resource: int, priority: int, volume: int, repeat: int, frequency: int) -> int:
@@ -147,7 +154,7 @@ func stop_effects() -> void:
 
 func _wave(filename: String) -> AudioStreamWAV:
 	if not _cache.has(filename):
-		var path := "res://private-data/audio/" + filename
+		var path := filename if filename.begins_with("res://") else "res://private-data/audio/" + filename
 		_cache[filename] = preload("res://scripts/source_audio_resource.gd").wave(path)
 	return _cache[filename]
 

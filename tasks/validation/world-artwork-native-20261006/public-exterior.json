@@ -1,0 +1,797 @@
+{
+	"anthracite": 661,
+	"anthracite_rate": 0,
+	"audio": {
+		"alternate": false,
+		"effects_enabled": true,
+		"elapsed": 337.422331333364,
+		"music_enabled": true,
+		"track": "bojeu-1",
+		"version": 1
+	},
+	"blocked": false,
+	"brake": false,
+	"calendar": {
+		"day": 90,
+		"factor": 3,
+		"hour": 20,
+		"minute": 9
+	},
+	"combat_paused": false,
+	"controls": [],
+	"cycles": 43123,
+	"distance_ticks": 10,
+	"event": "",
+	"following_train": false,
+	"heading": 6,
+	"heat": 434,
+	"id": 47213,
+	"inspecting_map": false,
+	"intro_tick": 597,
+	"label": "artwork-public-map",
+	"lignite": 304,
+	"lignite_rate": 0,
+	"logical_head": "(151.6449, 66.0)",
+	"music_playing": true,
+	"obstacle_cell": "(153, 66)",
+	"paused": true,
+	"phase": 0,
+	"pointer_trace": [],
+	"position": "(152, 66)",
+	"process_id": 13276,
+	"regulator": 300,
+	"release": true,
+	"render_lag": 0.0,
+	"rendered_head": "(151.6449, 66.0)",
+	"rendered_vehicles": 23,
+	"reverse": false,
+	"screen": "map",
+	"speed": 300,
+	"steam": 7104,
+	"switches": [],
+	"vehicle_contacts": [
+		{
+			"front": [
+				151.644927978516,
+				66.0
+			],
+			"kind": "locomotive",
+			"rear": [
+				150.894927978516,
+				66.0
+			]
+		},
+		{
+			"front": [
+				150.894927978516,
+				66.0
+			],
+			"kind": "tender",
+			"rear": [
+				150.137420654297,
+				66.0
+			]
+		},
+		{
+			"front": [
+				150.137420654297,
+				66.0
+			],
+			"kind": "machine-gun",
+			"rear": [
+				149.542846679688,
+				65.542854309082
+			]
+		},
+		{
+			"front": [
+				149.542846679688,
+				65.542854309082
+			],
+			"kind": "general-quarters",
+			"rear": [
+				149.007217407227,
+				65.0072174072266
+			]
+		},
+		{
+			"front": [
+				149.007217407227,
+				65.0072174072266
+			],
+			"kind": "cannon",
+			"rear": [
+				148.47688293457,
+				64.4768905639648
+			]
+		},
+		{
+			"front": [
+				148.47688293457,
+				64.4768905639648
+			],
+			"kind": "boudoir",
+			"rear": [
+				147.951858520508,
+				63.9518623352051
+			]
+		},
+		{
+			"front": [
+				147.951858520508,
+				63.9518623352051
+			],
+			"kind": "merchandise",
+			"rear": [
+				147.426834106445,
+				63.4268341064453
+			]
+		},
+		{
+			"front": [
+				147.426834106445,
+				63.4268341064453
+			],
+			"kind": "cannon",
+			"rear": [
+				146.810134887695,
+				63.0
+			]
+		},
+		{
+			"front": [
+				146.810134887695,
+				63.0
+			],
+			"kind": "barracks",
+			"rear": [
+				146.067642211914,
+				63.0
+			]
+		},
+		{
+			"front": [
+				146.067642211914,
+				63.0
+			],
+			"kind": "spy",
+			"rear": [
+				145.317642211914,
+				63.0
+			]
+		},
+		{
+			"front": [
+				145.317642211914,
+				63.0
+			],
+			"kind": "machine-gun",
+			"rear": [
+				144.567642211914,
+				63.0
+			]
+		},
+		{
+			"front": [
+				144.567642211914,
+				63.0
+			],
+			"kind": "prison",
+			"rear": [
+				143.835830688477,
+				63.1641693115234
+			]
+		},
+		{
+			"front": [
+				143.835830688477,
+				63.1641693115234
+			],
+			"kind": "crane",
+			"rear": [
+				143.30549621582,
+				63.6944961547852
+			]
+		},
+		{
+			"front": [
+				143.30549621582,
+				63.6944961547852
+			],
+			"kind": "cannon",
+			"rear": [
+				142.620544433594,
+				64.0
+			]
+		},
+		{
+			"front": [
+				142.620544433594,
+				64.0
+			],
+			"kind": "xl-merchandise",
+			"rear": [
+				141.878051757812,
+				64.0
+			]
+		},
+		{
+			"front": [
+				141.878051757812,
+				64.0
+			],
+			"kind": "merchandise",
+			"rear": [
+				141.135559082031,
+				64.0
+			]
+		},
+		{
+			"front": [
+				141.135559082031,
+				64.0
+			],
+			"kind": "harpoon",
+			"rear": [
+				140.541793823242,
+				63.5418014526367
+			]
+		},
+		{
+			"front": [
+				140.541793823242,
+				63.5418014526367
+			],
+			"kind": "cannon",
+			"rear": [
+				140.011474609375,
+				63.0114669799805
+			]
+		},
+		{
+			"front": [
+				140.011474609375,
+				63.0114669799805
+			],
+			"kind": "xl-merchandise",
+			"rear": [
+				139.486450195312,
+				62.486442565918
+			]
+		},
+		{
+			"front": [
+				139.486450195312,
+				62.486442565918
+			],
+			"kind": "missile-launcher",
+			"rear": [
+				139.0,
+				61.9155960083008
+			]
+		},
+		{
+			"front": [
+				139.0,
+				61.9155960083008
+			],
+			"kind": "xl-merchandise",
+			"rear": [
+				139.0,
+				61.173095703125
+			]
+		},
+		{
+			"front": [
+				139.0,
+				61.173095703125
+			],
+			"kind": "boiler",
+			"rear": [
+				139.431289672852,
+				60.5687026977539
+			]
+		},
+		{
+			"front": [
+				139.431289672852,
+				60.5687026977539
+			],
+			"kind": "drill",
+			"rear": [
+				139.961624145508,
+				60.0383758544922
+			]
+		}
+	],
+	"vehicle_frames": [
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/locomotive-hero.png",
+			"atlas_region": "[P: (178.0, 48.0), S: (438.0, 1886.0)]",
+			"atlas_size": "(793.0, 1983.0)",
+			"draw_rect": "[P: (12.02121, 0.0), S: (114.9576, 495.0)]",
+			"frame_available": true,
+			"frame_front": "(69.5, 495.0)",
+			"frame_kind": "locomotive",
+			"frame_rear": "(69.5, 0.0)",
+			"front_screen": "(1250.421, 537.0924)",
+			"pose_kind": "locomotive",
+			"rear_screen": "(1191.015, 537.0924)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(438.0, 1886.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 2
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1019.0, 512.0), S: (141.0, 502.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (141.0, 502.0)]",
+			"frame_available": true,
+			"frame_front": "(70.0, 500.0)",
+			"frame_kind": "tender",
+			"frame_rear": "(70.0, 1.0)",
+			"front_screen": "(1191.015, 537.0924)",
+			"pose_kind": "tender",
+			"rear_screen": "(1131.013, 537.0924)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(141.0, 502.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 2
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1599.0, 4.0), S: (138.0, 498.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (138.0, 497.0)]",
+			"frame_available": true,
+			"frame_front": "(68.0, 495.0)",
+			"frame_kind": "machine-gun",
+			"frame_rear": "(68.0, 1.0)",
+			"front_screen": "(1131.013, 537.0924)",
+			"pose_kind": "machine-gun",
+			"rear_screen": "(1083.917, 500.8823)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(138.0, 498.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 8
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (149.0, 4.0), S: (138.0, 504.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (138.0, 504.0)]",
+			"frame_available": true,
+			"frame_front": "(68.5, 502.0)",
+			"frame_kind": "general-quarters",
+			"frame_rear": "(68.5, 1.0)",
+			"front_screen": "(1083.917, 500.8823)",
+			"pose_kind": "general-quarters",
+			"rear_screen": "(1041.49, 458.455)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(138.0, 504.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 5
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1454.0, 4.0), S: (137.0, 496.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (137.0, 496.0)]",
+			"frame_available": true,
+			"frame_front": "(67.5, 494.0)",
+			"frame_kind": "cannon",
+			"frame_rear": "(67.5, 1.0)",
+			"front_screen": "(1041.49, 458.455)",
+			"pose_kind": "cannon",
+			"rear_screen": "(999.4825, 416.448)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(137.0, 496.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 5
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (294.0, 4.0), S: (136.0, 496.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (136.0, 495.0)]",
+			"frame_available": true,
+			"frame_front": "(67.5, 493.0)",
+			"frame_kind": "boudoir",
+			"frame_rear": "(67.5, 1.0)",
+			"front_screen": "(999.4825, 416.448)",
+			"pose_kind": "boudoir",
+			"rear_screen": "(957.8956, 374.8603)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(136.0, 496.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 5
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (439.0, 512.0), S: (137.0, 492.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (137.0, 492.0)]",
+			"frame_available": true,
+			"frame_front": "(67.5, 490.0)",
+			"frame_kind": "merchandise",
+			"frame_rear": "(67.5, 1.0)",
+			"front_screen": "(957.8956, 374.8603)",
+			"pose_kind": "merchandise",
+			"rear_screen": "(916.3086, 333.2737)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(137.0, 492.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 5
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1454.0, 4.0), S: (137.0, 496.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (137.0, 496.0)]",
+			"frame_available": true,
+			"frame_front": "(67.5, 494.0)",
+			"frame_kind": "cannon",
+			"frame_rear": "(67.5, 1.0)",
+			"front_screen": "(916.3086, 333.2737)",
+			"pose_kind": "cannon",
+			"rear_screen": "(867.4602, 299.4644)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(137.0, 496.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 6
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1309.0, 512.0), S: (141.0, 491.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (141.0, 491.0)]",
+			"frame_available": true,
+			"frame_front": "(70.0, 489.0)",
+			"frame_kind": "barracks",
+			"frame_rear": "(70.0, 1.0)",
+			"front_screen": "(867.4602, 299.4644)",
+			"pose_kind": "barracks",
+			"rear_screen": "(808.6477, 299.4644)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(141.0, 491.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 2
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1164.0, 512.0), S: (136.0, 497.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (136.0, 496.0)]",
+			"frame_available": true,
+			"frame_front": "(67.5, 494.0)",
+			"frame_kind": "spy",
+			"frame_rear": "(67.5, 1.0)",
+			"front_screen": "(808.6477, 299.4644)",
+			"pose_kind": "spy",
+			"rear_screen": "(749.241, 299.4644)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(136.0, 497.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 2
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1599.0, 4.0), S: (138.0, 498.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (138.0, 497.0)]",
+			"frame_available": true,
+			"frame_front": "(68.0, 495.0)",
+			"frame_kind": "machine-gun",
+			"frame_rear": "(68.0, 1.0)",
+			"front_screen": "(749.241, 299.4644)",
+			"pose_kind": "machine-gun",
+			"rear_screen": "(689.8343, 299.4644)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(138.0, 498.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 2
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (584.0, 4.0), S: (138.0, 499.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (138.0, 499.0)]",
+			"frame_available": true,
+			"frame_front": "(68.5, 496.0)",
+			"frame_kind": "prison",
+			"frame_rear": "(68.5, 1.0)",
+			"front_screen": "(689.8343, 299.4644)",
+			"pose_kind": "prison",
+			"rear_screen": "(631.8679, 312.4683)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(138.0, 499.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 7
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (294.0, 512.0), S: (136.0, 496.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (136.0, 496.0)]",
+			"frame_available": true,
+			"frame_front": "(67.5, 494.0)",
+			"frame_kind": "crane",
+			"frame_rear": "(67.5, 1.0)",
+			"front_screen": "(631.8679, 312.4683)",
+			"pose_kind": "crane",
+			"rear_screen": "(589.8602, 354.4748)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(136.0, 496.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 7
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1454.0, 4.0), S: (137.0, 496.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (137.0, 496.0)]",
+			"frame_available": true,
+			"frame_front": "(67.5, 494.0)",
+			"frame_kind": "cannon",
+			"frame_rear": "(67.5, 1.0)",
+			"front_screen": "(589.8602, 354.4748)",
+			"pose_kind": "cannon",
+			"rear_screen": "(535.6052, 378.6736)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(137.0, 496.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 9
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (584.0, 512.0), S: (137.0, 495.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (137.0, 495.0)]",
+			"frame_available": true,
+			"frame_front": "(68.0, 492.0)",
+			"frame_kind": "xl-merchandise",
+			"frame_rear": "(68.0, 1.0)",
+			"front_screen": "(535.6052, 378.6736)",
+			"pose_kind": "xl-merchandise",
+			"rear_screen": "(476.7928, 378.6736)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(137.0, 495.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 2
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (439.0, 512.0), S: (137.0, 492.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (137.0, 492.0)]",
+			"frame_available": true,
+			"frame_front": "(67.5, 490.0)",
+			"frame_kind": "merchandise",
+			"frame_rear": "(67.5, 1.0)",
+			"front_screen": "(476.7928, 378.6736)",
+			"pose_kind": "merchandise",
+			"rear_screen": "(417.9804, 378.6736)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(137.0, 492.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 2
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1164.0, 4.0), S: (137.0, 496.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (137.0, 496.0)]",
+			"frame_available": true,
+			"frame_front": "(68.0, 494.0)",
+			"frame_kind": "harpoon",
+			"frame_rear": "(68.0, 1.0)",
+			"front_screen": "(417.9804, 378.6736)",
+			"pose_kind": "harpoon",
+			"rear_screen": "(370.9487, 342.3801)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(137.0, 496.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 8
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1454.0, 4.0), S: (137.0, 496.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (137.0, 496.0)]",
+			"frame_available": true,
+			"frame_front": "(67.5, 494.0)",
+			"frame_kind": "cannon",
+			"frame_rear": "(67.5, 1.0)",
+			"front_screen": "(370.9487, 342.3801)",
+			"pose_kind": "cannon",
+			"rear_screen": "(328.9424, 300.3728)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(137.0, 496.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 5
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (584.0, 512.0), S: (137.0, 495.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (137.0, 495.0)]",
+			"frame_available": true,
+			"frame_front": "(68.0, 492.0)",
+			"frame_kind": "xl-merchandise",
+			"frame_rear": "(68.0, 1.0)",
+			"front_screen": "(328.9424, 300.3728)",
+			"pose_kind": "xl-merchandise",
+			"rear_screen": "(287.3555, 258.7858)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(137.0, 495.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 5
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1744.0, 4.0), S: (137.0, 497.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (137.0, 497.0)]",
+			"frame_available": true,
+			"frame_front": "(68.0, 495.0)",
+			"frame_kind": "missile-launcher",
+			"frame_rear": "(68.0, 1.0)",
+			"front_screen": "(287.3555, 258.7858)",
+			"pose_kind": "missile-launcher",
+			"rear_screen": "(248.8242, 213.5693)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(137.0, 497.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 13
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (584.0, 512.0), S: (137.0, 495.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (137.0, 495.0)]",
+			"frame_available": true,
+			"frame_front": "(68.0, 492.0)",
+			"frame_kind": "xl-merchandise",
+			"frame_rear": "(68.0, 1.0)",
+			"front_screen": "(248.8242, 213.5693)",
+			"pose_kind": "xl-merchandise",
+			"rear_screen": "(248.8242, 154.7565)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(137.0, 495.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 13
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1599.0, 512.0), S: (136.0, 496.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (136.0, 496.0)]",
+			"frame_available": true,
+			"frame_front": "(67.5, 493.0)",
+			"frame_kind": "boiler",
+			"frame_rear": "(67.5, 1.0)",
+			"front_screen": "(248.8242, 154.7565)",
+			"pose_kind": "boiler",
+			"rear_screen": "(282.9866, 106.8828)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(136.0, 496.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 11
+		},
+		{
+			"atlas_available": true,
+			"atlas_path": "res://assets/travel/vehicles-overhead.png",
+			"atlas_region": "[P: (1019.0, 4.0), S: (137.0, 497.0)]",
+			"atlas_size": "(1889.0, 1020.0)",
+			"draw_rect": "[P: (0.0, 0.0), S: (137.0, 496.0)]",
+			"frame_available": true,
+			"frame_front": "(68.0, 494.0)",
+			"frame_kind": "drill",
+			"frame_rear": "(68.0, 1.0)",
+			"front_screen": "(282.9866, 106.8828)",
+			"pose_kind": "drill",
+			"rear_screen": "(324.9943, 64.87592)",
+			"texel_scale": 0.120015092329545,
+			"texture_available": true,
+			"texture_class": "AtlasTexture",
+			"texture_path": "",
+			"texture_size": "(137.0, 497.0)",
+			"tint": "(1.0, 1.0, 1.0, 1.0)",
+			"tint_tile": 7
+		}
+	],
+	"vehicles": 23,
+	"view_rect": "[P: (0.0, 0.0), S: (1440.0, 670.0)]",
+	"visual_arc": 143.37032365799,
+	"wall_seconds": 74.031,
+	"zoom": 0.384674806570045
+}

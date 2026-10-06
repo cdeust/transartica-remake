@@ -1,0 +1,12 @@
+{
+  "bit_identical": true,
+  "numpy": "2.5.3",
+  "hashes": {
+    "cities.wav": "ca8e1b07531b4458c770cefc8f6afb2236001cd76174c3d9783cc455f151ee00",
+    "music.json": "07f0bfb659e5f203747f983346aaa38d25a719a489896cec4f871ec6ff0eb57d",
+    "exploration.wav": "96a928dd0e6171076d3910cf4e006bb37bf8a899b9b84b200a4a63361b08906e",
+    "title.wav": "114299d6acfaf756ad751561cabff56a888d3bf270d4e7e0a696f55f35bcd461",
+    "danger.wav": "29050fa672cff940b2d2e23a9def4c7cadec996835db0648a354cf04ade688b9",
+    "worksite.wav": "71d331ef166206e6c5225a80c7cdae0adb3d4cbdbcd68fdcea4c39c81cab7825"
+  }
+}
