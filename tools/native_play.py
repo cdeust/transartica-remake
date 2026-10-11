@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CONSOLE = ROOT / ".cache/native-play"
-EVIDENCE = ROOT / "tasks/validation/continuous-play-20261003"
+EVIDENCE = CONSOLE / "captures"
 
 
 def state():
@@ -36,8 +36,9 @@ def resolve_input(action, previous):
 
 
 def send(step):
+    EVIDENCE.mkdir(parents=True, exist_ok=True)
     previous = state()
-    command = {"id": previous["id"] + 1, "label": step["label"],
+    command = {"id": previous["id"] + 1, "label": step["label"], "capture": step.get("capture") is True,
                "inputs": [resolve_input(a, previous) for a in step.get("inputs", [])]}
     temporary = CONSOLE / "command.tmp"
     temporary.write_text(json.dumps(command))
@@ -128,6 +129,7 @@ def perform(args):
 
 
 def launch(args):
+    EVIDENCE.mkdir(parents=True, exist_ok=True)
     log = (EVIDENCE / f"native-launch-{time.time_ns()}.log").open("w")
     process = subprocess.Popen([
         str(ROOT / ".toolchain/Godot.app/Contents/MacOS/Godot"), "--path", "game",
@@ -148,7 +150,7 @@ def launch(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--step", help="JSON action with label, inputs and expected states")
+    group.add_argument("--step", help="JSON action with label, inputs, expected states and optional capture:true screenshot")
     group.add_argument("--replay", help="Scenario JSON; game must already be running")
     parser.add_argument("--launch", action="store_true", help="Own a native game process and wait for its boot frame")
     parser.add_argument("--stay-open", action="store_true", help="Keep this owned native process for subsequent player actions")

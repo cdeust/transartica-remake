@@ -1,0 +1,65 @@
+{
+  "session": "01a12a79-bfcf-7221-8c84-9901b1ccb338",
+  "registered_directory": ".cache/disk-hygiene-8liikow7",
+  "moves": [
+    {
+      "from": "reference-private/artwork-da-20261010",
+      "to": ".cache/disk-hygiene-8liikow7/retired-studies/artwork-da-20261010",
+      "status": "temporary-retired-study",
+      "bytes_copied": 0
+    },
+    {
+      "from": "reference-private/artwork-da-20261011",
+      "to": ".cache/disk-hygiene-8liikow7/retired-studies/artwork-da-20261011",
+      "status": "temporary-retired-study",
+      "bytes_copied": 0
+    },
+    {
+      "from": "output/imagegen/map-integration-20261010",
+      "to": ".cache/disk-hygiene-8liikow7/retired-studies/map-integration-20261010",
+      "status": "temporary-retired-study",
+      "bytes_copied": 0
+    },
+    {
+      "from": ".worktrees/map-object-renderer/tasks/evidence/world-artwork-review",
+      "to": ".cache/disk-hygiene-8liikow7/native-captures-worktree/world-artwork-review",
+      "status": "temporary-native-artwork-review-unvalidated",
+      "bytes_copied": 0
+    },
+    {
+      "from": "reference-private/artwork-world-20261011/review.html",
+      "to": ".cache/disk-hygiene-8liikow7/retired-studies/macro-review/review.html",
+      "status": "temporary-retired-macro-review",
+      "bytes_copied": 0
+    },
+    {
+      "from": "reference-private/artwork-world-20261011/review-metadata.json",
+      "to": ".cache/disk-hygiene-8liikow7/retired-studies/macro-review/review-metadata.json",
+      "status": "temporary-retired-macro-review",
+      "bytes_copied": 0
+    },
+    {
+      "from": "reference-private/artwork-world-20261011/paintings",
+      "to": ".cache/disk-hygiene-8liikow7/retired-studies/macro-review/paintings",
+      "status": "temporary-retired-macro-review",
+      "bytes_copied": 0
+    }
+  ],
+  "active_paths_unchanged": [
+    "reference-private/artwork-world-20261011",
+    "reference-private/map-scenes",
+    ".worktrees/map-object-renderer/game/assets/travel/terrain/scenes"
+  ],
+  "new_capture_links": [
+    {
+      "path": ".cache/native-play/captures",
+      "target": ".cache/disk-hygiene-8liikow7/native-captures-main",
+      "status": "new-empty-registered-temporary"
+    },
+    {
+      "path": ".worktrees/map-object-renderer/.cache/native-play/captures",
+      "target": ".cache/disk-hygiene-8liikow7/native-captures-worktree",
+      "status": "new-empty-registered-temporary"
+    }
+  ]
+}

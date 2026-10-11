@@ -1,0 +1,83 @@
+{
+  "status": "complete",
+  "time": 1791748441.372361,
+  "files": [
+    {
+      "path": "builds/macos/Transartica.app/Contents/Info.plist",
+      "bytes": 1782,
+      "allocated": 4096,
+      "sha256": "e4e5bb5741292245a86f64a1712d4366b6e8b990ed7ea9284d344edfe7e7499d",
+      "archive_member": "Transartica.app/Contents/Info.plist",
+      "canonical_archive": "builds/Transartica-macOS-spy-fix-20261006.zip",
+      "reason": "extracted build byte-identical to retained ZIP"
+    },
+    {
+      "path": "builds/macos/Transartica.app/Contents/PkgInfo",
+      "bytes": 9,
+      "allocated": 4096,
+      "sha256": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+      "archive_member": "Transartica.app/Contents/PkgInfo",
+      "canonical_archive": "builds/Transartica-macOS-spy-fix-20261006.zip",
+      "reason": "extracted build byte-identical to retained ZIP"
+    },
+    {
+      "path": "builds/macos/Transartica.app/Contents/_CodeSignature/CodeResources",
+      "bytes": 3179,
+      "allocated": 4096,
+      "sha256": "74607aa2ce66c70922500b36a89b6c4706337a2d0f6f0cb6692046e9eafb625e",
+      "archive_member": "Transartica.app/Contents/_CodeSignature/CodeResources",
+      "canonical_archive": "builds/Transartica-macOS-spy-fix-20261006.zip",
+      "reason": "extracted build byte-identical to retained ZIP"
+    },
+    {
+      "path": "builds/macos/Transartica.app/Contents/MacOS/Transartica",
+      "bytes": 206560160,
+      "allocated": 206561280,
+      "sha256": "cf4244568bfeb4bc770ecd1a9181f9cf4f92ed3bf979f01940c279b50d502028",
+      "archive_member": "Transartica.app/Contents/MacOS/Transartica",
+      "canonical_archive": "builds/Transartica-macOS-spy-fix-20261006.zip",
+      "reason": "extracted build byte-identical to retained ZIP"
+    },
+    {
+      "path": "builds/macos/Transartica.app/Contents/Resources/icon.icns",
+      "bytes": 67500,
+      "allocated": 69632,
+      "sha256": "779ff524928785811d6d4c61f47a26491160b1092db9b610e85fcdfd9b2d2b2a",
+      "archive_member": "Transartica.app/Contents/Resources/icon.icns",
+      "canonical_archive": "builds/Transartica-macOS-spy-fix-20261006.zip",
+      "reason": "extracted build byte-identical to retained ZIP"
+    },
+    {
+      "path": "builds/macos/Transartica.app/Contents/Resources/PrivacyInfo.xcprivacy",
+      "bytes": 229,
+      "allocated": 4096,
+      "sha256": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+      "archive_member": "Transartica.app/Contents/Resources/PrivacyInfo.xcprivacy",
+      "canonical_archive": "builds/Transartica-macOS-spy-fix-20261006.zip",
+      "reason": "extracted build byte-identical to retained ZIP"
+    },
+    {
+      "path": "builds/macos/Transartica.app/Contents/Resources/Transartica.pck",
+      "bytes": 136266700,
+      "allocated": 136269824,
+      "sha256": "b72209ab9fbcfa82fa171a7bb0896f18d5cebb80131adf6eda67eba30cf0f537",
+      "archive_member": "Transartica.app/Contents/Resources/Transartica.pck",
+      "canonical_archive": "builds/Transartica-macOS-spy-fix-20261006.zip",
+      "reason": "extracted build byte-identical to retained ZIP"
+    },
+    {
+      "path": "builds/macos/Transartica.command",
+      "bytes": 433,
+      "sha256": "aad1f39a339ec4ef3b06946c980f18f7ac299378a6cdc3d8d4e5d34adbb01ffd",
+      "reason": "generated launcher for removed duplicate app"
+    }
+  ],
+  "archives_retained_sha256": {
+    "builds/Transartica-macOS-spy-fix-20261006.zip": "f29d89e283f5b8cf3d42145fed75d780aa9e4534867c592f3c2b2433441df17d"
+  },
+  "removed_files": 8,
+  "removed_bytes": 342899992,
+  "lsof_checked_before_deletion": true,
+  "archive_members_reverified_after_deletion": true,
+  "note": "Empty-directory cleanup initially stopped at the generated launcher; that obsolete launcher was then removed."
+}

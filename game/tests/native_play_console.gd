@@ -2,7 +2,7 @@ extends SceneTree
 # MIT. Validation console: normal scene, live cadence, viewport player inputs.
 # source: owner3Oct continuous-game correction and recorded native actions.
 const DIRECTORY := "res://../.cache/native-play/"
-const EVIDENCE := "res://../tasks/validation/continuous-play-20261003/"
+const EVIDENCE := "res://../.cache/native-play/captures/"
 var app
 var busy := false
 var last_id := -1
@@ -23,7 +23,7 @@ func _start() -> void:
 	app.world_view.gui_input.connect(_trace_pointer)
 	await process_frame
 	await process_frame
-	await _record(last_id, "normal-scene-boot")
+	await _record(last_id, "normal-scene-boot", true)
 	process_frame.connect(_poll)
 
 func _poll() -> void:
@@ -68,7 +68,7 @@ func _command(command: Dictionary) -> void:
 			event.pressed = false
 			root.push_input(event, true)
 		await process_frame
-	await _record(int(command.id), command.get("label", "observe"))
+	await _record(int(command.id), command.get("label", "observe"), _capture_requested(command))
 	busy = false
 	if command.get("quit", false): quit()
 
@@ -88,13 +88,21 @@ func _key(code: int, unicode := 0) -> void:
 		root.push_input(event,true)
 		await process_frame
 
-func _record(id: int, label: String) -> void:
+static func _capture_requested(command: Dictionary) -> bool:
+	return command.get("capture") is bool and command.capture
+
+func _capture_frame(prefix: String, requested: bool) -> void:
+	# Owner6Oct disk-retention choice: screenshots are explicit, independent of labels.
+	if requested: _write_capture(prefix)
+
+func _write_capture(prefix: String) -> void:
+	RenderingServer.force_draw(false)
+	root.get_texture().get_image().save_png(prefix + ".png")
+
+func _record(id: int, label: String, capture: bool = false) -> void:
 	await process_frame
 	var prefix := EVIDENCE + "%03d" % id
-	# Observations poll live state; player actions retain rendered evidence.
-	if not label.begins_with("observe-"):
-		RenderingServer.force_draw(false)
-		root.get_texture().get_image().save_png(prefix + ".png")
+	_capture_frame(prefix, capture)
 	var controls: Array = []
 	_visible_controls(app, controls)
 	var lag: float = maxf(0.0,app.journey.distance_travelled()-app.world_view._visual_arc)
@@ -173,10 +181,9 @@ func _frame_diagnostics(poses: Array) -> Array:
 		result.append(item)
 	return result
 
-func _capture_zero(prefix: String, id: int, rendered: int) -> void:
+func _capture_zero(_prefix: String, id: int, rendered: int) -> void:
 	if rendered != 0 or _screen() != "map": return
-	RenderingServer.force_draw(false)
-	root.get_texture().get_image().save_png(prefix+".png")
+	# Preserve diagnostic state even when no screenshot was requested.
 	var snapshot := FileAccess.open(DIRECTORY+"zero-poses-%d.json" % id,FileAccess.WRITE)
 	snapshot.store_string(JSON.stringify({"journey":app.journey.snapshot(),"network":app.network.snapshot()},"\t"))
 

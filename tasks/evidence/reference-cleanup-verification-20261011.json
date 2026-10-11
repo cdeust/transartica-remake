@@ -1,0 +1,20 @@
+{
+  "deleted_paths_checked": 40845,
+  "deleted_paths_still_present": [],
+  "private_manifest_files_checked": 96,
+  "private_manifest_mismatches": [],
+  "active_candidate_assets_checked": 21,
+  "active_candidate_asset_mismatches": [],
+  "required_observations_missing": [],
+  "source_map_sha256": "8e1067619b254d57717348fefedc1b5013eb1d7ba23200a815e36f9b856d811a",
+  "source_map_matches_candidate": true,
+  "free_bytes": 29490470912,
+  "worktrees": 10,
+  "game_processes_started_for_cleanup": 0,
+  "headless_protocol_test": {
+    "exit": 0,
+    "aborted": null,
+    "peak_rss_kib": 115792,
+    "elapsed_s": 0.999
+  }
+}

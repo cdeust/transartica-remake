@@ -1,0 +1,21 @@
+{
+  "files": [
+    {
+      "source": "tasks/validation/continuous-play-20261003/actions.jsonl",
+      "retained": "tasks/validation/continuous-play-20261003/actions.jsonl.gz",
+      "original_bytes": 561000338,
+      "compressed_bytes": 50706882,
+      "original_sha256": "b136043a24803ed16bb9e21de61e3e33775afa739dccb97e44ec6f6c56303cba",
+      "roundtrip_verified": true
+    },
+    {
+      "source": "tasks/validation/continuous-play-20261003/native-b014725-playthrough.log",
+      "retained": "tasks/validation/continuous-play-20261003/native-b014725-playthrough.log.gz",
+      "original_bytes": 74065261,
+      "compressed_bytes": 659188,
+      "original_sha256": "159e64bf80f0d54ea94dba8b0ebd5dce16e126662eb2d6fb20be02065365b9a4",
+      "roundtrip_verified": true
+    }
+  ],
+  "net_bytes_removed": 583699529
+}

@@ -1,0 +1,12 @@
+Command: python3 -B -m unittest discover -s tools -p test_native_capture_policy.py -v
+test_commands_log_state_and_archive_f5_without_implicit_png (test_native_capture_policy.CapturePolicyTest.test_commands_log_state_and_archive_f5_without_implicit_png) ... ok
+test_default_evidence_is_project_temporary (test_native_capture_policy.CapturePolicyTest.test_default_evidence_is_project_temporary) ... ok
+test_godot_and_python_share_the_capture_directory (test_native_capture_policy.CapturePolicyTest.test_godot_and_python_share_the_capture_directory) ... ok
+test_launch_creates_capture_directory_before_its_log (test_native_capture_policy.CapturePolicyTest.test_launch_creates_capture_directory_before_its_log) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.015s
+
+OK
+
+Exit: 0

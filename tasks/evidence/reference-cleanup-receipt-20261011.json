@@ -1,0 +1,19 @@
+{
+  "status": "complete",
+  "started": 1791747480.518496,
+  "before_free_bytes": 27788800000,
+  "planned": {
+    "files": 40845,
+    "bytes": 1132006188,
+    "allocated_bytes": 1208418304
+  },
+  "removed_files": 40845,
+  "removed_bytes": 1132006188,
+  "removed_allocated_bytes": 1208418304,
+  "details": "reference-cleanup-deletions-20261011.jsonl.gz",
+  "open_file_check": "lsof -nP -Fpn; no selected file open",
+  "protected": "All named replay files, source saves, tracked numeric observations and cited Markdown observations retained; 47128 explicitly retained after independent review.",
+  "finished": 1791747564.680419,
+  "after_free_bytes": 29020278784,
+  "details_sha256": "15599ba886ab5d9b1f0e4153c3eb27c24546d4d6e23deb9be1008927b0224cf4"
+}

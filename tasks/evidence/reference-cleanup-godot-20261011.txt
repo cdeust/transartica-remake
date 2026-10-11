@@ -1,0 +1,4 @@
+Godot Engine v4.5.stable.official.876b29033 - https://godotengine.org
+
+PASS: native screenshot branch is explicit; observers may request capture; boot retains one
+{"exit": 0, "aborted": null, "peak_rss_kib": 115792, "rss_scope": "owned_process_group", "elapsed_s": 0.999}
