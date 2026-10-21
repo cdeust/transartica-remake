@@ -14,7 +14,16 @@ retrouve exactement le résultat du parcours continu : 10 657 cycles source,
 Voir [les preuves de campagne](tasks/validation/campaign-route-cleanup-20261001.md)
 et [la couverture actuelle](tasks/validation/completion-matrix-20261001.md).
 
-## Jouer localement
+## Runtime C++ autonome
+
+Le port SDL2 est dans [native-game](native-game/README.md). Il est compilé et
+jouable sur le Mac de validation avec les ressources privées. Les vingt suites
+CTest passent et neuf scénarios ont été exercés dans l'interface réelle.
+La campagne complète par joueur et les lancements Windows/Linux restent à valider.
+Le [rapport de publication](tasks/evidence/cpp-publication-20261021.md) précise
+les corrections graphiques et les données nécessaires, exclues de Git.
+
+## Jouer localement avec la version Godot
 
 Depuis les sources sur ce Mac : `game/run_local.sh`.
 L’introduction mène aux options ; START commence la partie. Les cinq plaques

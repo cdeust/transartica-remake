@@ -1,0 +1,18 @@
+NATIVE runtime=SDL2 renderer=metal game="<local-project>/disk-hygiene-2ncnxx6p/Transartica.app/Contents/Resources/game" artwork="<local-project>/disk-hygiene-2ncnxx6p/Transartica.app/Contents/Resources/game/assets/travel/artwork/world-hd"
+STATE event=boot cycle=0 speed=0 regulator=0 fuel=2000,500 rates=0,0 heat=0 reserve=0 position=11.5,62 heading=6 phase=0 ticks=0 brake=0 paused=1 blocked=0 stop="" calendar=1,0,0 factor=1
+AUDIO event=boot driver=coreaudio rate=44100 music_cursor=0 music_frames=0 music_playing=0 finale_cursor=0 resident_bytes=0 error=""
+STATE event=input cycle=0 speed=0 regulator=0 fuel=2000,500 rates=0,0 heat=0 reserve=0 position=11.5,62 heading=6 phase=0 ticks=0 brake=0 paused=0 blocked=0 stop="" calendar=1,0,0 factor=1
+AUDIO event=input driver=coreaudio rate=44100 music_cursor=0 music_frames=2016000 music_playing=1 finale_cursor=0 resident_bytes=16128000 error=""
+STATE event=input cycle=0 speed=0 regulator=0 fuel=2000,500 rates=0,0 heat=0 reserve=0 position=11.5,62 heading=6 phase=0 ticks=0 brake=0 paused=0 blocked=0 stop="" calendar=1,0,0 factor=1
+AUDIO event=input driver=coreaudio rate=44100 music_cursor=6144 music_frames=2016000 music_playing=1 finale_cursor=0 resident_bytes=16128000 error=""
+CAPTURE "<local-project>/disk-hygiene-2ncnxx6p/captures/native-1.png"
+STATE event=cycle cycle=1 speed=0 regulator=0 fuel=2000,500 rates=0,0 heat=0 reserve=0 position=11.5,62 heading=6 phase=0 ticks=0 brake=0 paused=0 blocked=0 stop="" calendar=1,0,3 factor=1
+STATE event=cycle cycle=2 speed=0 regulator=0 fuel=2000,500 rates=0,0 heat=0 reserve=0 position=11.5,62 heading=6 phase=0 ticks=0 brake=0 paused=0 blocked=0 stop="" calendar=1,0,6 factor=1
+STATE event=cycle cycle=3 speed=0 regulator=0 fuel=2000,500 rates=0,0 heat=0 reserve=0 position=11.5,62 heading=6 phase=0 ticks=0 brake=0 paused=0 blocked=0 stop="" calendar=1,0,9 factor=1
+STATE event=cycle cycle=4 speed=0 regulator=0 fuel=2000,500 rates=0,0 heat=0 reserve=0 position=11.5,62 heading=6 phase=0 ticks=0 brake=0 paused=0 blocked=0 stop="" calendar=1,0,12 factor=1
+STATE event=cycle cycle=5 speed=0 regulator=0 fuel=2000,500 rates=0,0 heat=0 reserve=0 position=11.5,62 heading=6 phase=0 ticks=0 brake=0 paused=0 blocked=0 stop="" calendar=1,0,15 factor=1
+STATE event=cycle cycle=6 speed=0 regulator=0 fuel=2000,500 rates=0,0 heat=0 reserve=0 position=11.5,62 heading=6 phase=0 ticks=0 brake=0 paused=0 blocked=0 stop="" calendar=1,0,18 factor=1
+STATE event=cycle cycle=7 speed=0 regulator=0 fuel=2000,500 rates=0,0 heat=0 reserve=0 position=11.5,62 heading=6 phase=0 ticks=0 brake=0 paused=0 blocked=0 stop="" calendar=1,0,21 factor=1
+STATE event=quit cycle=7 speed=0 regulator=0 fuel=2000,500 rates=0,0 heat=0 reserve=0 position=11.5,62 heading=6 phase=0 ticks=0 brake=0 paused=0 blocked=0 stop="" calendar=1,0,21 factor=1
+AUDIO event=quit driver=coreaudio rate=44100 music_cursor=348160 music_frames=2016000 music_playing=1 finale_cursor=0 resident_bytes=16128000 error=""
+{"exit": 0, "aborted": null, "peak_rss_kib": 194608, "rss_scope": "owned_process_group", "elapsed_s": 64.518}

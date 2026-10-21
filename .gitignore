@@ -1,4 +1,4 @@
-/reference-private/
+/reference-private
 __pycache__/
 *.pyc
 
@@ -6,8 +6,13 @@ __pycache__/
 /.cache/
 /builds/
 /game/.godot/
-/game/private-data/
+/game/private-data
 /game/save/
 
 .DS_Store
 /.claude/session-cache.json
+
+# Private native runtime bundles, selected world paintings and UI captures.
+/output/standalone-native*/
+/game/assets/travel/artwork/world-hd/region-*.png
+/tasks/standalone-cpp-20261018/interface-captures/

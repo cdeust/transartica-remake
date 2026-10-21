@@ -1,0 +1,6 @@
+..................
+----------------------------------------------------------------------
+Ran 18 tests in 0.077s
+
+OK
+{"exit": 0, "aborted": null, "peak_rss_kib": 144, "rss_scope": "owned_process_group", "elapsed_s": 0.281}

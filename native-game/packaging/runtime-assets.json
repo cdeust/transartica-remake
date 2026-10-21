@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "source": "native-game/{app,screens,view,audio,economy,campaign}; private protocol: game/scripts/public_data_pack.gd",
+  "private_files": ["CARTE.FIC", "villes-decoded.data", "commerce.json", "campaign.json", "textek.json", "overview-geometry.json", "startup.json", "finale.wav", "audio/manifest.json"],
+  "audio_scripts": ["berta", "present", "scene1", "scene3", "scene4", "son", "train", "wdecor"],
+  "assets": [
+    "boudoir/captain-boudoir.png", "boudoir/general-quarters.png",
+    "boudoir/cutouts/boudoir-stoup.png", "boudoir/cutouts/boudoir-kolotov.png", "boudoir/cutouts/boudoir-revolver.png", "boudoir/cutouts/boudoir-book.png",
+    "boudoir/cutouts/quarters-stoup.png", "boudoir/cutouts/quarters-operator.png", "boudoir/cutouts/quarters-officer.png", "boudoir/cutouts/quarters-map.png",
+    "engine-room/background.png", "engine-room/fire.png", "engine-room/stokers.png", "engine-room/instruments.png", "engine-room/engineer-mask.png", "engine-room/interface-mask.png",
+    "interface/reception.png", "interface/original-panel-v2.png", "interface/panel-icons.png", "interface/panel-launcher.png",
+    "interface/inventory-frame.png", "interface/launcher.png", "interface/launcher-rocket.png", "interface/mort-earth.png", "interface/world-chart-frame.png",
+    "cities/goods-icons.json", "cities/city-information.png", "cities/city-trading-station.png", "cities/city-industrial-workshop.png",
+    "cities/city-garrison.png", "cities/city-mammoth-fair.png", "cities/city-slave-market.png",
+    "campaign/urga.png", "campaign/oslo.png", "campaign/mausoleum.png", "campaign/sun-overcast.png", "campaign/sun-restored.png",
+    "campaign/slope.png", "campaign/whale.png", "campaign/wolf-ambush.png", "campaign/mole-ambush.png", "campaign/startup.png", "campaign/finale-effects.png",
+    "world-events/mine.png", "world-events/nomads.png", "world-events/mammoth-hunt.png", "world-events/track-works.png",
+    "combat/background.png", "combat/wagon-01.png", "combat/train-master.png", "combat/wagons-master-04-10.png",
+    "combat/wagons-master-10-17.png", "combat/wagons-master-17-25.png", "combat/trooper-rig.png", "combat/trooper-poses.png", "combat/mammoth-poses.png",
+    "weapons/gatling.png", "effects/living-atlas.json", "travel/rail-track-kit.png", "travel/vehicles-overhead.json", "travel/locomotive-hero.png",
+    "travel/terrain/world-artwork.png", "travel/terrain/landmarks-master.png", "travel/artwork/world-hd/manifest.json",
+    "travel/terrain/underground-mouths.json", "travel/terrain/underground-mouths.png",
+    "travel/terrain/scenes/obstacles-native.json", "travel/terrain/scenes/bridges-only-v1.png"
+  ],
+  "atlas_manifests": ["cities/goods-icons.json", "effects/living-atlas.json", "travel/vehicles-overhead.json"]
+}
