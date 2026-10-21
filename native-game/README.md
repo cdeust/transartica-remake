@@ -2,55 +2,58 @@
 
 Le nouveau programme ne charge ni Godot, ni GDScript, ni GDExtension.
 Les anciens fichiers restent des références de règles et de données.
-Le runtime C++ est compilé et jouable sur le Mac de validation avec les
-ressources privées. Le paquet final a été lancé après les corrections graphiques
+Le runtime C++ inclut désormais ses ressources dans la sortie de compilation.
+Le code et les données nécessaires sont suivis dans le dépôt. Le paquet final a été lancé après les corrections graphiques
 du 21 octobre 2026. Une campagne complète terminée par un joueur reste à vérifier.
 
 ## Construire
 
-Prérequis de compilation : C++20, CMake >=3.20 et pkg-config. Installer aussi
+Prérequis de compilation : C++20, CMake >=3.20, Python >=3.10 et pkg-config. Installer aussi
 SDL2 >=2.0.18, libpng, FreeType, json-c et OpenSSL Crypto.
 Sur le Mac de validation, les bibliothèques proviennent de Homebrew.
 
 ```sh
-cmake -S native-game -B CHEMIN_BUILD -DCMAKE_BUILD_TYPE=Release
-cmake --build CHEMIN_BUILD --parallel 1
-ctest --test-dir CHEMIN_BUILD --verbose --parallel 1
-CHEMIN_BUILD/Transartica
+cmake -S native-game -B build/native -DCMAKE_BUILD_TYPE=Release
+cmake --build build/native --parallel 1
+ctest --test-dir build/native --verbose --parallel 1
+build/native/Transartica
 ```
 
 Créer/enregistrer le répertoire de build selon la procédure disk-hygiene du
 projet. Sur la machine de travail, les vérifications sont sérialisées et bornées
 à1Gio par le garde local du projet.
 
-Le dépôt publié contient le code ; les assets historiques et les jeux de données
-dérivés restent privés. La compilation seule ne fournit pas un jeu jouable.
-Pour lancer le programme et les tests dépendant des données, disposer du jeu de
-ressources privé du projet dans `game/private-data/` et `game/assets/`.
-L'inventaire [runtime-assets.json](packaging/runtime-assets.json) précise les
-entrées nécessaires ; les manifests référencent aussi leurs images et sons.
-Conserver ces dépendances et leurs empreintes, notamment le manifest d'édition
-`game/assets/interface/original-data-manifest.json`. Une image disque du jeu
-historique ne remplace pas directement ce jeu de données déjà décodé.
+CMake copie automatiquement la sélection de `game/assets/` et `game/data/`
+dans `build/native/resources/game/`, avec les dépendances des manifests.
+La police et les notices sont livrées dans le même dossier de ressources.
+L'inventaire [runtime-assets.json](packaging/runtime-assets.json) définit cette
+sélection. Un fichier nécessaire absent ou une empreinte d'édition incorrecte
+fait échouer la construction. Les fichiers modifiés sont recopiés au build suivant.
 
-Pour retrouver exactement le paquet local validé, fournir également sa version
-privée de `game/assets/travel/terrain/world-artwork.png`. Le dépôt conserve
-l’aperçu public déjà présent sur main.
+`build/native/Transartica` trouve `resources/` à côté de son exécutable,
+indépendamment du répertoire courant. Aucun chemin du checkout n'est compilé
+comme solution de repli. Le dossier de build livré peut donc être déplacé avec
+ses ressources. Les bibliothèques indiquées ci-dessus restent nécessaires ; le
+[packager macOS](packaging/README.md) peut les inclure dans un `.app`.
 
-Les chemins de développement sont compilés par CMake. Le programme accepte
-`--game-dir`, `--artwork-dir` et `--font` pour les remplacer. La police par défaut
-est `native-game/assets/fonts/NotoSans.ttf`, distribuée sous OFL. Les tests CTest
-utilisent les chemins du checkout définis dans `CMakeLists.txt` ; les options du
-programme ne changent pas ces chemins.
+```sh
+cmake --install build/native --prefix output/native-install
+output/native-install/bin/Transartica
+```
 
-Le [guide du paquet macOS](packaging/README.md) décrit la construction du `.app`
-privé à partir du binaire compilé. Le raccourci local `native-game/launch.command`
-lance `output/standalone-native-graphics-20261021/Transartica.app`. Ce paquet
-contient ses ressources et ses dépendances ; il n'est pas publié avec le source.
-Sur un nouveau clone, utiliser le binaire construit ci-dessus avec les ressources
-privées, ou fabriquer un paquet selon ce guide avant d'adapter le raccourci.
-Les lancements Windows et Linux restent à vérifier.
-CARTE.FIC et chaque peinture sont authentifiés par SHA256 au démarrage.
+L'installation contient `bin/Transartica` et `bin/resources/`. Déplacer ces deux
+éléments ensemble. `native-game/launch.command` utilise `build/native` ; définir
+`TRANSARTICA_BUILD_DIR` pour un autre dossier de compilation. Le programme accepte
+`--game-dir`, `--artwork-dir` et `--font` pour une sélection explicite de ressources.
+Les CTest utilisent la copie livrée par le build et les fixtures suivies dans
+`native-game/tests/fixtures/`.
+
+Le code utilise MIT et Noto Sans utilise OFL. L'inclusion des assets historiques
+ne modifie pas leur provenance ou leurs licences. Les notices accompagnent la
+sortie de build. CARTE.FIC et chaque peinture sont authentifiés par SHA256 au
+lancement. Les manifests historiques conservent leurs octets et leurs empreintes ;
+leurs anciens chemins de données sont résolus vers `game/data/` par le runtime natif.
+Les chemins du moteur Godot historique restent distincts.
 
 ## Commandes
 
@@ -73,8 +76,7 @@ leurs propres commandes. La carte comporte zoom et déplacement manuel, avec
 retour au cadrage du train. Le défilement à la souris reste non validé dans les
 essais conservés, l'outil de pilotage n'ayant pas trouvé de fenêtre exploitable.
 
-En développement, les sauvegardes vont dans `output/standalone-native/saves`.
-Le paquet utilise le dossier de préférences utilisateur fourni par SDL.
+Les sauvegardes vont dans le dossier de préférences utilisateur fourni par SDL.
 L'option `--save-dir` permet de choisir un autre dossier.
 Noms normalisés sur huit caractères ; extension native. F6 ouvre les options,
 R redémarre une nouvelle partie hors des champs de saisie.
@@ -89,7 +91,7 @@ le format interne du noyau, qui ne suffit pas à charger une partie complète.
 ## Portée et validation
 
 État publié et limites : [rapport du 21 octobre 2026](../tasks/evidence/cpp-publication-20261021.md).
-Les plans détaillés et les preuves privées restent conservés dans le projet.
+Les plans détaillés et les preuves de validation restent conservés dans le projet.
 
 | Modules écrits | Portée actuelle |
 | --- | --- |
@@ -100,7 +102,9 @@ Les plans détaillés et les preuves privées restent conservés dans le projet.
 | `launcher`, `audio`, autres écrans | Lance-missiles et continuation sauvegardée ; canaux audio et scores, introduction, aide et préférences clavier. |
 | `app` | Composition des modèles et écrans, archive complète et commandes de sauvegarde. |
 
-Les 20 suites CTest passent après la dernière correction graphique. Neuf
+La validation graphique du 21 octobre 2026 a fait passer les 20 suites CTest
+alors présentes. Le test `native_resource_staging` couvre maintenant la livraison
+des ressources, dont les résultats sont consignés dans le rapport de publication. Neuf
 scénarios ont été exercés dans l'interface réelle. La revue couvre les 33 raccords
 de carte ; les corrections comprennent les UV de V4/H2, le masquage du train
 souterrain et la continuité de Turin. Le test analytique du raccord passe avec
@@ -112,8 +116,7 @@ les scènes dans l'application. Ces états préparés ne prouvent pas une campag
 complète jouée jusqu'à la victoire. La campagne complète par joueur et les
 lancements Windows/Linux restent non validés.
 
-Code MIT ; police Noto Sans sous OFL (licence jointe). Assets historiques et
-jeux de données dérivés restent privés. Références de bibliothèques :
+Code MIT ; police Noto Sans sous OFL (licence jointe). Références de bibliothèques :
 https://wiki.libsdl.org/SDL2/README-cmake ;
 https://freetype.org/freetype2/docs/tutorial/step1.html ;
 https://docs.openssl.org/master/man3/EVP_DigestInit/ .

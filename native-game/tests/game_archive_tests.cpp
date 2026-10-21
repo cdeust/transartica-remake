@@ -37,7 +37,7 @@ struct Fixture {
     explicit Fixture(const std::filesystem::path& path):game(core),
         // Owner-provided allocation limit, 1GiB. Root serializes all execution.
         audio(path,{false,1073741824,0},31) {
-        std::string error;require(core.load_world(path/"private-data/CARTE.FIC",error),error);
+        std::string error;require(core.load_world(path/"data/CARTE.FIC",error),error);
         require(game.load(path,error),error);reset();
     }
     void reset() {

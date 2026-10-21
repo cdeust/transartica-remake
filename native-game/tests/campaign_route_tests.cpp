@@ -108,7 +108,7 @@ public:
     Replay(const fs::path& directory,const fs::path& log_path,std::size_t budget)
         :game(core),audio(directory,{false,1073741824,0},1),log(log_path),limit(budget) {
         require(bool(log),"Cannot open route ledger");std::string error;
-        bool good=core.load_world(directory/"private-data/CARTE.FIC",error);require(good,error);
+        bool good=core.load_world(directory/"data/CARTE.FIC",error);require(good,error);
         good=game.load(directory,error);require(good,error);
         game.random.seed(1);game.encounter_random.seed(1);game.visual_random.seed(1);game.reset();
         require(core.journey.position==Cell{12,62}&&core.journey.heading==6

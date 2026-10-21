@@ -81,3 +81,11 @@ cette exigence.
 ## Carte du monde : prochaine passe visuelle, 5 octobre 2026
 
 Le propriétaire demande, après la fin du premier playthrough, une carte du monde à la qualité des visuels des villes. Les paysages doivent s'inspirer des villes alentours et constituer un relief cohérent, en conservant la géographie et les connexions ferroviaires originales. Cette passe est planifiée, pas encore réalisée ; le playthrough reste prioritaire.
+
+## Livraison des ressources, correction du21octobre2026
+
+Le propriétaire demande que les ressources nécessaires au jeu C++ soient
+disponibles dans Git et incluses automatiquement dans la construction.
+Le checkout doit suffire pour construire et lancer le jeu, sans copie depuis
+un autre worktree ni récupération séparée de données. La provenance des
+contenus reste distincte de la licence MIT du nouveau code.

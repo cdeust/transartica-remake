@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Prepare a private relocatable macOS .app from an already validated executable.
+"""Prepare a relocatable macOS .app from an already validated executable.
 
 No build, download or launch. See README.md for source contracts and limitations.
 """
@@ -88,6 +88,11 @@ def validate_artwork_override(manifest: dict, original_artwork: dict, artwork_pr
         raise PackageError("Artwork override may change only the eight PNG identities, not registration or dependencies")
 
 
+def native_data_path(name: str) -> str:
+    # Preserve historical manifest bytes while relocating their recorded paths.
+    return "data/" + name.removeprefix("private-data/") if name.startswith("private-data/") else name
+
+
 def resource_plan(repo: Path, artwork_dir: Path | None = None) -> dict[str, dict]:
     """Exact allowlist plus manifest dependencies; copies contain no import caches."""
     game = repo / "game"
@@ -114,22 +119,22 @@ def resource_plan(repo: Path, artwork_dir: Path | None = None) -> dict[str, dict
         validate_artwork_override(manifest, original_artwork, artwork_prefix)
     config = read_json(HERE / "runtime-assets.json")
     selected: dict[str, dict] = {}
-    private_root = (game / "private-data").resolve(strict=True)
+    data_root = (game / "data").resolve(strict=True)
     original = read_json(game / "assets/interface/original-data-manifest.json")
     if original.get("format") != "transartica-original-data-v1":
         raise PackageError("Original-data edition manifest unavailable")
     edition = {}
     for entry in original["files"]:
-        name = entry["path"]
+        name = native_data_path(entry["path"])
         relative(name)
-        if not name.startswith("private-data/") or name in edition or not re.fullmatch("[0-9a-f]{64}", entry["sha256"]):
+        if not name.startswith("data/") or name in edition or not re.fullmatch("[0-9a-f]{64}", entry["sha256"]):
             raise PackageError("Invalid historical edition inventory")
         edition[name] = entry
 
     def add(name: str, source: str, expected: str | None = None):
         item = relative(name)
         actual = resource_file(name)
-        trusted = private_root if item.parts[0] == "private-data" else game.resolve()
+        trusted = data_root if item.parts[0] == "data" else game.resolve()
         if not actual.is_relative_to(trusted):
             # Authored asset links may point to retained project artwork, never arbitrary files.
             if not actual.is_relative_to(project_scope(repo)):
@@ -142,10 +147,10 @@ def resource_plan(repo: Path, artwork_dir: Path | None = None) -> dict[str, dict
             raise PackageError(f"Artwork identity mismatch: {name}")
         selected.setdefault(name, {"source": str(actual), "sha256": digest, "bytes": actual.stat().st_size,
                                    "reason": source, "edition_verified": entry is not None,
-                                   "classification": "private-game-data"})
+                                   "classification": "game-resource"})
 
-    for name in config["private_files"]:
-        add("private-data/" + name, "runtime private allowlist")
+    for name in config["game_data_files"]:
+        add("data/" + name, "runtime data allowlist")
     for name in config["assets"]:
         add("assets/" + name, "runtime artwork allowlist")
     for name in config["atlas_manifests"]:
@@ -157,18 +162,18 @@ def resource_plan(repo: Path, artwork_dir: Path | None = None) -> dict[str, dict
         background = scene["variants"][0]["background"]
         filename = PurePosixPath(background["image"]).name
         add("assets/travel/artwork/world-hd/" + filename, scene["id"], background["png_sha256"])
-    samples = read_json(game / "private-data/audio/manifest.json")["scripts"]
+    samples = read_json(game / "data/audio/manifest.json")["scripts"]
     for script in config["audio_scripts"]:
         if script not in samples:
             raise PackageError(f"Missing runtime audio script: {script}")
         for sample in samples[script]["samples"].values():
             name = sample["file"]
-            add(name[6:] if name.startswith("res://") else "private-data/audio/" + name, "audio samples:" + script)
-    music_name = "assets/audio/orchestral/music.json" if (game / "assets/audio/orchestral/music.json").is_file() else "private-data/audio/music.json"
+            add(native_data_path(name[6:]) if name.startswith("res://") else "data/audio/" + name, "audio samples:" + script)
+    music_name = "assets/audio/orchestral/music.json" if (game / "assets/audio/orchestral/music.json").is_file() else "data/audio/music.json"
     add(music_name, "audio/resources.cpp soundtrack selection")
     for key, track in read_json(game / music_name)["tracks"].items():
         name = track["file"]
-        add(name[6:] if name.startswith("res://") else "private-data/audio/" + name, "music cue:" + key)
+        add(native_data_path(name[6:]) if name.startswith("res://") else "data/audio/" + name, "music cue:" + key)
     return dict(sorted(selected.items()))
 
 
@@ -347,13 +352,7 @@ def copy_resources(plan: BundlePlan, data: Path):
     for key, files in plan.licenses.items():
         for index, source in enumerate(files):
             copy_file(source, data / "licenses" / key / (str(index) + "-" + source.name))
-    (data / "PRIVATE-DATA-NOTICE.txt").write_text(
-        "PRIVATE LOCAL GAME BUILD. Do not publish this bundle.\n"
-        "The project MIT license covers source code, not historical game data.\n"
-        "Historical assets and full derived datasets remain private.\n"
-        "This software is based in part on the work of the FreeType Team (https://freetype.org).\n"
-        "SDL2 and other libraries are separately licensed; see licenses/.\n"
-        "Ad-hoc signing is local integrity metadata, not notarization or distribution approval.\n", encoding="utf-8")
+    copy_file(plan.repo / "native-game/packaging/RESOURCE-NOTICE.txt", data / "RESOURCE-NOTICE.txt")
     inventory = {name: {k: v for k, v in value.items() if k != "source"} for name, value in plan.resources.items()}
     (data / "resource-inventory.json").write_text(json.dumps(inventory, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
@@ -419,9 +418,9 @@ def sign_and_receipt(plan: BundlePlan, stage: Path, destinations: dict, patched:
             raise PackageError(f"Bundle still has an external link: {path}")
         if path.is_file():
             files[path.relative_to(stage).as_posix()] = {"sha256": sha(path), "bytes": path.stat().st_size}
-    receipt = {"format": "transartica-private-native-macos-v1", "platform": platform.platform(),
+    receipt = {"format": "transartica-native-macos-v2", "platform": platform.platform(),
                "source_executable_sha256": plan.graph[plan.executable]["sha256"], "architectures": plan.graph[plan.executable]["architectures"],
-               "private": True, "runtime_tested": False, "codesign_verified": True, "files": files,
+               "resource_distribution": "included", "runtime_tested": False, "codesign_verified": True, "files": files,
                "macho": closed, "dependency_sources": {str(p): r["sha256"] for p, r in plan.graph.items()}}
     return receipt
 
@@ -460,7 +459,7 @@ def main() -> int:
     parser.add_argument("--repo", type=Path, default=HERE.parents[1])
     parser.add_argument("--binary", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--artwork-dir", type=Path, help="Private in-project world-hd candidate: same manifest registration and eight PNGs")
+    parser.add_argument("--artwork-dir", type=Path, help="In-project world-hd candidate: same manifest registration and eight PNGs")
     parser.add_argument("--license-map", type=Path, help="JSON: formula/name -> array of complete local license text paths")
     parser.add_argument("--plan", action="store_true", help="Read and hash only; do not copy, patch or sign")
     args = parser.parse_args()

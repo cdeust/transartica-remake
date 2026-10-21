@@ -1,0 +1,5497 @@
+{
+  "version": 1,
+  "scripts": {
+    "berta": {
+      "samples": {
+        "0": {
+          "file": "berta-0.wav",
+          "kind": 1,
+          "frequency_khz": 5,
+          "samples": 496,
+          "sha256": "8b6dc12049ecbaa82973815b6b6d7abcb7c30ddf0d6b862e0fd91fd2a4e3f603"
+        },
+        "1": {
+          "file": "berta-1.wav",
+          "kind": 1,
+          "frequency_khz": 4,
+          "samples": 19972,
+          "sha256": "da75a7fdeb9fc6c9e00259ce06fb5c24d5927b60c57777999d86d38a9cd10d3d"
+        }
+      },
+      "cues": [
+        {
+          "offset": 1430,
+          "end": 1441,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 1431,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 1433,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 1435,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 1437,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 1439,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 1384,
+          "end": 1395,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 1385,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 1387,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 1389,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 1391,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 1393,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                5
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 1396,
+          "end": 1407,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 1397,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 1399,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                101
+              ]
+            },
+            {
+              "offset": 1401,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 1403,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 1405,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "bojeu": {
+      "samples": {
+        "0": {
+          "file": "bojeu-0.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 8546,
+          "sha256": "1fce0415535c24c7675a61d6af4fbd0c45b3f4aae6821579407b9175078fb30f"
+        },
+        "1": {
+          "file": "bojeu-1.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 8728,
+          "sha256": "cd17762d42ac87093a1f6808c9940a667f8f48512e0d91c0adbcc577365509dd"
+        },
+        "2": {
+          "file": "bojeu-2.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 10506,
+          "sha256": "8193344b40450b5794debe1a08b94a31761a1b6004bc17f3ad0f8fd67b2e27bc"
+        },
+        "3": {
+          "file": "bojeu-3.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 12842,
+          "sha256": "beb67e3246d2dacce93d5a1c6af9eb4c89322ab9d8454edfcd748de0dc768b64"
+        },
+        "4": {
+          "file": "bojeu-4.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 8976,
+          "sha256": "6fd1ab47ebefe277cc0a548241f6578f4f69c6e564213b0f2f0ae9c7ed783dd1"
+        },
+        "5": {
+          "file": "bojeu-5.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 16226,
+          "sha256": "3ee61bd3243e3ad45d50a339fa162990dced44829d731e78fc2cfbe98b3d8243"
+        },
+        "6": {
+          "file": "bojeu-6.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 13036,
+          "sha256": "737f2e4f3c2a87d7365f3ef6a98a5e14c3667cecf862bd04f9293b8407759743"
+        },
+        "7": {
+          "file": "bojeu-7.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 14364,
+          "sha256": "ca9dc62ae94d0d98e0092e3bf201407644aeeb8e9958c3f3a88a80db15cd71ba"
+        },
+        "8": {
+          "file": "bojeu-8.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 7144,
+          "sha256": "8c0c9dd05b054a2682452f0ad6d3dbf99fcbaa5c70dc78a06ab93c810dfdc9b8"
+        },
+        "9": {
+          "file": "bojeu-9.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 6190,
+          "sha256": "33506ae5ff966f9e2591c8bdc6610a826f12c3687f791a727e2ac1c04ae669a9"
+        },
+        "10": {
+          "file": "bojeu-10.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 4448,
+          "sha256": "240173a76b8e84400d3b9337c9f3ca022ebe91484b9f8690b0ed44a512a0d3cd"
+        },
+        "11": {
+          "file": "bojeu-11.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 18680,
+          "sha256": "d911eb927ed184e3ee68806cba65f949ff3bb62654cc82f0a128afbb87820475"
+        },
+        "12": {
+          "file": "bojeu-12.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 9890,
+          "sha256": "df88e9a869a61db7aaffdc4ec5c8d9bbc2a964fb4637f2549312710fe15bb046"
+        }
+      },
+      "cues": [
+        {
+          "offset": 29,
+          "end": 36,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 30,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                16
+              ]
+            },
+            {
+              "offset": 32,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 34,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 56,
+          "end": 63,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 57,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                16
+              ]
+            },
+            {
+              "offset": 59,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                16
+              ]
+            },
+            {
+              "offset": 61,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 111,
+          "end": 126,
+          "code": 149,
+          "name": "cmusic",
+          "args": [
+            {
+              "offset": 112,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 114,
+              "code": 30,
+              "name": "omainb",
+              "args": [
+                25934
+              ]
+            },
+            {
+              "offset": 117,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                32
+              ]
+            },
+            {
+              "offset": 119,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 121,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                32000
+              ]
+            },
+            {
+              "offset": 124,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 92,
+          "end": 107,
+          "code": 149,
+          "name": "cmusic",
+          "args": [
+            {
+              "offset": 93,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                13
+              ]
+            },
+            {
+              "offset": 95,
+              "code": 30,
+              "name": "omainb",
+              "args": [
+                25934
+              ]
+            },
+            {
+              "offset": 98,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                32
+              ]
+            },
+            {
+              "offset": 100,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 102,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                32000
+              ]
+            },
+            {
+              "offset": 105,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "bojeu2": {
+      "samples": {
+        "0": {
+          "file": "bojeu2-0.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 8546,
+          "sha256": "6a1b285bbbda9e945867bb432ded8e97c63c8762b57f3c09e87366875d70ed3f"
+        },
+        "1": {
+          "file": "bojeu2-1.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 8728,
+          "sha256": "702aa450f82635fb4a109735e93e84d5fc1d261ff9783edc545fbe4e906891c4"
+        },
+        "2": {
+          "file": "bojeu2-2.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 10506,
+          "sha256": "6feb8c28f1b7a1cb16d4a6499576ccaf320d6f37e4b08da9bf094e03e6c1e6b7"
+        },
+        "3": {
+          "file": "bojeu2-3.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 3444,
+          "sha256": "2d24cb310e30816053d7c4a0d7bea49874c203a60cd21af49f0e95943fc679d9"
+        },
+        "4": {
+          "file": "bojeu2-4.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 9386,
+          "sha256": "60634cc440bb7f7e494a9e3837fb9c45a0f345fae880ae8450b3e70109363d86"
+        },
+        "5": {
+          "file": "bojeu2-5.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 16226,
+          "sha256": "3ee61bd3243e3ad45d50a339fa162990dced44829d731e78fc2cfbe98b3d8243"
+        },
+        "6": {
+          "file": "bojeu2-6.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 11436,
+          "sha256": "333ec714a825b5d21c318c2110f455908a24d9926ee96224c1b23ae4271dc495"
+        },
+        "7": {
+          "file": "bojeu2-7.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 14364,
+          "sha256": "ca9dc62ae94d0d98e0092e3bf201407644aeeb8e9958c3f3a88a80db15cd71ba"
+        },
+        "8": {
+          "file": "bojeu2-8.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 7144,
+          "sha256": "8c0c9dd05b054a2682452f0ad6d3dbf99fcbaa5c70dc78a06ab93c810dfdc9b8"
+        },
+        "9": {
+          "file": "bojeu2-9.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 6190,
+          "sha256": "33506ae5ff966f9e2591c8bdc6610a826f12c3687f791a727e2ac1c04ae669a9"
+        },
+        "10": {
+          "file": "bojeu2-10.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 4448,
+          "sha256": "240173a76b8e84400d3b9337c9f3ca022ebe91484b9f8690b0ed44a512a0d3cd"
+        },
+        "11": {
+          "file": "bojeu2-11.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 15644,
+          "sha256": "6ec7161e7d5b9b8b4bb5b7c07c11090513a39e78530d3998332fe4b48b027371"
+        },
+        "12": {
+          "file": "bojeu2-12.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 15014,
+          "sha256": "a3ae943b45ca1f4ed8cf85c09896c182f757722f48e84df168492a61ffd1e9f4"
+        },
+        "13": {
+          "file": "bojeu2-13.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 15236,
+          "sha256": "2b242afd107cc8a91176d4dc891abbc8d31362c07edcb8195ae665b4d7f90db3"
+        }
+      },
+      "cues": [
+        {
+          "offset": 29,
+          "end": 36,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 30,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 32,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 34,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 56,
+          "end": 63,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 57,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 59,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 61,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 78,
+          "end": 93,
+          "code": 149,
+          "name": "cmusic",
+          "args": [
+            {
+              "offset": 79,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 81,
+              "code": 30,
+              "name": "omainb",
+              "args": [
+                25934
+              ]
+            },
+            {
+              "offset": 84,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                32
+              ]
+            },
+            {
+              "offset": 86,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 88,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                32000
+              ]
+            },
+            {
+              "offset": 91,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "bolieu": {
+      "samples": {
+        "0": {
+          "file": "bolieu-0.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 24012,
+          "sha256": "85eafa0e6a8815eccbb6ce23e0daee52e5eb38e45f06cd119f6128d453b4251a"
+        },
+        "1": {
+          "file": "bolieu-1.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 19056,
+          "sha256": "bc670ea0339fb548a43a27f3a70811839c5fbf31b667c203a4822ec99a1cdbb7"
+        },
+        "2": {
+          "file": "bolieu-2.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 21158,
+          "sha256": "9c4d3f9a863ca2c33e8b0ade7f6442b6d8f871e4ee93e162e069cd3a3b92cf61"
+        },
+        "3": {
+          "file": "bolieu-3.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 8552,
+          "sha256": "c30b52931a3a7a008dd3484ea91c6dc8c19adba259b7829cd76d94fbb299bbd1"
+        },
+        "4": {
+          "file": "bolieu-4.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 11068,
+          "sha256": "a42ce58d7acd7bd2470b7afe43cf11ab3ea8672c116e97e495c4810779aa0217"
+        },
+        "5": {
+          "file": "bolieu-5.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 4448,
+          "sha256": "240173a76b8e84400d3b9337c9f3ca022ebe91484b9f8690b0ed44a512a0d3cd"
+        },
+        "6": {
+          "file": "bolieu-6.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 7944,
+          "sha256": "eb19ec7013dc5d210bf83d03f1cb99e4a3960442baab5398fa06e2abd59bcce0"
+        },
+        "7": {
+          "file": "bolieu-7.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 15656,
+          "sha256": "5a0c42f1af452de5791c66d8ca2b46dffc52b698ebcced5ae05b4ef345606dff"
+        },
+        "8": {
+          "file": "bolieu-8.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 6190,
+          "sha256": "33506ae5ff966f9e2591c8bdc6610a826f12c3687f791a727e2ac1c04ae669a9"
+        },
+        "9": {
+          "file": "bolieu-9.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 16178,
+          "sha256": "94cc2836c8d89ba21787e04eddc1153603e7c53ed364c896b8f78464fdfd222a"
+        }
+      },
+      "cues": [
+        {
+          "offset": 51,
+          "end": 58,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 52,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 54,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 56,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 78,
+          "end": 85,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 79,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 81,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 83,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 90,
+          "end": 97,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 91,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 93,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 95,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 102,
+          "end": 109,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 103,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 105,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 107,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 114,
+          "end": 121,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 115,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            },
+            {
+              "offset": 117,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 119,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 126,
+          "end": 133,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 127,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            },
+            {
+              "offset": 129,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 131,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 138,
+          "end": 145,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 139,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                5
+              ]
+            },
+            {
+              "offset": 141,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 143,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 150,
+          "end": 157,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 151,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                6
+              ]
+            },
+            {
+              "offset": 153,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 155,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 162,
+          "end": 169,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 163,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                7
+              ]
+            },
+            {
+              "offset": 165,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 167,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 174,
+          "end": 181,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 175,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                8
+              ]
+            },
+            {
+              "offset": 177,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 179,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 186,
+          "end": 193,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 187,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                9
+              ]
+            },
+            {
+              "offset": 189,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 191,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 270,
+          "end": 284,
+          "code": 149,
+          "name": "cmusic",
+          "args": [
+            {
+              "offset": 271,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                13
+              ]
+            },
+            {
+              "offset": 273,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                16
+              ]
+            },
+            {
+              "offset": 275,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                32
+              ]
+            },
+            {
+              "offset": 277,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 279,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                1000
+              ]
+            },
+            {
+              "offset": 282,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 252,
+          "end": 266,
+          "code": 149,
+          "name": "cmusic",
+          "args": [
+            {
+              "offset": 253,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                12
+              ]
+            },
+            {
+              "offset": 255,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                16
+              ]
+            },
+            {
+              "offset": 257,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                32
+              ]
+            },
+            {
+              "offset": 259,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 261,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                1000
+              ]
+            },
+            {
+              "offset": 264,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 234,
+          "end": 248,
+          "code": 149,
+          "name": "cmusic",
+          "args": [
+            {
+              "offset": 235,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                11
+              ]
+            },
+            {
+              "offset": 237,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                16
+              ]
+            },
+            {
+              "offset": 239,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                32
+              ]
+            },
+            {
+              "offset": 241,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 243,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                1000
+              ]
+            },
+            {
+              "offset": 246,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 216,
+          "end": 230,
+          "code": 149,
+          "name": "cmusic",
+          "args": [
+            {
+              "offset": 217,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 219,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                16
+              ]
+            },
+            {
+              "offset": 221,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                32
+              ]
+            },
+            {
+              "offset": 223,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 225,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                1000
+              ]
+            },
+            {
+              "offset": 228,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "bolost": {
+      "samples": {
+        "1": {
+          "file": "bolost-1.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 16730,
+          "sha256": "b7e2a52afa343e554f36f8f2675eb4c77f576d04282bdffca667c8881cd75a99"
+        }
+      },
+      "cues": [
+        {
+          "offset": 38,
+          "end": 45,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 39,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 41,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 43,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 45,
+          "end": 59,
+          "code": 149,
+          "name": "cmusic",
+          "args": [
+            {
+              "offset": 46,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 48,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 50,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                32
+              ]
+            },
+            {
+              "offset": 52,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 54,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                10000
+              ]
+            },
+            {
+              "offset": 57,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "bopres": {
+      "samples": {
+        "1": {
+          "file": "bopres-1.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 8046,
+          "sha256": "ac16f483b70c04d7f6a5e46020443ae877f94ab68ff590eb4a25deca03d9f9da"
+        },
+        "2": {
+          "file": "bopres-2.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 6982,
+          "sha256": "f4f9d8514ec184cda477135e976e4fe39b642de55bd6f61a2483f67d22ae75b3"
+        },
+        "3": {
+          "file": "bopres-3.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 12876,
+          "sha256": "48a9aa253301e7ae479141fa4596030e367505b19458ce6788b9c06607e45356"
+        },
+        "4": {
+          "file": "bopres-4.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 10608,
+          "sha256": "91b1fff30c484522be27875b27fb0dc71e1a8695efbe5bec884fd78db7d4162f"
+        },
+        "5": {
+          "file": "bopres-5.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 10102,
+          "sha256": "3b23b0ca32256b2934aa312e8b29ada9a3b8bebeb8acdf0b5f1d520a49c84eef"
+        },
+        "6": {
+          "file": "bopres-6.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 23796,
+          "sha256": "726d5982227d958592543e5ad18c4d6579728282c581d275402e123c17319537"
+        },
+        "7": {
+          "file": "bopres-7.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 2168,
+          "sha256": "c600f226ce7f223a2af5a9dc55082caf7afb5838c17afa72591c97cafdda505e"
+        },
+        "8": {
+          "file": "bopres-8.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 2946,
+          "sha256": "b34c3bb378c335786d5175870d4343e7ac7ea246a355bd7e2781fadc68119225"
+        },
+        "9": {
+          "file": "bopres-9.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 2864,
+          "sha256": "d0256dd5cf49449c7bc3ce7e21f8e0df41d89d5745a9714d8e20bc0c55dc5ab0"
+        },
+        "10": {
+          "file": "bopres-10.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 8106,
+          "sha256": "9c5527a36868a049186c3a2127a80ef9190f0a8a0292d0d4accc5b20a9cffc6f"
+        },
+        "11": {
+          "file": "bopres-11.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 7316,
+          "sha256": "c8bae53102ab861e29ca99396966fffe482c22c6a03a117a9fdc7d3c17d0690e"
+        },
+        "12": {
+          "file": "bopres-12.wav",
+          "kind": 2,
+          "frequency_khz": 10,
+          "samples": 18500,
+          "sha256": "7cda1034cb1724753d825df38e61a825ef1e7c66b186eb41868de6da008f4308"
+        }
+      },
+      "cues": [
+        {
+          "offset": 29,
+          "end": 36,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 30,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 32,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 34,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 56,
+          "end": 63,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 57,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 59,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 61,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 68,
+          "end": 75,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 69,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 71,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 73,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 80,
+          "end": 87,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 81,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            },
+            {
+              "offset": 83,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 85,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 92,
+          "end": 99,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 93,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            },
+            {
+              "offset": 95,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 97,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 104,
+          "end": 111,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 105,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                5
+              ]
+            },
+            {
+              "offset": 107,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 109,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 116,
+          "end": 123,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 117,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                6
+              ]
+            },
+            {
+              "offset": 119,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 121,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 128,
+          "end": 135,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 129,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                7
+              ]
+            },
+            {
+              "offset": 131,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 133,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 140,
+          "end": 147,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 141,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                8
+              ]
+            },
+            {
+              "offset": 143,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 145,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 152,
+          "end": 159,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 153,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                9
+              ]
+            },
+            {
+              "offset": 155,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 157,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 164,
+          "end": 171,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 165,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 167,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 169,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 176,
+          "end": 183,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 177,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                11
+              ]
+            },
+            {
+              "offset": 179,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 181,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 188,
+          "end": 195,
+          "code": 205,
+          "name": "cinstru",
+          "args": [
+            {
+              "offset": 189,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                12
+              ]
+            },
+            {
+              "offset": 191,
+              "code": 20,
+              "name": "odirw",
+              "args": [
+                14
+              ]
+            },
+            {
+              "offset": 193,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 200,
+          "end": 214,
+          "code": 149,
+          "name": "cmusic",
+          "args": [
+            {
+              "offset": 201,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 203,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 205,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                32
+              ]
+            },
+            {
+              "offset": 207,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                20
+              ]
+            },
+            {
+              "offset": 209,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                10000
+              ]
+            },
+            {
+              "offset": 212,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "ifebo": {
+      "samples": {
+        "0": {
+          "file": "ifebo-0.wav",
+          "kind": 1,
+          "frequency_khz": 5,
+          "samples": 2552,
+          "sha256": "d83145f344b3c7aff69a0e5fd32f982ebd382c008ae60729248f7689a7e574de"
+        },
+        "1": {
+          "file": "ifebo-1.wav",
+          "kind": 1,
+          "frequency_khz": 8,
+          "samples": 16548,
+          "sha256": "a34cf7cfeb89ceaeca5130c363ec0e98d434c32f7813499939da98af5813c3df"
+        },
+        "2": {
+          "file": "ifebo-2.wav",
+          "kind": 1,
+          "frequency_khz": 5,
+          "samples": 12458,
+          "sha256": "84b669131aba9d0f5455772de8dffafad722e797e8ada88ce722193d0cc85941"
+        }
+      },
+      "cues": [
+        {
+          "offset": 851,
+          "end": 862,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 852,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 854,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                70
+              ]
+            },
+            {
+              "offset": 856,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 858,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 860,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                6
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 839,
+          "end": 850,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 840,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 842,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                90
+              ]
+            },
+            {
+              "offset": 844,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 846,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 848,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                6
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 863,
+          "end": 882,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 864,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 866,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                80
+              ]
+            },
+            {
+              "offset": 868,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 870,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 872,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 873,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    5
+                  ]
+                },
+                {
+                  "offset": 875,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 876,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    3
+                  ]
+                },
+                {
+                  "offset": 878,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 879,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 880,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 881,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "present": {
+      "samples": {
+        "0": {
+          "file": "present-0.wav",
+          "kind": 1,
+          "frequency_khz": 5,
+          "samples": 33014,
+          "sha256": "628a9826e104e0f54a2e5a229cd6f53ed8e209354a52850d5a9ef3d926677ff5"
+        }
+      },
+      "cues": [
+        {
+          "offset": 60,
+          "end": 71,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 61,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 63,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 65,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 67,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 69,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                5
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "sbal": {
+      "samples": {
+        "0": {
+          "file": "sbal-0.wav",
+          "kind": 1,
+          "frequency_khz": 10,
+          "samples": 26856,
+          "sha256": "721ea4d7dac2f33b7a7880cdd1c2cf8669a953fb27185dbb70b7fd1e50792c86"
+        }
+      },
+      "cues": [
+        {
+          "offset": 24,
+          "end": 35,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 25,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 27,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 29,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 31,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 33,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "scene1": {
+      "samples": {
+        "0": {
+          "file": "scene1-0.wav",
+          "kind": 1,
+          "frequency_khz": 5,
+          "samples": 7316,
+          "sha256": "e514d89abb6c096bf9d7ed8ce348bf9a4aee17cfd06c3c33c5b74c3a3fba9dec"
+        },
+        "1": {
+          "file": "scene1-1.wav",
+          "kind": 1,
+          "frequency_khz": 8,
+          "samples": 16512,
+          "sha256": "26d32c72d1f7bb3e0ed6f7848ce6e5187c48523c49b31eca2926f0558c18cc9e"
+        },
+        "2": {
+          "file": "scene1-2.wav",
+          "kind": 1,
+          "frequency_khz": 8,
+          "samples": 10914,
+          "sha256": "f2f8f46e4b50847099ce975e6d8ad30332ebe866140c085c1c4cbb70376a6b9c"
+        }
+      },
+      "cues": [
+        {
+          "offset": 176,
+          "end": 187,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 177,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 179,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 181,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 183,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            },
+            {
+              "offset": 185,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                6
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 161,
+          "end": 172,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 162,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 164,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 166,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 168,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 170,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                8
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 146,
+          "end": 157,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 147,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 149,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 151,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 153,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 155,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                5
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "scene2": {
+      "samples": {
+        "0": {
+          "file": "scene2-0.wav",
+          "kind": 1,
+          "frequency_khz": 8,
+          "samples": 20788,
+          "sha256": "d246edc12a95499b3fa11f10b7895408a132f0638f215585e0f3e3184156eda5"
+        }
+      },
+      "cues": [
+        {
+          "offset": 181,
+          "end": 192,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 182,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 184,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 186,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 188,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 190,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                8
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "scene3": {
+      "samples": {
+        "0": {
+          "file": "scene3-0.wav",
+          "kind": 1,
+          "frequency_khz": 8,
+          "samples": 33974,
+          "sha256": "325f9e794e70ef7b7adac7775ed1058a445a66aedce4ce9c82b3d740bac9667e"
+        },
+        "1": {
+          "file": "scene3-1.wav",
+          "kind": 1,
+          "frequency_khz": 10,
+          "samples": 17150,
+          "sha256": "6c21bdc812edc43603833b1c04a94853d75c35d75b199a0fceef0bf419eee37d"
+        },
+        "2": {
+          "file": "scene3-2.wav",
+          "kind": 1,
+          "frequency_khz": 8,
+          "samples": 14544,
+          "sha256": "18921d390992056706ebc6d0c77bbbab3a98bb8eedb3a5f526e57e3397cc88a9"
+        }
+      },
+      "cues": [
+        {
+          "offset": 393,
+          "end": 404,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 394,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 396,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 398,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 400,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 402,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                6
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 378,
+          "end": 389,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 379,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 381,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 383,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 385,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 387,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                8
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 363,
+          "end": 374,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 364,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 366,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 368,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 370,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 372,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 234,
+          "end": 245,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 235,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 237,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 239,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 241,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 243,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                8
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "scene4": {
+      "samples": {
+        "0": {
+          "file": "scene4-0.wav",
+          "kind": 1,
+          "frequency_khz": 8,
+          "samples": 60366,
+          "sha256": "c2d93a220dc9915ff243e43d44daaa80b40e80ced3c4c966f918b125866131dc"
+        },
+        "1": {
+          "file": "scene4-1.wav",
+          "kind": 1,
+          "frequency_khz": 10,
+          "samples": 20834,
+          "sha256": "a3355617317187ddcfd523a4c3917a47a83a81080a3f877dc039bae8f5116f3e"
+        },
+        "2": {
+          "file": "scene4-2.wav",
+          "kind": 1,
+          "frequency_khz": 10,
+          "samples": 20834,
+          "sha256": "a3355617317187ddcfd523a4c3917a47a83a81080a3f877dc039bae8f5116f3e"
+        }
+      },
+      "cues": [
+        {
+          "offset": 318,
+          "end": 329,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 319,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 321,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 323,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 325,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 327,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                8
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 137,
+          "end": 188,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 138,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 139,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    1
+                  ]
+                },
+                {
+                  "offset": 141,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 142,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    2
+                  ]
+                },
+                {
+                  "offset": 144,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 145,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 146,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 147,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "offset": 148,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 149,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    70
+                  ]
+                },
+                {
+                  "offset": 151,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 152,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    77
+                  ]
+                },
+                {
+                  "offset": 154,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 155,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 156,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 157,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "offset": 158,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 159,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    30
+                  ]
+                },
+                {
+                  "offset": 161,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 162,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    10
+                  ]
+                },
+                {
+                  "offset": 164,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 165,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 166,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 167,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "offset": 168,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 169,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    1
+                  ]
+                },
+                {
+                  "offset": 171,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 172,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    3
+                  ]
+                },
+                {
+                  "offset": 174,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 175,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 176,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 177,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "offset": 178,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 179,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    8
+                  ]
+                },
+                {
+                  "offset": 181,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 182,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    4
+                  ]
+                },
+                {
+                  "offset": 184,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 185,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 186,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 187,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 1005,
+          "end": 1056,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 1006,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 1007,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    1
+                  ]
+                },
+                {
+                  "offset": 1009,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 1010,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    2
+                  ]
+                },
+                {
+                  "offset": 1012,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 1013,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 1014,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 1015,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "offset": 1016,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 1017,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    70
+                  ]
+                },
+                {
+                  "offset": 1019,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 1020,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    77
+                  ]
+                },
+                {
+                  "offset": 1022,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 1023,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 1024,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 1025,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "offset": 1026,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 1027,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    30
+                  ]
+                },
+                {
+                  "offset": 1029,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 1030,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    10
+                  ]
+                },
+                {
+                  "offset": 1032,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 1033,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 1034,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 1035,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "offset": 1036,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 1037,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    1
+                  ]
+                },
+                {
+                  "offset": 1039,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 1040,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    3
+                  ]
+                },
+                {
+                  "offset": 1042,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 1043,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 1044,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 1045,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "offset": 1046,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 1047,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    8
+                  ]
+                },
+                {
+                  "offset": 1049,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 1050,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    4
+                  ]
+                },
+                {
+                  "offset": 1052,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 1053,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 1054,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 1055,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "son": {
+      "samples": {
+        "0": {
+          "file": "son-0.wav",
+          "kind": 1,
+          "frequency_khz": 8,
+          "samples": 5374,
+          "sha256": "c8782335d6df71a7c0834ff1d993c99d13b34e5e58dcfcc66856851888d3974a"
+        },
+        "1": {
+          "file": "son-1.wav",
+          "kind": 1,
+          "frequency_khz": 5,
+          "samples": 8252,
+          "sha256": "d6dd47aab8c6fe66dc1b744d4eee4d32288557081b991774df27a7531cf13d16"
+        },
+        "2": {
+          "file": "son-2.wav",
+          "kind": 1,
+          "frequency_khz": 10,
+          "samples": 4974,
+          "sha256": "686e75569c73fe899471222fa861747dbf60bebedea40e07bf2a23d6b81e95ca"
+        },
+        "3": {
+          "file": "son-3.wav",
+          "kind": 1,
+          "frequency_khz": 8,
+          "samples": 2356,
+          "sha256": "cdf5cf9cae0d530b339cca3c49a1e7c0b3950fa15dc0d667d9cb95abeef59a8a"
+        },
+        "4": {
+          "file": "son-4.wav",
+          "kind": 1,
+          "frequency_khz": 8,
+          "samples": 5894,
+          "sha256": "98028c5cb6e690672f882ccdbc8b9e63f59ae3a2d70744421836439e732c3221"
+        },
+        "5": {
+          "file": "son-5.wav",
+          "kind": 1,
+          "frequency_khz": 5,
+          "samples": 4906,
+          "sha256": "64351d10850f430273ee1884e010dbda7feeecd411a006bd363edf4d73ff504e"
+        },
+        "6": {
+          "file": "son-6.wav",
+          "kind": 1,
+          "frequency_khz": 5,
+          "samples": 5546,
+          "sha256": "b9d5a4c7d6b7b58c4b7d4207c9a0fb766fbdb335743c84362194c3d09b64257a"
+        },
+        "7": {
+          "file": "son-7.wav",
+          "kind": 1,
+          "frequency_khz": 10,
+          "samples": 6980,
+          "sha256": "12dbc7c827d15b1204df2c810326961eb5cb8678bb8f007828a12d7ad1f4c6e3"
+        }
+      },
+      "cues": [
+        {
+          "offset": 286,
+          "end": 302,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 287,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                6
+              ]
+            },
+            {
+              "offset": 289,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                -10
+              ]
+            },
+            {
+              "offset": 291,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 293,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                5
+              ]
+            },
+            {
+              "offset": 295,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 296,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    4
+                  ]
+                },
+                {
+                  "offset": 298,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 299,
+                      "code": 18,
+                      "name": "odirb",
+                      "args": [
+                        12
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "offset": 301,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 265,
+          "end": 282,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 266,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                6
+              ]
+            },
+            {
+              "offset": 268,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                -10
+              ]
+            },
+            {
+              "offset": 270,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 272,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                10000
+              ]
+            },
+            {
+              "offset": 275,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 276,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    4
+                  ]
+                },
+                {
+                  "offset": 278,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 279,
+                      "code": 18,
+                      "name": "odirb",
+                      "args": [
+                        12
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "offset": 281,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 223,
+          "end": 239,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 224,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            },
+            {
+              "offset": 226,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                90
+              ]
+            },
+            {
+              "offset": 228,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 230,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            },
+            {
+              "offset": 232,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 233,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    10
+                  ]
+                },
+                {
+                  "offset": 235,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 236,
+                      "code": 18,
+                      "name": "odirb",
+                      "args": [
+                        12
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "offset": 238,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 303,
+          "end": 314,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 304,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 306,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                50
+              ]
+            },
+            {
+              "offset": 308,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 310,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            },
+            {
+              "offset": 312,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 324,
+          "end": 335,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 325,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 327,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                50
+              ]
+            },
+            {
+              "offset": 329,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 331,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            },
+            {
+              "offset": 333,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 345,
+          "end": 356,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 346,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 348,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                50
+              ]
+            },
+            {
+              "offset": 350,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 352,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 354,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                5
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 195,
+          "end": 211,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 196,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                5
+              ]
+            },
+            {
+              "offset": 198,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                100
+              ]
+            },
+            {
+              "offset": 200,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 202,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 204,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 205,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    2
+                  ]
+                },
+                {
+                  "offset": 207,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 208,
+                      "code": 18,
+                      "name": "odirb",
+                      "args": [
+                        12
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "offset": 210,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 175,
+          "end": 191,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 176,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            },
+            {
+              "offset": 178,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                90
+              ]
+            },
+            {
+              "offset": 180,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 182,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 184,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 185,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    8
+                  ]
+                },
+                {
+                  "offset": 187,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 188,
+                      "code": 18,
+                      "name": "odirb",
+                      "args": [
+                        12
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "offset": 190,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 155,
+          "end": 171,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 156,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            },
+            {
+              "offset": 158,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                95
+              ]
+            },
+            {
+              "offset": 160,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 162,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            },
+            {
+              "offset": 164,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 165,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    6
+                  ]
+                },
+                {
+                  "offset": 167,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 168,
+                      "code": 18,
+                      "name": "odirb",
+                      "args": [
+                        12
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "offset": 170,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 135,
+          "end": 151,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 136,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                7
+              ]
+            },
+            {
+              "offset": 138,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                -10
+              ]
+            },
+            {
+              "offset": 140,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 142,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                5
+              ]
+            },
+            {
+              "offset": 144,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 145,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    3
+                  ]
+                },
+                {
+                  "offset": 147,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 148,
+                      "code": 18,
+                      "name": "odirb",
+                      "args": [
+                        12
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "offset": 150,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 114,
+          "end": 131,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 115,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                7
+              ]
+            },
+            {
+              "offset": 117,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                -10
+              ]
+            },
+            {
+              "offset": 119,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 121,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                10000
+              ]
+            },
+            {
+              "offset": 124,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 125,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    3
+                  ]
+                },
+                {
+                  "offset": 127,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 128,
+                      "code": 18,
+                      "name": "odirb",
+                      "args": [
+                        12
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "offset": 130,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 72,
+          "end": 88,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 73,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 75,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                60
+              ]
+            },
+            {
+              "offset": 77,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 79,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 81,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 82,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    5
+                  ]
+                },
+                {
+                  "offset": 84,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 85,
+                      "code": 18,
+                      "name": "odirb",
+                      "args": [
+                        12
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "offset": 87,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 52,
+          "end": 68,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 53,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 55,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                97
+              ]
+            },
+            {
+              "offset": 57,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 59,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            },
+            {
+              "offset": 61,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 62,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    6
+                  ]
+                },
+                {
+                  "offset": 64,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 65,
+                      "code": 18,
+                      "name": "odirb",
+                      "args": [
+                        12
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "offset": 67,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "train": {
+      "samples": {
+        "0": {
+          "file": "train-0.wav",
+          "kind": 1,
+          "frequency_khz": 10,
+          "samples": 2924,
+          "sha256": "24c08c7ac24b58ce89d37c8e8439e7003e077f0e29bfa669cf85f3de33b6cc59"
+        }
+      },
+      "cues": [
+        {
+          "offset": 4303,
+          "end": 4322,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 4304,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 4306,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 4308,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 4310,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 4312,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 4313,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    4
+                  ]
+                },
+                {
+                  "offset": 4315,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 4316,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    2
+                  ]
+                },
+                {
+                  "offset": 4318,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 4319,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 4320,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 4321,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 4323,
+          "end": 4342,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 4324,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 4326,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                10
+              ]
+            },
+            {
+              "offset": 4328,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 4330,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 4332,
+              "code": 56,
+              "name": "oeval",
+              "args": [
+                {
+                  "offset": 4333,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    10
+                  ]
+                },
+                {
+                  "offset": 4335,
+                  "code": 64,
+                  "name": "opushacc",
+                  "args": []
+                },
+                {
+                  "offset": 4336,
+                  "code": 0,
+                  "name": "oimmb",
+                  "args": [
+                    2
+                  ]
+                },
+                {
+                  "offset": 4338,
+                  "code": 100,
+                  "name": "ornd",
+                  "args": []
+                },
+                {
+                  "offset": 4339,
+                  "code": 86,
+                  "name": "oadd",
+                  "args": [
+                    {
+                      "offset": 4340,
+                      "code": 54,
+                      "name": "opile",
+                      "args": []
+                    }
+                  ]
+                },
+                {
+                  "offset": 4341,
+                  "code": 58,
+                  "name": "ofin",
+                  "args": []
+                }
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 265,
+          "end": 266,
+          "code": 161,
+          "name": "cdelsound",
+          "args": [],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 211,
+          "end": 212,
+          "code": 161,
+          "name": "cdelsound",
+          "args": [],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    },
+    "wdecor": {
+      "samples": {
+        "0": {
+          "file": "wdecor-0.wav",
+          "kind": 1,
+          "frequency_khz": 5,
+          "samples": 6290,
+          "sha256": "36557d33136fa1e9b1a5ff46058824564277de405edd311aa84599d51f1f8d35"
+        },
+        "1": {
+          "file": "wdecor-1.wav",
+          "kind": 1,
+          "frequency_khz": 5,
+          "samples": 9964,
+          "sha256": "1761663fa19158cd6752f35a12076ecade5877ddddb6174bcb4a86cffa3b7f18"
+        },
+        "2": {
+          "file": "wdecor-2.wav",
+          "kind": 1,
+          "frequency_khz": 6,
+          "samples": 7316,
+          "sha256": "e514d89abb6c096bf9d7ed8ce348bf9a4aee17cfd06c3c33c5b74c3a3fba9dec"
+        },
+        "3": {
+          "file": "wdecor-3.wav",
+          "kind": 1,
+          "frequency_khz": 7,
+          "samples": 4816,
+          "sha256": "7d7393c46887bda3bd31dc4cc6442af6f8e11b876109d69e2a7dc3446db5c1ab"
+        },
+        "4": {
+          "file": "wdecor-4.wav",
+          "kind": 1,
+          "frequency_khz": 4,
+          "samples": 11636,
+          "sha256": "9df40200201c222bc64871cab6e7ceb5d30d6ffac3e72c10fce1878dd1604f06"
+        }
+      },
+      "cues": [
+        {
+          "offset": 24905,
+          "end": 24916,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24906,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            },
+            {
+              "offset": 24908,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                -10
+              ]
+            },
+            {
+              "offset": 24910,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 24912,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 24914,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24889,
+          "end": 24901,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24890,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            },
+            {
+              "offset": 24892,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                -10
+              ]
+            },
+            {
+              "offset": 24894,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 24896,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                10000
+              ]
+            },
+            {
+              "offset": 24899,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24865,
+          "end": 24877,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24866,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            },
+            {
+              "offset": 24868,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                -10
+              ]
+            },
+            {
+              "offset": 24870,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 24872,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                10000
+              ]
+            },
+            {
+              "offset": 24875,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24821,
+          "end": 24832,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24822,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 24824,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                80
+              ]
+            },
+            {
+              "offset": 24826,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 24828,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 24830,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24820,
+          "end": 24821,
+          "code": 161,
+          "name": "cdelsound",
+          "args": [],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24747,
+          "end": 24758,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24748,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 24750,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                50
+              ]
+            },
+            {
+              "offset": 24752,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 24754,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 24756,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                7
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24976,
+          "end": 24987,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24977,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            },
+            {
+              "offset": 24979,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                -10
+              ]
+            },
+            {
+              "offset": 24981,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 24983,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 24985,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24960,
+          "end": 24972,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24961,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            },
+            {
+              "offset": 24963,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                -10
+              ]
+            },
+            {
+              "offset": 24965,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 24967,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                10000
+              ]
+            },
+            {
+              "offset": 24970,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24936,
+          "end": 24948,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24937,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                4
+              ]
+            },
+            {
+              "offset": 24939,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                -10
+              ]
+            },
+            {
+              "offset": 24941,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 24943,
+              "code": 2,
+              "name": "oimmw",
+              "args": [
+                10000
+              ]
+            },
+            {
+              "offset": 24946,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                5
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 25006,
+          "end": 25017,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 25007,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                3
+              ]
+            },
+            {
+              "offset": 25009,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                30
+              ]
+            },
+            {
+              "offset": 25011,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 25013,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 25015,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                7
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24994,
+          "end": 25005,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24995,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 24997,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                40
+              ]
+            },
+            {
+              "offset": 24999,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 25001,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 25003,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                6
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24759,
+          "end": 24770,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24760,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                0
+              ]
+            },
+            {
+              "offset": 24762,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                49
+              ]
+            },
+            {
+              "offset": 24764,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 24766,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                2
+              ]
+            },
+            {
+              "offset": 24768,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                6
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24795,
+          "end": 24806,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24796,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 24798,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                70
+              ]
+            },
+            {
+              "offset": 24800,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 24802,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 24804,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                6
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24783,
+          "end": 24794,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24784,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 24786,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                59
+              ]
+            },
+            {
+              "offset": 24788,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 24790,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 24792,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                8
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        },
+        {
+          "offset": 24771,
+          "end": 24782,
+          "code": 157,
+          "name": "csound",
+          "args": [
+            {
+              "offset": 24772,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 24774,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                60
+              ]
+            },
+            {
+              "offset": 24776,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                127
+              ]
+            },
+            {
+              "offset": 24778,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                1
+              ]
+            },
+            {
+              "offset": 24780,
+              "code": 0,
+              "name": "oimmb",
+              "args": [
+                9
+              ]
+            }
+          ],
+          "targets": [],
+          "flow": "next"
+        }
+      ],
+      "decode_errors": []
+    }
+  }
+}

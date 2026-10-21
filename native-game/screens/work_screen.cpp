@@ -12,7 +12,7 @@ namespace transartica::panels {
 namespace {constexpr SDL_Color gold{238,202,136,255};}
 WorkScreen::WorkScreen(Canvas& canvas,std::filesystem::path assets):canvas_(canvas),assets_(std::move(assets)),ambience_(assets_) {
     using Json=std::unique_ptr<json_object,decltype(&json_object_put)>;
-    const auto file=assets_.parent_path()/"private-data/textek.json";
+    const auto file=assets_.parent_path()/"data/textek.json";
     Json data(json_object_from_file(file.string().c_str()),json_object_put);
     json_object* messages{};
     if(!data || !json_object_object_get_ex(data.get(),"messages",&messages) || !json_object_is_type(messages,json_type_object))

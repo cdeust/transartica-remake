@@ -36,8 +36,9 @@ void priorities() {
 }
 void trusted_paths(const std::filesystem::path& game) {
     Resources resources(game);
-    check(resources.path("son-2.wav")==std::filesystem::weakly_canonical(game/"private-data/audio/son-2.wav"),"project-declared private audio symlink resolves without duplication");
-    check(resources.path("res://private-data/finale.wav")==std::filesystem::weakly_canonical(game/"private-data/finale.wav"),"private finale shares explicitly trusted dataset root");
+    check(resources.path("son-2.wav")==std::filesystem::weakly_canonical(game/"data/audio/son-2.wav"),"staged audio resolves inside the delivered game");
+    check(resources.path("res://data/finale.wav")==std::filesystem::weakly_canonical(game/"data/finale.wav"),"staged finale resolves inside the delivered game");
+    check(resources.path("res://private-data/finale.wav")==resources.path("res://data/finale.wav"),"historical manifest paths resolve to staged data");
     try {resources.path("res://../untrusted.wav");check(false,"outside trusted roots rejected");}
     catch(const std::runtime_error&) {check(true,"outside trusted roots rejected");}
 }

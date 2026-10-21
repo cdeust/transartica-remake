@@ -15,8 +15,8 @@ from macos_bundle import PackageError, relative, run, sha, validate_closed_macho
 def verify(bundle: Path, receipt_path: Path) -> dict:
     bundle = bundle.resolve(strict=True)
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-    if receipt.get("format") != "transartica-private-native-macos-v1" or not receipt.get("private"):
-        raise PackageError("Unsupported private bundle receipt")
+    if receipt.get("format") != "transartica-native-macos-v2" or receipt.get("resource_distribution") != "included":
+        raise PackageError("Unsupported bundle receipt")
     observed = set()
     for path in bundle.rglob("*"):
         if path.is_symlink():

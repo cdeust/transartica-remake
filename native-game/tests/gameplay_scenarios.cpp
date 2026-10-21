@@ -31,7 +31,7 @@ struct Fixture {
         : game(core), audio(path, {false, 1073741824, 0}, 31) {
         // Seeds and owner-provided 1GiB allocation limit: game_archive_tests.cpp.
         std::string error;
-        require(core.load_world(path / "private-data/CARTE.FIC", error), error);
+        require(core.load_world(path / "data/CARTE.FIC", error), error);
         require(game.load(path, error), error);
         reset();
     }

@@ -35,7 +35,7 @@ int main(int argc,char** argv){
         require(bool(renderer),SDL_GetError());
         ta::Canvas canvas(renderer.get(),argv[2]);ta::WorldPassages passages(canvas,game/"assets");
         ta::RailNetwork network;std::string error;
-        require(network.load(game/"private-data/CARTE.FIC",error),error.c_str());
+        require(network.load(game/"data/CARTE.FIC",error),error.c_str());
         const auto original=network.tiles();
         // The diagonal joins cells(9,22)/(10,21). Its rigid body can extend
         // into unpainted neighboring cells even though every contact is buried.

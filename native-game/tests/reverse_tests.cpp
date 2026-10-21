@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Tests port source test_reverser, reverse_physical_stop, reverse_occupied_switch.
-// JSON is used ONLY to read private earned fixtures, never as a runtime importer.
+// JSON is used ONLY to read earned fixtures, never as a runtime importer.
 #include "core/train_pose.hpp"
 #include <json-c/json.h>
 #include <cmath>
@@ -40,11 +40,11 @@ Journey read_journey(json_object* p) {
     return j;
 }
 Session earned(const std::filesystem::path& root,const std::string& name) {
-    auto* doc=json_object_from_file((root/"reference-private/validation"/(name+".json")).string().c_str());
-    if (!doc) throw std::runtime_error("Missing private earned fixture "+name);
-    std::ifstream map(root/"reference-private/CARTE.FIC",std::ios::binary);
+    auto* doc=json_object_from_file((root/"fixtures"/(name+".json")).string().c_str());
+    if (!doc) throw std::runtime_error("Missing earned fixture "+name);
+    std::ifstream map(root/"game/data/CARTE.FIC",std::ios::binary);
     std::vector<std::uint8_t> bytes{std::istreambuf_iterator<char>(map),std::istreambuf_iterator<char>()};
-    if (bytes.size()!=RailNetwork::width*RailNetwork::height) throw std::runtime_error("Missing private CARTE");
+    if (bytes.size()!=RailNetwork::width*RailNetwork::height) throw std::runtime_error("Missing CARTE");
     // Prepared map is the recorded earned map, including campaign writes that
     // this isolated contact test does not execute or claim to port.
     auto* switches=field(field(doc,"network"),"switches");
@@ -80,7 +80,7 @@ bool roundtrip(Session& s) {
 }
 void initial_reversals(const std::filesystem::path& root) {
     Session original; std::string error;
-    if (!original.load_world(root/"reference-private/CARTE.FIC",error)) throw std::runtime_error(error);
+    if (!original.load_world(root/"game/data/CARTE.FIC",error)) throw std::runtime_error(error);
     for (int steps=0;steps<12;++steps) {
         Session s=original;
         for (int i=0;i<steps;++i) s.journey.advance(s.network,300);
@@ -151,7 +151,7 @@ void partial_switch(const std::filesystem::path& root) {
 }
 void save_versions(const std::filesystem::path& root) {
     Session s;std::string error;
-    if (!s.load_world(root/"reference-private/CARTE.FIC",error)) throw std::runtime_error(error);
+    if (!s.load_world(root/"game/data/CARTE.FIC",error)) throw std::runtime_error(error);
     std::ostringstream out; check(s.write_snapshot(out),"write native schema 3");
     auto v2=out.str(); v2.replace(0,v2.find('\n'),"TRANSARTICA_NATIVE_FORWARD 2");
     v2.erase(v2.find("RENDER ")); v2+="END\n";
@@ -167,7 +167,7 @@ void save_versions(const std::filesystem::path& root) {
 }
 int main(int argc,char** argv) {
     try {
-        if (argc!=2) throw std::runtime_error("usage: reverse_tests repository-root");
+        if (argc!=2) throw std::runtime_error("usage: reverse_tests runtime-resource-root");
         initial_reversals(argv[1]); physical_obstacle(argv[1]); occupied_switch(argv[1]); partial_switch(argv[1]); save_versions(argv[1]);
     } catch(const std::exception& e) { ++failures; std::cerr<<e.what()<<'\n'; }
     std::cout<<checks<<" reverse checks, "<<failures<<" failures\n"; return failures ? 1 : 0;

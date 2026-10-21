@@ -20,26 +20,26 @@ namespace ta = transartica;
 namespace fs = std::filesystem;
 namespace {
 struct Options {
-    fs::path game = fs::path(TA_SOURCE_DIR).parent_path() / "game";
+    fs::path game;
     fs::path artwork;
-    fs::path font = fs::path(TA_SOURCE_DIR) / "assets/fonts/NotoSans.ttf";
-    fs::path save_directory = fs::path(TA_SOURCE_DIR).parent_path() / "output/standalone-native/saves";
+    fs::path font;
+    fs::path save_directory;
     fs::path captures;
     fs::path log;
     double quit_after{};
 };
 Options options(int argc, char** argv) {
     Options result;
-    // SDL_GetBasePath returns Contents/Resources for the native macOS bundle;
-    // development builds retain explicit source paths until packaged resources exist.
+    // SDL uses Contents/Resources for .app and the executable directory otherwise.
     std::unique_ptr<char,decltype(&SDL_free)> base(SDL_GetBasePath(),SDL_free);
-    bool packaged=false;
-    if(base) {
-        fs::path resources(base.get());
-        if(resources.filename().empty()) resources=resources.parent_path();
-        packaged=fs::is_directory(resources/"game")||resources.filename()=="Resources";
-        if(packaged) {result.game=resources/"game";result.font=resources/"fonts/NotoSans.ttf";result.save_directory.clear();}
-    }
+    if(!base) throw std::runtime_error(std::string("Cannot locate runtime resources: ")+SDL_GetError());
+    fs::path resources(base.get());
+    if(resources.filename().empty()) resources=resources.parent_path();
+    const bool app_bundle=resources.filename()=="Resources" && resources.parent_path().filename()=="Contents"
+        && resources.parent_path().parent_path().extension()==".app";
+    if(!app_bundle) resources/="resources";
+    result.game=resources/"game";
+    result.font=resources/"fonts/NotoSans.ttf";
     for (int i = 1; i < argc; ++i) {
         const std::string flag = argv[i];
         if (flag == "--help") {
@@ -61,8 +61,8 @@ Options options(int argc, char** argv) {
                 throw std::runtime_error("--quit-after requires a positive finite number");
         } else throw std::runtime_error("Unknown option " + flag);
     }
-    if(packaged&&result.save_directory.empty()) {
-        // The packaged user's durable saves use SDL's platform preference path.
+    if(result.save_directory.empty()) {
+        // Durable saves use SDL's platform preference path.
         // Explicit --save-dir is resolved first, including bounded workspace checks.
         std::unique_ptr<char,decltype(&SDL_free)> preferences(SDL_GetPrefPath("Transartica","Transartica"),SDL_free);
         if(!preferences) throw std::runtime_error(std::string("Cannot locate save directory: ")+SDL_GetError());
@@ -107,7 +107,7 @@ int run(const Options& config) {
     ta::Canvas canvas(renderer.get(), config.font);
     ta::Session state;
     std::string error;
-    const auto carte = config.game / "private-data/CARTE.FIC";
+    const auto carte = config.game / "data/CARTE.FIC";
     // Source: FORMAT-CARTE.md:17, private ECS world identity.
     ta::verify_sha256(carte, "8e1067619b254d57717348fefedc1b5013eb1d7ba23200a815e36f9b856d811a");
     if (!state.load_world(carte, error)) throw std::runtime_error(error);

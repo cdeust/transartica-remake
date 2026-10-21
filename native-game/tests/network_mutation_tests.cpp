@@ -49,7 +49,7 @@ void saved_switches() {
 }
 void campaign_and_save(const std::filesystem::path& game) {
     Session session;std::string error;
-    if(!session.load_world(game/"private-data/CARTE.FIC",error)) throw std::runtime_error(error);
+    if(!session.load_world(game/"data/CARTE.FIC",error)) throw std::runtime_error(error);
     session.network.campaign_entry_enabled=true;
     check(session.network.set_campaign_tile({29,67},-114)&&session.network.entry_boundary({29,67}).empty(),"revealed oasis corridor enters with campaign host enabled");
     session.network.campaign_entry_enabled=false;

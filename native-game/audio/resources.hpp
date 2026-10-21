@@ -22,7 +22,7 @@ public:
     std::filesystem::path path(const std::string& filename) const;
 private:
     std::filesystem::path game_;
-    std::filesystem::path private_; // Project-owned private data may be symlinked.
+    std::filesystem::path data_; // Native resources are staged beside the executable.
     Json samples_{nullptr,json_object_put}, music_{nullptr,json_object_put};
 };
 int operand(json_object*,const std::map<int,int>&,Random&);

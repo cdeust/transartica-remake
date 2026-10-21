@@ -1,0 +1,330 @@
+{
+ "source": "TEXTEK switch 0x84",
+ "messages": {
+  "1": [
+   "WAGON",
+   ":",
+   "TARE WEIGHT :",
+   "TONS",
+   "STATE :",
+   "TRANSPORT:LIGNITE AND ANTHRACITE"
+  ],
+  "2": [
+   "DO YOU WANT TO REPAIR FOR",
+   "BAKS",
+   "THIS WAGON",
+   "?"
+  ],
+  "3": [
+   "DO YOU WANT TO DESTROY",
+   "THIS WAGON",
+   "?"
+  ],
+  "4": [
+   "YOU DON'T HAVE",
+   "ANY LIGNITE-MONEY !"
+  ],
+  "5": [
+   "YOU DON'T HAVE ANY ANTHRACITE !"
+  ],
+  "6": [
+   "OUT OF COAL"
+  ],
+  "7": [
+   "BOILER EXPLOSION"
+  ],
+  "8": [
+   "YOU HAVE NO LINE INSPECTION CARS",
+   "AND YOU CANNOT ACCESS THIS MENU"
+  ],
+  "9": [
+   "YOU DON'T HAVE ANY SPIES",
+   "AND YOU CANNOT ACCESS THIS MENU"
+  ],
+  "10": [
+   "MEETING AN OBSTACLE",
+   "LINE INSPECTION CAR DESTROYED"
+  ],
+  "11": [
+   "LINE INSPECTION CAR SELF-DESTRUCT",
+   "NO OBSTACLES MET"
+  ],
+  "12": [
+   "CHOOSE DESTINATION",
+   "FOR SPY"
+  ],
+  "13": [
+   "CLICK EXACTLY ON SPYS",
+   "DESTINATION POINT"
+  ],
+  "14": [
+   "SPY NUMBER",
+   "- COORD. X:",
+   "Y:",
+   "JOURNEY UNDER WAY",
+   "DESTINATION POINT :",
+   "X:",
+   "Y:"
+  ],
+  "15": [
+   "YOU DON'T HAVE ANY MISSILES",
+   "OPTION NOT VALID"
+  ],
+  "16": [
+   "END OF TRACK STRAIGHT AHEAD !",
+   "MACHINE STOPPED !"
+  ],
+  "17": [
+   "END OF TRACK STRAIGT AHEAD !",
+   "...ABANDONED MINE AHEAD"
+  ],
+  "18": [
+   "IT'S SKIDDING !!!",
+   "THE SLOPE IS TOO STEEP !",
+   "WE'RE TOO HEAVILY LOADED !"
+  ],
+  "19": [
+   "WE ARRIVED AT THE POWER STATION,",
+   "AND RESTARTED IT. LIGHTNING SHOT",
+   "UPWARDS STRIKING THE CLOUDS",
+   "AND DESTROYING THEM.  THE END ?"
+  ],
+  "20": [],
+  "21": [
+   "YOU MEET A SPY",
+   "QUESTION : TAKE HIM BACK ON BOARD ?"
+  ],
+  "22": [
+   "YOU COME ACROSS A MINE",
+   "QUESTION : DO YOU WANT TO PROSPECT ?"
+  ],
+  "23": [
+   "YOU SEE A HERD OF MAMMOTH",
+   "QUESTION:DO YOU WANT TO CATCH THEM ?"
+  ],
+  "24": [
+   "ROUTE BLOCKED BY A CREVASSE",
+   "QUESTION : BUILD A BRIDGE ?"
+  ],
+  "25": [
+   "ROUTE BLOCKED BY LAKE",
+   "QUESTION : BUILD A BRIDGE ?"
+  ],
+  "26": [
+   "TRACK DESTROYED",
+   "DO YOU WANT TO REPAIR IT ?"
+  ],
+  "27": [
+   "YOU MEET A GROUP OF NOMADS",
+   "DO YOU WANT TO TRADE ?"
+  ],
+  "28": [
+   "GENTLY DOES IT...KIND...REALLY CUTE",
+   "OK, SHALL WE GO ON ?"
+  ],
+  "29": [],
+  "30": [
+   "PATIENCE",
+   "OPERATION UNDER WAY"
+  ],
+  "31": [
+   "YOUR DISKETTE IS FULL",
+   "OPERATION CANCELLED"
+  ],
+  "32": [
+   "RE-INSERT THE GAME DISK",
+   "IN DRIVE A"
+  ],
+  "33": [
+   "FILE NOT FOUND"
+  ],
+  "34": [],
+  "35": [
+   "THIS WAGON IS IN GOOD CONDITION",
+   "NO NEED TO REPAIR IT"
+  ],
+  "36": [],
+  "37": [
+   "INSERT BACK-UP DISK",
+   "IN DRIVE A"
+  ],
+  "38": [
+   "ENTER THE NAME OF YOUR BACKUP",
+   "THEN PRESS RETURN :",
+   "TO CANCEL TYPE F1"
+  ],
+  "39": [
+   "INSERT A BACKUP DISK",
+   "(ALREADY FORMATTED)",
+   "IN DRIVE A"
+  ],
+  "40": [],
+  "41": [
+   "AVAILABLE RESOURCES :"
+  ],
+  "42": [
+   "RESULT OF WORKINGS",
+   "LOAD CAPACITY :",
+   "BAKS"
+  ],
+  "43": [],
+  "44": [],
+  "45": [],
+  "46": [],
+  "47": [],
+  "48": [],
+  "49": [],
+  "50": [
+   "COORDINATES POINT",
+   "X :",
+   "Y :"
+  ],
+  "51": [
+   "THE MAUSOLEUM WAS INTACT IN SPITE OF",
+   "THE YEARS AND WE WERE ABLE TO DECIPHER",
+   "IT : HERE LIES JOHN MERRICK, SCIENTIST,",
+   "PROJECT BLIND REPORT -58947-"
+  ],
+  "52": [
+   "THE BRIDGE WAS STILL FIRM.",
+   "THE WHALES GAMES FILLED",
+   "MY COMPANIONS WITH JOY.",
+   "I TOOK THE OPPORTUNITY TO SHAVE."
+  ],
+  "53": [
+   "THE HARPOON FLEW STRAIGHT.",
+   "HIT IN THE THROAT, THE ANIMAL",
+   "CONVULSED. THE BRIDGE ROCKED",
+   "DANGEROUSLY UNDER ITS WEIGHT.."
+  ],
+  "54": [
+   "VIKING UNION 'ANTI-PIRATE' CONTROL :",
+   "TAKE THE MANUAL AND ENTER",
+   "WORD        OF LINE",
+   "PAGE    :"
+  ],
+  "55": [],
+  "56": [],
+  "57": [],
+  "58": [],
+  "59": [],
+  "60": [
+   "MISSILE OUT OF CONTROL"
+  ],
+  "61": [
+   "NO ENEMY OBJECTIVE HIT"
+  ],
+  "62": [
+   "ENEMY TRAIN DESTROYED"
+  ],
+  "63": [
+   "AH... THAT WAS ALMOST IT !"
+  ],
+  "64": [],
+  "65": [],
+  "66": [],
+  "67": [],
+  "68": [],
+  "69": [],
+  "70": [],
+  "71": [],
+  "72": [
+   "ANTHRACITE MINE"
+  ],
+  "73": [
+   "MAMMOTH HUNT",
+   "MEANS COMMISSIONED :"
+  ],
+  "74": [],
+  "75": [],
+  "76": [],
+  "77": [
+   "WOLF HORDE ATTACK"
+  ],
+  "78": [
+   "MOLE MEN AMBUSH"
+  ],
+  "79": [
+   "MATERIAL LOSSES :"
+  ],
+  "80": [
+   "MATERIAL LOSSES :"
+  ],
+  "81": [
+   "HUMAN LOSSES :"
+  ],
+  "82": [],
+  "83": [
+   "RESULT OF THE HUNT",
+   "IMPORTANCE OF THE HERD:",
+   "SPACE AVAILABLE ON THE TRAIN:",
+   "YOU RECOVER",
+   "MAMMOTHS"
+  ],
+  "84": [],
+  "85": [],
+  "86": [
+   "SHALOM, I AM URGA, THE AMBIVALENT.",
+   "I KNOW THE HISTORY OF JOHN MERRICK",
+   "AFTER THE DISASTER OF OPERATION BLIND",
+   "HE SET UP PROJECT 'SUN'."
+  ],
+  "87": [
+   "MERRICK, FORCED INTO RETIREMENT, HID",
+   "VARIOUS ELEMENTS OF HIS WORK.",
+   "HE LEFT TO MY ANCESTORS",
+   "A MYSTERIOUS KEY... HERE IT IS !"
+  ],
+  "88": [
+   "...MARVELLOUS THIS HEAT...",
+   "IMAGINE THAT HERE, THE TEMPERATURE",
+   "COULD HAVE REACHED 40 DEGREES",
+   "DO YOU HAVE ANYTHING LEFT TO EAT ?"
+  ],
+  "89": [
+   "OSLO...BRRR..DELIVERY TOWN...BRRR",
+   "WELCOME...BRRR...AT RECEPTION",
+   "AND REGISTER ON THE COUPON OF...BRRR",
+   "AT THE VALIDATION OFFICE BRRRR..."
+  ],
+  "90": [
+   "INSERT YOUR PRIVATE DELIVERY NUMBER",
+   "ON THE KEYBOARD BELOW",
+   "PROVIDED FOR THE PURPOSE...BRRR",
+   "ONLY FIGURES ARE TAKEN INTO ACCOUNT."
+  ],
+  "91": [
+   "REFERENCE 2935 : GEIGER COUNTER OF",
+   "ALPHA PRECISION. ON THE BELT OR",
+   "AROUND THE NECK, ITS LINE WILL",
+   "INTEGRATE PERFECTLY WITH YOUR...BRRR"
+  ],
+  "92": [
+   "YOU COME ACROSS A DESTROYED BRIDGE",
+   "OVER A CREVASSE"
+  ],
+  "93": [
+   "YOU COME ACROSS A DESTROYED BRIDGE",
+   "OVER A LAKE"
+  ],
+  "94": [
+   "YOU COME ACROSS A TRACK DESTROYED",
+   "BY AN OFFENSIVE"
+  ],
+  "95": [],
+  "96": [
+   "SUN WAS TO DESTROY THE THICK CLOUDS",
+   "AND THUS THAW THE ICE. SEEING ITS",
+   "POWER THREATENED THE VIKING UNION",
+   "STOPPED HIM AT THE LAST MINUTE."
+  ],
+  "97": [
+   "IN ORDER TO COMMIT SUICIDE",
+   "PRESS THE LEFT BUTTON",
+   "OR THE RIGHT BUTTON TO CANCEL"
+  ],
+  "98": [],
+  "99": [],
+  "100": []
+ }
+}

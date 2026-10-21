@@ -62,7 +62,7 @@ int run(const Options& o){
     require(bool(renderer),SDL_GetError());require(SDL_SetRenderDrawBlendMode(renderer.get(),SDL_BLENDMODE_BLEND)==0,SDL_GetError());
     ta::Canvas canvas(renderer.get(),o.font);ballast_resources(canvas,o.game/"assets/travel/rail-track-kit.png");
     ta::Session session;ta::economy::WorldData cities;std::string error;
-    if(!session.load_world(o.game/"private-data/CARTE.FIC",error)||!cities.load(o.game/"private-data",error))throw std::runtime_error(error);
+    if(!session.load_world(o.game/"data/CARTE.FIC",error)||!cities.load(o.game/"data",error))throw std::runtime_error(error);
     ta::View view(canvas,o.game/"assets",o.artwork);
     std::unique_ptr<json_object,decltype(&json_object_put)> report(json_object_new_object(),json_object_put);
     field(report.get(),"scope","Prepared source-city cameras and neutral-ballast resource lifecycle; not live input/campaign or artistic acceptance");

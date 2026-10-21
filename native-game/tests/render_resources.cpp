@@ -187,7 +187,7 @@ void stage(ta::Canvas& canvas,const Options& options,json_object* stages,const s
 }
 void identities(const Options& options,json_object* report) {
     auto* files=json_object_new_array();json_object_object_add(report,"inputs",files);
-    std::vector<fs::path> paths{options.font,options.game/"private-data/CARTE.FIC",
+    std::vector<fs::path> paths{options.font,options.game/"data/CARTE.FIC",
         options.artwork/"manifest.json",options.game/"assets/travel/vehicles-overhead.json"};
     for(const auto* relative:{"interface/reception.png","engine-room/background.png","engine-room/fire.png","engine-room/stokers.png",
             "interface/original-panel-v2.png","interface/panel-icons.png","interface/panel-launcher.png",
@@ -236,7 +236,7 @@ int run(const Options& options) {
     {
         ta::Canvas canvas(renderer.get(),options.font);resources=canvas.resource_stats();
         ta::Session session;std::string error;
-        if(!session.load_world(options.game/"private-data/CARTE.FIC",error)) throw std::runtime_error(error);
+        if(!session.load_world(options.game/"data/CARTE.FIC",error)) throw std::runtime_error(error);
         const auto start=Clock::now();
         ta::View view(canvas,options.game/"assets",options.artwork);
         field(report.get(),"view_construction_ns",std::uint64_t(std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-start).count()));

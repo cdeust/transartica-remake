@@ -16,12 +16,16 @@ et [la couverture actuelle](tasks/validation/completion-matrix-20261001.md).
 
 ## Runtime C++ autonome
 
-Le port SDL2 est dans [native-game](native-game/README.md). Il est compilé et
-jouable sur le Mac de validation avec les ressources privées. Les vingt suites
-CTest passent et neuf scénarios ont été exercés dans l'interface réelle.
+Le port SDL2 est dans [native-game](native-game/README.md). Ses ressources sont
+versionnées dans `game/assets/` et `game/data/` et intégrées automatiquement
+à la construction. Aucun téléchargement de données séparé n'est nécessaire.
+Les instructions natives décrivent les dépendances et le lancement.
+
 La campagne complète par joueur et les lancements Windows/Linux restent à valider.
-Le [rapport de publication](tasks/evidence/cpp-publication-20261021.md) précise
-les corrections graphiques et les données nécessaires, exclues de Git.
+Les corrections graphiques sont décrites dans
+[le rapport de publication](tasks/evidence/cpp-publication-20261021.md).
+La [livraison des ressources](tasks/evidence/cpp-resources-delivery-20261021.md)
+remplace l'exclusion des données mentionnée dans ce rapport antérieur.
 
 ## Jouer localement avec la version Godot
 
@@ -45,7 +49,7 @@ les options et R pour recommencer. Les commandes contextuelles affichées dans
 les scènes conservent leur priorité. Les sauvegardes comprennent moteur, voyage,
 commerce, hasard, campagne, dialogues, faune, combat, lance-missiles et audio.
 
-## Distributions privées
+## Anciens exports Godot
 
 `python3 tools/build_preview.py all` prépare les données locales et exporte :
 
@@ -58,9 +62,10 @@ Un export Windows réalisé sur macOS ne prouve pas son exécution sur Windows.
 La concordance avec le matériel sonore Amiga et l’inventaire exhaustif des
 variantes visuelles historiques restent des limites de vérification explicites.
 
-Le nouveau code est sous MIT. Les données et sons historiques restent privés
-dans `reference-private/`, `game/private-data/` et les builds ignorés.
-Ces paquets ne sont pas des distributions publiques sous MIT.
+Le nouveau code est sous MIT. Le port natif versionne ses données de jeu avec
+leur provenance et leurs notices distinctes. Les dossiers `reference-private/`
+et `game/private-data/` restent des archives locales du développement Godot ;
+ils ne sont pas nécessaires à la construction native.
 
 ## Vérifier
 

@@ -60,11 +60,11 @@ class ParserTests(unittest.TestCase):
         with self.assertRaises(package.PackageError):
             package.macho_commands("Load command 0\n cmd LC_LOAD_DYLIB\n name missing-offset\n")
 
-    def test_private_paths_reject_traversal(self):
+    def test_resource_paths_reject_traversal(self):
         for name in ("", "../a", "/a", "a/./b", "a//b", "a\\b", "a/../b"):
             with self.subTest(name=name), self.assertRaises(package.PackageError):
                 package.relative(name)
-        self.assertEqual(package.relative("private-data/audio/a.wav"), Path("private-data/audio/a.wav"))
+        self.assertEqual(package.relative("data/audio/a.wav"), Path("data/audio/a.wav"))
 
     def test_loader_and_executable_paths_are_distinct(self):
         loader = Path("/Application/Contents/Frameworks/a.dylib")
@@ -106,12 +106,12 @@ class ArtworkOverrideTests(unittest.TestCase):
         self.original = self.game / "assets/travel/artwork/world-hd"
         self.candidate = self.repo / "candidate"
         self.config = self.repo / "packaging"
-        for path in (self.original, self.candidate, self.config, self.game / "assets/interface", self.game / "private-data/audio"):
+        for path in (self.original, self.candidate, self.config, self.game / "assets/interface", self.game / "data/audio"):
             path.mkdir(parents=True)
-        self.write(self.config / "runtime-assets.json", {"private_files": [], "assets": ["travel/artwork/world-hd/manifest.json"], "atlas_manifests": [], "audio_scripts": []})
+        self.write(self.config / "runtime-assets.json", {"game_data_files": [], "assets": ["travel/artwork/world-hd/manifest.json"], "atlas_manifests": [], "audio_scripts": []})
         self.write(self.game / "assets/interface/original-data-manifest.json", {"format": "transartica-original-data-v1", "files": []})
-        self.write(self.game / "private-data/audio/manifest.json", {"scripts": {}})
-        self.write(self.game / "private-data/audio/music.json", {"tracks": {}})
+        self.write(self.game / "data/audio/manifest.json", {"scripts": {}})
+        self.write(self.game / "data/audio/music.json", {"tracks": {}})
         for directory, marker in ((self.original, "original"), (self.candidate, "candidate")):
             scenes = []
             for i in range(8):

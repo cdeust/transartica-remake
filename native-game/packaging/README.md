@@ -1,6 +1,6 @@
-# Paquet macOS natif privé
+# Livraison des ressources et paquet macOS natif
 
-`--artwork-dir CHEMIN` sélectionne un candidat world-hd privé situé dans le projet.
+`--artwork-dir CHEMIN` sélectionne un candidat world-hd situé dans le projet.
 Le dossier doit contenir son `manifest.json` et les huit `region-00.png` à
 `region-07.png`. Seules leurs empreintes PNG/RGBA peuvent différer du manifest
 source ; la registration et les dépendances restent identiques. Les SHA PNG sont
@@ -10,7 +10,7 @@ assets partagés. L'option fonctionne aussi avec `--plan`.
 
 Le script prépare un `.app` local à partir du binaire C++ déjà compilé et validé.
 Il ne construit, télécharge ni lance aucun programme de jeu. Le paquet contient
-des données historiques privées et ne doit pas être publié. Le code MIT, les
+les données nécessaires au jeu. Le code MIT, les
 bibliothèques, la police OFL et les données historiques sont identifiés séparément.
 
 La sélection `runtime-assets.json` suit les chemins des modules `app`, `screens`,
@@ -18,7 +18,7 @@ La sélection `runtime-assets.json` suit les chemins des modules `app`, `screens
 puis suit les références des atlas, de la carte et des manifests audio. Les PNG
 de travail, imports du moteur, copies alternatives, sources GDScript et caches ne
 sont pas copiés. Un fichier référencé plusieurs fois est copié une seule fois.
-Chaque fichier privé présent dans `original-data-manifest.json` est comparé au
+Chaque fichier de données présent dans `original-data-manifest.json` est comparé au
 SHA et à la taille de cette édition, comme `public_data_pack.gd::validate` ; les
 nouveaux fichiers absents de cet ancien manifest portent explicitement
 `edition_verified: false` dans l’inventaire. Les peintures sont toujours vérifiées
@@ -40,11 +40,11 @@ Transartica.app/Contents/
   MacOS/Transartica
   Frameworks/<bibliothèques réellement requises>
   Resources/game/assets/<sélection + références de manifests>
-  Resources/game/private-data/<sélection historique>
+  Resources/game/data/<sélection historique>
   Resources/fonts/NotoSans.ttf
   Resources/licenses/<textes complets>
   Resources/resource-inventory.json
-  Resources/PRIVATE-DATA-NOTICE.txt
+  Resources/RESOURCE-NOTICE.txt
   Info.plist
 Transartica.app.receipt.json
 ```
@@ -101,7 +101,7 @@ chargées par dyld et exercer accueil, carte, ville, campagne, combat et audio.
 Le `--plan` et les tests de parseur ne prouvent pas ce lancement. Le protocole
 JSON du moteur historique n'est pas importé par le runtime natif.
 
-Sources de plateforme consultées localement :
+Sources de plateforme :
 
 - `SDL_filesystem.h` SDL2 : dans un `.app`, `SDL_GetBasePath` renvoie par défaut
   `Contents/Resources/`, sélection explicite `SDL_FILESYSTEM_BASE_DIR_TYPE=resource` ;
@@ -112,7 +112,7 @@ Sources de plateforme consultées localement :
   `-headerpad_max_install_names` au lien si les noms deviennent plus longs.
 - `man codesign` : signature ad-hoc `--sign -`, vérification stricte du paquet.
 
-État au 21 octobre 2026 : le paquet macOS privé final a été construit puis
+La validation graphique du 21 octobre 2026 a utilisé un paquet macOS construit puis
 exécuté après les corrections graphiques. Son inventaire de fichiers, ses
 liaisons Mach-O et sa signature locale ont été revérifiés après déplacement.
 Les 20 suites CTest passent ; neuf scénarios ont été exercés dans l'interface
@@ -121,9 +121,27 @@ réelle et les 33 raccords de carte ont été revus. Le reçu de fabrication gar
 le [rapport publié](../../tasks/evidence/cpp-publication-20261021.md).
 La campagne complète par joueur et les lancements Windows/Linux restent non validés.
 
-Pour reproduire la fabrication depuis un clone, fournir le jeu de ressources
-privé décrit dans le [README du runtime](../README.md) et toutes les dépendances
-de `runtime-assets.json`. Aucun paquet contenant ces données historiques n'est
-inclus dans le dépôt publié. Le raccourci local vise
-`output/standalone-native-graphics-20261021/Transartica.app` ; un paquet fabriqué
-ailleurs se lance directement ou nécessite l'adaptation de ce raccourci.
+La compilation CMake livre automatiquement le jeu de ressources suivi dans Git.
+`stage_runtime.py` réutilise `resource_plan` sans exécuter les outils Mach-O.
+Il suit les dépendances des atlas et des manifests audio, puis vérifie les
+empreintes avant de copier. Les sources résolues hors du checkout sont refusées.
+Les copies sont des fichiers ordinaires ; l'inventaire livré omet les chemins
+source absolus. Les octets inchangés ne sont pas recopiés au build suivant.
+
+L'installation vérifie l'inventaire et chaque empreinte de la copie construite
+avant toute écriture. Elle synchronise les ressources et retire seulement les
+anciens fichiers inscrits dans son inventaire précédent. Les fichiers ajoutés par
+l'utilisateur sont conservés. Les fixtures de tests ne font pas partie du paquet.
+
+Le build conserve `resources/` à côté de `Transartica`. `cmake --install` livre
+`bin/Transartica` et `bin/resources/`. Le runtime les retrouve par `SDL_GetBasePath`,
+sans accès au checkout. Cette installation conserve les dépendances de bibliothèques
+du système de compilation ; le paquet macOS décrit ci-dessus les ferme séparément.
+Le raccourci `native-game/launch.command` lance `build/native/Transartica` et accepte
+un autre dossier via `TRANSARTICA_BUILD_DIR`.
+
+Les entrées `game_data_files` de `runtime-assets.json` désignent `game/data/`.
+Les manifests historiques gardent leurs anciennes références `private-data/` ;
+leur résolution native les transpose vers `data/`, sans modifier les fichiers
+historiques. Le manifest d'édition valide ainsi les mêmes octets après déplacement.
+Les notices de provenance et les textes de licence accompagnent chaque livraison.

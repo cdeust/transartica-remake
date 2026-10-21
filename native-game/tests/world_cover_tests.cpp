@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
         load_paintings(passages, argv[3]);
         ta::RailNetwork network;
         std::string error;
-        require(network.load(game / "private-data/CARTE.FIC", error), error.c_str());
+        require(network.load(game / "data/CARTE.FIC", error), error.c_str());
         const auto original = network.tiles();
         struct Camera { const char* name; ta::Point center; double density; };
         // Reproduction saves retain these exact cameras. Other densities cover

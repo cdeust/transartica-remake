@@ -16,8 +16,8 @@ GameSession::GameSession(Session& session):core(session),
     random.seed(seed());encounter_random.seed(seed());visual_random.seed(seed());
 }
 bool GameSession::load(const std::filesystem::path& game,std::string& error) {
-    if(!data.load(game/"private-data",error)||!trade.load(game/"private-data",error)
-        ||!campaign.load(game/"private-data",error)) return false;
+    if(!data.load(game/"data",error)||!trade.load(game/"data",error)
+        ||!campaign.load(game/"data",error)) return false;
     core.network.set_city_anchors(data.city_anchors());
     core.network.campaign_entry_enabled=true;
     reset();return true;

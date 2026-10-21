@@ -212,11 +212,11 @@ int run(const Options& o){
     std::unique_ptr<SDL_Renderer,decltype(&SDL_DestroyRenderer)> renderer(SDL_CreateRenderer(window.get(),-1,o.renderer=="software"?SDL_RENDERER_SOFTWARE:SDL_RENDERER_ACCELERATED),SDL_DestroyRenderer);require(bool(renderer),SDL_GetError());
     ta::render_check(SDL_SetRenderDrawBlendMode(renderer.get(),SDL_BLENDMODE_BLEND),"Probe blend");ta::Canvas canvas(renderer.get(),o.font);
     ta::WorldPassages passages(canvas,o.game/"assets");ta::WorldVisual rails(canvas,o.game/"assets");auto art=paintings(passages,canvas,o.artwork);
-    ta::RailNetwork network;std::string error;if(!network.load(o.game/"private-data/CARTE.FIC",error))throw std::runtime_error(error);const auto before=network.tiles();
+    ta::RailNetwork network;std::string error;if(!network.load(o.game/"data/CARTE.FIC",error))throw std::runtime_error(error);const auto before=network.tiles();
     obstacle_checks(passages,network,o.density);
     Json report(json_object_new_object(),json_object_put);text(report.get(),"scope","Prepared floor/train/cover/crown sequence, not live traversal or artistic acceptance");
     text(report.get(),"placement",o.placement);text(report.get(),"artwork_directory",o.artwork.string());text(report.get(),"counter_scope","Changed pixels inside train bounding box, not an alpha-mask occlusion proof");
-    text(report.get(),"format","transartica-world-passages-reference-v2");text(report.get(),"manifest_sha256",digest(o.artwork/"manifest.json"));text(report.get(),"source_map_sha256",digest(o.game/"private-data/CARTE.FIC"));
+    text(report.get(),"format","transartica-world-passages-reference-v2");text(report.get(),"manifest_sha256",digest(o.artwork/"manifest.json"));text(report.get(),"source_map_sha256",digest(o.game/"data/CARTE.FIC"));
     json_object_object_add(report.get(),"background_context_cells_requested",json_object_new_double(o.background_context));
     text(report.get(),"obstacle_checks","Amsterdam25,24 rails present; geological25,25 and26,26 absent; timed110,33 closed has no rails, open has authored bridge");
     SDL_RendererInfo info{};ta::render_check(SDL_GetRendererInfo(renderer.get(),&info),"Probe renderer");text(report.get(),"renderer",info.name);

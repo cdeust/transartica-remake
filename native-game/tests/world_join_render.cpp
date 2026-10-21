@@ -129,7 +129,7 @@ std::vector<Region> load(const Options& options,Json& manifest,const fs::path& m
     manifest.reset(json_object_from_file(manifest_path.string().c_str()));
     if(!manifest) throw std::runtime_error("Cannot read world-hd manifest");
     if(json_object_get_int(member(manifest.get(),"schema"))!=1) throw std::runtime_error("This diagnostic requires the active schema1 affine paintings");
-    ta::verify_sha256(options.game/"private-data/CARTE.FIC",string(member(manifest.get(),"source_map_sha256")));
+    ta::verify_sha256(options.game/"data/CARTE.FIC",string(member(manifest.get(),"source_map_sha256")));
     auto* scenes=member(manifest.get(),"scenes");
     if(!json_object_is_type(scenes,json_type_array)||!json_object_array_length(scenes)) throw std::runtime_error("Empty scenes");
     std::vector<Region> regions;std::set<std::string> ids;

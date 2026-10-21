@@ -119,7 +119,7 @@ bool GameAudio::play_finale(double seconds) {
     if(!std::isfinite(seconds)||seconds<0) {p.error="Invalid finale audio offset";return false;}
     try {
         // Source campaign_screen.gd::_resume_audio: independent, unguarded player.
-        auto clip=p.load(p.resources.path("res://private-data/finale.wav"));
+        auto clip=p.load(p.resources.path("res://data/finale.wav"));
         const auto frames=clip->frames();
         const auto cursor=static_cast<std::size_t>(std::min(double(frames),seconds*p.rate));
         DeviceLock lock(p.device);

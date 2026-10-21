@@ -10,7 +10,7 @@
 namespace transartica::panels {
 StartupIntro::StartupIntro(Canvas& canvas,const std::filesystem::path& game)
     :canvas_(canvas),artwork_(game/"assets/campaign/startup.png") {
-    std::unique_ptr<json_object,decltype(&json_object_put)> root(json_object_from_file((game/"private-data/startup.json").string().c_str()),json_object_put);
+    std::unique_ptr<json_object,decltype(&json_object_put)> root(json_object_from_file((game/"data/startup.json").string().c_str()),json_object_put);
     json_object *title{},*credits{};
     if(!root||!json_object_object_get_ex(root.get(),"title",&title)||!json_object_is_type(title,json_type_string)
        ||!json_object_object_get_ex(root.get(),"credits",&credits)||!json_object_is_type(credits,json_type_array))

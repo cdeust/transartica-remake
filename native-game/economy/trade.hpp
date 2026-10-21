@@ -29,7 +29,7 @@ struct TradeState {
 };
 class Trade {
 public:
-    // Atomic parse. directory is game/private-data, never a generated asset path.
+    // Atomic parse. directory is game/data, never a generated asset path.
     bool load(const std::filesystem::path& directory, std::string& error);
     bool loaded() const { return loaded_; }
     void reset(Random&);

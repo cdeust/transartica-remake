@@ -1,0 +1,13 @@
+Transartica runtime resources
+
+The project MIT license covers the native source code. Historical game assets
+and decoded datasets retain their original provenance and are not relicensed
+by their inclusion in this distribution. Their edition hashes are recorded in
+game/assets/interface/original-data-manifest.json where available.
+
+Noto Sans uses the OFL license. The adapted math code retains its MIT notice.
+The authored orchestral score carries its own notice when selected.
+See licenses/ for the full texts included with this runtime.
+
+This software is based in part on the work of the FreeType Team
+(https://freetype.org). SDL2 and other linked libraries are separately licensed.

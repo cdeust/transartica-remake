@@ -9,7 +9,7 @@
 namespace transartica::panels {
 namespace {constexpr SDL_Color gold{238,202,136,255};}
 CaptainEvent::CaptainEvent(Canvas& c,std::filesystem::path a):canvas_(c),assets_(std::move(a)){
-    campaign::Data data;std::string error;if(!data.load(assets_.parent_path()/"private-data/campaign.json",error))throw std::runtime_error(error);epitaph_=data.message(100,true);
+    campaign::Data data;std::string error;if(!data.load(assets_.parent_path()/"data/campaign.json",error))throw std::runtime_error(error);epitaph_=data.message(100,true);
     if(epitaph_.size()!=10)throw std::runtime_error("Missing private captain epitaph100");
 }
 void CaptainEvent::prompt_revolver(){state_={CaptainMode::Confirm,{"IN ORDER TO COMMIT SUICIDE","PRESS THE LEFT BUTTON","OR THE RIGHT BUTTON TO CANCEL"}};armed_=false;}

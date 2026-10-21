@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "source": "native-game/{app,screens,view,audio,economy,campaign}; private protocol: game/scripts/public_data_pack.gd",
-  "private_files": ["CARTE.FIC", "villes-decoded.data", "commerce.json", "campaign.json", "textek.json", "overview-geometry.json", "startup.json", "finale.wav", "audio/manifest.json"],
+  "source": "native-game/{app,screens,view,audio,economy,campaign}; edition provenance: game/assets/interface/original-data-manifest.json",
+  "game_data_files": ["CARTE.FIC", "villes-decoded.data", "commerce.json", "campaign.json", "textek.json", "overview-geometry.json", "startup.json", "finale.wav", "audio/manifest.json"],
   "audio_scripts": ["berta", "present", "scene1", "scene3", "scene4", "son", "train", "wdecor"],
   "assets": [
     "boudoir/captain-boudoir.png", "boudoir/general-quarters.png",
     "boudoir/cutouts/boudoir-stoup.png", "boudoir/cutouts/boudoir-kolotov.png", "boudoir/cutouts/boudoir-revolver.png", "boudoir/cutouts/boudoir-book.png",
     "boudoir/cutouts/quarters-stoup.png", "boudoir/cutouts/quarters-operator.png", "boudoir/cutouts/quarters-officer.png", "boudoir/cutouts/quarters-map.png",
     "engine-room/background.png", "engine-room/fire.png", "engine-room/stokers.png", "engine-room/instruments.png", "engine-room/engineer-mask.png", "engine-room/interface-mask.png",
-    "interface/reception.png", "interface/original-panel-v2.png", "interface/panel-icons.png", "interface/panel-launcher.png",
+    "interface/original-data-manifest.json", "interface/reception.png", "interface/original-panel-v2.png", "interface/panel-icons.png", "interface/panel-launcher.png",
     "interface/inventory-frame.png", "interface/launcher.png", "interface/launcher-rocket.png", "interface/mort-earth.png", "interface/world-chart-frame.png",
     "cities/goods-icons.json", "cities/city-information.png", "cities/city-trading-station.png", "cities/city-industrial-workshop.png",
     "cities/city-garrison.png", "cities/city-mammoth-fair.png", "cities/city-slave-market.png",

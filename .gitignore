@@ -12,7 +12,10 @@ __pycache__/
 .DS_Store
 /.claude/session-cache.json
 
-# Private native runtime bundles, selected world paintings and UI captures.
+# Local build products and verification captures.
 /output/standalone-native*/
-/game/assets/travel/artwork/world-hd/region-*.png
 /tasks/standalone-cpp-20261018/interface-captures/
+
+# Native CMake build and default installed output.
+/build/
+/output/native-install/

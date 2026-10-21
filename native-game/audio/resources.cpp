@@ -29,22 +29,23 @@ std::string string(json_object* object,const char* key) {
     auto* value=field(object,key);return value?json_object_get_string(value):"";
 }
 Resources::Resources(std::filesystem::path game):game_(std::filesystem::weakly_canonical(game)),
-    private_(std::filesystem::weakly_canonical(game_/"private-data")) {
-    samples_=read(game_/"private-data/audio/manifest.json");
+    data_(std::filesystem::weakly_canonical(game_/"data")) {
+    samples_=read(game_/"data/audio/manifest.json");
     const auto score=game_/"assets/audio/orchestral/music.json";
-    music_=read(std::filesystem::exists(score)?score:game_/"private-data/audio/music.json");
+    music_=read(std::filesystem::exists(score)?score:game_/"data/audio/music.json");
     if(!field(samples_.get(),"scripts") || !field(music_.get(),"tracks")) throw std::runtime_error("Audio manifest lacks scripts/tracks");
 }
 std::filesystem::path Resources::path(const std::string& filename) const {
-    auto relative=filename.starts_with("res://")?std::filesystem::path(filename.substr(6)):std::filesystem::path("private-data/audio")/filename;
+    auto relative=filename.starts_with("res://")?std::filesystem::path(filename.substr(6)):std::filesystem::path("data/audio")/filename;
+    if(relative.generic_string().starts_with("private-data/"))
+        relative=std::filesystem::path("data")/relative.lexically_relative("private-data");
     const auto resolved=std::filesystem::weakly_canonical(game_/relative);
     const auto within=[&](const std::filesystem::path& root) {
         const auto relative=resolved.lexically_relative(root);
         return !relative.empty()&&!relative.is_absolute()&&*relative.begin()!="..";
     };
-    // Private historical resources are deliberately linked from the worktree to
-    // the project's existing private dataset. Trust that declared root only.
-    if(filename.empty() || (!within(game_)&&!within(private_))) throw std::runtime_error("Audio path outside trusted game/private-data roots");
+    // Historical manifests retain their source paths; the native layout uses data/.
+    if(filename.empty() || (!within(game_)&&!within(data_))) throw std::runtime_error("Audio path outside trusted game/data roots");
     return resolved;
 }
 json_object* Resources::sample(const std::string& script,int resource) const {

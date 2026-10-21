@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: MIT
+# install(SCRIPT) evaluates CMAKE_INSTALL_PREFIX and DESTDIR at installation time.
+execute_process(
+  COMMAND "@Python3_EXECUTABLE@" -B "@TA_INSTALL_TOOL_DIR@/stage_runtime.py"
+    --from-staged "@TA_RUNTIME_RESOURCES@"
+    --output "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/resources"
+  RESULT_VARIABLE resource_install_result
+  OUTPUT_VARIABLE resource_install_output
+  ERROR_VARIABLE resource_install_error)
+if(NOT resource_install_result EQUAL 0)
+  message(FATAL_ERROR "Resource installation failed: ${resource_install_error}")
+endif()
+message(STATUS "${resource_install_output}")

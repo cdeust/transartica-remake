@@ -617,6 +617,17 @@ Technical native proof and Claude handoff: tasks/handoff-codex-world-artwork-202
 - [x] Préserver les modifications du chantier Godot et inventorier les ressources.
 - [x] Actualiser les instructions et les limites de validation.
 - [x] Vérifier la compilation sur cette base et les contrôles de qualité.
-- [ ] Committer, pousser et vérifier le SHA distant.
+- [x] Committer, pousser et vérifier le SHA distant : da03cd9 publié, PR11.
 
 Reçu : [cpp-publication-20261021.md](evidence/cpp-publication-20261021.md).
+
+## Ressources natives livrées, correction du 21 octobre 2026
+
+Cette section remplace l'exclusion des ressources prévue lors de la première
+publication. Le propriétaire demande les ressources dans Git et dans le build.
+
+- [x] Inventorier et copier les 120 ressources du paquet graphique validé.
+- [x] Versionner les trois fixtures de régression utilisées par native_reverse.
+- [x] Copier automatiquement les ressources au build et à l'installation.
+- [x] Vérifier les seuls fichiers Git, puis lancer une installation déplacée.
+- [ ] Mettre à jour la PR11, pousser et nettoyer les temporaires possédés.

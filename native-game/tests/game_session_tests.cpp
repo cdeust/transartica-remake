@@ -17,7 +17,7 @@ struct Fixture {
     Session core;GameSession game;
     explicit Fixture(const std::filesystem::path& path):game(core) {
         std::string error;
-        if(!core.load_world(path/"private-data/CARTE.FIC",error)||!game.load(path,error)) throw std::runtime_error(error);
+        if(!core.load_world(path/"data/CARTE.FIC",error)||!game.load(path,error)) throw std::runtime_error(error);
         reset();
     }
     void reset() {game.random.seed(7);game.encounter_random.seed(19);game.visual_random.seed(23);game.reset();}

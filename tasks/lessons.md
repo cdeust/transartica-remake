@@ -311,3 +311,10 @@ live crevasse approach; the broad guide broke that existing regression.
 The narrow command latch preserves earned11437 late-switch contacts and
 keeps early unoccupied switches effective. See
 tasks/reverse-occupied-switch-20261004.md for before/after prepared evidence.
+
+## Livraison C++ complète, correction du21octobre2026
+
+La publication des seules sources avec des ressources locales exclues ne
+satisfait pas la demande du propriétaire. Versionner la fermeture exacte
+des ressources runtime et l'inclure automatiquement au build. Vérifier un
+checkout propre et une installation déplacée sans accès aux chemins source.

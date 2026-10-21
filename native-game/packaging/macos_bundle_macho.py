@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""Mach-O load-command parsing and dyld path interpretation for private bundles."""
+"""Mach-O load-command parsing and dyld path interpretation for native bundles."""
 from __future__ import annotations
 
 from pathlib import Path

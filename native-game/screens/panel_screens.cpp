@@ -183,7 +183,7 @@ void PanelScreens::inventory(const Session& session) {
 }
 void PanelScreens::load_overview() {
     if(overview_loaded_) return;
-    const auto path=assets_.parent_path()/"private-data/overview-geometry.json";
+    const auto path=assets_.parent_path()/"data/overview-geometry.json";
     using Json=std::unique_ptr<json_object,decltype(&json_object_put)>;
     Json root(json_object_from_file(path.string().c_str()),json_object_put);
     if(!root) throw std::runtime_error("Cannot read original overview geometry: "+path.string());

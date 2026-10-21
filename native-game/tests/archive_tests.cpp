@@ -36,7 +36,7 @@ struct Scratch {
 };
 EconomySnapshot baseline(Session& session,const std::filesystem::path& game) {
     std::string error;economy::Trade trade;
-    if(!trade.load(game/"private-data",error)) throw std::runtime_error(error);
+    if(!trade.load(game/"data",error)) throw std::runtime_error(error);
     EconomySnapshot state;state.random.seed(42);trade.reset(state.random);state.trade=trade.snapshot();
     state.workshop.visible=true;state.workshop.selected=4;state.workshop.action=50;state.workshop.moving=4;
     state.workshop.title="LEEDS \"STATION\"";state.workshop.notice="First line\nSecond line \\";
@@ -111,7 +111,7 @@ int main(int argc,char** argv) {
     if(argc!=3) {std::cerr<<"usage: archive_tests <game-directory> <existing-scratch-parent>\n";return 2;}
     try {
         Session session;std::string error;
-        if(!session.load_world(std::filesystem::path(argv[1])/"private-data/CARTE.FIC",error)) throw std::runtime_error(error);
+        if(!session.load_world(std::filesystem::path(argv[1])/"data/CARTE.FIC",error)) throw std::runtime_error(error);
         Scratch scratch(argv[2]);const auto state=baseline(session,argv[1]);
         economy_roundtrip(session,state);archive_roundtrip(scratch.directory,serialize_economy(state));
         std::cout<<checks<<" archive checks, "<<failures<<" failures\n";return failures?1:0;

@@ -11,8 +11,10 @@ Use bounded lower-cost specialists when useful. One implementation owner per
 module; preserve other agents' edits. Print compact tool summaries, never raw
 Cortex responses containing unrelated memories. No remote publication is implied.
 
-New code uses MIT. Historical assets and derived full datasets stay private in
-reference-private/ or ignored build outputs. No original assets in public bundles.
+New code uses MIT. Owner correction, 21 October 2026: the resources required by
+the native game are versioned in game/data and game/assets and included in builds.
+Preserve their provenance and separate content notices. Unrelated reference
+evidence, personal saves and tooling logs remain outside published runtime assets.
 
 Keep durable progress in tasks/todo.md. Verify actual launches and input behavior;
 a source export is not proof of a Windows executable working on Windows.
