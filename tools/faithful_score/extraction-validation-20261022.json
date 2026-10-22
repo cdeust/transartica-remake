@@ -1,0 +1,194 @@
+{
+  "all_cycle_boundaries_match_original": true,
+  "loaded_instruments_match_previous_captures": true,
+  "final_b0_realtime_event_equality": true,
+  "equality_normalization": "Exclude provenance header and serial0/repeated endvoice; compare each event type sequence including every field (loop marker emitted postfill).",
+  "normalized_sha256": "01e9c8cd07ba61277b5f85e582d9287d8fe78d07ab872fde86340b3be5f6d649",
+  "cues": {
+    "bojeu-0": {
+      "rows": 579,
+      "triggers": 398,
+      "serials": [
+        104,
+        137,
+        88,
+        69
+      ],
+      "loops": [
+        3025260,
+        6058458
+      ],
+      "complete": {
+        "event": "complete",
+        "frame": 6058458,
+        "reason": "cycles"
+      }
+    },
+    "bojeu-1": {
+      "rows": 897,
+      "triggers": 513,
+      "serials": [
+        215,
+        99,
+        130,
+        69
+      ],
+      "loops": [
+        2370816,
+        4741632
+      ],
+      "complete": {
+        "event": "complete",
+        "frame": 4741632,
+        "reason": "cycles"
+      }
+    },
+    "bojeu2-0": {
+      "rows": 681,
+      "triggers": 375,
+      "serials": [
+        183,
+        94,
+        13,
+        85
+      ],
+      "loops": [
+        4017510,
+        7686630
+      ],
+      "complete": {
+        "event": "complete",
+        "frame": 7686630,
+        "reason": "cycles"
+      }
+    },
+    "bolieu-0": {
+      "rows": 64,
+      "triggers": 73,
+      "serials": [
+        34,
+        13,
+        12,
+        14
+      ],
+      "loops": [],
+      "complete": {
+        "event": "complete",
+        "frame": 980784,
+        "reason": "native-stop"
+      }
+    },
+    "bolieu-1": {
+      "rows": 28,
+      "triggers": 18,
+      "serials": [
+        7,
+        4,
+        6,
+        1
+      ],
+      "loops": [],
+      "complete": {
+        "event": "complete",
+        "frame": 980784,
+        "reason": "native-stop"
+      }
+    },
+    "bolieu-2": {
+      "rows": 64,
+      "triggers": 37,
+      "serials": [
+        16,
+        1,
+        7,
+        13
+      ],
+      "loops": [],
+      "complete": {
+        "event": "complete",
+        "frame": 980784,
+        "reason": "native-stop"
+      }
+    },
+    "bolieu-3": {
+      "rows": 58,
+      "triggers": 33,
+      "serials": [
+        10,
+        7,
+        7,
+        9
+      ],
+      "loops": [],
+      "complete": {
+        "event": "complete",
+        "frame": 980784,
+        "reason": "native-stop"
+      }
+    },
+    "bolost-0": {
+      "rows": 193,
+      "triggers": 117,
+      "serials": [
+        68,
+        10,
+        13,
+        26
+      ],
+      "loops": [
+        2540160
+      ],
+      "complete": {
+        "event": "complete",
+        "frame": 2540160,
+        "reason": "cycles"
+      }
+    },
+    "bopres-0": {
+      "rows": 789,
+      "triggers": 1655,
+      "serials": [
+        298,
+        643,
+        650,
+        64
+      ],
+      "loops": [
+        4170096,
+        8340192
+      ],
+      "complete": {
+        "event": "complete",
+        "frame": 8340192,
+        "reason": "cycles"
+      }
+    }
+  },
+  "sources": {
+    "music_v2_sha256": "4d4fff26ec9e79a78629dca4393d6bd7e06a6a069e77a3a39e0beb9c2eb58ccc",
+    "observer_sha256": "50cafacae879d543b6132bc3661881515b94403c073f0b9b59247e037184559e",
+    "instrumented_music_v2_sha256": "2f7a9e8ea50230d94b62f5d2e940e815adc96de6593d5ccb4a6ea409265aa28d",
+    "preview_sha256": "8c0426a08012161679b076486e8ef92e98a71af3e443a41776d6b5d2cd3b3972",
+    "extractor_sha256": "755bcb2de01ec9e87f797e9b34ba0c19d11226a5a234d2be8efd3873df6a45bd"
+  },
+  "original_source_files_unchanged": 68,
+  "binary_sha256": "3cb0a7d8e7bd3f1610059960d70deaa9afc21ccc7dafaeaaa2dc6f8093a1e942",
+  "validation": {
+    "unit_tests": 4,
+    "real_time_pilot_seconds": 170.983,
+    "offline_final_nine_seconds": 3.873,
+    "offline_final_nine_peak_rss_kib": 52688,
+    "memory_limit_mib": 1024
+  },
+  "trace_sha256": {
+    "bojeu-0-final": "fc97b1460546f3b1e17e47429aa5d9d22618d922ce2db708ba96282a4399f177",
+    "bojeu-1-final": "20c071b7448afa33c8430de95fdd7c27d21f81e9184193cebcb2e8d0c7597dcb",
+    "bojeu2-0-final": "ce5f462e5d70b1f9b457d2d81be5f802898637014e2b11396d360517e56466e0",
+    "bolieu-0-final": "a6be88d05e281737f0a537f92c2d09c98454b6f8a3402a557542690259a7fb18",
+    "bolieu-1-final": "9527def6356f82de71da732e86c447c39879d52281d6b642e30853a5529a1b6f",
+    "bolieu-2-final": "396e7c3c7025d45f2f66d3d9a86341e7a433a0b83c9e7adfe3fb0d8bd41133c5",
+    "bolieu-3-final": "a04280ecb1d12fdd6a35575f6adfb825af761d082741dc07271340fcb2768ef0",
+    "bolost-0-final": "ac52bdfd1ca645534a7e44c3d34242c4d956f50b8457f9c19a0f5708f6badd3e",
+    "bopres-0-final": "c9b5f4dc0dc3c923b0e6e9f035389fd5af8f0b91c282d097882466d6c100562f"
+  }
+}

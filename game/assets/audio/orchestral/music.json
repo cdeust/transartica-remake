@@ -1,70 +1,461 @@
 {
   "version": 1,
-  "authorship": "Original score for Transartica; not historical soundtrack transcription",
+  "authorship": "Orchestral arrangement of the historical Amiga score; original resonant/percussive textures retained.",
   "sample_library": "VSCO2 CE, CC0-1.0",
+  "source_execution": {
+    "executable_sha256": "741f28adae86c8954cfeb90de6f9ba8f64f98abadb4eafab1d018381b4505071",
+    "player": "Original Amiga T.X executed with machine68k 0.4.0",
+    "tick_rate_hz": 50,
+    "limitation": "Nominal PAL scheduling; sub-tick DMA startup and analog coloration are not emulated."
+  },
+  "calibration_sha256": "9db16b736c312f824f62eb0c72f3013f923dbb941a904d5f2c29574965cb9719",
+  "fidelity": {
+    "source_basis": "Original Amiga CPU decompression and Paula layout; apply source_playback.startup_zero_bytes.",
+    "static": "Use independently measured component roots and weights; no MIDI pitch snapping.",
+    "phrase": "Render only notes in phrase_orchestra entries. Onsets are midpoints of recorded finite-window support bounds; first notes use original trigger zero. Measured gains retain internal decay.",
+    "analysis": "Other spectral candidates remain analysis-only; rejected candidates do not become notes.",
+    "retained_source": "Original resonant/percussive textures remain PCM. Some have pitched resonances; their retention is not a claim that all are unpitched.",
+    "limitations": "Phrase transcription is measured musical inference with explicit frequency/onset uncertainty, not recovered published sheet music. This arrangement does not replace every original timbre.",
+    "status": "ready_for_render_validation"
+  },
+  "sample_provenance": [
+    {
+      "group": "license",
+      "path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/LICENSE",
+      "sha256": "36ffd9dc085d529a7e60e1276d73ae5a030b020313e6c5408593a6ae2af39673",
+      "bytes": 6555
+    },
+    {
+      "group": "strings",
+      "path": "Strings/Violin Section/susVib/VlnEns_susVib_D3_v1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Violin%20Section/susVib/VlnEns_susVib_D3_v1.wav",
+      "sha256": "583e660bc5daa4e094aef5fc014fbb92751040be8741ed7a16847306a1fe0a99",
+      "bytes": 2061808
+    },
+    {
+      "group": "strings",
+      "path": "Strings/Violin Section/susVib/VlnEns_susVib_C4_v1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Violin%20Section/susVib/VlnEns_susVib_C4_v1.wav",
+      "sha256": "c07edd5b2119fa1da2207aba996961b50dd616f69bbcf2300ab271bc6c16239f",
+      "bytes": 2063320
+    },
+    {
+      "group": "strings",
+      "path": "Strings/Violin Section/susVib/VlnEns_susVib_G4_v1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Violin%20Section/susVib/VlnEns_susVib_G4_v1.wav",
+      "sha256": "ed2a89cf254432d2af073699fa43ebfa16cfbc5552c7fc964a184fc434eaaa39",
+      "bytes": 2330236
+    },
+    {
+      "group": "cello",
+      "path": "Strings/Cello Section/susvib/susvib_C1_v1_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Cello%20Section/susvib/susvib_C1_v1_1.wav",
+      "sha256": "abdcea431f384e135c469b0f3e4ac2a437f282f521dc5bcbe22abc221536e8de",
+      "bytes": 2347376
+    },
+    {
+      "group": "cello",
+      "path": "Strings/Cello Section/susvib/susvib_D2_v1_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Cello%20Section/susvib/susvib_D2_v1_1.wav",
+      "sha256": "e8640dec9febc6e39fcf06b19d2c95a85d5ff8c38f13c9879e69f551eaf38ab8",
+      "bytes": 2550956
+    },
+    {
+      "group": "cello",
+      "path": "Strings/Cello Section/susvib/susvib_C3_v1_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Cello%20Section/susvib/susvib_C3_v1_1.wav",
+      "sha256": "a614ee7ca821b44660236e47b89620cf914ec6ad27a99bc0d9764f47dbe512e1",
+      "bytes": 2444174
+    },
+    {
+      "group": "horn",
+      "path": "Brass/F Horn/sus/MOHorn_sus_F2_v2_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Brass/F%20Horn/sus/MOHorn_sus_F2_v2_1.wav",
+      "sha256": "2e487a49c834ff2d76aff1c9755875fc03013bf202b949a5c5fe354d0c2123c2",
+      "bytes": 2558276
+    },
+    {
+      "group": "horn",
+      "path": "Brass/F Horn/sus/MOHorn_sus_C3_v2_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Brass/F%20Horn/sus/MOHorn_sus_C3_v2_1.wav",
+      "sha256": "c0c0b157dcde094c4417b7c165d645897cde9ea6d74247bbab0c0e75355e78c3",
+      "bytes": 2240888
+    },
+    {
+      "group": "horn",
+      "path": "Brass/F Horn/sus/MOHorn_sus_G1_v2_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Brass/F%20Horn/sus/MOHorn_sus_G1_v2_1.wav",
+      "sha256": "5f0c30569c0e6b77dc0d70a84cb13e1423dbc8bdbf6c47b54bd8a1f46518aa68",
+      "bytes": 1300556
+    },
+    {
+      "group": "flute",
+      "path": "Woodwinds/Flute/susvib/LDFlute_susvib_C4_v1_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Woodwinds/Flute/susvib/LDFlute_susvib_C4_v1_1.wav",
+      "sha256": "e88a0ff35e6b8c29fd88bc778a4c817d955b2c3a2934def97a7d093b72e2ae97",
+      "bytes": 2009832
+    },
+    {
+      "group": "flute",
+      "path": "Woodwinds/Flute/susvib/LDFlute_susvib_A4_v1_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Woodwinds/Flute/susvib/LDFlute_susvib_A4_v1_1.wav",
+      "sha256": "cf3c1c30943b8b8ef8b5b9ced89430c014987a037204098d002f86e424391ba9",
+      "bytes": 1942296
+    },
+    {
+      "group": "flute",
+      "path": "Woodwinds/Flute/susvib/LDFlute_susvib_C5_v1_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Woodwinds/Flute/susvib/LDFlute_susvib_C5_v1_1.wav",
+      "sha256": "ecb78c59069866ea7c3327594851827cd2f50c5d411aad422269a88e53614fbe",
+      "bytes": 1930938
+    },
+    {
+      "group": "harp",
+      "path": "Strings/Harp/KSHarp_C3_mf.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Harp/KSHarp_C3_mf.wav",
+      "sha256": "e5d232771704e140959819de8cf2a3e0ba49d021ca77354c42664ce4fce6d9f3",
+      "bytes": 1586172
+    },
+    {
+      "group": "harp",
+      "path": "Strings/Harp/KSHarp_D4_mf.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Harp/KSHarp_D4_mf.wav",
+      "sha256": "ebfde8aab4411019e37e3426f4dd88d6a52a38c2d0261d7f10ec63d8ff584dc7",
+      "bytes": 1921690
+    },
+    {
+      "group": "harp",
+      "path": "Strings/Harp/KSHarp_C5_mf.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Strings/Harp/KSHarp_C5_mf.wav",
+      "sha256": "7c8b862f6fd3f1442ed87537af976d84bda8c05a5b4900e8907d570b5202a517",
+      "bytes": 1237142
+    },
+    {
+      "group": "timpani",
+      "path": "Percussion/Timpani/Timpani3_Hit_v3_rr1_Sum.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/Percussion/Timpani/Timpani3_Hit_v3_rr1_Sum.wav",
+      "sha256": "46cd2ba3798f9e3a6be515b13dbc37d2ef65c82afb0d0e9e34121e4524bfcd3a",
+      "bytes": 1608252
+    },
+    {
+      "group": "mapping",
+      "path": "ViolinEnsSusVib.sfz",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/ViolinEnsSusVib.sfz",
+      "sha256": "4591e212cccf1cbcff0c78cf8429a8221bb0820b70cb7c8dd6685f470ace4eaa",
+      "bytes": 2538
+    },
+    {
+      "group": "mapping",
+      "path": "CelloEnsSusVib.sfz",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/CelloEnsSusVib.sfz",
+      "sha256": "276352639dda425dd12a4fdb3acdf545867fdb0ff4f89876319f4ec3cf12a19f",
+      "bytes": 2933
+    },
+    {
+      "group": "mapping",
+      "path": "FHornSus.sfz",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/FHornSus.sfz",
+      "sha256": "52a8ccef8baaf0dbea4b3e528b8096c89ffb5c8aafba2b69c4c38af1d64587a5",
+      "bytes": 3250
+    },
+    {
+      "group": "mapping",
+      "path": "FluteSusVib.sfz",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/FluteSusVib.sfz",
+      "sha256": "26b0dedaa483b6f7f4201d144673b26ab1d0e4585493a97815d03904319a0734",
+      "bytes": 1605
+    },
+    {
+      "group": "mapping",
+      "path": "Harp.sfz",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/Harp.sfz",
+      "sha256": "25b553eb756a94f833b1cc1239fe3e6dced3ebc83335bac95d05c951589f7da9",
+      "bytes": 2475
+    },
+    {
+      "group": "mapping",
+      "path": "Timpani.sfz",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/Timpani.sfz",
+      "sha256": "8debc0fa6da4344abb48b625cbaaa85ffcf3a7d0a946fe57ddbb16a49aab9fa5",
+      "bytes": 3415
+    }
+  ],
   "tracks": {
     "bojeu-0": {
-      "file": "res://assets/audio/orchestral/exploration.wav",
+      "file": "res://assets/audio/orchestral/bojeu-0.wav",
       "cycle": true,
       "duration_ticks": 32000,
-      "loop_begin": 1008000,
-      "loop_end": 2016000
+      "loop_begin": 3481254,
+      "loop_end": 6959862,
+      "frames": 6959862,
+      "rate": 44100,
+      "sha256": "064e4fa35aa4735192e0fbe50b2c1eb52e032ba44c24669c0a913ef0355fc23d",
+      "trace_sha256": "35a8ee75f2729083855aea53a8e80481ed3681c022f6b01b742d8541707b339a",
+      "event_check": {
+        "source_triggers": 446,
+        "audible_source_triggers": 446,
+        "matched_source_triggers": 446,
+        "rendered_components": 686
+      }
     },
     "bojeu-1": {
-      "file": "res://assets/audio/orchestral/exploration.wav",
+      "file": "res://assets/audio/orchestral/bojeu-1.wav",
       "cycle": true,
       "duration_ticks": 32000,
-      "loop_begin": 1008000,
-      "loop_end": 2016000
+      "loop_begin": 2713914,
+      "loop_end": 5423418,
+      "frames": 5423418,
+      "rate": 44100,
+      "sha256": "7c911e14003671b08e492759236b966e577e47adf13fa2cc770515c5c8606fe2",
+      "trace_sha256": "2609aadf83f2b708dbc65f416a3fbc6e530bb9eedc4136b65eaa23ed562e562d",
+      "event_check": {
+        "source_triggers": 578,
+        "audible_source_triggers": 578,
+        "matched_source_triggers": 578,
+        "rendered_components": 734
+      }
     },
     "bojeu2-0": {
-      "file": "res://assets/audio/orchestral/exploration.wav",
+      "file": "res://assets/audio/orchestral/bojeu2-0.wav",
       "cycle": true,
       "duration_ticks": 32000,
-      "loop_begin": 1008000,
-      "loop_end": 2016000
+      "loop_begin": 4035150,
+      "loop_end": 7704270,
+      "frames": 7704270,
+      "rate": 44100,
+      "sha256": "426d1c513371f32eead6f1c30e4137a6637ac14bec00674f46bae26f2d48c121",
+      "trace_sha256": "bb70a86cd93d7c98581477b0085ce83226ea5234296934ed14271bb514a86f12",
+      "event_check": {
+        "source_triggers": 375,
+        "audible_source_triggers": 375,
+        "matched_source_triggers": 375,
+        "rendered_components": 735
+      }
     },
     "bolieu-0": {
-      "file": "res://assets/audio/orchestral/cities.wav",
+      "file": "res://assets/audio/orchestral/bolieu-0.wav",
       "cycle": false,
       "duration_ticks": 1000,
-      "loop_begin": 1114105,
-      "loop_end": 2228210
+      "loop_begin": 0,
+      "loop_end": 838782,
+      "frames": 838782,
+      "rate": 44100,
+      "sha256": "1d13078e6d5591e9218d7806b1a55897169731858b6bdc3ab3c4a4d70035edca",
+      "trace_sha256": "c06f9b50a20da010c1a2edf3ea6d2452463d82ff6233ece86dde238e7191a13e",
+      "event_check": {
+        "source_triggers": 73,
+        "audible_source_triggers": 73,
+        "matched_source_triggers": 73,
+        "rendered_components": 73
+      }
     },
     "bolieu-1": {
-      "file": "res://assets/audio/orchestral/cities.wav",
+      "file": "res://assets/audio/orchestral/bolieu-1.wav",
       "cycle": false,
       "duration_ticks": 1000,
-      "loop_begin": 1114105,
-      "loop_end": 2228210
+      "loop_begin": 0,
+      "loop_end": 195804,
+      "frames": 195804,
+      "rate": 44100,
+      "sha256": "06f816dd081de4bec0e2490e93f2c39ab738f7be433a3bd45d7a4a928cbe5fed",
+      "trace_sha256": "5afe3eee1bb8cfc7fd602427438c677df116d839fbcc18f439607e6cbee555b7",
+      "event_check": {
+        "source_triggers": 18,
+        "audible_source_triggers": 18,
+        "matched_source_triggers": 18,
+        "rendered_components": 18
+      }
     },
     "bolieu-2": {
-      "file": "res://assets/audio/orchestral/worksite.wav",
+      "file": "res://assets/audio/orchestral/bolieu-2.wav",
       "cycle": false,
       "duration_ticks": 1000,
-      "loop_begin": 814154,
-      "loop_end": 1628308
+      "loop_begin": 0,
+      "loop_end": 838782,
+      "frames": 838782,
+      "rate": 44100,
+      "sha256": "37a2187fcd10d1889829a3a44df8ca6afc32ff517f12e27bdacb89a0a4d8a1f1",
+      "trace_sha256": "90e1e7c4dff4e7cdf80d31074cbd31c5ebd4fbb2e83cdb8246ed353b55f685e5",
+      "event_check": {
+        "source_triggers": 37,
+        "audible_source_triggers": 37,
+        "matched_source_triggers": 37,
+        "rendered_components": 46
+      }
     },
     "bolieu-3": {
-      "file": "res://assets/audio/orchestral/cities.wav",
+      "file": "res://assets/audio/orchestral/bolieu-3.wav",
       "cycle": false,
       "duration_ticks": 1000,
-      "loop_begin": 1114105,
-      "loop_end": 2228210
+      "loop_begin": 0,
+      "loop_end": 508032,
+      "frames": 508032,
+      "rate": 44100,
+      "sha256": "0eeda4b2d54397575df63685c202da8c757307f58dfb4345ff6fa4f6ad3d0cab",
+      "trace_sha256": "22f691eb31cbbe6f42a806a4cc6ef53ec5f0e8c5c6be39d9a2c4f657685c8555",
+      "event_check": {
+        "source_triggers": 33,
+        "audible_source_triggers": 33,
+        "matched_source_triggers": 33,
+        "rendered_components": 33
+      }
     },
     "bolost-0": {
-      "file": "res://assets/audio/orchestral/danger.wav",
-      "cycle": false,
-      "duration_ticks": 10000,
-      "loop_begin": 1282909,
-      "loop_end": 2565818
-    },
-    "bopres-0": {
-      "file": "res://assets/audio/orchestral/title.wav",
+      "file": "res://assets/audio/orchestral/bolost-0.wav",
       "cycle": true,
       "duration_ticks": 10000,
-      "loop_begin": 920348,
-      "loop_end": 1840696
+      "loop_begin": 3391290,
+      "loop_end": 6778170,
+      "frames": 6778170,
+      "rate": 44100,
+      "sha256": "828289e2bc689e6da98ba8af2b401c61eda243972c3ab6825f4b86ff345368e6",
+      "trace_sha256": "c074fe10463d9a2c75a815f17a942d584701be7158f36420bd50e40ee40e0dc2",
+      "event_check": {
+        "source_triggers": 268,
+        "audible_source_triggers": 268,
+        "matched_source_triggers": 268,
+        "rendered_components": 288
+      }
+    },
+    "bopres-0": {
+      "file": "res://assets/audio/orchestral/bopres-0.wav",
+      "cycle": false,
+      "duration_ticks": 10000,
+      "loop_begin": 0,
+      "loop_end": 8927604,
+      "frames": 8927604,
+      "rate": 44100,
+      "sha256": "47cccfb1f373dc3585287025c7e9f0dcc7e2c73636208d9a38dde68ebbe65c33",
+      "trace_sha256": "d4debba54e682e165885076175f2a9efb6adc713ae1fe3f1c5480d6136bdb72e",
+      "event_check": {
+        "source_triggers": 1783,
+        "audible_source_triggers": 1781,
+        "matched_source_triggers": 1781,
+        "rendered_components": 1933
+      }
     }
-  }
+  },
+  "retained_source_routes": [
+    {
+      "cue": "bojeu-0",
+      "slot": 5,
+      "pcm_sha256": "7adc9ae39a693bdebf6fc7c487e1930abdbb42dfc9ab2f3ce9ff37e95e76ddcb",
+      "reason": "Decaying inharmonic partial bands; a single pitched replacement would discard the measured resonances."
+    },
+    {
+      "cue": "bojeu-0",
+      "slot": 7,
+      "pcm_sha256": "a5498d1020d377016ab5bf26b60abf4d44aa0bd722c9a367a0be6ec5bd06e206",
+      "reason": "Broadband transient with all three YIN normalized differences above 0.7 and spectral peaks distributed across the full band."
+    },
+    {
+      "cue": "bojeu-0",
+      "slot": 8,
+      "pcm_sha256": "72fc87eec0ae3d11057c956d56d3c333e9229c5c0b06ff3b40f2aa5301d91070",
+      "reason": "Short inharmonic transient with multiple low resonances and no stable resolved periodic fundamental."
+    },
+    {
+      "cue": "bojeu-0",
+      "slot": 9,
+      "pcm_sha256": "2a20ab7da8b968916f89d09238d6796cbc709ff9abde4eea6cf2fd21986971eb",
+      "reason": "Noisy loop with broad, changing spectral bands; no stable periodic fundamental in the independent windows."
+    },
+    {
+      "cue": "bojeu-1",
+      "slot": 7,
+      "pcm_sha256": "a5498d1020d377016ab5bf26b60abf4d44aa0bd722c9a367a0be6ec5bd06e206",
+      "reason": "Broadband transient with all three YIN normalized differences above 0.7 and spectral peaks distributed across the full band."
+    },
+    {
+      "cue": "bojeu-1",
+      "slot": 9,
+      "pcm_sha256": "2a20ab7da8b968916f89d09238d6796cbc709ff9abde4eea6cf2fd21986971eb",
+      "reason": "Noisy loop with broad, changing spectral bands; no stable periodic fundamental in the independent windows."
+    },
+    {
+      "cue": "bojeu2-0",
+      "slot": 5,
+      "pcm_sha256": "7adc9ae39a693bdebf6fc7c487e1930abdbb42dfc9ab2f3ce9ff37e95e76ddcb",
+      "reason": "Decaying inharmonic partial bands; a single pitched replacement would discard the measured resonances."
+    },
+    {
+      "cue": "bojeu2-0",
+      "slot": 7,
+      "pcm_sha256": "a5498d1020d377016ab5bf26b60abf4d44aa0bd722c9a367a0be6ec5bd06e206",
+      "reason": "Broadband transient with all three YIN normalized differences above 0.7 and spectral peaks distributed across the full band."
+    },
+    {
+      "cue": "bojeu2-0",
+      "slot": 8,
+      "pcm_sha256": "72fc87eec0ae3d11057c956d56d3c333e9229c5c0b06ff3b40f2aa5301d91070",
+      "reason": "Short inharmonic transient with multiple low resonances and no stable resolved periodic fundamental."
+    },
+    {
+      "cue": "bojeu2-0",
+      "slot": 9,
+      "pcm_sha256": "2a20ab7da8b968916f89d09238d6796cbc709ff9abde4eea6cf2fd21986971eb",
+      "reason": "Noisy loop with broad, changing spectral bands; no stable periodic fundamental in the independent windows."
+    },
+    {
+      "cue": "bolieu-0",
+      "slot": 6,
+      "pcm_sha256": "7ab395e99b9725722461f0b6bd2b7f5c62af91b860487a68fb8c3c8e791f03de",
+      "reason": "Broadband transient with changing low resonances; tonal core is not resolved independently."
+    },
+    {
+      "cue": "bolieu-0",
+      "slot": 8,
+      "pcm_sha256": "2a20ab7da8b968916f89d09238d6796cbc709ff9abde4eea6cf2fd21986971eb",
+      "reason": "Noisy loop with broad, changing spectral bands; no stable periodic fundamental in the independent windows."
+    },
+    {
+      "cue": "bolieu-1",
+      "slot": 8,
+      "pcm_sha256": "2a20ab7da8b968916f89d09238d6796cbc709ff9abde4eea6cf2fd21986971eb",
+      "reason": "Noisy loop with broad, changing spectral bands; no stable periodic fundamental in the independent windows."
+    },
+    {
+      "cue": "bolieu-2",
+      "slot": 6,
+      "pcm_sha256": "7ab395e99b9725722461f0b6bd2b7f5c62af91b860487a68fb8c3c8e791f03de",
+      "reason": "Broadband transient with changing low resonances; tonal core is not resolved independently."
+    },
+    {
+      "cue": "bolieu-3",
+      "slot": 8,
+      "pcm_sha256": "2a20ab7da8b968916f89d09238d6796cbc709ff9abde4eea6cf2fd21986971eb",
+      "reason": "Noisy loop with broad, changing spectral bands; no stable periodic fundamental in the independent windows."
+    },
+    {
+      "cue": "bolost-0",
+      "slot": 6,
+      "pcm_sha256": "7ab395e99b9725722461f0b6bd2b7f5c62af91b860487a68fb8c3c8e791f03de",
+      "reason": "Broadband transient with changing low resonances; tonal core is not resolved independently."
+    },
+    {
+      "cue": "bopres-0",
+      "slot": 7,
+      "pcm_sha256": "61622ddf0904e00e7c34a46fabf76b37692708a22640fd77895292863d95ab9a",
+      "reason": "Short decaying low-frequency transient; changing periodicity prevents replacement by a guessed fixed note."
+    },
+    {
+      "cue": "bopres-0",
+      "slot": 8,
+      "pcm_sha256": "9131a4947dbc1c1b6dc1dd45c6f8e11e025974fa6067644dd7b5eda6daa28f9c",
+      "reason": "Short decaying resonant transient with changing estimated period; retain its source attack and decay."
+    },
+    {
+      "cue": "bopres-0",
+      "slot": 9,
+      "pcm_sha256": "d2a29c67aacd8a202b560ab8ebf02374cfda1f96d70c49b70ff79cbc382bb36b",
+      "reason": "Broadband transient; YIN normalized differences exceed 0.6 and final-half spectrum has no resolved peak above quantization bound."
+    },
+    {
+      "cue": "bopres-0",
+      "slot": 12,
+      "pcm_sha256": "8221592b57d102dffcbc14762624a0c5d8adeee563fd940aff16d1b88e70ee1d",
+      "reason": "Looped noisy texture with multiple drifting broad spectral bands; no stable periodic core is resolved."
+    }
+  ]
 }

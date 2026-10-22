@@ -1,0 +1,67 @@
+{
+  "status": "passed",
+  "actual_source_triggers": 50,
+  "components": 228,
+  "contract_sha256": "9db16b736c312f824f62eb0c72f3013f923dbb941a904d5f2c29574965cb9719",
+  "method": "Injected control-only PCM; validates measured schema and exact original trigger gates. No recorded-sample audition.",
+  "results": [
+    {
+      "cue": "bojeu2-0",
+      "slot": 6,
+      "actual_source_triggers": 34,
+      "components": 136,
+      "source_starts": [
+        0,
+        1740,
+        3190,
+        4059
+      ],
+      "trace_sha256": "bb70a86cd93d7c98581477b0085ce83226ea5234296934ed14271bb514a86f12"
+    },
+    {
+      "cue": "bojeu2-0",
+      "slot": 11,
+      "actual_source_triggers": 8,
+      "components": 48,
+      "source_starts": [
+        0,
+        1593,
+        3290,
+        4944,
+        5264,
+        6693
+      ],
+      "trace_sha256": "bb70a86cd93d7c98581477b0085ce83226ea5234296934ed14271bb514a86f12"
+    },
+    {
+      "cue": "bojeu2-0",
+      "slot": 12,
+      "actual_source_triggers": 4,
+      "components": 20,
+      "source_starts": [
+        0,
+        1138,
+        2958,
+        6270,
+        7866
+      ],
+      "trace_sha256": "bb70a86cd93d7c98581477b0085ce83226ea5234296934ed14271bb514a86f12"
+    },
+    {
+      "cue": "bojeu2-0",
+      "slot": 13,
+      "actual_source_triggers": 4,
+      "components": 24,
+      "source_starts": [
+        0,
+        1687,
+        3613,
+        5182,
+        6146,
+        7612
+      ],
+      "trace_sha256": "bb70a86cd93d7c98581477b0085ce83226ea5234296934ed14271bb514a86f12"
+    }
+  ],
+  "helper_sha256": "c774ca9c4a40feab678e8d76c93d0a74da3242fcab19d2a34337e52be6c90d5d"
+}

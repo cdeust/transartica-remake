@@ -1,0 +1,120 @@
+{
+  "3e6dba016fb25f3d98ae7b06f37156702e2a55766568a2e5ea9df4ce85ffe745": {
+    "roots_cycles_per_sample": [
+      0.0334,
+      0.0375,
+      0.0398,
+      0.04995
+    ],
+    "family": "harp",
+    "reason": "Separate observed bands have staggered amplitude maxima; measure each without averaging into a block chord.",
+    "seed_source": {
+      "cue": "bojeu2-0",
+      "slot": "6"
+    },
+    "acceptance": "measured temporal components; retain undecidable source attacks, no complete internal note transcription claim",
+    "migration": {
+      "common_prefix_bytes": 11402,
+      "host_zero_to_one_bytes": 607,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "cce6709282efe086c099d2c13253b57079dd92fae8a2d7b2380623e759efd975",
+      "new_pcm_sha256": "3e6dba016fb25f3d98ae7b06f37156702e2a55766568a2e5ea9df4ce85ffe745",
+      "cue": "bojeu2-0",
+      "slot": "6",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "644fce533731da9ce69953cb8e116215ee762c510dc7c07b8dbc16adb554aa90": {
+    "roots_cycles_per_sample": [
+      0.01653,
+      0.01967,
+      0.02485,
+      0.03306,
+      0.03934,
+      0.0497
+    ],
+    "family": "harp",
+    "reason": "Three resolved fundamental bands and their partials; later octave-band attacks remain note-versus-partial ambiguous.",
+    "seed_source": {
+      "cue": "bojeu2-0",
+      "slot": "11"
+    },
+    "acceptance": "measured temporal components; retain undecidable source attacks, no complete internal note transcription claim",
+    "migration": {
+      "common_prefix_bytes": 15610,
+      "host_zero_to_one_bytes": 1047,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "955577e6e44dbb6ae35db01054621a3df6c366366854b1bfec719cc723676655",
+      "new_pcm_sha256": "644fce533731da9ce69953cb8e116215ee762c510dc7c07b8dbc16adb554aa90",
+      "cue": "bojeu2-0",
+      "slot": "11",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "4babb6b7d1407f0b8aad2b44b510bf9dbd1da23d0b789b861b6fd30dffe656a3": {
+    "roots_cycles_per_sample": [
+      0.018635,
+      0.0235,
+      0.0279,
+      0.03727,
+      0.047,
+      0.0558
+    ],
+    "family": "harp",
+    "reason": "Three measured low bands with delayed octave-band attacks; preserve undecidable source attack material.",
+    "seed_source": {
+      "cue": "bojeu2-0",
+      "slot": "12"
+    },
+    "acceptance": "measured temporal components; retain undecidable source attacks, no complete internal note transcription claim",
+    "migration": {
+      "common_prefix_bytes": 14980,
+      "host_zero_to_one_bytes": 739,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "26f87a965078308366d8f314fe98f59e2d95ea2d293c9f8569cb4a93b7cb89b1",
+      "new_pcm_sha256": "4babb6b7d1407f0b8aad2b44b510bf9dbd1da23d0b789b861b6fd30dffe656a3",
+      "cue": "bojeu2-0",
+      "slot": "12",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "031af15db3df952da8899946faa0c1c2ef6da6a9a64a4d44f45739e3b50e5ad4": {
+    "roots_cycles_per_sample": [
+      0.022262,
+      0.02642,
+      0.033345,
+      0.044524,
+      0.05284,
+      0.06669
+    ],
+    "family": "harp",
+    "reason": "Three measured low bands with staggered attack envelopes; preserve undecidable source attack material.",
+    "seed_source": {
+      "cue": "bojeu2-0",
+      "slot": "13"
+    },
+    "acceptance": "measured temporal components; retain undecidable source attacks, no complete internal note transcription claim",
+    "migration": {
+      "common_prefix_bytes": 15202,
+      "host_zero_to_one_bytes": 982,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "2b2a49da786e29b1322ba828ce3ff7ded6d752849fdec6f19e87b013ffda8770",
+      "new_pcm_sha256": "031af15db3df952da8899946faa0c1c2ef6da6a9a64a4d44f45739e3b50e5ad4",
+      "cue": "bojeu2-0",
+      "slot": "13",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  }
+}

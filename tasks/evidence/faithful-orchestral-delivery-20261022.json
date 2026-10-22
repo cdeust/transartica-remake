@@ -1,0 +1,332 @@
+{
+  "format": "transartica-faithful-score-delivery-v1",
+  "masters": [
+    {
+      "cue": "bojeu-0",
+      "frames": 6959862,
+      "seconds": 157.82,
+      "sha256": "064e4fa35aa4735192e0fbe50b2c1eb52e032ba44c24669c0a913ef0355fc23d",
+      "event_check": {
+        "source_triggers": 446,
+        "audible_source_triggers": 446,
+        "matched_source_triggers": 446,
+        "rendered_components": 686
+      },
+      "peak": 23197,
+      "loop": {
+        "begin": 3481254,
+        "end": 6959862,
+        "seam_delta_lsb": [
+          2685,
+          8721
+        ],
+        "local_adjacent_delta_max_lsb": [
+          4901,
+          9407
+        ],
+        "preceding_tick_matches_first_cycle": true
+      },
+      "render_guard": {
+        "exit": 0,
+        "aborted": null,
+        "peak_rss_kib": 369392,
+        "rss_scope": "owned_process_group",
+        "elapsed_s": 2.751
+      }
+    },
+    {
+      "cue": "bojeu-1",
+      "frames": 5423418,
+      "seconds": 122.98,
+      "sha256": "7c911e14003671b08e492759236b966e577e47adf13fa2cc770515c5c8606fe2",
+      "event_check": {
+        "source_triggers": 578,
+        "audible_source_triggers": 578,
+        "matched_source_triggers": 578,
+        "rendered_components": 734
+      },
+      "peak": 23197,
+      "loop": {
+        "begin": 2713914,
+        "end": 5423418,
+        "seam_delta_lsb": [
+          4130,
+          4454
+        ],
+        "local_adjacent_delta_max_lsb": [
+          5585,
+          5588
+        ],
+        "preceding_tick_matches_first_cycle": true
+      },
+      "render_guard": {
+        "exit": 0,
+        "aborted": null,
+        "peak_rss_kib": 467328,
+        "rss_scope": "owned_process_group",
+        "elapsed_s": 2.867
+      }
+    },
+    {
+      "cue": "bojeu2-0",
+      "frames": 7704270,
+      "seconds": 174.7,
+      "sha256": "426d1c513371f32eead6f1c30e4137a6637ac14bec00674f46bae26f2d48c121",
+      "event_check": {
+        "source_triggers": 375,
+        "audible_source_triggers": 375,
+        "matched_source_triggers": 375,
+        "rendered_components": 735
+      },
+      "peak": 23197,
+      "loop": {
+        "begin": 4035150,
+        "end": 7704270,
+        "seam_delta_lsb": [
+          0,
+          0
+        ],
+        "local_adjacent_delta_max_lsb": [
+          3773,
+          3775
+        ],
+        "preceding_tick_matches_first_cycle": true
+      },
+      "render_guard": {
+        "exit": 0,
+        "aborted": null,
+        "peak_rss_kib": 427296,
+        "rss_scope": "owned_process_group",
+        "elapsed_s": 3.487
+      }
+    },
+    {
+      "cue": "bolieu-0",
+      "frames": 838782,
+      "seconds": 19.02,
+      "sha256": "1d13078e6d5591e9218d7806b1a55897169731858b6bdc3ab3c4a4d70035edca",
+      "event_check": {
+        "source_triggers": 73,
+        "audible_source_triggers": 73,
+        "matched_source_triggers": 73,
+        "rendered_components": 73
+      },
+      "peak": 23197,
+      "render_guard": {
+        "exit": 0,
+        "aborted": null,
+        "peak_rss_kib": 140848,
+        "rss_scope": "owned_process_group",
+        "elapsed_s": 0.959
+      }
+    },
+    {
+      "cue": "bolieu-1",
+      "frames": 195804,
+      "seconds": 4.44,
+      "sha256": "06f816dd081de4bec0e2490e93f2c39ab738f7be433a3bd45d7a4a928cbe5fed",
+      "event_check": {
+        "source_triggers": 18,
+        "audible_source_triggers": 18,
+        "matched_source_triggers": 18,
+        "rendered_components": 18
+      },
+      "peak": 23197,
+      "render_guard": {
+        "exit": 0,
+        "aborted": null,
+        "peak_rss_kib": 102672,
+        "rss_scope": "owned_process_group",
+        "elapsed_s": 0.727
+      }
+    },
+    {
+      "cue": "bolieu-2",
+      "frames": 838782,
+      "seconds": 19.02,
+      "sha256": "37a2187fcd10d1889829a3a44df8ca6afc32ff517f12e27bdacb89a0a4d8a1f1",
+      "event_check": {
+        "source_triggers": 37,
+        "audible_source_triggers": 37,
+        "matched_source_triggers": 37,
+        "rendered_components": 46
+      },
+      "peak": 23197,
+      "render_guard": {
+        "exit": 0,
+        "aborted": null,
+        "peak_rss_kib": 221968,
+        "rss_scope": "owned_process_group",
+        "elapsed_s": 0.96
+      }
+    },
+    {
+      "cue": "bolieu-3",
+      "frames": 508032,
+      "seconds": 11.52,
+      "sha256": "0eeda4b2d54397575df63685c202da8c757307f58dfb4345ff6fa4f6ad3d0cab",
+      "event_check": {
+        "source_triggers": 33,
+        "audible_source_triggers": 33,
+        "matched_source_triggers": 33,
+        "rendered_components": 33
+      },
+      "peak": 23197,
+      "render_guard": {
+        "exit": 0,
+        "aborted": null,
+        "peak_rss_kib": 102288,
+        "rss_scope": "owned_process_group",
+        "elapsed_s": 0.723
+      }
+    },
+    {
+      "cue": "bolost-0",
+      "frames": 6778170,
+      "seconds": 153.7,
+      "sha256": "828289e2bc689e6da98ba8af2b401c61eda243972c3ab6825f4b86ff345368e6",
+      "event_check": {
+        "source_triggers": 268,
+        "audible_source_triggers": 268,
+        "matched_source_triggers": 268,
+        "rendered_components": 288
+      },
+      "peak": 23197,
+      "loop": {
+        "begin": 3391290,
+        "end": 6778170,
+        "seam_delta_lsb": [
+          910,
+          205
+        ],
+        "local_adjacent_delta_max_lsb": [
+          545,
+          284
+        ],
+        "preceding_tick_matches_first_cycle": true
+      },
+      "render_guard": {
+        "exit": 0,
+        "aborted": null,
+        "peak_rss_kib": 393344,
+        "rss_scope": "owned_process_group",
+        "elapsed_s": 1.842
+      }
+    },
+    {
+      "cue": "bopres-0",
+      "frames": 8927604,
+      "seconds": 202.44,
+      "sha256": "47cccfb1f373dc3585287025c7e9f0dcc7e2c73636208d9a38dde68ebbe65c33",
+      "event_check": {
+        "source_triggers": 1783,
+        "audible_source_triggers": 1781,
+        "matched_source_triggers": 1781,
+        "rendered_components": 1933
+      },
+      "peak": 23197,
+      "render_guard": {
+        "exit": 0,
+        "aborted": null,
+        "peak_rss_kib": 531792,
+        "rss_scope": "owned_process_group",
+        "elapsed_s": 3.672
+      }
+    }
+  ],
+  "reproducibility": [
+    {
+      "cue": "bojeu-0",
+      "sha256": "064e4fa35aa4735192e0fbe50b2c1eb52e032ba44c24669c0a913ef0355fc23d",
+      "identical": true
+    },
+    {
+      "cue": "bojeu-1",
+      "sha256": "7c911e14003671b08e492759236b966e577e47adf13fa2cc770515c5c8606fe2",
+      "identical": true
+    },
+    {
+      "cue": "bojeu2-0",
+      "sha256": "426d1c513371f32eead6f1c30e4137a6637ac14bec00674f46bae26f2d48c121",
+      "identical": true
+    },
+    {
+      "cue": "bolieu-0",
+      "sha256": "1d13078e6d5591e9218d7806b1a55897169731858b6bdc3ab3c4a4d70035edca",
+      "identical": true
+    },
+    {
+      "cue": "bolieu-1",
+      "sha256": "06f816dd081de4bec0e2490e93f2c39ab738f7be433a3bd45d7a4a928cbe5fed",
+      "identical": true
+    },
+    {
+      "cue": "bolieu-2",
+      "sha256": "37a2187fcd10d1889829a3a44df8ca6afc32ff517f12e27bdacb89a0a4d8a1f1",
+      "identical": true
+    },
+    {
+      "cue": "bolieu-3",
+      "sha256": "0eeda4b2d54397575df63685c202da8c757307f58dfb4345ff6fa4f6ad3d0cab",
+      "identical": true
+    },
+    {
+      "cue": "bolost-0",
+      "sha256": "828289e2bc689e6da98ba8af2b401c61eda243972c3ab6825f4b86ff345368e6",
+      "identical": true
+    },
+    {
+      "cue": "bopres-0",
+      "sha256": "47cccfb1f373dc3585287025c7e9f0dcc7e2c73636208d9a38dde68ebbe65c33",
+      "identical": true
+    }
+  ],
+  "calibration_sha256": "9db16b736c312f824f62eb0c72f3013f923dbb941a904d5f2c29574965cb9719",
+  "modes": {
+    "static_orchestra": 59,
+    "phrase_orchestra": 4,
+    "original_texture_routes": 20
+  },
+  "tests": {
+    "python_score": 91,
+    "native_ctest": 21,
+    "packaging": 40
+  },
+  "macos": {
+    "bundle_files": 146,
+    "gui_actions": [
+      "startup",
+      "start",
+      "world-map",
+      "save-SESSION",
+      "restore-SESSION",
+      "world-map",
+      "quit"
+    ],
+    "driver": "coreaudio",
+    "rate": 44100,
+    "journey_frames": 7704270,
+    "save_cursor": 948224,
+    "restore_cursor": 950005,
+    "quit_cursor": 3262197,
+    "guard_peak_rss_kib": 319584,
+    "exit": 0,
+    "dmg_sha256": "e113c20561e20a61263d93866657d93f5d24c652dfc7bac83225709c22d407f4",
+    "dmg_bytes": 296177633,
+    "installed_title_frames": 8927604,
+    "installed_title_cursor": 96256,
+    "minimum_os": "26.0",
+    "architecture": "arm64",
+    "signature": "ad-hoc; not notarized"
+  },
+  "windows": {
+    "status": "final-music build pending",
+    "preliminary_success_run": 39858698534
+  },
+  "limits": [
+    "Original resonant/percussive textures retained.",
+    "Internal phrase timing and pitch are measured estimates with documented uncertainty.",
+    "No claim of a recovered published score or complete campaign playthrough.",
+    "Device playback and numeric checks do not constitute artistic listening acceptance."
+  ]
+}

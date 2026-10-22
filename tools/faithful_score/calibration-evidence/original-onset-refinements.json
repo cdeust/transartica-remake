@@ -1,0 +1,60 @@
+{
+  "3e6dba016fb25f3d98ae7b06f37156702e2a55766568a2e5ea9df4ce85ffe745": {
+    "0.0375": {
+      "source_start": 1740,
+      "onset_bounds": [
+        1450,
+        2031
+      ],
+      "basis": "First independently resolved third partial within the reviewed attack interval, corroborating the rising fundamental family.",
+      "harmonic_order": 3,
+      "window_frames": 581,
+      "resolution_basis": "Hann4/(N-1) resolves the two reviewed third partials separated by3*(.0398-.0375).",
+      "measured_partial": {
+        "source_frame": 1740.0,
+        "support_start": 1450,
+        "support_end": 2031,
+        "cycles_per_sample": 0.11247411208092632,
+        "amplitude_pcm": 1.1150808291519938,
+        "harmonics": [],
+        "fundamental": {
+          "cycles_per_sample": 0.11247411208092632,
+          "magnitude": 151.39980850321652,
+          "quantization_bound": 145.0
+        }
+      },
+      "reviewed_search_interval": [
+        870,
+        3045
+      ]
+    },
+    "0.0398": {
+      "source_start": 3190,
+      "onset_bounds": [
+        2900,
+        3481
+      ],
+      "basis": "First independently resolved third partial within the reviewed attack interval, corroborating the rising fundamental family.",
+      "harmonic_order": 3,
+      "window_frames": 581,
+      "resolution_basis": "Hann4/(N-1) resolves the two reviewed third partials separated by3*(.0398-.0375).",
+      "measured_partial": {
+        "source_frame": 3190.0,
+        "support_start": 2900,
+        "support_end": 3481,
+        "cycles_per_sample": 0.11874409144493879,
+        "amplitude_pcm": 1.1096352475695477,
+        "harmonics": [],
+        "fundamental": {
+          "cycles_per_sample": 0.11874409144493879,
+          "magnitude": 160.92903145154574,
+          "quantization_bound": 145.0
+        }
+      },
+      "reviewed_search_interval": [
+        2175,
+        4785
+      ]
+    }
+  }
+}

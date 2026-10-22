@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MIT
 // Oracles: scripts/sample_channels.gd, game_audio.gd, engine_audio.gd,
-// scene_audio.gd and private audio/manifest.json. No device or SDL callback.
+// scene_audio.gd and data/audio/manifest.json. No device or SDL callback.
 #include "audio/game_audio.hpp"
 #include "audio/resources.hpp"
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <limits>
+#include <set>
 #include <stdexcept>
 
 using namespace transartica::audio;
@@ -41,6 +42,15 @@ void trusted_paths(const std::filesystem::path& game) {
     check(resources.path("res://private-data/finale.wav")==resources.path("res://data/finale.wav"),"historical manifest paths resolve to staged data");
     try {resources.path("res://../untrusted.wav");check(false,"outside trusted roots rejected");}
     catch(const std::runtime_error&) {check(true,"outside trusted roots rejected");}
+    // Owner correction 2026-10-22: each of the nine historical cues keeps its score.
+    const std::array keys{"bojeu-0","bojeu-1","bojeu2-0","bolieu-0","bolieu-1",
+                          "bolieu-2","bolieu-3","bolost-0","bopres-0"};
+    std::set<std::filesystem::path> paths;
+    for(const auto* key:keys) paths.insert(resources.track(key).path);
+    check(paths.size()==keys.size(),"nine historical cues resolve to nine distinct masters");
+    // Original T.X execution: tools/faithful_score/amiga-extraction-validation-20261022.json.
+    check(!resources.track("bopres-0").loop,"title retains original native stop");
+    check(resources.track("bolost-0").loop,"loss theme repeats until original duration expires");
 }
 void mixing() {
     Mixer mix;const auto clip=fixture();std::array<float,12> output{};
@@ -68,10 +78,11 @@ void render(GameAudio& audio,std::size_t frames) {
     while(frames) {const auto count=std::min(frames,output.size()/2);audio.render_offline(output.data(),count);frames-=count;}
 }
 void scores(GameAudio& audio) {
-    check(audio.play_track("bojeu2-0"),"real private orchestral WAV decodes");
-    check(audio.music_state().loop&&audio.music_state().loop_end>audio.music_state().loop_begin,"authored orchestral loop bounds");
+    check(audio.play_track("bojeu2-0"),"bundled orchestral WAV decodes");
+    check(audio.music_state().loop&&audio.music_state().loop_end>audio.music_state().loop_begin,"source-derived orchestral loop bounds");
     const auto residency=audio.resident_bytes();
-    check(audio.play_track("bojeu-0")&&audio.resident_bytes()==residency,"active music aliases reuse immutable PCM");
+    check(audio.play_track("bojeu2-0")&&audio.resident_bytes()==residency,"replaying the same music reuses immutable PCM");
+    check(audio.play_track("bojeu-0")&&audio.snapshot().track=="bojeu-0","distinct journey cue replaces the active score");
     audio.play_city(1);check(audio.snapshot().track=="bolieu-3","fresh kind1 city selector3");
     audio.play_city(-1);check(audio.snapshot().track=="bolieu-0","visited negative kind keeps signed selector");
     audio.play_city(2);check(audio.snapshot().track=="bolieu-1","kind2 city selector1");
@@ -122,7 +133,7 @@ void effects(GameAudio& audio,const std::filesystem::path& game) {
 }
 void finale(GameAudio& audio) {
     audio.reset();audio.play_reception();const auto score=audio.snapshot();
-    check(audio.play_finale(1)&&audio.finale_state().cursor==std::size_t(audio.output_rate()),"private finale WAV resumes controller-supplied offset");
+    check(audio.play_finale(1)&&audio.finale_state().cursor==std::size_t(audio.output_rate()),"bundled finale WAV resumes controller-supplied offset");
     check(audio.snapshot()==score&&audio.music_state().playing,"finale independent player preserves current scene score");
     const auto cursor=audio.finale_state().cursor;
     check(!audio.play_finale(-1)&&audio.finale_state().cursor==cursor&&audio.finale_state().playing,"invalid finale offset preserves active player");
