@@ -631,3 +631,22 @@ publication. Le propriétaire demande les ressources dans Git et dans le build.
 - [x] Copier automatiquement les ressources au build et à l'installation.
 - [x] Vérifier les seuls fichiers Git, puis lancer une installation déplacée.
 - [ ] Mettre à jour la PR11, pousser et nettoyer les temporaires possédés.
+# Faithful orchestration and installers, resumed22October2026
+
+- [x] Recover the interrupted extraction and calibration work.
+- [x] Prepare installer scripts;40 packaging tests passed.
+- [x] Push installer preparation commitf261557 and start native Windows CI.
+- [x] Finish original Amiga loader/player trace validation: nine cues audited.
+- [x] Resolve measured pitched phrases; retain explicit timing uncertainty and source textures.
+- [x] Render nine source-derived masters, verify identical rebuilds and integrate resources.
+- [x] Produce and validate Windows setup.exe and macOS DMG with the final music.
+
+Checkpoint: [faithful-orchestral-resume-20261022.md](evidence/faithful-orchestral-resume-20261022.md).
+
+Delivery evidence: [faithful-orchestral-delivery-20261022.md](evidence/faithful-orchestral-delivery-20261022.md).
+
+Owner continuation,23October2026:
+
+- [ ] Merge PR12 after the final Mac and Windows installation checks.
+- [ ] Publish both installers together with verified checksums.
+- [ ] Remove the authorized scratch directories `disk-hygiene-ltx2pwm6`, `disk-hygiene-54i1ct98` and `disk-hygiene-9t1vpqpm` after preserving evidence.

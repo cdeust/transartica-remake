@@ -6,7 +6,8 @@ by their inclusion in this distribution. Their edition hashes are recorded in
 game/assets/interface/original-data-manifest.json where available.
 
 Noto Sans uses the OFL license. The adapted math code retains its MIT notice.
-The authored orchestral score carries its own notice when selected.
+The historical score arrangements carry their own content and sample-library
+notice when selected.
 See licenses/ for the full texts included with this runtime.
 
 This software is based in part on the work of the FreeType Team

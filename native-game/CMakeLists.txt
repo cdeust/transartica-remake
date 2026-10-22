@@ -169,6 +169,9 @@ if(BUILD_TESTING)
   foreach(native_target IN LISTS native_targets)
     get_target_property(native_type "${native_target}" TYPE)
     if(native_type STREQUAL "EXECUTABLE")
+      # SDL2 SDL_main.h: keep the test's own main on Windows, as for the game.
+      # Device-backed probes explicitly call SDL_SetMainReady before SDL_Init.
+      target_compile_definitions("${native_target}" PRIVATE SDL_MAIN_HANDLED)
       add_dependencies("${native_target}" transartica_resources)
     endif()
   endforeach()

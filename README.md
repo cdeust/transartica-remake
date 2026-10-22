@@ -21,7 +21,15 @@ versionnées dans `game/assets/` et `game/data/` et intégrées automatiquement
 à la construction. Aucun téléchargement de données séparé n'est nécessaire.
 Les instructions natives décrivent les dépendances et le lancement.
 
-La campagne complète par joueur et les lancements Windows/Linux restent à valider.
+Les installateurs Windows x64 et macOS sont regroupés dans la
+[livraison native0.1.0](https://github.com/cdeust/transartica-remake/releases/tag/native-v0.1.0).
+Le DMG requiert macOS26 ou plus récent sur Apple Silicon. Sa signature est
+ad-hoc et il n’est pas notarisé. Le lancement Windows est vérifié sur un runner
+Windows Server2025 ; le test utilise le pilote audio SDL dummy. Sur Mac,
+l’installation et les commandes de carte, sauvegarde et reprise ont été exercées
+dans l’interface réelle avec CoreAudio. Les preuves et limites figurent dans
+[le rapport des installateurs](tasks/evidence/faithful-orchestral-delivery-20261022.md).
+La campagne C++ complète par joueur et le lancement Linux restent à valider.
 Les corrections graphiques sont décrites dans
 [le rapport de publication](tasks/evidence/cpp-publication-20261021.md).
 La [livraison des ressources](tasks/evidence/cpp-resources-delivery-20261021.md)

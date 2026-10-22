@@ -1,0 +1,407 @@
+{
+  "08954eed64d37de50eae9a7e85af97f2676a35b52ab3afe960227f1da701f41e": {
+    "roots_cycles_per_sample": [
+      0.05013,
+      0.059809,
+      0.075206
+    ],
+    "family": "strings",
+    "reason": "Measured separate fundamental bands and harmonics persist in the full mixer loop and both halves; sustained strings are an explicit orchestration choice.",
+    "migration": {
+      "common_prefix_bytes": 8512,
+      "host_zero_to_one_bytes": 311,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "4780ae5cc5b700f66f60b0260fc7a30d0f22b03fce98b0a6e5496a61428fe40f",
+      "new_pcm_sha256": "08954eed64d37de50eae9a7e85af97f2676a35b52ab3afe960227f1da701f41e",
+      "cue": "bojeu-0",
+      "slot": "0",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "6e96b525bd99722b18b9ad3fa51a294870c0db0f91e11b44638ce63c16ca7adc": {
+    "roots_cycles_per_sample": [
+      0.044768,
+      0.055889,
+      0.066762
+    ],
+    "family": "strings",
+    "reason": "Measured separate fundamental bands and harmonics persist in the full mixer loop and both halves; sustained strings are an explicit orchestration choice.",
+    "migration": {
+      "common_prefix_bytes": 8694,
+      "host_zero_to_one_bytes": 284,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "25dc2979a3010713f886c50a51732fb61a2523b0b96922b0a2e0c72f1fcb51db",
+      "new_pcm_sha256": "6e96b525bd99722b18b9ad3fa51a294870c0db0f91e11b44638ce63c16ca7adc",
+      "cue": "bojeu-0",
+      "slot": "1",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "5b1ae493ea96d39eb92f9b683127b5d9cee3f7825be6edcb7f5f25c163b2c23b": {
+    "roots_cycles_per_sample": [
+      0.050006,
+      0.06693,
+      0.079794
+    ],
+    "family": "strings",
+    "reason": "Measured separate fundamental bands and harmonics persist in the full mixer loop and both halves; sustained strings are an explicit orchestration choice.",
+    "migration": {
+      "common_prefix_bytes": 10472,
+      "host_zero_to_one_bytes": 288,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "90f96e34288bed637e286b5085bc2938d54282873de079bd0556f863e3b3b4b5",
+      "new_pcm_sha256": "5b1ae493ea96d39eb92f9b683127b5d9cee3f7825be6edcb7f5f25c163b2c23b",
+      "cue": "bojeu-0",
+      "slot": "2",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "66d0bf2c44198e40ccee6a3bfb84e98de658fa13922380f6654e29baa8f7b767": {
+    "roots_cycles_per_sample": [
+      0.056007,
+      0.066865,
+      0.075332
+    ],
+    "family": "strings",
+    "reason": "Measured separate fundamental bands and harmonics persist in the full mixer loop and both halves; sustained strings are an explicit orchestration choice.",
+    "migration": {
+      "common_prefix_bytes": 12808,
+      "host_zero_to_one_bytes": 476,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "b47c9c5adf23e3ee21f0a7e3b81eb3ae7bbc94c1ae56aa7fe6debbe4e76889aa",
+      "new_pcm_sha256": "66d0bf2c44198e40ccee6a3bfb84e98de658fa13922380f6654e29baa8f7b767",
+      "cue": "bojeu-0",
+      "slot": "3",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "474f0a36e445b2f8600869a97d3d25455e86cc635357d6c075ef9f0db18d513d": {
+    "roots_cycles_per_sample": [
+      0.047195,
+      0.056131,
+      0.075218
+    ],
+    "family": "strings",
+    "reason": "Measured separate fundamental bands and harmonics persist in the full mixer loop and both halves; sustained strings are an explicit orchestration choice.",
+    "migration": {
+      "common_prefix_bytes": 8942,
+      "host_zero_to_one_bytes": 307,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "81094fecf6737acb7562f0eebc78092a63b49933f83244d385fb9ab472386edb",
+      "new_pcm_sha256": "474f0a36e445b2f8600869a97d3d25455e86cc635357d6c075ef9f0db18d513d",
+      "cue": "bojeu-0",
+      "slot": "4",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "6a1b285bbbda9e945867bb432ded8e97c63c8762b57f3c09e87366875d70ed3f": {
+    "roots_cycles_per_sample": [
+      0.05013,
+      0.059809,
+      0.075206
+    ],
+    "family": "strings",
+    "reason": "Reviewed bojeu2-0 slot0: separate fundamental bands and harmonic series visible in whole loop and both halves. Strings are an artistic substitution; no equal-tempered note snapping.",
+    "migration": {
+      "common_prefix_bytes": 8514,
+      "host_zero_to_one_bytes": 335,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "967c53ecbcaaa7875696237fed116b05d118e5d51d03ddb451807bf7795f22e5",
+      "new_pcm_sha256": "6a1b285bbbda9e945867bb432ded8e97c63c8762b57f3c09e87366875d70ed3f",
+      "cue": "bojeu2-0",
+      "slot": "0",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "702aa450f82635fb4a109735e93e84d5fc1d261ff9783edc545fbe4e906891c4": {
+    "roots_cycles_per_sample": [
+      0.044768,
+      0.055889,
+      0.066762
+    ],
+    "family": "strings",
+    "reason": "Reviewed bojeu2-0 slot1: separate fundamental bands and harmonic series visible in whole loop and both halves. Strings are an artistic substitution; no equal-tempered note snapping.",
+    "migration": {
+      "common_prefix_bytes": 8696,
+      "host_zero_to_one_bytes": 308,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "ecc4e145ffdb351b8e7744fde69651f7aeb956f1e98cf91d3dc6e46d77cfa2ef",
+      "new_pcm_sha256": "702aa450f82635fb4a109735e93e84d5fc1d261ff9783edc545fbe4e906891c4",
+      "cue": "bojeu2-0",
+      "slot": "1",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "6feb8c28f1b7a1cb16d4a6499576ccaf320d6f37e4b08da9bf094e03e6c1e6b7": {
+    "roots_cycles_per_sample": [
+      0.050006,
+      0.06693,
+      0.079794
+    ],
+    "family": "strings",
+    "reason": "Reviewed bojeu2-0 slot2: separate fundamental bands and harmonic series visible in whole loop and both halves. Strings are an artistic substitution; no equal-tempered note snapping.",
+    "migration": {
+      "common_prefix_bytes": 10474,
+      "host_zero_to_one_bytes": 303,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "3ff10f53a515aaf621e7a124c1146230b330dc2c054d35870fd2ed7b1002189f",
+      "new_pcm_sha256": "6feb8c28f1b7a1cb16d4a6499576ccaf320d6f37e4b08da9bf094e03e6c1e6b7",
+      "cue": "bojeu2-0",
+      "slot": "2",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "8ae6c567ffdb5731cfd03836dcac444afad4fce75ba916626be83c5956497799": {
+    "roots_cycles_per_sample": [
+      0.01664
+    ],
+    "mode": "periodic_harmonics",
+    "family": "horn",
+    "reason": "Stable YIN period with strong partials2 through7 in each window, no competing inharmonic family. Fundamental is physically absent; horn is artistic.",
+    "migration": {
+      "common_prefix_bytes": 3410,
+      "host_zero_to_one_bytes": 50,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "616f3ffbc6c76e771801c262f71e2489b5ee3c982fec5851deb4401049289cbb",
+      "new_pcm_sha256": "8ae6c567ffdb5731cfd03836dcac444afad4fce75ba916626be83c5956497799",
+      "cue": "bojeu2-0",
+      "slot": "3",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "b4f98a47d9a2a02b2a7bee7ce469430078af6571a9f6d2c9d8afd9503c7ae78c": {
+    "roots_cycles_per_sample": [
+      0.015613,
+      0.01875
+    ],
+    "family": "strings",
+    "reason": "Reviewed bolieu-2 slot3: separate fundamental bands and harmonic series visible in whole loop and both halves. Strings are an artistic substitution; no equal-tempered note snapping.",
+    "migration": {
+      "common_prefix_bytes": 8518,
+      "host_zero_to_one_bytes": 94,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "7ef0ba695ad6af774ff6b4e57700bf3225a11c992e9a4cdd86c7bd30ef932d6e",
+      "new_pcm_sha256": "b4f98a47d9a2a02b2a7bee7ce469430078af6571a9f6d2c9d8afd9503c7ae78c",
+      "cue": "bolieu-0",
+      "slot": "3",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "2d53fbbf3e2b23cb3f658926e1ec7f46f9a71972554e5fc93119fed639f8a5fa": {
+    "roots_cycles_per_sample": [
+      0.015756,
+      0.019972
+    ],
+    "family": "strings",
+    "reason": "Reviewed bolieu-2 slot4: separate fundamental bands and harmonic series visible in whole loop and both halves. Strings are an artistic substitution; no equal-tempered note snapping.",
+    "migration": {
+      "common_prefix_bytes": 11034,
+      "host_zero_to_one_bytes": 204,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "649e1a3439c204b036364b039a34462d0467e674421097feeadd8d8216f88c92",
+      "new_pcm_sha256": "2d53fbbf3e2b23cb3f658926e1ec7f46f9a71972554e5fc93119fed639f8a5fa",
+      "cue": "bolieu-0",
+      "slot": "4",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "24fad6b9bf55ae11b7e68e034026d0f470e8dd3d9e527084d5d234145bd4e5ea": {
+    "roots_cycles_per_sample": [
+      0.010448
+    ],
+    "family": "horn",
+    "reason": "Fundamental around0.01045 and harmonic series2,3,4,6,8 in all loop windows; broad noisy residual retained as uncertainty. Horn is artistic.",
+    "migration": {
+      "common_prefix_bytes": 15622,
+      "host_zero_to_one_bytes": 193,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "028bdefd142cf93f75a1a5a5fa0d575f84fcfa492d5910afdedbed473b6b0144",
+      "new_pcm_sha256": "24fad6b9bf55ae11b7e68e034026d0f470e8dd3d9e527084d5d234145bd4e5ea",
+      "cue": "bolieu-0",
+      "slot": "7",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "b81b865a5066919c7741f4a2869bd5e1de11ddc3133a7b59eacd246e92629520": {
+    "roots_cycles_per_sample": [
+      0.01977
+    ],
+    "family": "horn",
+    "reason": "Original Paula loop whole and both half spectra resolve the fundamental near 0.01977 with higher harmonics. Last-half YIN selects its second harmonic; independent spectral fundamentals resolve this octave error. Horn is an artistic timbre choice.",
+    "migration": {
+      "old_pcm_sha256": "48c7d5d6abfe5d854f3265d7ee63fd2d9b14d93445085d1b2285a38ead2e4476",
+      "new_pcm_sha256": "b81b865a5066919c7741f4a2869bd5e1de11ddc3133a7b59eacd246e92629520",
+      "byte_audit": "unexplained PCM difference at byte 10658: 31 -> 41",
+      "non_zero_substitution_differences": 5983,
+      "first_difference": 10658,
+      "last_difference": 16711,
+      "correspondence_basis": "Original script/resource identity; byte equality not claimed.",
+      "original_script": "bolost",
+      "original_resource": 1,
+      "decoder": "original T.X hunk0:0xdee..0xef2",
+      "cue": "bolost-0",
+      "slot": "10",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "701f3b302e77aeeaef33b397ce0c7691c3724b8de8143d123bafcad47ead3193": {
+    "roots_cycles_per_sample": [
+      0.020793,
+      0.024771,
+      0.031272
+    ],
+    "family": "strings",
+    "reason": "Reviewed bopres-0 slot2: separate fundamental bands and harmonic series visible in whole loop and both halves. Strings are an artistic substitution; no equal-tempered note snapping.",
+    "migration": {
+      "common_prefix_bytes": 6948,
+      "host_zero_to_one_bytes": 138,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "dc1c68caa5724e81b2a71fb4a1b238b5f7a60eee46a30af1b9293ccfbe3bba5b",
+      "new_pcm_sha256": "701f3b302e77aeeaef33b397ce0c7691c3724b8de8143d123bafcad47ead3193",
+      "cue": "bopres-0",
+      "slot": "2",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "1b3571f9997ac8cb6094c373e1d16f7a45257ab9d781e2356c23ebf7a6a92857": {
+    "roots_cycles_per_sample": [
+      0.023622,
+      0.027971,
+      0.033442
+    ],
+    "family": "strings",
+    "reason": "Reviewed bopres-0 slot3: separate fundamental bands and harmonic series visible in whole loop and both halves. Strings are an artistic substitution; no equal-tempered note snapping.",
+    "migration": {
+      "common_prefix_bytes": 12842,
+      "host_zero_to_one_bytes": 226,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "308d43f2f3f1a5992510edc1ff6b6888a0d1478deb0e8e82162c2643b158b95e",
+      "new_pcm_sha256": "1b3571f9997ac8cb6094c373e1d16f7a45257ab9d781e2356c23ebf7a6a92857",
+      "cue": "bopres-0",
+      "slot": "3",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "aac3c4516a25856be09bbf99948d04e53d0318f6a0db2f079cbe537304849583": {
+    "roots_cycles_per_sample": [
+      0.018602,
+      0.024968,
+      0.031308
+    ],
+    "family": "strings",
+    "reason": "Reviewed bopres-0 slot4: separate fundamental bands and harmonic series visible in whole loop and both halves. Strings are an artistic substitution; no equal-tempered note snapping.",
+    "migration": {
+      "old_pcm_sha256": "3dedde4b1c347756fae14c6e303499f231c49b6ea1decc847ce79df939c3fbcd",
+      "new_pcm_sha256": "aac3c4516a25856be09bbf99948d04e53d0318f6a0db2f079cbe537304849583",
+      "byte_audit": "unexplained PCM difference at byte 10522: 217 -> 8",
+      "non_zero_substitution_differences": 67,
+      "first_difference": 10522,
+      "last_difference": 10589,
+      "correspondence_basis": "Original script/resource identity; byte equality not claimed.",
+      "original_script": "bopres",
+      "original_resource": 4,
+      "decoder": "original T.X hunk0:0xdee..0xef2",
+      "cue": "bopres-0",
+      "slot": "4",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "c3e63833e8378742742de0c74dcc807600ae3eb754a1abcd705e139e753271ae": {
+    "roots_cycles_per_sample": [
+      0.019762,
+      0.023385,
+      0.031213
+    ],
+    "family": "strings",
+    "reason": "Reviewed bopres-0 slot5: separate fundamental bands and harmonic series visible in whole loop and both halves. Strings are an artistic substitution; no equal-tempered note snapping.",
+    "migration": {
+      "old_pcm_sha256": "23e37db1954096eba8b620b493414cc9ece2a76b4f6ae6a1cda54df1fd89f4db",
+      "new_pcm_sha256": "c3e63833e8378742742de0c74dcc807600ae3eb754a1abcd705e139e753271ae",
+      "byte_audit": "unexplained PCM difference at byte 10066: 5 -> 0",
+      "non_zero_substitution_differences": 18,
+      "first_difference": 10066,
+      "last_difference": 10083,
+      "correspondence_basis": "Original script/resource identity; byte equality not claimed.",
+      "original_script": "bopres",
+      "original_resource": 5,
+      "decoder": "original T.X hunk0:0xdee..0xef2",
+      "cue": "bopres-0",
+      "slot": "5",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "b4b9758baa6f7b806d2a068afab0ac23e6051f15ddfcb01b79e4c02f837ca2d7": {
+    "roots_cycles_per_sample": [
+      0.00507
+    ],
+    "family": "cello",
+    "reason": "Measured low fundamental and harmonic bands persist in the full source and both halves. Broad attack/vibrato remains articulation uncertainty; the source trigger represents one note, with no separate internal pitch attack identified."
+  },
+  "d3003b4122154fe1f965dbe5af612ea34846ea9759237dd2c0f1dd34c05143fb": {
+    "roots_cycles_per_sample": [
+      0.02503
+    ],
+    "family": "horn",
+    "reason": "Fundamental near0.02503 and multiple harmonic bands are independently resolved in full source and both halves. One original trigger represents one note; early changing partial levels are retained as articulation evidence."
+  },
+  "6d7fb5978cd4992b33357982c543ba2df755eb0c65210ff33c07d44f257358d5": {
+    "roots_cycles_per_sample": [
+      0.00528
+    ],
+    "family": "cello",
+    "reason": "A low fundamental and its second harmonic are independently measured in full source and both halves. The decaying transient has a bounded frequency spread, not a separate observed internal sequence of note attacks."
+  },
+  "3c9b20b050aaabb13f1fc6392bba0925b7f181b1b63cd67c399edbe1c6529e45": {
+    "roots_cycles_per_sample": [
+      0.00396
+    ],
+    "family": "cello",
+    "reason": "A near-pure dominant tone is the strongest resolved spectral band in full source and both halves. The final half has no resolved harmonic, which is recorded explicitly rather than invented. Lower-level energy is not claimed absent.",
+    "mode": "dominant_single_band"
+  }
+}

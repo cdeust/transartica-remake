@@ -1,0 +1,218 @@
+{
+  "7adc9ae39a693bdebf6fc7c487e1930abdbb42dfc9ab2f3ce9ff37e95e76ddcb": {
+    "mode": "preserve_original_pcm",
+    "reason": "Decaying inharmonic partial bands; a single pitched replacement would discard the measured resonances.",
+    "seed_source": {
+      "cue": "bojeu-0",
+      "slot": "5"
+    },
+    "classification": "unresolved_transient_or_texture",
+    "claim": "Original PCM retained exactly; no assertion that every resonance is unpitched.",
+    "scope": "Preserve source attacks/FX instead of inventing an orchestral note.",
+    "migration": {
+      "common_prefix_bytes": 16192,
+      "host_zero_to_one_bytes": 2179,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "dadfd9ba2febf3dd4fe4b743f5d5d802f61e69ca3effd75d3d12a6ea50a50f3f",
+      "new_pcm_sha256": "7adc9ae39a693bdebf6fc7c487e1930abdbb42dfc9ab2f3ce9ff37e95e76ddcb",
+      "cue": "bojeu-0",
+      "slot": "5",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "a5498d1020d377016ab5bf26b60abf4d44aa0bd722c9a367a0be6ec5bd06e206": {
+    "mode": "preserve_original_pcm",
+    "reason": "Broadband transient with all three YIN normalized differences above 0.7 and spectral peaks distributed across the full band.",
+    "seed_source": {
+      "cue": "bojeu-0",
+      "slot": "7"
+    },
+    "classification": "unresolved_transient_or_texture",
+    "claim": "Original PCM retained exactly; no assertion that every resonance is unpitched.",
+    "scope": "Preserve source attacks/FX instead of inventing an orchestral note.",
+    "migration": {
+      "common_prefix_bytes": 14330,
+      "host_zero_to_one_bytes": 1606,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "cfc45a775ff29580e6cb530eba0410d8aad1ac17307147c938d0a216b0bcf4be",
+      "new_pcm_sha256": "a5498d1020d377016ab5bf26b60abf4d44aa0bd722c9a367a0be6ec5bd06e206",
+      "cue": "bojeu-0",
+      "slot": "7",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "72fc87eec0ae3d11057c956d56d3c333e9229c5c0b06ff3b40f2aa5301d91070": {
+    "mode": "preserve_original_pcm",
+    "reason": "Short inharmonic transient with multiple low resonances and no stable resolved periodic fundamental.",
+    "seed_source": {
+      "cue": "bojeu-0",
+      "slot": "8"
+    },
+    "classification": "unresolved_transient_or_texture",
+    "claim": "Original PCM retained exactly; no assertion that every resonance is unpitched.",
+    "scope": "Preserve source attacks/FX instead of inventing an orchestral note.",
+    "migration": {
+      "common_prefix_bytes": 7110,
+      "host_zero_to_one_bytes": 776,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "b527c808bbc39762842c900072063386ad705753ff2d3bec9f3cd82fc95123fd",
+      "new_pcm_sha256": "72fc87eec0ae3d11057c956d56d3c333e9229c5c0b06ff3b40f2aa5301d91070",
+      "cue": "bojeu-0",
+      "slot": "8",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "2a20ab7da8b968916f89d09238d6796cbc709ff9abde4eea6cf2fd21986971eb": {
+    "mode": "preserve_original_pcm",
+    "reason": "Noisy loop with broad, changing spectral bands; no stable periodic fundamental in the independent windows.",
+    "seed_source": {
+      "cue": "bojeu-0",
+      "slot": "9"
+    },
+    "classification": "unresolved_transient_or_texture",
+    "claim": "Original PCM retained exactly; no assertion that every resonance is unpitched.",
+    "scope": "Preserve source attacks/FX instead of inventing an orchestral note.",
+    "migration": {
+      "common_prefix_bytes": 6156,
+      "host_zero_to_one_bytes": 205,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "ec2e43fc2c7e526fa10265cb2a56c4ae32c8391569d899a88f387e398c6992a9",
+      "new_pcm_sha256": "2a20ab7da8b968916f89d09238d6796cbc709ff9abde4eea6cf2fd21986971eb",
+      "cue": "bojeu-0",
+      "slot": "9",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "7ab395e99b9725722461f0b6bd2b7f5c62af91b860487a68fb8c3c8e791f03de": {
+    "mode": "preserve_original_pcm",
+    "reason": "Broadband transient with changing low resonances; tonal core is not resolved independently.",
+    "seed_source": {
+      "cue": "bolieu-0",
+      "slot": "6"
+    },
+    "classification": "unresolved_transient_or_texture",
+    "claim": "Original PCM retained exactly; no assertion that every resonance is unpitched.",
+    "scope": "Preserve source attacks/FX instead of inventing an orchestral note.",
+    "migration": {
+      "common_prefix_bytes": 7910,
+      "host_zero_to_one_bytes": 103,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "2a2fbd30c307644b0bfcf33abda7ea5e332c11f673c9db540c356ab0152d529e",
+      "new_pcm_sha256": "7ab395e99b9725722461f0b6bd2b7f5c62af91b860487a68fb8c3c8e791f03de",
+      "cue": "bolieu-0",
+      "slot": "6",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "61622ddf0904e00e7c34a46fabf76b37692708a22640fd77895292863d95ab9a": {
+    "mode": "preserve_original_pcm",
+    "reason": "Short decaying low-frequency transient; changing periodicity prevents replacement by a guessed fixed note.",
+    "seed_source": {
+      "cue": "bopres-0",
+      "slot": "7"
+    },
+    "classification": "unresolved_transient_or_texture",
+    "claim": "Original PCM retained exactly; no assertion that every resonance is unpitched.",
+    "scope": "Preserve source attacks/FX instead of inventing an orchestral note.",
+    "migration": {
+      "common_prefix_bytes": 2134,
+      "host_zero_to_one_bytes": 283,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "c4ae226d73cd8f3ac74e811bc89675746b9fdb3b3a2c5dfc1a9b7fc988b1e9a9",
+      "new_pcm_sha256": "61622ddf0904e00e7c34a46fabf76b37692708a22640fd77895292863d95ab9a",
+      "cue": "bopres-0",
+      "slot": "7",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "9131a4947dbc1c1b6dc1dd45c6f8e11e025974fa6067644dd7b5eda6daa28f9c": {
+    "mode": "preserve_original_pcm",
+    "reason": "Short decaying resonant transient with changing estimated period; retain its source attack and decay.",
+    "seed_source": {
+      "cue": "bopres-0",
+      "slot": "8"
+    },
+    "classification": "unresolved_transient_or_texture",
+    "claim": "Original PCM retained exactly; no assertion that every resonance is unpitched.",
+    "scope": "Preserve source attacks/FX instead of inventing an orchestral note.",
+    "migration": {
+      "common_prefix_bytes": 2912,
+      "host_zero_to_one_bytes": 414,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "ea06d275dddc07a86991a6fd677b6c79dbf58b4f468a38d098885e390e0fd527",
+      "new_pcm_sha256": "9131a4947dbc1c1b6dc1dd45c6f8e11e025974fa6067644dd7b5eda6daa28f9c",
+      "cue": "bopres-0",
+      "slot": "8",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "d2a29c67aacd8a202b560ab8ebf02374cfda1f96d70c49b70ff79cbc382bb36b": {
+    "mode": "preserve_original_pcm",
+    "reason": "Broadband transient; YIN normalized differences exceed 0.6 and final-half spectrum has no resolved peak above quantization bound.",
+    "seed_source": {
+      "cue": "bopres-0",
+      "slot": "9"
+    },
+    "classification": "unresolved_transient_or_texture",
+    "claim": "Original PCM retained exactly; no assertion that every resonance is unpitched.",
+    "scope": "Preserve source attacks/FX instead of inventing an orchestral note.",
+    "migration": {
+      "common_prefix_bytes": 2830,
+      "host_zero_to_one_bytes": 174,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "4d75cd1c00732f0ac4e76e8d0f58aba614711811ddd9b2f9a274ea5a66716233",
+      "new_pcm_sha256": "d2a29c67aacd8a202b560ab8ebf02374cfda1f96d70c49b70ff79cbc382bb36b",
+      "cue": "bopres-0",
+      "slot": "9",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  },
+  "8221592b57d102dffcbc14762624a0c5d8adeee563fd940aff16d1b88e70ee1d": {
+    "mode": "preserve_original_pcm",
+    "reason": "Looped noisy texture with multiple drifting broad spectral bands; no stable periodic core is resolved.",
+    "seed_source": {
+      "cue": "bopres-0",
+      "slot": "12"
+    },
+    "classification": "unresolved_transient_or_texture",
+    "claim": "Original PCM retained exactly; no assertion that every resonance is unpitched.",
+    "scope": "Preserve source attacks/FX instead of inventing an orchestral note.",
+    "migration": {
+      "common_prefix_bytes": 18466,
+      "host_zero_to_one_bytes": 1504,
+      "host_uncompared_suffix_bytes": 16,
+      "original_uncompared_suffix_bytes": 32,
+      "original_suffix_bytes": 16,
+      "old_pcm_sha256": "a97ab32528b32807be588bf0cc4c5d8236a8010397eb969d42d82d4aecb94a0e",
+      "new_pcm_sha256": "8221592b57d102dffcbc14762624a0c5d8adeee563fd940aff16d1b88e70ee1d",
+      "cue": "bopres-0",
+      "slot": "12",
+      "acceptance_transferred": false,
+      "requires": "Recompute all source-spectrum evidence on new PCM."
+    }
+  }
+}

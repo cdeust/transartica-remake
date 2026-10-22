@@ -35,8 +35,8 @@ func attach(app: Node) -> void:
 			var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 			if parsed is Dictionary:
 				set(pair[0], parsed)
-	# Authored orchestral score preserves the original cue keys and transitions.
-	# Sample provenance/render proof: orchestral-score-20261006.md.
+	# Historical score arrangements preserve each original cue identity.
+	# Source execution and measured transcription: tools/faithful_score/README.md.
 	var score_path := "res://assets/audio/orchestral/music.json"
 	if FileAccess.file_exists(score_path):
 		var score: Variant = JSON.parse_string(FileAccess.get_file_as_string(score_path))

@@ -1,0 +1,230 @@
+{
+  "original_executable_sha256": "741f28adae86c8954cfeb90de6f9ba8f64f98abadb4eafab1d018381b4505071",
+  "capture": [
+    {
+      "cue": "bojeu-0",
+      "rows": 706,
+      "triggers": 446,
+      "loops": [
+        3481254,
+        6959862
+      ],
+      "frames": 6959862,
+      "trace_sha256": "35a8ee75f2729083855aea53a8e80481ed3681c022f6b01b742d8541707b339a"
+    },
+    {
+      "cue": "bojeu-1",
+      "rows": 1024,
+      "triggers": 578,
+      "loops": [
+        2713914,
+        5423418
+      ],
+      "frames": 5423418,
+      "trace_sha256": "2609aadf83f2b708dbc65f416a3fbc6e530bb9eedc4136b65eaa23ed562e562d"
+    },
+    {
+      "cue": "bojeu2-0",
+      "rows": 681,
+      "triggers": 375,
+      "loops": [
+        4035150,
+        7704270
+      ],
+      "frames": 7704270,
+      "trace_sha256": "bb70a86cd93d7c98581477b0085ce83226ea5234296934ed14271bb514a86f12"
+    },
+    {
+      "cue": "bolieu-0",
+      "rows": 64,
+      "triggers": 73,
+      "loops": [],
+      "frames": 838782,
+      "trace_sha256": "c06f9b50a20da010c1a2edf3ea6d2452463d82ff6233ece86dde238e7191a13e"
+    },
+    {
+      "cue": "bolieu-1",
+      "rows": 28,
+      "triggers": 18,
+      "loops": [],
+      "frames": 195804,
+      "trace_sha256": "5afe3eee1bb8cfc7fd602427438c677df116d839fbcc18f439607e6cbee555b7"
+    },
+    {
+      "cue": "bolieu-2",
+      "rows": 64,
+      "triggers": 37,
+      "loops": [],
+      "frames": 838782,
+      "trace_sha256": "90e1e7c4dff4e7cdf80d31074cbd31c5ebd4fbb2e83cdb8246ed353b55f685e5"
+    },
+    {
+      "cue": "bolieu-3",
+      "rows": 58,
+      "triggers": 33,
+      "loops": [],
+      "frames": 508032,
+      "trace_sha256": "22f691eb31cbbe6f42a806a4cc6ef53ec5f0e8c5c6be39d9a2c4f657685c8555"
+    },
+    {
+      "cue": "bolost-0",
+      "rows": 512,
+      "triggers": 268,
+      "loops": [
+        3391290,
+        6778170
+      ],
+      "frames": 6778170,
+      "trace_sha256": "c074fe10463d9a2c75a815f17a942d584701be7158f36420bd50e40ee40e0dc2"
+    },
+    {
+      "cue": "bopres-0",
+      "rows": 844,
+      "triggers": 1783,
+      "loops": [
+        4851882
+      ],
+      "frames": 8927604,
+      "trace_sha256": "d4debba54e682e165885076175f2a9efb6adc713ae1fe3f1c5480d6136bdb72e"
+    }
+  ],
+  "independent_audit": [
+    {
+      "cue": "bojeu-0",
+      "rows": 706,
+      "triggers": 446,
+      "instrument_hashes": 32,
+      "executed_orders": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        127
+      ],
+      "complete_reason": "cycles",
+      "frames": 6959862
+    },
+    {
+      "cue": "bojeu-1",
+      "rows": 1024,
+      "triggers": 578,
+      "instrument_hashes": 32,
+      "executed_orders": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        127
+      ],
+      "complete_reason": "cycles",
+      "frames": 5423418
+    },
+    {
+      "cue": "bojeu2-0",
+      "rows": 681,
+      "triggers": 375,
+      "instrument_hashes": 32,
+      "executed_orders": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "complete_reason": "cycles",
+      "frames": 7704270
+    },
+    {
+      "cue": "bolieu-0",
+      "rows": 64,
+      "triggers": 73,
+      "instrument_hashes": 32,
+      "executed_orders": [
+        0
+      ],
+      "complete_reason": "native-stop",
+      "frames": 838782
+    },
+    {
+      "cue": "bolieu-1",
+      "rows": 28,
+      "triggers": 18,
+      "instrument_hashes": 32,
+      "executed_orders": [
+        0
+      ],
+      "complete_reason": "native-stop",
+      "frames": 195804
+    },
+    {
+      "cue": "bolieu-2",
+      "rows": 64,
+      "triggers": 37,
+      "instrument_hashes": 32,
+      "executed_orders": [
+        0
+      ],
+      "complete_reason": "native-stop",
+      "frames": 838782
+    },
+    {
+      "cue": "bolieu-3",
+      "rows": 58,
+      "triggers": 33,
+      "instrument_hashes": 32,
+      "executed_orders": [
+        0
+      ],
+      "complete_reason": "native-stop",
+      "frames": 508032
+    },
+    {
+      "cue": "bolost-0",
+      "rows": 512,
+      "triggers": 268,
+      "instrument_hashes": 32,
+      "executed_orders": [
+        0,
+        1,
+        2,
+        127
+      ],
+      "complete_reason": "cycles",
+      "frames": 6778170
+    },
+    {
+      "cue": "bopres-0",
+      "rows": 844,
+      "triggers": 1783,
+      "instrument_hashes": 32,
+      "executed_orders": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        127
+      ],
+      "complete_reason": "native-stop",
+      "frames": 8927604
+    }
+  ],
+  "guard": {
+    "exit": 0,
+    "peak_rss_kib": 129648,
+    "elapsed_s": 2.749,
+    "memory_mib": 1024
+  },
+  "unit_tests": {
+    "count": 13,
+    "failures": 0
+  },
+  "raw_evidence": "disk-hygiene-9t1vpqpm/effects-review/amiga-final-v2"
+}

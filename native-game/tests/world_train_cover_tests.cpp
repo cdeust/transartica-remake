@@ -59,7 +59,7 @@ int main(int argc,char** argv){
         const ta::WorldProjection projection{{0,0},1,{0,0,160,73}};
         const auto floors=passages.portal_plan(network,projection,false);
         std::unique_ptr<json_object,decltype(&json_object_put)> doc(
-            json_object_from_file((game/"assets/travel/terrain/underground-mouths.json").c_str()),json_object_put);
+            json_object_from_file((game/"assets/travel/terrain/underground-mouths.json").string().c_str()),json_object_put);
         require(bool(doc),"Missing authenticated portal metadata");
         require(floors.size()==6,"Expected six original mouths");
         for(const auto& floor:floors){
