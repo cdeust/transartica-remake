@@ -1,25 +1,24 @@
-# Resumed music and installer checkpoint, 22 October 2026
+# Orchestral delivery state,23October2026
 
-The nine historical cues now have distinct source-derived orchestral masters in
-`game/assets/audio/orchestral/`. The five invented compositions have been removed.
-Original T.X execution and measured PCM supply the musical events and pitches.
-Original resonant/percussive textures remain; internal phrase onsets carry
-measurement uncertainty. No published-score recovery is claimed.
+Nine source-derived orchestral masters are committed in3953e35 on
+`fix/faithful-orchestral-score`. Original CPU traces and measured source PCM
+supply the events and pitches. Resonant/percussive textures remain original;
+internal phrase timing and pitch retain documented measurement uncertainty.
 
-The original-player audit covers 3981 rows, 3611 triggers and 288 sample hashes.
-All nine masters rebuild identically. Native C++ passes 21 CTest suites, and
-packaging passes 40 tests. The score tool suite passes 91 tests.
+The score tooling passed91 tests. Native C++ passed21 CTest suites on Mac and
+Windows. The final Windows installer passed installation, launch and uninstall
+in run39862770188. Its audio test uses SDL dummy. The macOS26 arm64 DMG passed
+mounted-file verification and an installed CoreAudio launch. Real Mac UI checks
+exercised the map and save restoration.
 
-The macOS26+ arm64 DMG is created and installation-tested with CoreAudio.
-Actual app interaction also verified map opening and SESSION save/restoration.
-The final Windows build is next; its preliminary old-score installer passed
-installation, advancing playback and uninstall on the hosted Windows runner.
+PR12 contains the source changes. The owner authorized merge after platform
+checks and a combined release at `native-v0.1.0`. Publication is in progress.
+The owner explicitly authorized deletion of `disk-hygiene-ltx2pwm6`,
+`disk-hygiene-54i1ct98` and `disk-hygiene-9t1vpqpm` after delivery.
 
-The owner additionally requests cleanup of obsolete resources and data.
-Preserve the final installers and compact source evidence before deleting owned
-build copies. Do not remove other sessions' worktrees or unresolved local work.
-
-Current worktree: `.claude/worktrees/faithful-orchestral-20261022`.
-Owned scratch: `disk-hygiene-9t1vpqpm` in the main repository.
-Final deliverables: `output/faithful-native-20261022/` in the main repository.
-Detailed evidence: [faithful-orchestral-delivery-20261022.md](faithful-orchestral-delivery-20261022.md).
+Verified source and prior native-review evidence archives are preserved in
+`output/faithful-native-20261022/evidence/` in the main checkout. The same output
+directory holds the final DMG and installation receipts. The owned build copies
+and loose app have been removed; the worktree and Windows transfer scratch
+remain until publication finishes. Full numerical results and artifact hashes
+are in `faithful-orchestral-delivery-20261022.json`.

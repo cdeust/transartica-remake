@@ -44,14 +44,27 @@ Deliverables and installation receipts are under
 
 ## Windows
 
-The preliminary installer passed actual installation, launch with advancing
-music and uninstall on Windows Server2025. That run used the old score.
-The final installer must be rebuilt from the commit containing these nine
-masters; its result will be appended here before delivery is declared complete.
+The final installer passed actual installation, launch with advancing music
+and uninstall on Windows Server2025.
+[Run39862770188](https://github.com/cdeust/transartica-remake/actions/runs/39862770188)
+used music commit3953e35. It passed all21 native CTest suites,14 installer Python
+tests and5 PowerShell regression checks. The runtime test uses SDL dummy audio;
+it does not establish playback through physical Windows audio hardware or
+gameplay input. Installed file hashes are verified before launch.
+
+The installer is being transferred into the combined release. Its final
+publication receipt will bind the hosted file to the successful installation.
 
 ## Cleanup
 
-Temporary comparison renders were deleted after their hashes matched. Canonical
-source evidence and current deliverables remain protected until archived.
-The owner has requested removal of obsolete project resources and build copies;
-cleanup measurements will be recorded after the final Windows artifact arrives.
+The source captures and verification evidence are retained in
+`output/faithful-native-20261022/evidence/music-source-evidence.tar.gz`.
+Its 904 members were read back and SHA256-verified before cleanup. The archive
+is 20615476 bytes; its SHA256 is
+`2be904d9ec3f294253e5d25f9b6b5a07078b7f969ef11b1f5a6269d25ceb09d6`.
+
+Removed owned build directories, duplicate renders and the loose app copy total
+1100104249 logical bytes. The verified DMG remains. The cleanup receipt records
+per-path sizes and filesystem measurements; concurrent disk activity and APFS
+sharing mean deleted file sizes are not a claim about net free-space gain.
+Other worktrees, reference sources and unrelated project evidence were preserved.

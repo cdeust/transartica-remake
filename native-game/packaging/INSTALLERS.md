@@ -30,6 +30,35 @@ workflow's presence and the local Python unit tests do not establish it. The
 artifact includes the installer and logs even after a failure, so check the job
 result and `windows-smoke/receipt.json` before distributing it.
 
+The manual `publish-native-installer.yml` workflow can transfer a verified
+installer directly from Actions to an existing draft release. It requires the
+source run ID, its full source commit SHA, and the draft release tag. For the
+final nine-cue soundtrack build:
+
+```sh
+gh workflow run publish-native-installer.yml --ref main \
+  -f source_run=39862770188 \
+  -f expected_sha=3953e35fa11f34fb0e8f7875f9754d2e0d007973 \
+  -f release_tag=native-v0.1.0
+```
+
+The publisher requires a successful `Native Windows installer` run from the
+same repository and the exact supplied commit. It checks the downloaded ZIP's
+size and SHA256 against GitHub's artifact metadata, the installer against its
+Windows installation receipt, and all nine music hashes plus the music manifest
+against that source commit. It also checks the final title's frame count and
+advancing playback in the Windows log. Downloaded artifact code is never run.
+
+Only `Transartica-setup.exe` is uploaded. An existing installer asset or a public
+release causes refusal. Other release assets remain intact; the release stays
+draft. The remote asset's size and SHA256 must match after upload. The small
+`native-installer-publication-<run-id>` Actions artifact preserves
+`publication.json`, the package and installation receipts, runtime logs and
+CTest output. A successful publication receipt includes `release_asset`;
+receipts without that field record verification before upload, not publication.
+The original Windows limits still apply: hosted dummy audio and startup checks
+do not establish physical listening or gameplay input.
+
 For macOS, first build and validate the app using the existing bundle procedure
 in [README.md](README.md). Then run, using new output paths:
 

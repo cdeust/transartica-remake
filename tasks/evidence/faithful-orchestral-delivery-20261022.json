@@ -320,13 +320,141 @@
     "signature": "ad-hoc; not notarized"
   },
   "windows": {
-    "status": "final-music build pending",
-    "preliminary_success_run": 39858698534
+    "status": "Final music installer passed native CI installation, launch and uninstall; publication pending.",
+    "source_commit": "3953e35fa11f34fb0e8f7875f9754d2e0d007973",
+    "run": 39862770188,
+    "run_url": "https://github.com/cdeust/transartica-remake/actions/runs/39862770188",
+    "native_ctest_passed": 21,
+    "installer_python_tests_passed": 14,
+    "powershell_tests_passed": 5,
+    "physical_audio_tested": false,
+    "gameplay_input_tested": false
   },
   "limits": [
     "Original resonant/percussive textures retained.",
     "Internal phrase timing and pitch are measured estimates with documented uncertainty.",
     "No claim of a recovered published score or complete campaign playthrough.",
     "Device playback and numeric checks do not constitute artistic listening acceptance."
-  ]
+  ],
+  "source_commit": "3953e35fa11f34fb0e8f7875f9754d2e0d007973",
+  "source_evidence": {
+    "archive": "music-source-evidence.tar.gz",
+    "sha256": "2be904d9ec3f294253e5d25f9b6b5a07078b7f969ef11b1f5a6269d25ceb09d6",
+    "archive_bytes": 20615476,
+    "source_bytes": 140798547,
+    "verified_members": 904
+  },
+  "cleanup": {
+    "scope": "Only owned session scratch subdirectories and receipt-verified loose app; final DMG and source-evidence archive retained.",
+    "archive_sha256": "2be904d9ec3f294253e5d25f9b6b5a07078b7f969ef11b1f5a6269d25ceb09d6",
+    "removed": [
+      {
+        "path": "disk-hygiene-9t1vpqpm/mac-build",
+        "files": 1052,
+        "logical_bytes": 386558557,
+        "allocated_bytes": 389414912
+      },
+      {
+        "path": "disk-hygiene-9t1vpqpm/mac-ui",
+        "files": 7,
+        "logical_bytes": 8476528,
+        "allocated_bytes": 8491008
+      },
+      {
+        "path": "disk-hygiene-9t1vpqpm/final-masters",
+        "files": 28,
+        "logical_bytes": 154907017,
+        "allocated_bytes": 154988544
+      },
+      {
+        "path": "disk-hygiene-9t1vpqpm/pitch-calibration",
+        "files": 77,
+        "logical_bytes": 42319085,
+        "allocated_bytes": 42483712
+      },
+      {
+        "path": "disk-hygiene-9t1vpqpm/effects-review",
+        "files": 466,
+        "logical_bytes": 58273363,
+        "allocated_bytes": 59150336
+      },
+      {
+        "path": "disk-hygiene-9t1vpqpm/alis-capture",
+        "files": 1094,
+        "logical_bytes": 104577598,
+        "allocated_bytes": 106946560
+      },
+      {
+        "path": "disk-hygiene-9t1vpqpm/render-preview",
+        "files": 2,
+        "logical_bytes": 28088650,
+        "allocated_bytes": 28090368
+      },
+      {
+        "path": "disk-hygiene-9t1vpqpm/render-reproducibility",
+        "files": 19,
+        "logical_bytes": 2205061,
+        "allocated_bytes": 2265088
+      },
+      {
+        "path": "disk-hygiene-9t1vpqpm/installers",
+        "files": 5,
+        "logical_bytes": 4681,
+        "allocated_bytes": 16384
+      },
+      {
+        "path": "disk-hygiene-9t1vpqpm/windows-preliminary",
+        "files": 4,
+        "logical_bytes": 166660,
+        "allocated_bytes": 212992
+      },
+      {
+        "path": "output/faithful-native-20261022/Transartica.app",
+        "files": 146,
+        "logical_bytes": 314222507,
+        "allocated_bytes": 314540032
+      },
+      {
+        "path": ".claude/worktrees/faithful-orchestral-20261022/tools/__pycache__",
+        "files": 1,
+        "logical_bytes": 3812,
+        "allocated_bytes": 4096
+      },
+      {
+        "path": ".claude/worktrees/faithful-orchestral-20261022/tools/faithful_score/__pycache__",
+        "files": 27,
+        "logical_bytes": 300730,
+        "allocated_bytes": 356352
+      }
+    ],
+    "removed_logical_bytes": 1100104249,
+    "removed_allocated_bytes": 1106960384,
+    "available_bytes_before": 46066122752,
+    "available_bytes_after": 46118547456,
+    "free_space_delta_is_systemwide": true
+  },
+  "independent_review": {
+    "head": "3953e35fa11f34fb0e8f7875f9754d2e0d007973",
+    "base": "b380ffab067471d98937dda5c4266a92b27fe551",
+    "result": "No new code or integration merge blocker",
+    "checked": [
+      "nine WAV hashes and RIFF metadata",
+      "manifest routing and loop bounds",
+      "macOS bundled resource identity",
+      "source archive and calibration receipts",
+      "Windows build and packaging code"
+    ],
+    "limits": [
+      "Windows final artifact requires separate native receipt",
+      "No aural acceptance or entire campaign playthrough"
+    ]
+  },
+  "prior_evidence": {
+    "archive": "prior-native-review-evidence.tar.gz",
+    "sha256": "338de4568dd0eae9b0378cc808fb3bfec0b56068406c80d7b59e1a2492d0f2c9",
+    "archive_bytes": 432884731,
+    "source_bytes": 518682161,
+    "verified_members": 757,
+    "unique_contents": 647
+  }
 }

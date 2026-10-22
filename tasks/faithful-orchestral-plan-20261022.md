@@ -40,10 +40,10 @@ claiming complete source fidelity. Do not invent a replacement melody.
 - [x] Replace the selected orchestral resources and update provenance/licensing.
   Keep each cue distinct in music.json. Add a regression that detects the old
   many-to-one substitutions. Verify C++ audio tests and packaging closure.
-- [ ] Build a complete macOS package and test actual playback/scene transitions.
+- [x] Build a complete macOS package and test actual playback/scene transitions.
   Preserve evidence, then commit/push under existing publication authorization.
   Verify remote SHA and clean owned temporary files after preserving deliverables.
-- [ ] Create a Windows setup.exe with bundled runtime dependencies and resources.
+- [x] Create a Windows setup.exe with bundled runtime dependencies and resources.
   Verify installation and executable launch on a Windows runner.
 - [x] Create a macOS installation DMG containing the rebuilt application.
   Mount it, install the application outside the build tree and verify its launch.
@@ -55,11 +55,12 @@ Owner request: "you were working on finishing the reorchestration of the music w
 | Reference | Artifact | Evidence |
 |---|---|---|
 | Same partition | Nine original-CPU traces in effects-review/amiga-final-v2/*-final | amiga-extraction-validation-20261022.json |
-| Resumed orchestration | tools/faithful_score and calibration-reviewed-all.json | Uncommitted work retained on fix/faithful-orchestral-score |
+| Delivered orchestration | tools/faithful_score and orchestration-final-contract.json | Music commit3953e35; hash-bound source archive retained |
 | Complete executables | native-game/CMakeLists.txt and native-game/packaging | Resource delivery commit 00038e3 |
 
-The delivered music currently consists of five newly authored compositions.
-The goal is nine source-derived orchestral masters followed by both installers.
+The five invented compositions have been replaced by nine source-derived
+orchestral masters. The macOS DMG has passed installation and launch checks.
+The matching Windows installer passed hosted installation and launch checks.
 Rights-holder research follows game completion. Existing AGENTS.md and FIDELITE.md
 remain binding. Planning and external verification govern execution: compare source
 events and measured pitches, then inspect built artifacts and native launch results.

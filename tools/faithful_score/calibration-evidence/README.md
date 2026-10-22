@@ -7,8 +7,12 @@ BOJEU2 phrases contain respectively 4, 6, 5 and 6 notes in slots 6, 11, 12 and 1
 The contract SHA256 is
 `9db16b736c312f824f62eb0c72f3013f923dbb941a904d5f2c29574965cb9719`.
 
-The authoritative captures are `effects-review/amiga-final-v2` under the owned
-session scratch directory. They execute the original T.X decompressor at
+The authoritative captures are `effects-review/amiga-final-v2` inside
+`output/faithful-native-20261022/evidence/music-source-evidence.tar.gz` in the
+main checkout. The archive SHA256 is
+`2be904d9ec3f294253e5d25f9b6b5a07078b7f969ef11b1f5a6269d25ceb09d6`.
+Its adjacent receipt hashes all 904 retained members. The disposable session
+scratch has been removed after archive verification. They execute the original T.X decompressor at
 hunk 0 `0xdee..0xef2` and player under Musashi. The host ALIS reader changes zero
 PCM samples to one and truncates sixteen bytes. Its old acceptance results were
 not transferred: candidate seeds were migrated by source identity and then
@@ -62,7 +66,7 @@ does not replace every original timbre.
 
 ## Reproduction
 
-Use the session's NumPy environment and the existing 1 GiB process-group guard
+Use the documented NumPy environment and the existing 1 GiB process-group guard
 for spectral commands. Set `capture_dir` to the final-v2 capture directory and
 `evidence_dir` to the retained pitch-calibration artifacts. Run from
 `tools/faithful_score`; review JSON inputs are also preserved beside this file.

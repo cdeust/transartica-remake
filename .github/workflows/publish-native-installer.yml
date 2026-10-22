@@ -1,0 +1,40 @@
+name: Publish verified native installer
+on:
+  workflow_dispatch:
+    inputs:
+      source_run:
+        description: Successful Native Windows installer run ID
+        required: true
+      expected_sha:
+        description: Exact source commit SHA
+        required: true
+      release_tag:
+        description: Existing draft release tag
+        required: true
+permissions:
+  actions: read
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Verify and upload existing installer
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.source_run }}
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          python3 -B -m unittest discover -s native-game/packaging -p test_publish_installer.py
+          python3 -B native-game/packaging/publish_installer.py --repo "$GITHUB_REPOSITORY" --run-id "$SOURCE_RUN" --expected-sha "$EXPECTED_SHA" --tag "$RELEASE_TAG" --scratch "$RUNNER_TEMP/native-publish"
+      - name: Preserve small verification receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: native-installer-publication-${{ github.run_id }}
+          path: ${{ runner.temp }}/native-publish/proof/
+          if-no-files-found: warn
