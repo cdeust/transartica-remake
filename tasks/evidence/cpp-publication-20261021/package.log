@@ -1,0 +1,7 @@
+{
+  "bundle": "<local-project>/disk-hygiene-2ncnxx6p/Transartica.app",
+  "receipt": "<local-project>/disk-hygiene-2ncnxx6p/Transartica.app.receipt.json",
+  "files": 141,
+  "bytes": 202259084
+}
+{"exit": 0, "aborted": null, "peak_rss_kib": 36752, "rss_scope": "owned_process_group", "elapsed_s": 1.851}

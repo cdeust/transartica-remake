@@ -610,3 +610,24 @@ Owner requests these now while Windows runtime validation remains pending.
 Review evidence will distinguish technical registration from artistic acceptance. Original sample libraries and decoded source geography remain private local inputs.
 
 Technical native proof and Claude handoff: tasks/handoff-codex-world-artwork-20261006.md. Close-up sharpness, regional joins and retained relief remain visual acceptance items. Windows runtime and v1 publication remain pending.
+
+## Publication du runtime autonome, 21 octobre 2026
+
+- [x] Isoler la publication depuis main, sans les rasters privés de l'historique local.
+- [x] Préserver les modifications du chantier Godot et inventorier les ressources.
+- [x] Actualiser les instructions et les limites de validation.
+- [x] Vérifier la compilation sur cette base et les contrôles de qualité.
+- [x] Committer, pousser et vérifier le SHA distant : da03cd9 publié, PR11.
+
+Reçu : [cpp-publication-20261021.md](evidence/cpp-publication-20261021.md).
+
+## Ressources natives livrées, correction du 21 octobre 2026
+
+Cette section remplace l'exclusion des ressources prévue lors de la première
+publication. Le propriétaire demande les ressources dans Git et dans le build.
+
+- [x] Inventorier et copier les 120 ressources du paquet graphique validé.
+- [x] Versionner les trois fixtures de régression utilisées par native_reverse.
+- [x] Copier automatiquement les ressources au build et à l'installation.
+- [x] Vérifier les seuls fichiers Git, puis lancer une installation déplacée.
+- [ ] Mettre à jour la PR11, pousser et nettoyer les temporaires possédés.

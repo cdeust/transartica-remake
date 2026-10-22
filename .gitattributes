@@ -1,0 +1,6 @@
+# Resource manifests authenticate exact file bytes on every platform.
+game/data/** -text
+game/assets/** -text
+native-game/assets/fonts/** -text
+# Preserve the authenticated CSV export's original CRLF records.
+game/data/villes-decoded.data whitespace=cr-at-eol

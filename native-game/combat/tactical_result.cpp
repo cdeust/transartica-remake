@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: MIT
+// scripts/tactical_result.gd / tactical_survivors.gd WDECOR58c9..6067.
+#include "tactical.hpp"
+#include <algorithm>
+namespace transartica::combat {
+void Tactical::redistribute(std::vector<Wagon>&wagons){for(int kind=0;kind<2;++kind){int&pool=kind==0?s_.survivors.soldiers:s_.survivors.mammoths;int remaining=pool;auto capacity=[&](const Wagon&w){return kind==0?(w.type==23?50:w.type==24?100:0):(w.type==7?5:0);};for(const auto&w:wagons)if(w.state!=3&&capacity(w)>0)remaining-=w.quantity;for(auto&w:wagons){const int cap=capacity(w);if(w.state==3||cap<=0||cap<=w.quantity)continue;const int take=std::min(cap-w.quantity,remaining);w.quantity=int((unsigned(w.quantity+take)+128U)&255U)-128;remaining-=take;if(!remaining)break;}pool-=remaining;}}
+std::optional<AutomaticResult> Tactical::commit(std::vector<Wagon>&w,EngineState&e,std::array<int,20>&spies){if(!s_.outcome||s_.settled||w!=s_.original)return {};s_.settled=true;AutomaticResult result;result.won=s_.outcome==1;result.soldiers_lost=s_.initial_pools.soldiers-s_.survivors.soldiers;result.mammoths_lost=s_.initial_pools.mammoths-s_.survivors.mammoths;if(!result.won){result.epitaph_id=105;return result;}
+    int roster=0;for(std::size_t i=0;i<w.size();++i){const auto&car=s_.trains[0][roster];int health=car.health;if(car.kind==Locomotive){health=(health+s_.trains[0][roster+1].health)/2;++roster;}w[i].state=3-health;if(car.kind==Barracks||car.kind==Livestock)w[i].quantity=car.quantity;if(health<=0)result.scrapped_indices.push_back(int(i));++roster;}
+    apply_destruction(w,e,spies,s_.random);for(const auto&car:s_.trains[1]){if(car.kind!=Merchandise||car.health<=0)continue;if(result.wagons_captured>=6||w.size()>=100)break;const int type=17+rnd(2);int goods=rnd(16)+1,cap=40;if(goods==2||goods==3)cap=10;else if(goods==5||goods==6||goods==8||goods==9)goods=10+rnd(7);const int quantity=rnd(type==17?cap/2:cap)+1;const Wagon captured{type,3-car.health,goods,quantity};w.push_back(captured);result.captured.push_back(captured);++result.wagons_captured;}
+    const int before=e.lignite;win_coal(w,e,int(s_.trains[1].size()),s_.random);result.coal_gained=e.lignite-before;result.slaves_gained=win_slaves(w,int(s_.trains[1].size()),s_.random);redistribute(w);result.soldiers_lost=s_.initial_pools.soldiers-s_.survivors.soldiers;result.mammoths_lost=s_.initial_pools.mammoths-s_.survivors.mammoths;e.train_mass=train_mass(w);return result;
+}
+}

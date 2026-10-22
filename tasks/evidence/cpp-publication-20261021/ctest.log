@@ -1,0 +1,46 @@
+Test project <local-project>/disk-hygiene-2ncnxx6p/build
+      Start  1: native_world_painting_join
+ 1/20 Test  #1: native_world_painting_join .......   Passed    0.50 sec
+      Start  2: native_world_train_cover
+ 2/20 Test  #2: native_world_train_cover .........   Passed    0.28 sec
+      Start  3: native_world_cover
+ 3/20 Test  #3: native_world_cover ...............   Passed    0.52 sec
+      Start  4: native_world_motion
+ 4/20 Test  #4: native_world_motion ..............   Passed    0.30 sec
+      Start  5: native_startup
+ 5/20 Test  #5: native_startup ...................   Passed    0.41 sec
+      Start  6: native_keys
+ 6/20 Test  #6: native_keys ......................   Passed    0.27 sec
+      Start  7: native_launcher
+ 7/20 Test  #7: native_launcher ..................   Passed    0.25 sec
+      Start  8: native_game_archive
+ 8/20 Test  #8: native_game_archive ..............   Passed    0.45 sec
+      Start  9: native_game_session
+ 9/20 Test  #9: native_game_session ..............   Passed    0.28 sec
+      Start 10: native_network_mutation
+10/20 Test #10: native_network_mutation ..........   Passed    0.25 sec
+      Start 11: native_campaign
+11/20 Test #11: native_campaign ..................   Passed    0.27 sec
+      Start 12: native_archive
+12/20 Test #12: native_archive ...................   Passed    1.08 sec
+      Start 13: native_economy
+13/20 Test #13: native_economy ...................   Passed    0.46 sec
+      Start 14: native_audio
+14/20 Test #14: native_audio .....................   Passed    0.36 sec
+      Start 15: native_world
+15/20 Test #15: native_world .....................   Passed    0.26 sec
+      Start 16: native_combat
+16/20 Test #16: native_combat ....................   Passed    0.25 sec
+      Start 17: native_core
+17/20 Test #17: native_core ......................   Passed    0.28 sec
+      Start 18: native_random
+18/20 Test #18: native_random ....................   Passed    0.25 sec
+      Start 19: native_reverse
+19/20 Test #19: native_reverse ...................   Passed    0.41 sec
+      Start 20: native_rail_geometry
+20/20 Test #20: native_rail_geometry .............   Passed    0.43 sec
+
+100% tests passed, 0 tests failed out of 20
+
+Total Test time (real) =   7.56 sec
+{"exit": 0, "aborted": null, "peak_rss_kib": 69024, "rss_scope": "owned_process_group", "elapsed_s": 7.864}

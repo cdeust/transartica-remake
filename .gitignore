@@ -1,4 +1,4 @@
-/reference-private/
+/reference-private
 __pycache__/
 *.pyc
 
@@ -6,8 +6,16 @@ __pycache__/
 /.cache/
 /builds/
 /game/.godot/
-/game/private-data/
+/game/private-data
 /game/save/
 
 .DS_Store
 /.claude/session-cache.json
+
+# Local build products and verification captures.
+/output/standalone-native*/
+/tasks/standalone-cpp-20261018/interface-captures/
+
+# Native CMake build and default installed output.
+/build/
+/output/native-install/

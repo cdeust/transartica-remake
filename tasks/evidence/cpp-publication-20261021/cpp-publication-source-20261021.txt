@@ -1,0 +1,9 @@
+MAGIC_NUMBER (warn)    native-game/combat/tactical.cpp:33: std::vector<Event> Tactical::advance(double delta){std::vector<Event> all;if(!st
+MAGIC_NUMBER (warn)    native-game/tests/core_tests.cpp:234:     resumed.advance(30.625); for (int i = 0; i < 245; ++i) restored.advance(.125
+MAGIC_NUMBER (warn)    native-game/tests/world_cover_tests.cpp:3: // A southern painting's final cell produced UV 1.0000001192092896 after
+MAGIC_NUMBER (warn)    native-game/view/world_passages.cpp:217:         // (1322.0001220703125 at V4), rejected by SDL_RenderGeometry.
+
+Profile: standard  (staged mode)
+Errors:   0  (blocking)
+Warnings: 4  (informational — promoted to errors when profile=strict)
+PASSED: no blocking violations.
