@@ -290,7 +290,7 @@
   "tests": {
     "python_score": 91,
     "native_ctest": 21,
-    "packaging": 40
+    "packaging": 48
   },
   "macos": {
     "bundle_files": 146,
@@ -320,7 +320,7 @@
     "signature": "ad-hoc; not notarized"
   },
   "windows": {
-    "status": "Final music installer passed native CI installation, launch and uninstall; publication pending.",
+    "status": "Published; actual native installation, launch and uninstall verified.",
     "source_commit": "3953e35fa11f34fb0e8f7875f9754d2e0d007973",
     "run": 39862770188,
     "run_url": "https://github.com/cdeust/transartica-remake/actions/runs/39862770188",
@@ -328,7 +328,17 @@
     "installer_python_tests_passed": 14,
     "powershell_tests_passed": 5,
     "physical_audio_tested": false,
-    "gameplay_input_tested": false
+    "gameplay_input_tested": false,
+    "installer_sha256": "9fcd6d74386b73758f02b38604f8fc6c859a0dc74bf6ba54b4050c002ef998db",
+    "installer_bytes": 263712245,
+    "publisher_run": 39866245837,
+    "final_head_regression": {
+      "run": 39864919669,
+      "source_commit": "b246f218f972295331ca52d41481c5d9001d336d",
+      "native_ctest": 21,
+      "installer_python": 22,
+      "powershell": 5
+    }
   },
   "limits": [
     "Original resonant/percussive textures retained.",
@@ -431,7 +441,44 @@
     "removed_allocated_bytes": 1106960384,
     "available_bytes_before": 46066122752,
     "available_bytes_after": 46118547456,
-    "free_space_delta_is_systemwide": true
+    "free_space_delta_is_systemwide": true,
+    "authorized_folders_removed": [
+      "disk-hygiene-ltx2pwm6",
+      "disk-hygiene-54i1ct98",
+      "disk-hygiene-9t1vpqpm"
+    ],
+    "historical_folder_removal": {
+      "authorization": "Owner explicitly named these folders for deletion after delivery on2026-10-23.",
+      "folders": [
+        {
+          "path": "/Users/cdeust/Developments/Transartica/disk-hygiene-ltx2pwm6",
+          "identity": [
+            16777231,
+            456505200
+          ],
+          "files": 3826,
+          "logical_bytes": 240627764,
+          "allocated_bytes": 249225216,
+          "removed": true
+        },
+        {
+          "path": "/Users/cdeust/Developments/Transartica/disk-hygiene-54i1ct98",
+          "identity": [
+            16777231,
+            484823362
+          ],
+          "files": 1838,
+          "logical_bytes": 1192407005,
+          "allocated_bytes": 1196863488,
+          "removed": true
+        }
+      ],
+      "evidence_archive": "prior-native-review-evidence.tar.gz",
+      "state": "Removed after public release verification and empty lsof checks.",
+      "archive_sha256": "338de4568dd0eae9b0378cc808fb3bfec0b56068406c80d7b59e1a2492d0f2c9",
+      "available_bytes_before": 45517541376,
+      "available_bytes_after": 46975913984
+    }
   },
   "independent_review": {
     "head": "3953e35fa11f34fb0e8f7875f9754d2e0d007973",
@@ -456,5 +503,11 @@
     "source_bytes": 518682161,
     "verified_members": 757,
     "unique_contents": 647
+  },
+  "release": {
+    "url": "https://github.com/cdeust/transartica-remake/releases/tag/native-v0.1.0",
+    "commit": "07e4b23cae7c321913c1b317f321fad0b29bfead",
+    "draft": false,
+    "prerelease": true
   }
 }
