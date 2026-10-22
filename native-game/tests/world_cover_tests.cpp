@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
-// Regression: live V4/H2 views, tasks/evidence/cpp-interface-map-review-20261020.md.
-// A southern painting's final cell produced UV 1.0000001192092896 after
+// Source: live V4/H2 regression, tasks/evidence/cpp-interface-map-review-20261020.md.
+// Observed final-cell UV 1.0000001192092896 (source: regression above) after
 // float origin + extent rounding. Exercise actual SDL geometry submission.
 #include "view/world_passages.hpp"
 #include <SDL.h>
@@ -26,7 +26,7 @@ double number(json_object* values, int i) {
 }
 void load_paintings(ta::WorldPassages& passages, const fs::path& artwork) {
     std::unique_ptr<json_object, decltype(&json_object_put)> doc(
-        json_object_from_file((artwork / "manifest.json").c_str()), json_object_put);
+        json_object_from_file((artwork / "manifest.json").string().c_str()), json_object_put);
     require(bool(doc), "Missing artwork manifest");
     auto* scenes = field(doc.get(), "scenes");
     require(json_object_array_length(scenes) == 8, "Expected eight map regions");
