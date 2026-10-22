@@ -12,13 +12,13 @@ mounted-file verification and an installed CoreAudio launch. Real Mac UI checks
 exercised the map and save restoration.
 
 PR12 contains the source changes. The owner authorized merge after platform
-checks and a combined release at `native-v0.1.0`. Publication is in progress.
+checks and a combined release at `native-v0.1.0`. Both installers are published in that release; PR12 merged at07e4b23.
 The owner explicitly authorized deletion of `disk-hygiene-ltx2pwm6`,
 `disk-hygiene-54i1ct98` and `disk-hygiene-9t1vpqpm` after delivery.
 
 Verified source and prior native-review evidence archives are preserved in
 `output/faithful-native-20261022/evidence/` in the main checkout. The same output
 directory holds the final DMG and installation receipts. The owned build copies
-and loose app have been removed; the worktree and Windows transfer scratch
-remain until publication finishes. Full numerical results and artifact hashes
+and loose app have been removed; all three authorized scratch folders are now removed. The owned worktree
+remains only for this final documentation commit and registered disposal. Full numerical results and artifact hashes
 are in `faithful-orchestral-delivery-20261022.json`.

@@ -647,6 +647,8 @@ Delivery evidence: [faithful-orchestral-delivery-20261022.md](evidence/faithful-
 
 Owner continuation,23October2026:
 
-- [ ] Merge PR12 after the final Mac and Windows installation checks.
-- [ ] Publish both installers together with verified checksums.
-- [ ] Remove the authorized scratch directories `disk-hygiene-ltx2pwm6`, `disk-hygiene-54i1ct98` and `disk-hygiene-9t1vpqpm` after preserving evidence.
+- [x] Merge PR12 after the final Mac and Windows installation checks.
+- [x] Publish both installers together with verified checksums.
+- [x] Remove the authorized scratch directories `disk-hygiene-ltx2pwm6`, `disk-hygiene-54i1ct98` and `disk-hygiene-9t1vpqpm` after preserving evidence.
+
+Publication and removal receipt: [native-installer-publication-20261023.md](evidence/native-installer-publication-20261023.md).

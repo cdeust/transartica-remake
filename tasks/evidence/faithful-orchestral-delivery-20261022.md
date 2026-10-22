@@ -22,7 +22,7 @@ existing transition. BOPRES ends at the original native stop. Numeric details
 and hashes are in `faithful-orchestral-delivery-20261022.json`.
 
 The score tooling passed 91 tests. Native C++ passed all 21 CTest suites with
-the new resources; packaging passed 40 tests. The extraction refactor preserves
+the new resources; packaging passed 48 tests. The extraction refactor preserves
 52128 event records and 288 sample blobs across nine fresh captures, with only
 provenance header hashes changed. These tests do not establish artistic listening
 acceptance or completion of an entire campaign.
@@ -52,8 +52,12 @@ tests and5 PowerShell regression checks. The runtime test uses SDL dummy audio;
 it does not establish playback through physical Windows audio hardware or
 gameplay input. Installed file hashes are verified before launch.
 
-The installer is being transferred into the combined release. Its final
-publication receipt will bind the hosted file to the successful installation.
+The installer is published with the Mac DMG in
+[native-v0.1.0](https://github.com/cdeust/transartica-remake/releases/tag/native-v0.1.0).
+Publisher run39866245837 verified the hosted installer against the successful
+installation receipt and all nine source music hashes. Final-head regression
+run39864919669 passed21 CTest suites,22 installer Python tests and5 PowerShell
+checks. Both platforms retain the runtime resources from3953e35.
 
 ## Cleanup
 
@@ -68,3 +72,8 @@ Removed owned build directories, duplicate renders and the loose app copy total
 per-path sizes and filesystem measurements; concurrent disk activity and APFS
 sharing mean deleted file sizes are not a claim about net free-space gain.
 Other worktrees, reference sources and unrelated project evidence were preserved.
+
+All three owner-authorized scratch folders are now removed. The two older
+folders contained1433034769 logical bytes before removal. Their useful review
+evidence was preserved in the hash-verified prior-native-review-evidence archive.
+See [publication receipt](native-installer-publication-20261023.md).
