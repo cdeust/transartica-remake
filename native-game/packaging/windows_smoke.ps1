@@ -25,7 +25,9 @@ try {
     $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot"
     # Hosted Windows has no physical audio device. This tests SDL mixing, not listening.
     $env:SDL_AUDIODRIVER = 'dummy'
-    $arguments = @('--quit-after', '5', '--save-dir', "`"$(Join-Path $Evidence 'saves')`"", '--log', "`"$stateLog`"")
+    # Source: StartupTimeline::title_ready / hz = 360 / 50 = 7.2 seconds.
+    # Reception music begins at publisher_end / hz = 5.04 seconds.
+    $arguments = @('--quit-after', '7.2', '--save-dir', "`"$(Join-Path $Evidence 'saves')`"", '--log', "`"$stateLog`"")
     $game = Start-Process -FilePath $executable -WorkingDirectory $Evidence -ArgumentList $arguments -RedirectStandardOutput (Join-Path $Evidence 'stdout.log') -RedirectStandardError (Join-Path $Evidence 'stderr.log') -PassThru
     if (!$game.WaitForExit(30000)) { $game.Kill(); throw 'Installed game did not exit within the CI launch budget' }
     if ($game.ExitCode -ne 0) { throw "Installed game failed with exit $($game.ExitCode)" }
