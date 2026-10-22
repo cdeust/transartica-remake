@@ -33,13 +33,7 @@ try {
     $env:PATH = $savedPath
     $env:SDL_AUDIODRIVER = $savedAudio
 }
-$state = Get-Content $stateLog -Raw
-$stdout = Get-Content (Join-Path $Evidence 'stdout.log') -Raw
-$stderr = Get-Content (Join-Path $Evidence 'stderr.log') -Raw
-if ($state -notmatch 'STATE event=boot ' -or $state -notmatch 'STATE event=quit ') { throw 'Native boot/quit markers missing' }
-if ($stdout -notmatch 'NATIVE runtime=SDL2 renderer=') { throw 'Native SDL renderer marker missing' }
-if ($stderr.Trim()) { throw "Installed game emitted stderr: $stderr" }
-if ($state -notmatch 'AUDIO event=quit .* music_cursor=[1-9][0-9]* .* music_playing=1 .* error=""') { throw 'Music did not advance successfully' }
+& (Join-Path $PSScriptRoot 'assert_windows_logs.ps1') -Evidence $Evidence
 $uninstaller = Join-Path $installed 'unins000.exe'
 $uninstall = Start-Process -FilePath $uninstaller -ArgumentList @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART') -PassThru
 if (!$uninstall.WaitForExit(120000)) { $uninstall.Kill(); throw 'Uninstaller did not exit within the CI budget' }

@@ -39,6 +39,10 @@ jobs:
           pacman -Q > delivery/msys2-packages.txt
           gcc --version > delivery/compiler.txt
           cmake --version > delivery/cmake.txt
+      - name: Test Windows log verification
+        shell: pwsh
+        run: |
+          ./native-game/packaging/test_windows_logs.ps1 -Scratch delivery/installer-log-tests
       - name: Build and test native Windows code
         run: |
           cmake -S native-game -B build/native -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
